@@ -8,9 +8,9 @@ export class AssetType extends Base {
   name: string;
 
   @OneToOne(() => Asset, asset => asset.assetType)
-  asset: Asset;
+  asset?: Asset;
 
-  constructor(name: string, asset: Asset) {
+  constructor(name: string, asset?: Asset) {
     super();
     this.name = name;
     this.asset = asset;

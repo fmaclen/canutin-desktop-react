@@ -13,7 +13,7 @@ import {
 } from './constants';
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
 import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '../constants/events';
-import { DATABASE_PATH } from '../constants';
+import { DATABASE_PATH, NEW_DATABASE } from '../constants';
 
 let win: BrowserWindow | null = null;
 
@@ -25,6 +25,7 @@ const setupEvents = async () => {
       });
 
       if (filePath) await connectAndSaveDB(win, filePath);
+      win.webContents.send(NEW_DATABASE);
     }
   });
 

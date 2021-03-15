@@ -14,11 +14,13 @@ export interface SetupOptionBoxProps {
   title: string;
   subTitle: string;
   onClick: () => void;
+  width?: number;
+  disabled?: boolean;
 }
 
-const SetupOptionBox = ({ icon, title, subTitle, onClick }: SetupOptionBoxProps) => (
-  <Container onClick={onClick}>
-    <Header>
+const SetupOptionBox = ({ icon, title, subTitle, onClick, width = 510, disabled = false }: SetupOptionBoxProps) => (
+  <Container onClick={!disabled ? () => onClick() : () => {}} width={width}>
+    <Header disabled={disabled}>
       {icon}
     </Header>
     <Body>

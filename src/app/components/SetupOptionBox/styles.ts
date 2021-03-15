@@ -1,13 +1,13 @@
 import { css } from 'styled-components';
-import { plainWhite, blueLight, grey50, grey80, black01 } from 'app/constants/colors';
+import { plainWhite, blueLight, grey50, grey80, black01, grey5 } from 'app/constants/colors';
 import { sansSerifExtraBold, sansSerifRegular } from 'app/constants/fonts';
 
-export const container = css`
+export const container = css<{ width: number }>`
   background-color: ${plainWhite};
   border-radius: 4px;
   box-shadow: 0 4px 15px 0 ${black01};
   margin-right: 10px;
-  width: 510px;
+  width: ${({ width }) => width}px;
   
   &:hover {
     cursor: pointer;
@@ -16,9 +16,9 @@ export const container = css`
   -webkit-user-select: none;
 `;
 
-export const header = css`
+export const header = css<{ disabled?: boolean }>`
   align-items: center;
-  background-color: ${blueLight};
+  background-color: ${({ disabled }) => disabled ? grey5 : blueLight};
   display: flex;
   justify-content: flex-start;
   height: 64px;

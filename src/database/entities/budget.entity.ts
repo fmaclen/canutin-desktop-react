@@ -1,6 +1,5 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { Base } from './base.entity';
-import { BalancegGroupEnum } from '../enums/balancegGroup.enum';
 import { Transaction } from './transaction.entity';
 
 @Entity()

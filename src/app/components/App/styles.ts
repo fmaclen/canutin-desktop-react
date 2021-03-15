@@ -21,6 +21,7 @@ export const container = css`
     "title-bar title-bar"
     "side-bar body";
   height: 100vh;
+  overflow-y: hidden;
 `;
 
 export const globalStyle = css`

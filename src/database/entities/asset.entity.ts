@@ -19,7 +19,7 @@ export class Asset extends Base {
   value: number;
 
   @Column()
-  sold: Date;
+  sold?: Date;
 
   @Column()
   balanceGroup: BalancegGroupEnum;
@@ -35,19 +35,19 @@ export class Asset extends Base {
     quantity: number,
     cost: number,
     value: number,
-    sold: Date,
     balanceGroup: BalancegGroupEnum,
-    account: Account,
     assetType: AssetType,
+    account?: Account,
+    sold?: Date,
   ) {
     super();
     this.name = name;
     this.quantity = quantity;
     this.cost = cost;
     this.value = value;
-    this.sold = sold;
     this.balanceGroup = balanceGroup;
     this.account = account;
     this.assetType = assetType;
+    this.sold = sold;
   }
 }

@@ -5,6 +5,8 @@ import BalanceSheet from 'app/pages/BalanceSheet';
 import Budget from 'app/pages/Budget';
 import Transactions from 'app/pages/Transactions';
 import Trends from 'app/pages/Trends';
+import AddAccountOrAsset from 'app/pages/AddAccountOrAsset';
+import AddAccountAssetByHand from '../pages/AddAccountAssetByHand';
 
 export const routesPaths = {
   index: '/',
@@ -13,24 +15,31 @@ export const routesPaths = {
   budget: '/budget',
   transactions: '/transactions',
   trends: '/trends',
+  addAccountOrAssetByHand: '/balance/addAccountOrAsset',
 };
 
 export interface RouteConfigProps {
   path: string | string[],
   component: ReactNode,
   exact?: boolean,
+  subRoutes?: RouteConfigProps[];
 }
 
 export const routesConfig: RouteConfigProps[] = [
   {
-    path: [routesPaths.index, routesPaths.bigpicture],
+    path: [routesPaths.index],
+    exact: true,
+    component: <BalanceSheet />
+  },
+  {
+    path: [routesPaths.bigpicture],
     exact: true,
     component: <TheBigPicture />,
   },
   {
     path: [routesPaths.balance],
     exact: true,
-    component: <BalanceSheet />,
+    component: <AddAccountOrAsset />,
   },
   {
     path: [routesPaths.budget],
@@ -47,4 +56,9 @@ export const routesConfig: RouteConfigProps[] = [
     exact: true,
     component: <Trends />,
   },
+  {
+    path: [routesPaths.addAccountOrAssetByHand],
+    exact: true,
+    component: <AddAccountAssetByHand />,
+  }
 ];

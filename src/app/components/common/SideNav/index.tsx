@@ -31,7 +31,7 @@ const SideBar = () => {
             icon={<BigPicture />}
             text="The big picture"
             toggled={toggled}
-            to={routesPaths.index}
+            to={routesPaths.bigpicture}
           />
 
           <NavItem
