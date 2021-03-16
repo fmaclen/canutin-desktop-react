@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 
 import { routesConfig, RouteConfigProps } from 'app/routes';
 import TitleBar from 'app/components/common/TitleBar';
-import BottomBar from 'app/components/common/BottomBar';
+import StatusBar from 'app/components/common/StatusBar';
 import SideBar from 'app/components/common/SideBar';
 import Setup from 'app/pages/Setup';
 import Breadcrumbs, { BreadcrumbType } from 'app/components/common/Breadcrumbs';
@@ -60,7 +60,7 @@ const App = () => {
           <>
             <TitleBar />
             <Setup />
-            <BottomBar
+            <StatusBar
               errorMessage={dbError}
               onClickButton={() => setDbError(null)}
               breadcrumbs={<Breadcrumbs items={noVaultBreadcrumbs} />}

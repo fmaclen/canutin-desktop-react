@@ -8,13 +8,13 @@ const Button = styled.button`${closeError}`
 const Error = styled.p`${error}`;
 const ConfigurationInfo = styled.div`${configurationInfo}`;
 
-export interface BottomBarProps {
+export interface StatusBarProps {
   errorMessage: string | ReactNode;
   onClickButton: () => void;
   breadcrumbs: ReactNode;
 }
 
-const BottomBar = ({ errorMessage, onClickButton, breadcrumbs }: BottomBarProps) => {
+const StatusBar = ({ errorMessage, onClickButton, breadcrumbs }: StatusBarProps) => {
   const error = (typeof errorMessage === "string" && errorMessage !== '') || errorMessage !== null;
 
   return (
@@ -28,4 +28,4 @@ const BottomBar = ({ errorMessage, onClickButton, breadcrumbs }: BottomBarProps)
   );
 };
 
-export default BottomBar;
+export default StatusBar;
