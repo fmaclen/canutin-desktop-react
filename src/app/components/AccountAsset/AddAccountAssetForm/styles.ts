@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { bluePlain, borderGrey, grey20, grey30, grey7, plainWhite } from 'app/constants/colors';
+import { bluePlain, borderGrey, grey20, grey30, grey7, whitePlain } from 'app/constants/colors';
 import { sansSerifBold } from '../../../constants/fonts';
 
 export const formContainer = css`
@@ -29,7 +29,7 @@ export const formSubmitButton = css<{ disabled: boolean }>`
   background-color: ${({ disabled }) => disabled ? grey20 : bluePlain};
   border: none;
   border-radius: 3px;
-  color: ${({ disabled }) => disabled ? grey30 : plainWhite};
+  color: ${({ disabled }) => disabled ? grey30 : whitePlain};
   cursor: pointer;
   height: 40px;
   margin-right: 10px;

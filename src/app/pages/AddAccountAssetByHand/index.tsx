@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Section from 'app/components/common/Section';
+import ScrollView from 'app/components/common/ScrollView';
 import AddAccountAssetForm from 'app/components/AccountAsset/AddAccountAssetForm';
 import { container, body, subTitle } from './styles';
 
@@ -11,14 +11,14 @@ const SubTitle = styled.div`${subTitle}`;
 
 
 const AddAccountAssetByHand = () => (
-  <Section title="Add by hand" subTitle="Create a new account or asset">
+  <ScrollView title="Add by hand" subTitle="Create a new account or asset">
     <Container>
       <Body>
         <SubTitle>Choose Type</SubTitle>
         <AddAccountAssetForm />
       </Body>
     </Container>
-  </Section>
+  </ScrollView>
 );
 
 export default AddAccountAssetByHand;

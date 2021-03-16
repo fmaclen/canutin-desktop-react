@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { borderGrey, grey70, plainWhite } from 'app/constants/colors';
+import { borderGrey, grey70, whitePlain } from 'app/constants/colors';
 import { sansSerifBold } from 'app/constants/fonts';
 
 export const container = css`
@@ -9,7 +9,7 @@ export const container = css`
   margin-top: 8px;
 
   input {
-    background-color: ${plainWhite};
+    background-color: ${whitePlain};
     border: 2px solid ${borderGrey};
     border-radius: 5px;
     padding: 10px;

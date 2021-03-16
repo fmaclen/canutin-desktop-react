@@ -2,10 +2,10 @@ import { css } from 'styled-components';
 import { grey40, grey5 } from 'app/constants/colors';
 import { monospaceRegular } from 'app/constants/fonts';
 
-export const body = css`
+export const section = css`
   align-items: center;
   background-color: ${grey5};
-  display: flex;
+  display: grid;
   justify-content: center;
   height: calc(100vh - 250px);
 `;

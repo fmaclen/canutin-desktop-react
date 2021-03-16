@@ -1,18 +1,15 @@
 import React from 'react';
 
-import Section from 'app/components/common/Section';
+import ScrollView from 'app/components/common/ScrollView';
 
-const TheBigPicture = () => {
-  console.log('TheBigPicture');
-  return (
-    <>
-      <Section title="The big picture">
-        <div>
-          The big picture
-        </div>
-      </Section>
-    </>
-  );
-}
+const TheBigPicture = () => (
+  <>
+    <ScrollView title="The big picture">
+      <div>
+        The big picture
+      </div>
+    </ScrollView>
+  </>
+);
 
 export default TheBigPicture;
