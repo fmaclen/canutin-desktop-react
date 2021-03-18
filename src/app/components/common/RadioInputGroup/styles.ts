@@ -3,7 +3,9 @@ import { borderGrey, grey80, grey70 } from 'app/constants/colors';
 import { sansSerifBold } from 'app/constants/fonts';
 
 export const container = css`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  width: 100%;
 `;
 
 export const label = css`
@@ -12,21 +14,20 @@ export const label = css`
   color: ${grey70};
   padding-right: 20px;
   padding-top: 20px;
+  text-align: end;
 `;
 
 export const valuesContainer = css`
   border: 2px solid ${borderGrey};
   border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  min-width: 410px;
+  display: grid;
+  grid-row-gap: 8px;
   padding: 10px;
 `;
 
 export const inputGroup = css`
   align-items: center;
   display: flex;
-  margin-bottom: 8px;
   height: 20px;
   
   input {

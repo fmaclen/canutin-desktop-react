@@ -5,13 +5,10 @@ import { monospaceRegular } from 'app/constants/fonts';
 export const container = css`
   background-color: ${grey5};
   display: flex;
-  height: calc(100vh - 250px);
-`;
-
-export const body = css`
-  padding-top: 55px;
-  padding-left: 130px;
-  padding-right: 130px;
+  flex-direction: column;
+  height: 100%;
+  padding-left: 64px;
+  padding-right: 64px;
   width: 100%;
 `;
 

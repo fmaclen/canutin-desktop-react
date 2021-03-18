@@ -14,10 +14,15 @@ type RefReturn =
   | null
   | undefined;
 
+export type SelectInputValue = {
+  name: string;
+  label: string;
+};
+
 export interface SelectInputProps {
   label: string;
   name: string;
-  values: string[];
+  values: SelectInputValue[];
   register: ({ required }: { required?: boolean }) => RefReturn;
   required?: boolean;
 }
@@ -27,7 +32,7 @@ const SelectInput = ({ label, name, values, register, required = false }: Select
     <Label htmlFor={name}>{label}</Label>
     <ValuesContainer>
       <select name={name} ref={register({ required })} id={name}>
-        {values.map((value, index) => <option value={value} key={index}>{value}</option>)}
+        {values.map(({ name, label }: SelectInputValue, index) => <option value={name} key={index}>{label}</option>)}
       </select>
     </ValuesContainer>
   </Container>

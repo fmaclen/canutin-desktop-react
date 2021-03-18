@@ -17,7 +17,7 @@ const GlobalStyle = createGlobalStyle`${globalStyle}`;
 const Container = styled.div`${container}`;
 
 const App = () => {
-  const [isAppInitialized, setIsAppInitialized] = useState(false);
+  const [isAppInitialized, setIsAppInitialized] = useState(true);
   const [dbError, setDbError] = useState<ReactNode>(null);
 
   const noVaultBreadcrumbs: BreadcrumbType[] = [

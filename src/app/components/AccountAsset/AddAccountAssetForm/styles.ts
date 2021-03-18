@@ -1,19 +1,19 @@
 import { css } from 'styled-components';
-import { bluePlain, borderGrey, grey20, grey30, grey7, whitePlain } from 'app/constants/colors';
-import { sansSerifBold } from '../../../constants/fonts';
+import { bluePlain, borderGrey, grey10, grey20, grey30, grey7, grey70, grey90, whitePlain } from 'app/constants/colors';
+import { sansSerifBold, sansSerifRegular } from '../../../constants/fonts';
 
 export const formContainer = css`
   border: 1px solid ${borderGrey};
   border-radius: 4px;
+  display: grid;
+  grid-row-gap: 8px;
+  padding-top: 10px;
 `;
 
 export const form = css`
   align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 15px;
-  padding-top: 10px;
+  display: grid;
+  grid-row-gap: 8px;
 `;
 
 export const formFooter = css`
@@ -22,6 +22,7 @@ export const formFooter = css`
   display: flex;
   justify-content: flex-end;
   height: 55px;
+  margin-top: 8px;
 `;
 
 export const formSubmitButton = css<{ disabled: boolean }>`
@@ -38,4 +39,60 @@ export const formSubmitButton = css<{ disabled: boolean }>`
   &:focus {
     outline: none;
   }
+`;
+
+export const balanceContainer = css`
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+`;
+
+export const balanceSubContainer = css`
+  align-items: center;
+  display: flex;
+`
+
+export const customInputLabel = css`
+  ${sansSerifBold};
+  font-size: 12px;
+  color: ${grey70};
+  padding-right: 20px;
+  text-align: end;
+`;
+
+export const customInputContainer = css<{ disabled: boolean }>`
+  align-items: center;
+
+  input {
+    background-color: ${({ disabled }) => disabled ? grey10 : whitePlain};
+    border: 2px solid ${borderGrey};
+    border-radius: 5px;
+    padding: 10px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+`;
+
+export const checkboxContainer = css`
+  align-items: center;
+  border: 2px solid ${borderGrey};
+  border-radius: 5px;
+  margin-left: 12px;
+  padding: 8px;
+`;
+
+export const checkbox = css`
+  background-color: ${whitePlain};
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const checkboxLabel = css`
+  ${sansSerifRegular};
+  font-size: 13px;
+  color: ${grey90};
 `;

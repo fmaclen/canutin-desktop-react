@@ -6,8 +6,8 @@ export const section = css`
   align-items: center;
   background-color: ${grey5};
   display: grid;
-  justify-content: center;
-  height: calc(100vh - 250px);
+  grid-auto-flow: column;
+  grid-gap: 65px;
 `;
 
 export const subTitle = css`
@@ -19,13 +19,7 @@ export const subTitle = css`
 `;
 
 export const boxContainer = css`
-  display: flex;
-`;
-
-export const styledSetupOptionBox = css`
-  width: 220px;
-`;
-
-export const subDivision = css`
-  padding-left: 65px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 8px;
 `;

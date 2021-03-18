@@ -4,8 +4,9 @@ import { sansSerifBold } from 'app/constants/fonts';
 
 export const container = css`
   align-items: center;
-  display: flex;
-  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  width: 100%;
 `;
 
 export const label = css`
@@ -13,6 +14,7 @@ export const label = css`
   font-size: 12px;
   color: ${grey70};
   padding-right: 20px;
+  text-align: end;
 `;
 
 export const valuesContainer = css`
@@ -28,7 +30,6 @@ export const valuesContainer = css`
     border: none;
     cursor: pointer;
     padding: 10px;
-    width: 410px;
 
     &:focus {
       outline: none;

@@ -14,4 +14,5 @@ export const grey40 = '#999999';
 export const grey50 = '#7F7F7F';
 export const grey70 = '#4C4C4C';
 export const grey80 = '#333333';
+export const grey90 = '#191919';
 export const blackOpacity10 = 'rgba(0, 0, 0, .1)';

@@ -36,7 +36,7 @@ const connection = {
         callback(connection);
       }
     } catch (error) {
-      throw new Error(`ERROR: Creating test db connection: ${error}`);
+      throw new Error(`ERROR: Creating db connection: ${error}`);
     }
   },
 
@@ -54,7 +54,7 @@ const connection = {
       try {
         reposToClear.push(repository.clear());
       } catch (error) {
-        throw new Error(`ERROR: Cleaning test db: ${error}`);
+        throw new Error(`ERROR: Cleaning db: ${error}`);
       }
     });
 

@@ -8,13 +8,12 @@ import { ReactComponent as Sheet } from 'app/assets/icons/Sheet.svg';
 import { ReactComponent as Keyboard } from 'app/assets/icons/Keyboard.svg';
 import { ReactComponent as Bot } from 'app/assets/icons/Bot.svg';
 import { ReactComponent as Lightning } from 'app/assets/icons/Lightning.svg';
-import { section, subTitle, boxContainer, subDivision } from './styles';
+import { section, subTitle, boxContainer } from './styles';
 import { routesPaths } from '../../routes';
 
 const Section = styled.div`${section}`;
 const SubTitle = styled.div`${subTitle}`;
 const BoxContainer = styled.div`${boxContainer}`;
-const SubDivision = styled.div`${subDivision}`;
 
 const AddAccountOrAsset = () => {
   const { push } = useHistory();
@@ -22,7 +21,7 @@ const AddAccountOrAsset = () => {
   return (
     <ScrollView title="Add accounts or assets">
       <Section>
-        <SubDivision>
+        <div>
           <SubTitle>Add New</SubTitle>
           <BoxContainer>
             <PrimaryCard
@@ -40,8 +39,8 @@ const AddAccountOrAsset = () => {
               width={220}
             />
           </BoxContainer>
-        </SubDivision>
-        <SubDivision>
+        </div>
+        <div>
           <SubTitle>Coming Soon</SubTitle>
           <BoxContainer>
             <PrimaryCard
@@ -61,7 +60,7 @@ const AddAccountOrAsset = () => {
               disabled
             />
           </BoxContainer>
-        </SubDivision>
+        </div>
       </Section>
     </ScrollView>
   );

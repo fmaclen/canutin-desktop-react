@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import settings from 'electron-settings';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent } from 'electron';
 import * as path from 'path';
 import * as isDev from 'electron-is-dev';
 
@@ -12,8 +12,12 @@ import {
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
-import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '../constants/events';
+import { DB_NEW_ACCOUNT, DB_NEW_ASSET, OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '../constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '../constants';
+import { AssetRepository } from '../database/repositories/asset.repository';
+import { AccountRepository } from '../database/repositories/account.repository';
+import { NewAssetType } from '../types/asset.type';
+import { NewAccountType } from '../types/account.type';
 
 let win: BrowserWindow | null = null;
 
@@ -38,6 +42,16 @@ const setupEvents = async () => {
 
       if (filePaths.length) await connectAndSaveDB(win, filePaths[0]);
     }
+  });
+};
+
+const setupDbEvents = async () => {
+  ipcMain.on(DB_NEW_ASSET, async (_: IpcMainEvent, asset: NewAssetType) => {
+    await AssetRepository.createAsset(asset);
+  });
+
+  ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
+    await AccountRepository.createAccount(account);
   });
 };
 
@@ -84,6 +98,7 @@ const createWindow = async () => {
   }
 
   await setupEvents();
+  await setupDbEvents();
 
   win.webContents.on(DID_FINISH_LOADING, async () => {
     const dbPath = await settings.get(DATABASE_PATH) as string;
