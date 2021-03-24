@@ -1,7 +1,9 @@
-export const bluePlain = '#0366D6';
-export const blueLight = '#EFF7FF';
 export const redPlain = '#FF3162';
 export const redLight = '#F9ECEF';
+export const greenPlain = '#00A36F';
+export const greenLight = '#ECF9F6';
+export const bluePlain = '#0366D6';
+export const blueLight = '#EFF7FF';
 export const borderGrey = '#E2E2E2';
 export const whitePlain = '#FFFFFF';
 export const grey3 = '#FAFAFA';

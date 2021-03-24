@@ -12,7 +12,14 @@ import {
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
-import { DB_NEW_ACCOUNT, DB_NEW_ASSET, OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '../constants/events';
+import {
+  DB_NEW_ACCOUNT,
+  DB_NEW_ASSET,
+  DB_NEW_ASSET_ACK,
+  DB_NEW_ACCOUNT_ACK,
+  OPEN_CREATE_VAULT,
+  OPEN_EXISTING_VAULT,
+} from '../constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '../constants';
 import { AssetRepository } from '../database/repositories/asset.repository';
 import { AccountRepository } from '../database/repositories/account.repository';
@@ -47,11 +54,13 @@ const setupEvents = async () => {
 
 const setupDbEvents = async () => {
   ipcMain.on(DB_NEW_ASSET, async (_: IpcMainEvent, asset: NewAssetType) => {
-    await AssetRepository.createAsset(asset);
+    const newAsset = await AssetRepository.createAsset(asset);
+    win?.webContents.send(DB_NEW_ASSET_ACK, newAsset);
   });
 
   ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
-    await AccountRepository.createAccount(account);
+    const newAccount = await AccountRepository.createAccount(account);
+    win?.webContents.send(DB_NEW_ACCOUNT_ACK, newAccount);
   });
 };
 

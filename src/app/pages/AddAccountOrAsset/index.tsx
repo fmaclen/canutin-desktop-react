@@ -29,14 +29,12 @@ const AddAccountOrAsset = () => {
               title="Import wizzard"
               subTitle="Import data from sites like Mint, Personal Capital, YNAB, etc..."
               onClick={() => {}}
-              width={220}
             />
             <PrimaryCard
               icon={<Keyboard />}
               title="By hand"
               subTitle="Create a new account by entering data manually."
               onClick={() => push(routesPaths.addAccountOrAssetByHand)}
-              width={220}
             />
           </BoxContainer>
         </div>
@@ -48,7 +46,6 @@ const AddAccountOrAsset = () => {
               title="Unleash a Bot"
               subTitle="Attemp to grab accounts and transactions from your financial institution’s website."
               onClick={() => {}}
-              width={220}
               disabled
             />
             <PrimaryCard
@@ -56,7 +53,6 @@ const AddAccountOrAsset = () => {
               title="Canutin Link"
               subTitle="Automatically import and sync accounts from your financial institution."
               onClick={() => {}}
-              width={220}
               disabled
             />
           </BoxContainer>

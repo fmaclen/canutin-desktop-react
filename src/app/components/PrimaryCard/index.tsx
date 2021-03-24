@@ -18,8 +18,8 @@ export interface PrimaryCardProps {
   disabled?: boolean;
 }
 
-const PrimaryCard = ({ icon, title, subTitle, onClick, width = 510, disabled = false }: PrimaryCardProps) => (
-  <Container onClick={!disabled ? () => onClick() : () => {}} width={width}>
+const PrimaryCard = ({ icon, title, subTitle, onClick, disabled = false }: PrimaryCardProps) => (
+  <Container onClick={!disabled ? () => onClick() : () => {}}>
     <Header disabled={disabled}>
       {icon}
     </Header>

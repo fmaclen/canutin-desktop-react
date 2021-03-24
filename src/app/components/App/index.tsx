@@ -10,6 +10,7 @@ import SideBar from 'app/components/common/SideBar';
 import Setup from 'app/pages/Setup';
 import Breadcrumbs, { BreadcrumbType } from 'app/components/common/Breadcrumbs';
 import { DatabaseDoesNotExistsMessage } from 'constants/messages';
+import { StatusBarProvider } from 'app/context';
 import { DATABASE_CONNECTED, DATABASE_DOES_NOT_EXIST, DATABASE_NOT_DETECTED } from '../../../constants';
 import { container, globalStyle } from './styles';
 
@@ -45,7 +46,7 @@ const App = () => {
       <BrowserRouter>
       <Container>
         {isAppInitialized ? (
-          <>
+          <StatusBarProvider>
             <TitleBar />
             <SideBar />
             <Switch>
@@ -55,7 +56,7 @@ const App = () => {
                 ))
               }
             </Switch>
-          </>
+          </StatusBarProvider>
         ) : (
           <>
             <TitleBar />

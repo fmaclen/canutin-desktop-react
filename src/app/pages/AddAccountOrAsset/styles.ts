@@ -22,4 +22,5 @@ export const boxContainer = css`
   display: grid;
   grid-auto-flow: column;
   grid-gap: 8px;
+  grid-template-columns: 1fr 1fr;
 `;

@@ -4,3 +4,5 @@ export const OPEN_EXISTING_VAULT = 'openExistingVault';
 // Database
 export const DB_NEW_ASSET = 'dbNewAsset';
 export const DB_NEW_ACCOUNT = 'dbNewAccount';
+export const DB_NEW_ASSET_ACK = 'dbNewAssetAck';
+export const DB_NEW_ACCOUNT_ACK = 'dbNewAccountAck';

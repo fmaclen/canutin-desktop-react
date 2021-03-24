@@ -8,11 +8,12 @@ import { ReactComponent as BalanceSheet } from 'app/assets/icons/BalanceSheet.sv
 import { ReactComponent as Budget } from 'app/assets/icons/Budget.svg';
 import { ReactComponent as Transactions } from 'app/assets/icons/Transactions.svg';
 import { ReactComponent as Trends } from 'app/assets/icons/Trends.svg';
+import { ReactComponent as AddIcon } from 'app/assets/icons/Add.svg';
 import { container, burgerButton, nav, navItems } from './styles';
 import { routesPaths } from '../../../routes';
 
 const Container = styled.nav`${container}`;
-const BurgerButton = styled.div`${burgerButton}`;
+const BurgerButton = styled.button`${burgerButton}`;
 const NavItems = styled.div`${navItems}`;
 const Nav = styled.nav`${nav}`;
 
@@ -63,6 +64,13 @@ const SideBar = () => {
           />
         </NavItems>
       </Nav>
+
+      <NavItem
+        icon={<AddIcon />}
+        text="Add accounts or assets"
+        toggled={toggled}
+        to={routesPaths.addAccountOrAsset}
+      />
     </Container>
   );
 }

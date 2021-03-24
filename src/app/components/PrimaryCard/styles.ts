@@ -4,7 +4,7 @@ import { sansSerifBold, sansSerifRegular } from 'app/constants/fonts';
 
 const componentPadding = css`padding: 20px;`
 
-export const container = css<{ width: number }>`
+export const container = css`
   display: grid;
   grid-gap: 8px;
   border: none;
@@ -14,7 +14,6 @@ export const container = css<{ width: number }>`
   border-radius: 4px;
   box-shadow: 0 4px 16px 0 ${blackOpacity10};
   transition: transform 100ms;
-  width: ${({ width }) => width}px;
 
   &:hover {
     cursor: pointer;

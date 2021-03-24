@@ -61,7 +61,6 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     handleSubmit: handleAccountSubmit,
     register: registerAccountField,
     watch: watchAccountField,
-    formState: accountFormState,
   } = useForm({ mode: 'onChange' });
 
   const onSubmitAsset = async (asset: NewAssetType) => {
@@ -84,12 +83,13 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
 
   if (cost && quantity) assetValue = cost * quantity;
 
-  const { isValid: isValidAccount } = accountFormState;
-  const submitAccountDisabled = !shouldDisplay || !isValidAccount;
   const autoCalculate = watchAccountField('autoCalculate');
+  const accountName = watchAccountField('name');
+  const balance = watchAccountField('balance');
+  const submitAccountEnabled = shouldDisplay && !!accountName && (autoCalculate || !!balance);
 
   const formSubmit = shouldDisplayAccount ? handleAccountSubmit(onSubmitAccount) : handleAssetSubmit(onSubmitAsset);
-  const submitDisabled = shouldDisplayAccount ? submitAccountDisabled : submitAssetDisabled;
+  const submitDisabled = shouldDisplayAccount ? !submitAccountEnabled : submitAssetDisabled;
 
   return (
     <FormContainer>
@@ -113,7 +113,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
               register={registerAccountField}
               required
             />
-            <Input label="Name" name="name" register={registerAccountField} required />
+            <Input label="Name" name="name" register={registerAccountField} />
             <Input label="Official name" name="officialName" optional register={registerAccountField} />
             <Input label="Institution" name="institution" optional register={registerAccountField} />
             <BalanceContainer>
@@ -121,7 +121,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
               <BalanceSubContainer>
                 <CustomInputContainer disabled={autoCalculate}>
                   <input
-                    disabled={autoCalculate}
+                    readOnly={autoCalculate}
                     name="balance"
                     ref={registerAccountField({ validate: (v) => autoCalculate || (v !== '') })}
                   />
