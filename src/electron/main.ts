@@ -1,19 +1,21 @@
-import 'reflect-metadata';
-import settings from 'electron-settings';
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
-import * as path from 'path';
-import * as isDev from 'electron-is-dev';
+import "reflect-metadata";
+import settings from "electron-settings";
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+} from "electron-devtools-installer";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import * as path from "path";
+import * as isDev from "electron-is-dev";
 
 import {
   DID_FINISH_LOADING,
   ELECTRON_ACTIVATE,
   ELECTRON_READY,
   ELECTRON_WINDOW_CLOSED,
-} from './constants';
-import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
-import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '../constants/events';
-import { DATABASE_PATH } from '../constants';
+} from "./constants";
+import { connectAndSaveDB, findAndConnectDB } from "./helpers/database.helper";
+import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from "../constants/events";
+import { DATABASE_PATH } from "../constants";
 
 let win: BrowserWindow | null = null;
 
@@ -21,7 +23,7 @@ const setupEvents = async () => {
   ipcMain.on(OPEN_CREATE_VAULT, async () => {
     if (win) {
       const { filePath } = await dialog.showSaveDialog(win, {
-        filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
+        filters: [{ name: "DatabaseType", extensions: ["sqlite"] }],
       });
 
       if (filePath) await connectAndSaveDB(win, filePath);
@@ -31,8 +33,8 @@ const setupEvents = async () => {
   ipcMain.on(OPEN_EXISTING_VAULT, async () => {
     if (win) {
       const { filePaths } = await dialog.showOpenDialog(win, {
-        properties: ['openFile'],
-        filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
+        properties: ["openFile"],
+        filters: [{ name: "DatabaseType", extensions: ["sqlite"] }],
       });
 
       if (filePaths.length) await connectAndSaveDB(win, filePaths[0]);
@@ -46,37 +48,44 @@ const createWindow = async () => {
     minHeight: 600,
     width: 1280,
     height: 880,
-    titleBarStyle: 'hidden',
+    titleBarStyle: "hidden",
     trafficLightPosition: { x: 16, y: 32 },
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
-  })
+  });
 
   if (isDev) {
-    win.loadURL('http://localhost:3000/index.html');
+    win.loadURL("http://localhost:3000/index.html");
   } else {
     // 'build/index.html'
-    win.loadURL(`file://${__dirname}/../../index.html`);
+    win.loadURL(`file://${__dirname}/../../build/index.html`);
   }
 
-  win.on('closed', () => win = null);
+  win.on("closed", () => (win = null));
 
   // Hot Reloading
   if (isDev) {
     // 'node_modules/.bin/electronPath'
-    require('electron-reload')(__dirname, {
-      electron: path.join(__dirname, '..', '..', 'node_modules', '.bin', 'electron'),
+    require("electron-reload")(__dirname, {
+      electron: path.join(
+        __dirname,
+        "..",
+        "..",
+        "node_modules",
+        ".bin",
+        "electron"
+      ),
       forceHardReset: true,
-      hardResetMethod: 'exit'
+      hardResetMethod: "exit",
     });
   }
 
   // DevTools
   installExtension(REACT_DEVELOPER_TOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+    .catch((err) => console.log("An error occurred: ", err));
 
   if (isDev) {
     win.webContents.openDevTools();
@@ -85,15 +94,15 @@ const createWindow = async () => {
   await setupEvents();
 
   win.webContents.on(DID_FINISH_LOADING, async () => {
-    const dbPath = await settings.get(DATABASE_PATH) as string;
+    const dbPath = (await settings.get(DATABASE_PATH)) as string;
     await findAndConnectDB(win, dbPath);
   });
-}
+};
 
 app.on(ELECTRON_READY, createWindow);
 
 app.on(ELECTRON_WINDOW_CLOSED, () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
