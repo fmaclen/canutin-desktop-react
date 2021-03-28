@@ -35,7 +35,9 @@
     "customize-cra": "^1.0.0",
     "electron": "^11.2.3",
     "electron-builder": "^22.9.1",
+    "prettier": "2.2.1",
     "react-app-rewired": "^2.1.8",
+    "spectron": "^14.0.0",
     "wait-on": "^5.2.1"
   },
   "scripts": {
