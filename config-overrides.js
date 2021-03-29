@@ -18,5 +18,6 @@ module.exports = override(
     ['@constants']: path.resolve(__dirname, './src/constants'),
     ['@assets']: path.resolve(__dirname, './src/app/assets'),
     ['@routes']: path.resolve(__dirname, './src/app/routes'),
+    ['@database']: path.resolve(__dirname, './src/database'),
   })
 );

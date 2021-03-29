@@ -20,21 +20,13 @@
     "experimentalDecorators": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./",
-    "paths": {
-      "@app/*": ["src/app/*"],
-      "@appConstants/*": ["src/app/constants/*"],
-      "@components/*": ["src/app/components/*"],
-      "@pages/*": ["src/app/pages/*"],
-      "@constants": ["src/constants"],
-      "@constants/*": ["src/constants/*"],
-      "@assets/*": ["src/app/assets/*"],
-      "@routes": ["src/app/routes"],
-   }
+    "noFallthroughCasesInSwitch": true
   },
+  "extends": "./pathAlias.json",
   "include": [
     "src"
   ],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules"
+  ]
 }
