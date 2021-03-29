@@ -56,6 +56,6 @@ export const globalStyle = css`
   }
 
   body {
-    ${sansSerifRegular}
+    ${sansSerifRegular};
   }
 `;

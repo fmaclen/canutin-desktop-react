@@ -19,8 +19,8 @@ export interface PrimaryCardProps {
 }
 
 const PrimaryCard = ({ icon, title, subTitle, onClick, disabled = false }: PrimaryCardProps) => (
-  <Container onClick={!disabled ? () => onClick() : () => {}}>
-    <Header disabled={disabled}>
+  <Container onClick={!disabled ? () => onClick() : () => {}} disabled={disabled}>
+    <Header>
       {icon}
     </Header>
     <Body>
