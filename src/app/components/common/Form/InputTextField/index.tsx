@@ -33,7 +33,7 @@ const InputTextField = ({
   optional = false,
   setRef = null,
 }: InputTextFieldProps) => (
-  <Field label={label} name={name} optional={optional} disabled={disabled}>
+  <Field label={label} name={name} optional={optional}>
     <InputText
       name={name}
       setRef={setRef ? setRef : (register ? register({ required }) : null)}

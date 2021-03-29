@@ -10,7 +10,6 @@ const OptionalTag = styled.span`${optionalTag}`;
 export interface FieldProps {
   label?: string;
   name: string;
-  disabled?: boolean;
   optional?: boolean;
   children?: ReactNode;
 }
@@ -18,11 +17,10 @@ export interface FieldProps {
 const Field = ({
   label,
   name,
-  disabled = false,
   optional = false,
   children,
 }: FieldProps) => (
-  <Container disabled={disabled}>
+  <Container>
     {label && <Label htmlFor={name}>
       {label}
       {optional && <OptionalTag> / Optional</OptionalTag>}

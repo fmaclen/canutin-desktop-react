@@ -1,6 +1,7 @@
 import { css } from 'styled-components';
 import { bluePlain, borderGrey, grey20, grey30, grey7, grey90, whitePlain } from 'app/constants/colors';
 import { sansSerifBold, sansSerifRegular } from '../../../constants/fonts';
+import { inputFocusColor } from '../../../constants/inputs';
 
 export const formContainer = css`
   border: 1px solid ${borderGrey};
@@ -58,10 +59,7 @@ export const checkboxContainerLabel = css`
 export const checkbox = css`
   background-color: ${whitePlain};
   margin: 0;
-
-  &:focus {
-    outline-color: ${bluePlain};
-  }
+  ${inputFocusColor};
 `;
 
 export const checkboxLabel = css`
