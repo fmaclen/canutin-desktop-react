@@ -60,7 +60,6 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
 
   const onSubmitAccount = async (account: NewAccountType) => {
     AccountIpc.createAccount(account);
-    console.log(account);
   };
 
   const shouldDisplay = accountOrAsset !== '';
