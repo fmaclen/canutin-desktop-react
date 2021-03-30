@@ -49,8 +49,7 @@
     "test": "react-app-rewired test",
     "start": "concurrently \"BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && yarn electron-tsc && electron .\"",
     "build": "yarn react-build && yarn electron-tsc && electron-builder",
-    "postinstall": "electron-builder install-app-deps",
-    "electron:windev": "concurrently \"SET BROWSER=none && yarn react-start\" \"wait-on http://localhost:3000 && tsc -p src/electron -w\" \"wait-on http://localhost:3000 && tsc -p src/electron && electron .\""
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "extends": null,
