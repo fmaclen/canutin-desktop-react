@@ -59,7 +59,7 @@ const connection = {
     });
 
     return Promise.all(reposToClear).then();
-  }
+  },
 };
 
 export default connection;
