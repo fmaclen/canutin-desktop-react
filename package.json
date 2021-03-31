@@ -7,6 +7,8 @@
   "main": "build/electron/main.js",
   "private": true,
   "dependencies": {
+    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/react": "^11.2.6",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/jest": "26.0.20",
     "@types/node": "14.14.27",
@@ -35,11 +37,14 @@
     "@storybook/node-logger": "^6.1.21",
     "@storybook/preset-create-react-app": "^3.1.7",
     "@storybook/react": "^6.1.21",
+    "@testing-library/dom": "^7.30.2",
+    "@testing-library/user-event": "^13.1.1",
     "@types/electron-settings": "^3.1.2",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.7",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
+    "babel-loader": "8.1.0",
     "concurrently": "^5.3.0",
     "customize-cra": "^1.0.0",
     "electron": "^11.2.3",
@@ -59,8 +64,8 @@
     "react-start": "react-app-rewired start",
     "react-build": "react-app-rewired build",
     "react-eject": "react-scripts eject",
-    "test": "react-app-rewired test",
-    "test-coverage": "react-scripts test --coverage --watchAll",
+    "test": "react-app-rewired test --passWithNoTests",
+    "test:coverage": "react-scripts test --coverage --watchAll",
     "start": "concurrently \"BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && yarn electron-tsc && electron .\"",
     "build": "yarn react-build && yarn electron-tsc && electron-builder",
     "postinstall": "electron-builder install-app-deps",
@@ -91,5 +96,26 @@
   "resolutions": {
     "styled-components": "^5"
   },
-  "types": "src/typings/*.d.ts"
+  "types": "src/typings/*.d.ts",
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|scss)$": "identity-obj-proxy",
+      "\\.svg": "<rootDir>/src/__tests__/__mocks__/svgrMock.tsx",
+      "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|ico)$": "<rootDir>/src/__tests__/fileMock.tsx",
+      "electron": "<rootDir>/src/_tests_/__mocks__/electronMock.tsx"
+    },
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/src/__tests__/__mocks__",
+      "<rootDir>/src/__tests__/utils",
+      "<rootDir>/src/__tests__/setup",
+      "<rootDir>/src/__tests__/fixtures"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__tests__/setup/setUpTests.tsx"
+    ]
+  }
 }
