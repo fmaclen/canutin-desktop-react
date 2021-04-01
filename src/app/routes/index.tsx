@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import TheBigPicture from '@pages/TheBigPicture';
 import BalanceSheet from '@pages/BalanceSheet';
@@ -9,7 +10,7 @@ import AddAccountOrAsset from '@pages/AddAccountOrAsset';
 import AddAccountAssetByHand from '@pages/AddAccountAssetByHand';
 
 export const routesPaths = {
-  index: '/',
+  index: '/index.html',
   bigpicture: '/bigpicture',
   balance: '/balance',
   budget: '/budget',
@@ -30,7 +31,7 @@ export const routesConfig: RouteConfigProps[] = [
   {
     path: [routesPaths.index],
     exact: true,
-    component: <BalanceSheet />,
+    component: <Redirect to={routesPaths.bigpicture} />,
   },
   {
     path: [routesPaths.bigpicture],
