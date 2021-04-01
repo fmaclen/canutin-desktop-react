@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
-import { borderGrey, grey70, whitePlain } from 'app/constants/colors';
-import { sansSerifBold } from 'app/constants/fonts';
+import { borderGrey, grey70, whitePlain } from '@appConstants/colors';
+import { sansSerifBold } from '@appConstants/fonts';
 
 export const container = css`
   align-items: center;
@@ -24,7 +24,7 @@ export const valuesContainer = css`
   display: flex;
   flex-direction: column;
   padding-right: 15px;
-  
+
   select {
     background-color: transparent;
     border: none;

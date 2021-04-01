@@ -3,11 +3,21 @@ import styled from 'styled-components';
 
 import { container, label, valuesContainer, inputGroup, valueLabel } from './styles';
 
-const Container = styled.div`${container}`;
-const Label = styled.label`${label}`;
-const ValuesContainer = styled.div`${valuesContainer}`;
-const InputGroup = styled.div`${inputGroup}`;
-const ValueLabel = styled.label`${valueLabel}`;
+const Container = styled.div`
+  ${container}
+`;
+const Label = styled.label`
+  ${label}
+`;
+const ValuesContainer = styled.div`
+  ${valuesContainer}
+`;
+const InputGroup = styled.div`
+  ${inputGroup}
+`;
+const ValueLabel = styled.label`
+  ${valueLabel}
+`;
 
 type RefReturn =
   | string
@@ -25,7 +35,14 @@ export interface RadioInputGroupProps {
   required?: boolean;
 }
 
-const RadioInputGroup = ({ label, name, values, onSelectOption, register, required = false }: RadioInputGroupProps) => (
+const RadioInputGroup = ({
+  label,
+  name,
+  values,
+  onSelectOption,
+  register,
+  required = false,
+}: RadioInputGroupProps) => (
   <Container>
     <Label htmlFor={name}>{label}</Label>
     <ValuesContainer>
@@ -36,14 +53,14 @@ const RadioInputGroup = ({ label, name, values, onSelectOption, register, requir
             <input
               type="radio"
               id={inputId}
-              onClick={onSelectOption ? () => onSelectOption(value) : () => {}}
+              onClick={onSelectOption ? () => onSelectOption(value) : undefined}
               name={name}
               value={value}
               ref={register ? register({ required }) : null}
             />
             <ValueLabel htmlFor={inputId}>{value}</ValueLabel>
           </InputGroup>
-        )
+        );
       })}
     </ValuesContainer>
   </Container>

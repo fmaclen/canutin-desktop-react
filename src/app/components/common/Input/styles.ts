@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
-import { borderGrey, grey10, grey40, grey70, whitePlain } from 'app/constants/colors';
-import { sansSerifBold } from 'app/constants/fonts';
+import { borderGrey, grey10, grey40, grey70, whitePlain } from '@appConstants/colors';
+import { sansSerifBold } from '@appConstants/fonts';
 
 export const container = css<{ disabled: boolean }>`
   align-items: center;
@@ -9,7 +9,7 @@ export const container = css<{ disabled: boolean }>`
   width: 100%;
 
   input {
-    background-color: ${({ disabled }) => disabled ? grey10 : whitePlain};
+    background-color: ${({ disabled }) => (disabled ? grey10 : whitePlain)};
     border: 2px solid ${borderGrey};
     border-radius: 5px;
     padding: 10px;

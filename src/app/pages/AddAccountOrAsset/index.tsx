@@ -2,18 +2,26 @@ import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import ScrollView from 'app/components/common/ScrollView';
-import PrimaryCard from 'app/components/PrimaryCard';
-import { ReactComponent as Sheet } from 'app/assets/icons/Sheet.svg';
-import { ReactComponent as Keyboard } from 'app/assets/icons/Keyboard.svg';
-import { ReactComponent as Bot } from 'app/assets/icons/Bot.svg';
-import { ReactComponent as Lightning } from 'app/assets/icons/Lightning.svg';
-import { section, subTitle, boxContainer } from './styles';
-import { routesPaths } from '../../routes';
+import ScrollView from '@components/common/ScrollView';
+import PrimaryCard from '@components/PrimaryCard';
 
-const Section = styled.div`${section}`;
-const SubTitle = styled.div`${subTitle}`;
-const BoxContainer = styled.div`${boxContainer}`;
+import { routesPaths } from '@routes';
+import { ReactComponent as Sheet } from '@assets/icons/Sheet.svg';
+import { ReactComponent as Keyboard } from '@assets/icons/Keyboard.svg';
+import { ReactComponent as Bot } from '@assets/icons/Bot.svg';
+import { ReactComponent as Lightning } from '@assets/icons/Lightning.svg';
+
+import { section, subTitle, boxContainer } from './styles';
+
+const Section = styled.div`
+  ${section}
+`;
+const SubTitle = styled.div`
+  ${subTitle}
+`;
+const BoxContainer = styled.div`
+  ${boxContainer}
+`;
 
 const AddAccountOrAsset = () => {
   const { push } = useHistory();
@@ -60,6 +68,6 @@ const AddAccountOrAsset = () => {
       </Section>
     </ScrollView>
   );
-}
+};
 
 export default AddAccountOrAsset;

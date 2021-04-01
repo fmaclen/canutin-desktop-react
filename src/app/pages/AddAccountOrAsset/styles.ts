@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
-import { grey40, grey5 } from 'app/constants/colors';
-import { monospaceRegular } from 'app/constants/fonts';
+import { grey40, grey5 } from '@appConstants/colors';
+import { monospaceRegular } from '@appConstants/fonts';
 
 export const section = css`
   align-items: center;

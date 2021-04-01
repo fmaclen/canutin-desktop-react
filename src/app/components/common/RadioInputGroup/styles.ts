@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
-import { borderGrey, grey80, grey70 } from 'app/constants/colors';
-import { sansSerifBold } from 'app/constants/fonts';
+import { borderGrey, grey80, grey70 } from '@appConstants/colors';
+import { sansSerifBold } from '@appConstants/fonts';
 
 export const container = css`
   display: grid;
@@ -29,7 +29,7 @@ export const inputGroup = css`
   align-items: center;
   display: flex;
   height: 20px;
-  
+
   input {
     cursor: pointer;
     margin: 0 8px 0 0;

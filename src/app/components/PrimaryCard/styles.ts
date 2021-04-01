@@ -1,8 +1,11 @@
 import { css } from 'styled-components';
-import { whitePlain, grey5, blueLight, grey50, grey80, blackOpacity10 } from 'app/constants/colors';
-import { sansSerifBold, sansSerifRegular } from 'app/constants/fonts';
 
-const componentPadding = css`padding: 20px;`
+import { whitePlain, grey5, blueLight, grey50, grey80, blackOpacity10 } from '@appConstants/colors';
+import { sansSerifBold, sansSerifRegular } from '@appConstants/fonts';
+
+const componentPadding = css`
+  padding: 20px;
+`;
 
 export const container = css`
   display: grid;
@@ -14,6 +17,7 @@ export const container = css`
   border-radius: 4px;
   box-shadow: 0 4px 16px 0 ${blackOpacity10};
   transition: transform 100ms;
+  width: 100%;
 
   &:hover {
     cursor: pointer;
@@ -29,7 +33,7 @@ export const container = css`
 
 export const header = css<{ disabled?: boolean }>`
   align-items: center;
-  background-color: ${({ disabled }) => disabled ? grey5 : blueLight};
+  background-color: ${({ disabled }) => (disabled ? grey5 : blueLight)};
   display: flex;
   justify-content: flex-start;
   ${componentPadding}

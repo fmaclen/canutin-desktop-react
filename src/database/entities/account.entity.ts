@@ -41,7 +41,7 @@ export class Account extends Base {
     closed: boolean,
     accountType: AccountType,
     officialName?: string,
-    institution?: string,
+    institution?: string
   ) {
     super();
     this.name = name;

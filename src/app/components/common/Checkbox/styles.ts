@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
-import { borderGrey, grey90, whitePlain } from 'app/constants/colors';
-import { sansSerifRegular } from 'app/constants/fonts';
+import { borderGrey, grey90, whitePlain } from '@appConstants/colors';
+import { sansSerifRegular } from '@appConstants/fonts';
 
 export const container = css`
   align-items: center;

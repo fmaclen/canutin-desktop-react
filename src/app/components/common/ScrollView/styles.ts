@@ -1,6 +1,7 @@
 import { css } from 'styled-components';
-import { sansSerifBold, sansSerifRegular } from 'app/constants/fonts';
-import { grey10, grey3, grey40 } from 'app/constants/colors';
+
+import { sansSerifBold, sansSerifRegular } from '@appConstants/fonts';
+import { grey10, grey3, grey40 } from '@appConstants/colors';
 
 const componentConstraints = css`
   max-width: 1200px;
@@ -8,7 +9,7 @@ const componentConstraints = css`
   box-sizing: border-box;
   margin-left: auto;
   margin-right: auto;
-`
+`;
 
 export const container = css`
   grid-area: body;
@@ -33,7 +34,7 @@ export const title = css<{ subTitle: boolean }>`
   ${componentConstraints};
   ${sansSerifBold};
   font-size: 24px;
-  padding-bottom: ${({ subTitle }) => subTitle ? '5px' : '25px'};
+  padding-bottom: ${({ subTitle }) => (subTitle ? '5px' : '25px')};
   padding-left: 64px;
   padding-right: 64px;
 `;

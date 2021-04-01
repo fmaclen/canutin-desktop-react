@@ -19,12 +19,7 @@ export class Budget extends Base {
   @OneToMany(() => Transaction, transaction => transaction.budget)
   transactions?: Transaction;
 
-  constructor(
-    name: string,
-    targetAmount: number,
-    type: string,
-    date: Date,
-  ) {
+  constructor(name: string, targetAmount: number, type: string, date: Date) {
     super();
     this.name = name;
     this.targetAmount = targetAmount;

@@ -2,9 +2,18 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 
-import RadioInputGroup from 'app/components/common/RadioInputGroup';
-import SelectInput, { SelectInputValue } from 'app/components/common/SelectInput';
-import Input from 'app/components/common/Input';
+import RadioInputGroup from '@components/common/RadioInputGroup';
+import SelectInput, { SelectInputValue } from '@components/common/SelectInput';
+import Input from '@components/common/Input';
+
+import { ACCOUNT, ASSET } from '@appConstants/misc';
+import { AssetTypeEnum } from '@enums/assetType.enum';
+import { accountTypes } from '@constants/accountTypes';
+import { NewAssetType } from '../../../../types/asset.type';
+import { NewAccountType } from '../../../../types/account.type';
+import AssetIpc from '@app/data/asset.ipc';
+import AccountIpc from '@app/data/account.ipc';
+
 import {
   formContainer,
   form,
@@ -18,13 +27,6 @@ import {
   checkboxLabel,
   customInputLabel,
 } from './styles';
-import { ACCOUNT, ASSET } from 'app/constants/misc';
-import { AssetTypeEnum } from 'enums/assetType.enum';
-import { accountTypes } from 'constants/accountTypes';
-import { NewAssetType } from 'types/asset.type';
-import { NewAccountType } from 'types/account.type';
-import AssetIpc from 'app/data/asset.ipc';
-import AccountIpc from 'app/data/account.ipc';
 
 const accountTypesUnflattened = accountTypes.map(({ accountTypes }) => accountTypes);
 const accountTypesValues: SelectInputValue[] = accountTypesUnflattened.flat();
@@ -33,17 +35,39 @@ const assetTypesValues: SelectInputValue[] = [];
 const assetTypes = Object.values(AssetTypeEnum);
 assetTypes.forEach(assetType => assetTypesValues.push({ name: assetType, label: assetType }));
 
-const FormContainer = styled.div`${formContainer}`;
-const Form = styled.form`${form}`;
-const FormFooter = styled.div`${formFooter}`;
-const FormSubmitButton = styled.button`${formSubmitButton}`;
-const BalanceContainer = styled.div`${balanceContainer}`;
-const BalanceSubContainer = styled.div`${balanceSubContainer}`;
-const CustomInputLabel = styled.label`${customInputLabel}`;
-const CustomInputContainer = styled.div`${customInputContainer}`;
-const CheckboxContainer = styled.div`${checkboxContainer}`;
-const Checkbox = styled.input`${checkbox}`;
-const CheckboxLabel = styled.label`${checkboxLabel}`;
+const FormContainer = styled.div`
+  ${formContainer}
+`;
+const Form = styled.form`
+  ${form}
+`;
+const FormFooter = styled.div`
+  ${formFooter}
+`;
+const FormSubmitButton = styled.button`
+  ${formSubmitButton}
+`;
+const BalanceContainer = styled.div`
+  ${balanceContainer}
+`;
+const BalanceSubContainer = styled.div`
+  ${balanceSubContainer}
+`;
+const CustomInputLabel = styled.label`
+  ${customInputLabel}
+`;
+const CustomInputContainer = styled.div`
+  ${customInputContainer}
+`;
+const CheckboxContainer = styled.div`
+  ${checkboxContainer}
+`;
+const Checkbox = styled.input`
+  ${checkbox}
+`;
+const CheckboxLabel = styled.label`
+  ${checkboxLabel}
+`;
 
 export interface AddAccountAssetFormProps {
   onRadioButtonChange: (_: string) => void;
@@ -88,7 +112,9 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
   const balance = watchAccountField('balance');
   const submitAccountEnabled = shouldDisplay && !!accountName && (autoCalculate || !!balance);
 
-  const formSubmit = shouldDisplayAccount ? handleAccountSubmit(onSubmitAccount) : handleAssetSubmit(onSubmitAsset);
+  const formSubmit = shouldDisplayAccount
+    ? handleAccountSubmit(onSubmitAccount)
+    : handleAssetSubmit(onSubmitAsset);
   const submitDisabled = shouldDisplayAccount ? !submitAccountEnabled : submitAssetDisabled;
 
   return (
@@ -98,7 +124,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
           label="Add new"
           name="accountOrAsset"
           values={[ACCOUNT, ASSET]}
-          onSelectOption={(value) => {
+          onSelectOption={value => {
             setAccountOrAsset(value);
             onRadioButtonChange(value);
             assetValue = 0;
@@ -114,8 +140,18 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
               required
             />
             <Input label="Name" name="name" register={registerAccountField} />
-            <Input label="Official name" name="officialName" optional register={registerAccountField} />
-            <Input label="Institution" name="institution" optional register={registerAccountField} />
+            <Input
+              label="Official name"
+              name="officialName"
+              optional
+              register={registerAccountField}
+            />
+            <Input
+              label="Institution"
+              name="institution"
+              optional
+              register={registerAccountField}
+            />
             <BalanceContainer>
               <CustomInputLabel htmlFor="balance">Balance</CustomInputLabel>
               <BalanceSubContainer>
@@ -123,7 +159,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
                   <input
                     readOnly={autoCalculate}
                     name="balance"
-                    ref={registerAccountField({ validate: (v) => autoCalculate || (v !== '') })}
+                    ref={registerAccountField({ validate: v => autoCalculate || v !== '' })}
                   />
                 </CustomInputContainer>
                 <CheckboxContainer>
@@ -133,7 +169,9 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
                     id="autoCalculate"
                     ref={registerAccountField}
                   />
-                  <CheckboxLabel htmlFor="autoCalculate">Auto-calculate from transactions</CheckboxLabel>
+                  <CheckboxLabel htmlFor="autoCalculate">
+                    Auto-calculate from transactions
+                  </CheckboxLabel>
                 </CheckboxContainer>
               </BalanceSubContainer>
             </BalanceContainer>
@@ -162,6 +200,6 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
       </FormFooter>
     </FormContainer>
   );
-}
+};
 
 export default AddAccountAssetForm;

@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import NavItem from './NavItem';
-import { ReactComponent as BurgerIcon } from 'app/assets/icons/Burger.svg';
-import { ReactComponent as BigPicture } from 'app/assets/icons/BigPicture.svg';
-import { ReactComponent as BalanceSheet } from 'app/assets/icons/BalanceSheet.svg';
-import { ReactComponent as Budget } from 'app/assets/icons/Budget.svg';
-import { ReactComponent as Transactions } from 'app/assets/icons/Transactions.svg';
-import { ReactComponent as Trends } from 'app/assets/icons/Trends.svg';
-import { ReactComponent as AddIcon } from 'app/assets/icons/Add.svg';
-import { container, burgerButton, nav, navItems } from './styles';
-import { routesPaths } from '../../../routes';
+import { routesPaths } from '@routes';
 
-const Container = styled.nav`${container}`;
-const BurgerButton = styled.button`${burgerButton}`;
-const NavItems = styled.div`${navItems}`;
-const Nav = styled.nav`${nav}`;
+import { ReactComponent as BurgerIcon } from '@assets/icons/Burger.svg';
+import { ReactComponent as BigPicture } from '@assets/icons/BigPicture.svg';
+import { ReactComponent as BalanceSheet } from '@assets/icons/BalanceSheet.svg';
+import { ReactComponent as Budget } from '@assets/icons/Budget.svg';
+import { ReactComponent as Transactions } from '@assets/icons/Transactions.svg';
+import { ReactComponent as Trends } from '@assets/icons/Trends.svg';
+import { ReactComponent as AddIcon } from '@assets/icons/Add.svg';
+
+import { container, burgerButton, nav, navItems } from './styles';
+import NavItem from './NavItem';
+
+const Container = styled.nav`
+  ${container}
+`;
+const BurgerButton = styled.button`
+  ${burgerButton}
+`;
+const NavItems = styled.div`
+  ${navItems}
+`;
+const Nav = styled.nav`
+  ${nav}
+`;
 
 const SideBar = () => {
   const [toggled, setToggled] = useState(true);
@@ -42,12 +52,7 @@ const SideBar = () => {
             to={routesPaths.balance}
           />
 
-          <NavItem
-            icon={<Budget />}
-            text="Budget"
-            toggled={toggled}
-            to={routesPaths.budget}
-          />
+          <NavItem icon={<Budget />} text="Budget" toggled={toggled} to={routesPaths.budget} />
 
           <NavItem
             icon={<Transactions />}
@@ -56,12 +61,7 @@ const SideBar = () => {
             to={routesPaths.transactions}
           />
 
-          <NavItem
-            icon={<Trends />}
-            text="Trends"
-            toggled={toggled}
-            to={routesPaths.trends}
-          />
+          <NavItem icon={<Trends />} text="Trends" toggled={toggled} to={routesPaths.trends} />
         </NavItems>
       </Nav>
 
@@ -73,6 +73,6 @@ const SideBar = () => {
       />
     </Container>
   );
-}
+};
 
 export default SideBar;

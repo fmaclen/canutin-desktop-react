@@ -4,18 +4,18 @@ interface StatusBarContextValue {
   errorMessage: string;
   successMessage: string;
   breadcrumbs: string | ReactNode;
-  setErrorMessage: (_: string) => void;
-  setSuccessMessage: (_: string) => void;
-  setBreadcrumbs: (_: string[] | ReactNode) => void;
+  setErrorMessage: ((_: string) => void) | null;
+  setSuccessMessage: ((_: string) => void) | null;
+  setBreadcrumbs: ((_: string[] | ReactNode) => void) | null;
 }
 
 export const StatusBarContext = createContext<StatusBarContextValue>({
   errorMessage: '',
   successMessage: '',
   breadcrumbs: null,
-  setErrorMessage: () => {},
-  setSuccessMessage: () => {},
-  setBreadcrumbs: () => {},
+  setErrorMessage: null,
+  setSuccessMessage: null,
+  setBreadcrumbs: null,
 });
 
 export const StatusBarProvider = ({ children }: PropsWithChildren<Record<string, unknown>>) => {
@@ -31,9 +31,5 @@ export const StatusBarProvider = ({ children }: PropsWithChildren<Record<string,
     setBreadcrumbs,
   };
 
-  return (
-    <StatusBarContext.Provider value={value}>
-      {children}
-    </StatusBarContext.Provider>
-  )
+  return <StatusBarContext.Provider value={value}>{children}</StatusBarContext.Provider>;
 };

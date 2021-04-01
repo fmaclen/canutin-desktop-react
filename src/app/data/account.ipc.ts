@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 
-import { DB_NEW_ACCOUNT } from 'constants/events';
-import { NewAccountType } from 'types/account.type';
+import { DB_NEW_ACCOUNT } from '@constants/events';
+import { NewAccountType } from '../../types/account.type';
 
 export default class AccountIpc {
   static createAccount(account: NewAccountType) {

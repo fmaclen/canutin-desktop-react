@@ -1,6 +1,16 @@
 import { css } from 'styled-components';
-import { bluePlain, borderGrey, grey10, grey20, grey30, grey7, grey70, grey90, whitePlain } from 'app/constants/colors';
-import { sansSerifBold, sansSerifRegular } from '../../../constants/fonts';
+import {
+  bluePlain,
+  borderGrey,
+  grey10,
+  grey20,
+  grey30,
+  grey7,
+  grey70,
+  grey90,
+  whitePlain,
+} from '@appConstants/colors';
+import { sansSerifBold, sansSerifRegular } from '@appConstants/fonts';
 
 export const formContainer = css`
   border: 1px solid ${borderGrey};
@@ -27,15 +37,15 @@ export const formFooter = css`
 
 export const formSubmitButton = css<{ disabled: boolean }>`
   ${sansSerifBold};
-  background-color: ${({ disabled }) => disabled ? grey20 : bluePlain};
+  background-color: ${({ disabled }) => (disabled ? grey20 : bluePlain)};
   border: none;
   border-radius: 3px;
-  color: ${({ disabled }) => disabled ? grey30 : whitePlain};
+  color: ${({ disabled }) => (disabled ? grey30 : whitePlain)};
   cursor: pointer;
   height: 40px;
   margin-right: 10px;
   padding: 12px 28px;
-  
+
   &:focus {
     outline: none;
   }
@@ -50,7 +60,7 @@ export const balanceContainer = css`
 export const balanceSubContainer = css`
   align-items: center;
   display: flex;
-`
+`;
 
 export const customInputLabel = css`
   ${sansSerifBold};
@@ -64,7 +74,7 @@ export const customInputContainer = css<{ disabled: boolean }>`
   align-items: center;
 
   input {
-    background-color: ${({ disabled }) => disabled ? grey10 : whitePlain};
+    background-color: ${({ disabled }) => (disabled ? grey10 : whitePlain)};
     border: 2px solid ${borderGrey};
     border-radius: 5px;
     padding: 10px;
