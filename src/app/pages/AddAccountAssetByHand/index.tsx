@@ -19,22 +19,30 @@ const SubTitle = styled.div`
   ${subTitle}
 `;
 
+const SUCCESS_MESSAGE_TIMEOUT = 5000;
+
 const AddAccountAssetByHand = () => {
   const [formSubtitle, setFormSubtitle] = useState('Choose Type');
   const { successMessage, setSuccessMessage } = useContext(StatusBarContext);
 
   useEffect(() => {
     ipcRenderer.on(DB_NEW_ASSET_ACK, (_: IpcRendererEvent, { name }) => {
-      setSuccessMessage && setSuccessMessage(`${name} asset was succesfully created`);
+      setSuccessMessage(`${name} asset was successfully created`);
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, SUCCESS_MESSAGE_TIMEOUT);
     });
 
     ipcRenderer.on(DB_NEW_ACCOUNT_ACK, (_: IpcRendererEvent, { name }) => {
-      setSuccessMessage && setSuccessMessage(`${name} account was succesfully created`);
+      setSuccessMessage(`${name} account was successfully created`);
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, SUCCESS_MESSAGE_TIMEOUT);
     });
   }, [setSuccessMessage]);
 
   const onCloseMessage = () => {
-    setSuccessMessage && setSuccessMessage('');
+    setSuccessMessage('');
   };
 
   return (
