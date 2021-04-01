@@ -54,6 +54,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "prettier": "^2.2.1",
     "react-app-rewired": "^2.1.8",
+    "ts-jest": "^26.5.4",
     "tsconfig-paths": "^3.9.0",
     "tscpaths": "^0.0.9",
     "wait-on": "^5.2.1"
@@ -98,11 +99,23 @@
   },
   "types": "src/typings/*.d.ts",
   "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
     "moduleNameMapper": {
       "\\.(css|scss)$": "identity-obj-proxy",
       "\\.svg": "<rootDir>/src/__tests__/__mocks__/svgrMock.tsx",
-      "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|ico)$": "<rootDir>/src/__tests__/fileMock.tsx",
-      "electron": "<rootDir>/src/_tests_/__mocks__/electronMock.tsx"
+      "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|mp4|webm|wav|mp3|m4a|aac|oga|ico)$": "<rootDir>/src/__tests__/fileMock.tsx",
+      "^electron$": "<rootDir>/src/__tests__/__mocks__/electronMock.tsx",
+      "^@appConstants(.*)$": "<rootDir>/src/app/constants$1",
+      "^@components(.*)$": "<rootDir>/src/app/components$1",
+      "^@pages(.*)$": "<rootDir>/src/app/pages$1",
+      "^@constants(.*)$": "<rootDir>/src/constants$1",
+      "^@constants$": "<rootDir>/src/constants",
+      "^@routes$": "<rootDir>/src/app/routes",
+      "^@database(.*)$": "<rootDir>/src/database$1",
+      "^@tests(.*)$": "<rootDir>/src/__tests__$1",
+      "^@assets(.*)$": "<rootDir>/src/app/assets$1",
+      "^@app(.*)$": "<rootDir>/src/app$1"
     },
     "moduleDirectories": [
       "node_modules",
