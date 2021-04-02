@@ -1,7 +1,7 @@
 {
   "name": "canutin-desktop",
   "version": "0.1.0",
-  "author": "Canutin",
+  "author": "Canutin <support@canutin.com> (https://canutin.com)",
   "description": "Personal finance platform",
   "homepage": "./",
   "main": "build/electron/main.js",
@@ -66,24 +66,22 @@
     },
     "mac": {
       "artifactName": "${name}_v${version}.${ext}",
-      "category": "public.app-category.finance",
-      "icon": "./icons/mac/icon.icns",
-      "target": [
-        "default"
-      ]
+      "category": "public.app-category.finance"
     },
     "linux": {
       "artifactName": "${name}_v${version}.${ext}",
       "category": "Office;Finance",
       "target": [
-        "deb"
-      ],
-      "icon": "./icons/png/1024x1024.png"
+        "deb",
+        "AppImage"
+      ]
     },
     "win": {
       "artifactName": "${name}_v${version}.${ext}",
-      "target": "nsis",
-      "icon": "./icons/win/icon.ico"
+      "target": [
+        "nsis",
+        "msi"
+      ]
     },
     "extends": null,
     "files": [
@@ -91,7 +89,7 @@
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "src/electron/buildResources"
+      "buildResources": "src/electron/resources"
     }
   },
   "eslintConfig": {
