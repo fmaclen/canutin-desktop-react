@@ -1,0 +1,102 @@
+.loading-window {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #111;
+  margin: 0;
+  height: 100vh;
+}
+
+div.loading-window__progress-bar {
+  position: absolute;
+  height: 100vh;
+  animation: background-loop 7s infinite;
+  animation-timing-function: ease-out;
+}
+
+@keyframes background-loop {
+  0% {
+    right: 100vw;
+    left: 0;
+  }
+  20% {
+    right: 0;
+    left: 0;
+  }
+  40% {
+    left: 100vw;
+  }
+}
+
+div.loading-window__progress-bar--debt {
+  background-color: #ff3162;
+  z-index: 10;
+}
+
+div.loading-window__progress-bar--cash {
+  background-color: #00a36f;
+  animation-delay: 0.5s;
+  z-index: 20;
+}
+
+div.loading-window__progress-bar--other-assets {
+  background-color: #b19b70;
+  animation-delay: 1s;
+  z-index: 30;
+}
+
+div.loading-window__progress-bar--investments {
+  background-color: #0366d6;
+  animation-delay: 1.5s;
+  z-index: 40;
+}
+
+div.loading-window__progress-bar--net-worth {
+  background-color: #111;
+  animation-delay: 2s;
+  z-index: 50;
+}
+
+svg.loading-window__svg {
+  animation: fade-loop 7s infinite;
+  animation-timing-function: ease-out;
+  animation-delay: 2.5s;
+  width: 55vw;
+  opacity: 0;
+}
+
+@keyframes fade-loop {
+  0% {
+    z-index: 100;
+    opacity: 0;
+    transform: translateX(-75%);
+  }
+  15% {
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(0%);
+  }
+  60% {
+    opacity: 1;
+  }
+  61% {
+    opacity: 0;
+  }
+  62% {
+    opacity: 1;
+  }
+  63% {
+    opacity: 0;
+  }
+  64% {
+    z-index: 100;
+    opacity: 1;
+  }
+  70% {
+    z-index: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+}

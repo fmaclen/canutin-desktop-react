@@ -23,19 +23,16 @@ const Container = styled.div`
 
 const App = () => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [dbError, setDbError] = useState<ReactNode>(null);
 
   const noVaultBreadcrumbs: BreadcrumbType[] = [{ text: 'Canutin setup', href: '' }];
 
   useEffect(() => {
     ipcRenderer.on(DATABASE_CONNECTED, () => {
-      setIsLoading(false);
       setIsAppInitialized(true);
     });
 
     ipcRenderer.on(DATABASE_DOES_NOT_EXIST, (_, { dbPath }: DatabaseDoesNotExistsMessage) => {
-      setIsLoading(false);
       setIsAppInitialized(false);
       setDbError(
         <span>
@@ -45,15 +42,8 @@ const App = () => {
     });
 
     ipcRenderer.on(DATABASE_NOT_DETECTED, () => {
-      setIsLoading(false);
       setIsAppInitialized(false);
     });
-
-    return () => {
-      ipcRenderer.removeAllListeners(DATABASE_NOT_DETECTED);
-      ipcRenderer.removeAllListeners(DATABASE_DOES_NOT_EXIST);
-      ipcRenderer.removeAllListeners(DATABASE_CONNECTED);
-    };
   }, []);
 
   return (
@@ -61,30 +51,29 @@ const App = () => {
       <GlobalStyle />
       <BrowserRouter>
         <Container>
-          {!isLoading &&
-            (isAppInitialized ? (
-              <>
-                <TitleBar />
-                <SideBar />
-                <Switch>
-                  {routesConfig.map(({ path, component, exact }: RouteConfigProps, index) => (
-                    <Route key={index} exact={exact} path={path}>
-                      {component}
-                    </Route>
-                  ))}
-                </Switch>
-              </>
-            ) : (
-              <>
-                <TitleBar />
-                <Setup />
-                <StatusBar
-                  errorMessage={dbError}
-                  onClickButton={() => setDbError(null)}
-                  breadcrumbs={<Breadcrumbs items={noVaultBreadcrumbs} />}
-                />
-              </>
-            ))}
+          {isAppInitialized ? (
+            <>
+              <TitleBar />
+              <SideBar />
+              <Switch>
+                {routesConfig.map(({ path, component, exact }: RouteConfigProps, index) => (
+                  <Route key={index} exact={exact} path={path}>
+                    {component}
+                  </Route>
+                ))}
+              </Switch>
+            </>
+          ) : (
+            <>
+              <TitleBar />
+              <Setup />
+              <StatusBar
+                errorMessage={dbError}
+                onClickButton={() => setDbError(null)}
+                breadcrumbs={<Breadcrumbs items={noVaultBreadcrumbs} />}
+              />
+            </>
+          )}
         </Container>
       </BrowserRouter>
     </>
