@@ -14,6 +14,8 @@ import {
   DB_NEW_ACCOUNT_ACK,
   DB_GET_ACCOUNTS,
   DB_GET_ACCOUNTS_ACK,
+  IMPORT_SOURCE_FILE,
+  IMPORT_SOURCE_FILE_ACK
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 
@@ -53,6 +55,19 @@ const setupEvents = async () => {
       if (filePaths.length) await connectAndSaveDB(win, filePaths[0]);
     }
   });
+
+  ipcMain.on(IMPORT_SOURCE_FILE, async (_: IpcMainEvent, sourceFileExtension: 'csv' | 'json') => {
+    if (win) {
+      const { filePaths } = await dialog.showOpenDialog(win, {
+        properties: ['openFile'],
+        filters: [{ name: 'Import Source file', extensions: [sourceFileExtension] }],
+      });
+
+      if (filePaths.length) {
+        win.webContents.send(IMPORT_SOURCE_FILE_ACK, {filePath: filePaths[0]});
+      }
+    }
+  })
 };
 
 const setupDbEvents = async () => {
