@@ -39,6 +39,11 @@ const AddAccountAssetByHand = () => {
         setSuccessMessage('');
       }, SUCCESS_MESSAGE_TIMEOUT);
     });
+
+    return () => {
+      ipcRenderer.removeAllListeners(DB_NEW_ASSET_ACK);
+      ipcRenderer.removeAllListeners(DB_NEW_ACCOUNT_ACK);
+    };
   }, [setSuccessMessage]);
 
   const onCloseMessage = () => {

@@ -12,6 +12,8 @@ import {
   DB_NEW_ASSET,
   DB_NEW_ASSET_ACK,
   DB_NEW_ACCOUNT_ACK,
+  DB_GET_ACCOUNTS,
+  DB_GET_ACCOUNTS_ACK,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 
@@ -62,6 +64,11 @@ const setupDbEvents = async () => {
   ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
     const newAccount = await AccountRepository.createAccount(account);
     win?.webContents.send(DB_NEW_ACCOUNT_ACK, newAccount);
+  });
+
+  ipcMain.on(DB_GET_ACCOUNTS, async (_: IpcMainEvent) => {
+    const accounts = await AccountRepository.getAccounts();
+    win?.webContents.send(DB_GET_ACCOUNTS_ACK, accounts);
   });
 };
 

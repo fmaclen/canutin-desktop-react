@@ -106,3 +106,7 @@ export const checkboxLabel = css`
   font-size: 13px;
   color: ${grey90};
 `;
+
+export const hrDivider = css`
+  border: 0.1px solid ${grey10};
+`;

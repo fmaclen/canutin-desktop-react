@@ -1,11 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { container, label, valuesContainer } from './styles';
+import { container, label, valuesContainer, optional } from './styles';
 
-const Container = styled.div`${container}`;
-const Label = styled.label`${label}`;
-const ValuesContainer = styled.div`${valuesContainer}`;
+const Container = styled.div`
+  ${container}
+`;
+const Label = styled.label`
+  ${label}
+`;
+const Optional = styled.div`
+  ${optional}
+`;
+const ValuesContainer = styled.div`
+  ${valuesContainer}
+`;
 
 type RefReturn =
   | string
@@ -15,8 +24,8 @@ type RefReturn =
   | undefined;
 
 export type SelectInputValue = {
-  name: string;
-  label: string;
+  name: string | undefined;
+  label: string | null;
 };
 
 export interface SelectInputProps {
@@ -25,14 +34,30 @@ export interface SelectInputProps {
   values: SelectInputValue[];
   register: ({ required }: { required?: boolean }) => RefReturn;
   required?: boolean;
+  optional?: boolean;
 }
 
-const SelectInput = ({ label, name, values, register, required = false }: SelectInputProps) => (
+const SelectInput = ({
+  label,
+  name,
+  values,
+  register,
+  required = false,
+  optional = false,
+}: SelectInputProps) => (
   <Container>
-    <Label htmlFor={name}>{label}</Label>
+    <Label htmlFor={name} optional={optional}>
+      {label}
+      {optional && <Optional>/ Optional</Optional>}
+    </Label>
     <ValuesContainer>
       <select name={name} ref={register({ required })} id={name}>
-        {values.map(({ name, label }: SelectInputValue, index) => <option value={name} key={index}>{label}</option>)}
+        {optional && <option disabled selected></option>}
+        {values.map(({ name, label }: SelectInputValue, index) => (
+          <option value={name} key={index}>
+            {label}
+          </option>
+        ))}
       </select>
     </ValuesContainer>
   </Container>

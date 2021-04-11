@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import RadioInputGroup from '@components/common/RadioInputGroup';
 import SelectInput, { SelectInputValue } from '@components/common/SelectInput';
 import Input from '@components/common/Input';
 
+import { DB_GET_ACCOUNTS_ACK } from '@constants/events';
 import { ACCOUNT, ASSET } from '@appConstants/misc';
-import { AssetTypeEnum } from '@enums/assetType.enum';
+import { AssetTypeEnum } from '../../../../enums/assetType.enum';
 import { accountTypes } from '@constants/accountTypes';
-import { NewAssetType } from '../../../../types/asset.type';
+import { NewAssetSubmitType } from '../../../../types/asset.type';
 import { NewAccountType } from '../../../../types/account.type';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
@@ -26,7 +28,9 @@ import {
   checkbox,
   checkboxLabel,
   customInputLabel,
+  hrDivider,
 } from './styles';
+import { AccountType } from '@database/entities';
 
 const accountTypesUnflattened = accountTypes.map(({ accountTypes }) => accountTypes);
 const accountTypesValues: SelectInputValue[] = accountTypesUnflattened.flat();
@@ -69,12 +73,17 @@ const CheckboxLabel = styled.label`
   ${checkboxLabel}
 `;
 
+const Hr = styled.hr`
+  ${hrDivider}
+`;
+
 export interface AddAccountAssetFormProps {
   onRadioButtonChange: (_: string) => void;
 }
 
 const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) => {
   const [accountOrAsset, setAccountOrAsset] = useState('');
+  const [accounts, setAccounts] = useState<SelectInputValue[]>([]);
   const {
     handleSubmit: handleAssetSubmit,
     register: registerAssetField,
@@ -87,13 +96,27 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     watch: watchAccountField,
   } = useForm({ mode: 'onChange' });
 
-  const onSubmitAsset = async (asset: NewAssetType) => {
-    AssetIpc.createAsset(asset);
+  const onSubmitAsset = async (asset: NewAssetSubmitType) => {
+    const newAssetAccount = asset.account === "" ? undefined : asset.account;
+    AssetIpc.createAsset({ ...asset, account: newAssetAccount });
   };
 
   const onSubmitAccount = async (account: NewAccountType) => {
     AccountIpc.createAccount(account);
   };
+
+  useEffect(() => {
+    AccountIpc.getAccounts();
+
+    ipcRenderer.on(DB_GET_ACCOUNTS_ACK, (_: IpcRendererEvent, accounts: AccountType[]) => {
+      const accountsValues = accounts.map(({ name, id }) => ({ name: id.toString(), label: name }));
+      setAccounts(accountsValues);
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners(DB_GET_ACCOUNTS_ACK);
+    };
+  }, []);
 
   const shouldDisplay = accountOrAsset !== '';
   const shouldDisplayAccount = shouldDisplay && accountOrAsset === ACCOUNT;
@@ -190,6 +213,14 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
             <Input label="Quantity" name="quantity" register={registerAssetField} required />
             <Input label="Cost" name="cost" register={registerAssetField} required />
             <Input label="Value" name="value" value={`$ ${assetValue}`} disabled />
+            <Hr />
+            <SelectInput
+              optional
+              label="Account"
+              name="account"
+              values={accounts}
+              register={registerAssetField}
+            />
           </>
         )}
       </Form>
