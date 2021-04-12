@@ -6,8 +6,14 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 import RadioInputGroup from '@components/common/RadioInputGroup';
 import ChooseFileInput from '@components/common/ChooseFileInput';
 
-import { IMPORT_SOURCE_FILE, IMPORT_SOURCE_FILE_ACK } from '@constants/events';
+import {
+  IMPORT_SOURCE_FILE,
+  IMPORT_SOURCE_FILE_ACK,
+  ANALYZE_SOURCE_FILE,
+  ANALYZE_SOURCE_FILE_ACK,
+} from '@constants/events';
 import { sourceExtensionFile, enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
+import { CanutinJsonType } from '@appTypes/canutin';
 
 import {
   formContainer,
@@ -63,7 +69,11 @@ const Hr = styled.hr`
   ${hrDivider}
 `;
 
-const filePathStatusMessage = (status: StatusEnum) => {
+const filePathStatusMessage = (status: StatusEnum, message?: string) => {
+  if (message) {
+    return message;
+  }
+
   switch (status) {
     case StatusEnum.LOADING:
       return 'Analyzing file...';
@@ -74,21 +84,62 @@ const filePathStatusMessage = (status: StatusEnum) => {
   }
 };
 
+interface AnalyzeSourceFileType {
+  status: StatusEnum;
+  sourceData: CanutinJsonType;
+  metadata: {
+    countAccounts?: number;
+    error?: string;
+  };
+}
+
 const ImportWizardForm = () => {
   const [source, setSource] = useState<enumImportTitleOptions | null>(null);
   const [filePath, setFilePath] = useState<string | null>(null);
   const [filePathStatus, setFilePathStatus] = useState<StatusEnum>();
-  console.log(filePath);
+  const [sourceMessage, setSourceMessage] = useState<string>();
+  const [canutinJson, setCanutinJson] = useState<CanutinJsonType | null>(null);
 
   useEffect(() => {
     ipcRenderer.on(IMPORT_SOURCE_FILE_ACK, (_: IpcRendererEvent, { filePath: sourceFilePath }) => {
       setFilePath(sourceFilePath);
-      setFilePathStatus(StatusEnum.SUCCESS);
     });
+
+    ipcRenderer.on(
+      ANALYZE_SOURCE_FILE_ACK,
+      (_: IpcRendererEvent, analyzeSource: AnalyzeSourceFileType) => {
+        setFilePathStatus(analyzeSource.status);
+
+        if (analyzeSource.status === StatusEnum.SUCCESS) {
+          setCanutinJson(analyzeSource.sourceData);
+          setSourceMessage(`Found ${analyzeSource.metadata.countAccounts} accounts`);
+        }
+
+        if (analyzeSource.status === StatusEnum.ERROR && analyzeSource.metadata) {
+          setSourceMessage(analyzeSource.metadata.error);
+        }
+      }
+    );
+
+    return () => {
+      ipcRenderer.removeAllListeners(IMPORT_SOURCE_FILE_ACK);
+      ipcRenderer.removeAllListeners(ANALYZE_SOURCE_FILE_ACK);
+    };
   }, []);
+
+  useEffect(() => {
+    if (filePath) {
+      analyzeSourceFile();
+    }
+  }, [filePath]);
+
+  const analyzeSourceFile = () => {
+    ipcRenderer.send(ANALYZE_SOURCE_FILE, { pathFile: filePath, source });
+  };
 
   const onChooseFileInput = () => {
     source && ipcRenderer.send(IMPORT_SOURCE_FILE, sourceExtensionFile(source));
+    setSourceMessage(undefined);
     setFilePathStatus(StatusEnum.LOADING);
   };
 
@@ -111,7 +162,7 @@ const ImportWizardForm = () => {
           onSelect={onChooseFileInput}
           filePath={filePath}
           status={filePathStatus}
-          statusMessage={filePathStatus && filePathStatusMessage(filePathStatus)}
+          statusMessage={filePathStatus && filePathStatusMessage(filePathStatus, sourceMessage)}
         />
       )}
     </FormContainer>

@@ -17,7 +17,6 @@ import {
 export const container = css`
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
-  margin-bottom: 16px;
 `;
 
 export const labelWrapper = css`

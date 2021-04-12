@@ -18,6 +18,7 @@ export const formContainer = css`
   display: grid;
   grid-row-gap: 8px;
   padding-top: 10px;
+  padding-bottom: 16px;
 `;
 
 export const form = css`

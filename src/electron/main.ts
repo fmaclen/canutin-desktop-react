@@ -15,9 +15,11 @@ import {
   DB_GET_ACCOUNTS,
   DB_GET_ACCOUNTS_ACK,
   IMPORT_SOURCE_FILE,
-  IMPORT_SOURCE_FILE_ACK
+  IMPORT_SOURCE_FILE_ACK,
+  ANALYZE_SOURCE_FILE,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
+import { enumExtensionFiles, enumImportTitleOptions } from '@appConstants/misc';
 
 import {
   DID_FINISH_LOADING,
@@ -26,6 +28,7 @@ import {
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
+import { importSourceData } from './helpers/importSource.helper';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { NewAssetType } from '../types/asset.type';
@@ -56,18 +59,28 @@ const setupEvents = async () => {
     }
   });
 
-  ipcMain.on(IMPORT_SOURCE_FILE, async (_: IpcMainEvent, sourceFileExtension: 'csv' | 'json') => {
+  ipcMain.on(IMPORT_SOURCE_FILE, async (_: IpcMainEvent, extension: enumExtensionFiles) => {
     if (win) {
       const { filePaths } = await dialog.showOpenDialog(win, {
         properties: ['openFile'],
-        filters: [{ name: 'Import Source file', extensions: [sourceFileExtension] }],
+        filters: [{ name: 'Import Source file', extensions: [extension] }],
       });
 
       if (filePaths.length) {
-        win.webContents.send(IMPORT_SOURCE_FILE_ACK, {filePath: filePaths[0]});
+        win.webContents.send(IMPORT_SOURCE_FILE_ACK, { filePath: filePaths[0] });
       }
     }
-  })
+  });
+
+  ipcMain.on(
+    ANALYZE_SOURCE_FILE,
+    async (
+      _: IpcMainEvent,
+      { pathFile, source }: { pathFile: string; source: enumImportTitleOptions }
+    ) => {
+      await importSourceData(win, source, pathFile);
+    }
+  );
 };
 
 const setupDbEvents = async () => {

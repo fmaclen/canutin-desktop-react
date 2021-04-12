@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, OneToOne } from 'typeorm';
+import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { Base } from './base.entity';
 import { BalancegGroupEnum } from '../../enums/balancegGroup.enum';
 import { BalanceStatement } from './balanceStatement.entity';
@@ -34,6 +34,7 @@ export class Account extends Base {
   transactions?: Transaction[];
 
   @OneToOne(() => AccountType, accountType => accountType.account, { cascade: true })
+  @JoinColumn()
   accountType: AccountType;
 
   constructor(
