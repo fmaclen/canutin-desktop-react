@@ -24,7 +24,9 @@ export class Transaction extends Base {
   @ManyToOne(() => Budget, budget => budget.transactions)
   budget?: Budget;
 
-  @OneToOne(() => TransactionCategory, transactionCategory => transactionCategory.transaction)
+  @OneToOne(() => TransactionCategory, transactionCategory => transactionCategory.transaction, {
+    cascade: true,
+  })
   @JoinColumn()
   category: TransactionCategory;
 
@@ -35,7 +37,7 @@ export class Transaction extends Base {
     excludeFromTotals: boolean,
     account: Account,
     category: TransactionCategory,
-    budget?: Budget,
+    budget?: Budget
   ) {
     super();
     this.description = description;

@@ -11,6 +11,7 @@ import {
   IMPORT_SOURCE_FILE_ACK,
   ANALYZE_SOURCE_FILE,
   ANALYZE_SOURCE_FILE_ACK,
+  LOAD_FROM_CANUTIN_FILE
 } from '@constants/events';
 import { sourceExtensionFile, enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
 import { CanutinJsonType } from '@appTypes/canutin';
@@ -138,7 +139,7 @@ const ImportWizardForm = () => {
   }, [filePath]);
 
   const onSubmit = () => {
-    // TODO: onsubmit
+    canutinJson && ipcRenderer.send(LOAD_FROM_CANUTIN_FILE, canutinJson);
   }
 
   const analyzeSourceFile = () => {

@@ -11,6 +11,7 @@ import { CanutinJsonType } from '@appTypes/canutin';
 
 export const importFromCanutinJson = async (canutinFile: CanutinJsonType) => {
   let transactionList: Transaction[] = [];
+
   const accountList: Account[] = canutinFile.accounts.map(accountInfo => {
     const accountType = new AccountType(accountInfo.accountType);
     const account = new Account(
