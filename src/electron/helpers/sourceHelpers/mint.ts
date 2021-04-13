@@ -29,11 +29,7 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
         date: mintEntry.Date,
         amount: mintEntry['Transaction Type'] === 'credit' ? mintEntry.Amount : -mintEntry.Amount,
         excludeFromTotals: false,
-        category: [
-          {
-            name: mintEntry.Category,
-          },
-        ],
+        category: mintEntry.Category,
       };
 
       if (accountIndex > -1) {

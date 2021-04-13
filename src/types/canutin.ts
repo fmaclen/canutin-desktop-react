@@ -5,21 +5,19 @@ export interface CanutinJsonBudgetType {
   date: string;
 }
 
-export interface CanutinJsonCategoryType {
-  name: string;
-}
-
 export interface CanutinJsonTransactionType {
   description: string;
   date: string;
   amount: number;
   excludeFromTotals: boolean;
-  category: CanutinJsonCategoryType[];
-  budget?: CanutinJsonBudgetType[];
+  category: string;
+  budget?: CanutinJsonBudgetType;
 }
 
 export interface CanutinJsonAccountType {
   name: string;
+  officialName?: string;
+  institution?: string;
   balanceGroup: string;
   accountType: string;
   transactions: CanutinJsonTransactionType[];

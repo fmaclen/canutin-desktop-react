@@ -42,7 +42,8 @@ export class Account extends Base {
     closed: boolean,
     accountType: AccountType,
     officialName?: string,
-    institution?: string
+    institution?: string,
+    transactions?: Transaction[]
   ) {
     super();
     this.name = name;
@@ -51,5 +52,6 @@ export class Account extends Base {
     this.closed = closed;
     this.balanceGroup = getBalanceGroupByAccountType(accountType?.name);
     this.accountType = accountType;
+    this.transactions = transactions
   }
 }

@@ -115,8 +115,12 @@ const ImportWizardForm = () => {
           setSourceMessage(`Found ${analyzeSource.metadata.countAccounts} accounts`);
         }
 
-        if (analyzeSource.status === StatusEnum.ERROR && analyzeSource.metadata) {
-          setSourceMessage(analyzeSource.metadata.error);
+        if (analyzeSource.status === StatusEnum.ERROR) {
+          setCanutinJson(null);
+          
+          if (analyzeSource.metadata) {
+            setSourceMessage(analyzeSource.metadata.error);
+          }
         }
       }
     );
@@ -132,6 +136,10 @@ const ImportWizardForm = () => {
       analyzeSourceFile();
     }
   }, [filePath]);
+
+  const onSubmit = () => {
+    // TODO: onsubmit
+  }
 
   const analyzeSourceFile = () => {
     ipcRenderer.send(ANALYZE_SOURCE_FILE, { pathFile: filePath, source });
@@ -165,6 +173,11 @@ const ImportWizardForm = () => {
           statusMessage={filePathStatus && filePathStatusMessage(filePathStatus, sourceMessage)}
         />
       )}
+      <FormFooter>
+        <FormSubmitButton disabled={canutinJson === null} onClick={onSubmit}>
+          Continue
+        </FormSubmitButton>
+      </FormFooter>
     </FormContainer>
   );
 };

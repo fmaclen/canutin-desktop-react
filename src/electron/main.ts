@@ -17,8 +17,10 @@ import {
   IMPORT_SOURCE_FILE,
   IMPORT_SOURCE_FILE_ACK,
   ANALYZE_SOURCE_FILE,
+  LOAD_FROM_CANUTIN_FILE
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
+import { CanutinJsonType } from '@appTypes/canutin';
 import { enumExtensionFiles, enumImportTitleOptions } from '@appConstants/misc';
 
 import {
@@ -28,7 +30,7 @@ import {
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
-import { importSourceData } from './helpers/importSource.helper';
+import { importSourceData, loadFromCanutinFile } from './helpers/importSource.helper';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { NewAssetType } from '../types/asset.type';
@@ -79,6 +81,16 @@ const setupEvents = async () => {
       { pathFile, source }: { pathFile: string; source: enumImportTitleOptions }
     ) => {
       await importSourceData(win, source, pathFile);
+    }
+  );
+
+  ipcMain.on(
+    LOAD_FROM_CANUTIN_FILE,
+    async (
+      _: IpcMainEvent,
+      canutinFile: CanutinJsonType
+    ) => {
+      await loadFromCanutinFile(win, canutinFile);
     }
   );
 };

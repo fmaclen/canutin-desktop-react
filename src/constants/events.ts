@@ -15,3 +15,5 @@ export const IMPORT_SOURCE_FILE = 'importSourceFile';
 export const IMPORT_SOURCE_FILE_ACK = 'importSourceFileAck';
 export const ANALYZE_SOURCE_FILE = 'analyzeSourceFile';
 export const ANALYZE_SOURCE_FILE_ACK = 'analyzeSourceFileAck';
+export const LOAD_FROM_CANUTIN_FILE = 'loadFromCanutinFile';
+export const LOAD_FROM_CANUTIN_FILE_ACK = 'loadFromCanutinFileAck';

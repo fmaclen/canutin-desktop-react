@@ -1,13 +1,12 @@
 import { readFileSync } from 'fs';
 import { BrowserWindow } from 'electron';
-import parse from 'date-fns/parse';
 
 import { enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
-import { ANALYZE_SOURCE_FILE_ACK } from '@constants/events';
-import { MintCsvEntryType } from './sourceHelpers/mint';
+import { ANALYZE_SOURCE_FILE_ACK, LOAD_FROM_CANUTIN_FILE_ACK } from '@constants/events';
+import { CanutinJsonType } from '@appTypes/canutin';
+import { importFromCanutinJson } from '@database/helpers/importSource';
 
 import { mintCsvToJson } from './sourceHelpers/mint';
-import { BalancegGroupEnum } from '../../enums/balancegGroup.enum';
 
 const Papa = require('papaparse');
 
@@ -24,14 +23,14 @@ export const analyzeMintFile = async (filePath: string, win: BrowserWindow | nul
   }
 
   try {
-    const {data, metadata} = mintCsvToJson(csv.data);
+    const { data, metadata } = mintCsvToJson(csv.data);
 
     win?.webContents.send(ANALYZE_SOURCE_FILE_ACK, {
       status: StatusEnum.SUCCESS,
       sourceData: data,
-      metadata
+      metadata,
     });
-  } catch(error) {
+  } catch (error) {
     win?.webContents.send(ANALYZE_SOURCE_FILE_ACK, {
       status: StatusEnum.ERROR,
       sourceData: {},
@@ -49,4 +48,22 @@ export const importSourceData = async (
       await analyzeMintFile(filePath, win);
     }
   }
+};
+
+export const loadFromCanutinFile = async (
+  win: BrowserWindow | null,
+  canutinFile: CanutinJsonType
+) => {
+  try {
+    await importFromCanutinJson(canutinFile)
+
+    win?.webContents.send(LOAD_FROM_CANUTIN_FILE_ACK, {
+      status: StatusEnum.SUCCESS,
+    });
+  } catch (error) {
+    win?.webContents.send(LOAD_FROM_CANUTIN_FILE_ACK, {
+      status: StatusEnum.ERROR,
+    });
+  }
+
 };
