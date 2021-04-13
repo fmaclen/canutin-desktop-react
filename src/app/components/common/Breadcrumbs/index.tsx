@@ -23,7 +23,7 @@ export interface BreadcrumbsProps {
 const Breadcrumbs = ({ items }: BreadcrumbsProps) => (
   <Container>
     {items.map(({ text, href }, index) => (
-      <div>
+      <div key={`${index}-${text}`}>
         <Text href={href}>{text}</Text>
         {index !== items.length - 1 && <Chevron />}
       </div>
