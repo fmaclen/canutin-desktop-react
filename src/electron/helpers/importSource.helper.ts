@@ -106,6 +106,7 @@ export const importSourceData = async (
     }
     case enumImportTitleOptions.PERSONAL_CAPITAL_IMPORT_TYPE_TITLE: {
       await analyzePersonalCapitalFile(filePath, win);
+      break;
     }
   }
 };
