@@ -54,7 +54,7 @@ export const formSubmitButton = css<{ disabled: boolean }>`
 export const balanceContainer = css`
   align-items: center;
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1.25fr 2fr 0.75fr;
 `;
 
 export const balanceSubContainer = css`

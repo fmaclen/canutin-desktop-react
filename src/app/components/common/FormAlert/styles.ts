@@ -3,7 +3,7 @@ import { whitePlain, bluePlain, grey80 } from '@appConstants/colors';
 
 export const formAlertContainer = css`
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1.25fr 2fr 0.75fr;
 `;
 
 export const container = css`

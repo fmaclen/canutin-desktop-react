@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
-import RadioInputGroup from '@components/common/RadioInputGroup';
+import RadioGroupField from '@components/common/Form/RadioGroupField';
 import ChooseFileInput from '@components/common/ChooseFileInput';
 
 import {
@@ -156,7 +155,7 @@ const ImportWizardForm = () => {
 
   return (
     <FormContainer>
-      <RadioInputGroup
+      <RadioGroupField
         label="Import from"
         name="importSource"
         values={Object.values(enumImportTitleOptions)}
