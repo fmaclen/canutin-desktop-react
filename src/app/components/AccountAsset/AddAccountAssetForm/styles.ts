@@ -38,11 +38,11 @@ export const formFooter = css`
 
 export const formSubmitButton = css<{ disabled: boolean }>`
   ${sansSerifBold};
-  background-color: ${({ disabled }) => (disabled ? grey20 : bluePlain)};
+  background-color: ${bluePlain};
   border: none;
   border-radius: 4px;
-  color: ${({ disabled }) => (disabled ? grey30 : whitePlain)};
-  cursor: ${({ disabled }) => (disabled ? null : 'pointer')};
+  color: ${whitePlain};
+  cursor: pointer;
   height: 40px;
   margin-right: 10px;
   padding: 12px 32px;
@@ -50,6 +50,14 @@ export const formSubmitButton = css<{ disabled: boolean }>`
   &:focus {
     outline: none;
   }
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      background-color: ${grey20};
+      color: ${grey30};
+      cursor: default;
+    `}
 `;
 
 export const toggableInputContainer = css`

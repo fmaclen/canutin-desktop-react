@@ -9,6 +9,7 @@ import SelectField, { SelectFieldValue } from '@components/common/Form/SelectFie
 import InputTextField from '@components/common/Form/InputTextField';
 import InputText from '@components/common/Form/InputText';
 import InlineCheckbox from '@components/common/Form/Checkbox';
+import FormFooter from '@components/common/Form/FormFooter';
 
 import { DB_GET_ACCOUNTS_ACK } from '@constants/events';
 import { ACCOUNT, ASSET } from '@appConstants/misc';
@@ -22,7 +23,6 @@ import AccountIpc from '@app/data/account.ipc';
 import {
   formContainer,
   form,
-  formFooter,
   formSubmitButton,
   toggableInputContainer,
   hrDivider,
@@ -41,9 +41,6 @@ const FormContainer = styled.div`
 `;
 const Form = styled.form`
   ${form}
-`;
-const FormFooter = styled.div`
-  ${formFooter}
 `;
 const FormSubmitButton = styled.button`
   ${formSubmitButton}

@@ -4,5 +4,11 @@ import { inputShared } from '@appConstants/inputs';
 
 export const inputElement = css<{ disabled?: boolean }>`
   ${inputShared};
-  background-color: ${({ disabled }) => (disabled ? grey10 : whitePlain)};
+  background-color: ${whitePlain};
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      background-color: ${grey10};
+    `}
 `;

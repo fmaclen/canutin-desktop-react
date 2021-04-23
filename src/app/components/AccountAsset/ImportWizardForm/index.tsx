@@ -4,6 +4,7 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import RadioGroupField from '@components/common/Form/RadioGroupField';
 import ChooseFileInput from '@components/common/ChooseFileInput';
+import FormFooter from '@components/common/Form/FormFooter';
 
 import {
   IMPORT_SOURCE_FILE,
@@ -17,56 +18,15 @@ import { CanutinJsonType } from '@appTypes/canutin';
 
 import {
   formContainer,
-  form,
-  formFooter,
   formSubmitButton,
-  balanceContainer,
-  balanceSubContainer,
-  customInputContainer,
-  checkboxContainer,
-  checkbox,
-  checkboxLabel,
-  customInputLabel,
-  hrDivider,
 } from './styles';
 import sourceAlertsLookup from './dataSourceAlerts';
 
 const FormContainer = styled.div`
   ${formContainer}
 `;
-const Form = styled.form`
-  ${form}
-`;
-const FormFooter = styled.div`
-  ${formFooter}
-`;
 const FormSubmitButton = styled.button`
   ${formSubmitButton}
-`;
-const BalanceContainer = styled.div`
-  ${balanceContainer}
-`;
-const BalanceSubContainer = styled.div`
-  ${balanceSubContainer}
-`;
-const CustomInputLabel = styled.label`
-  ${customInputLabel}
-`;
-const CustomInputContainer = styled.div`
-  ${customInputContainer}
-`;
-const CheckboxContainer = styled.div`
-  ${checkboxContainer}
-`;
-const Checkbox = styled.input`
-  ${checkbox}
-`;
-const CheckboxLabel = styled.label`
-  ${checkboxLabel}
-`;
-
-const Hr = styled.hr`
-  ${hrDivider}
 `;
 
 const filePathStatusMessage = (status: StatusEnum, message?: string) => {

@@ -1,11 +1,9 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { container, label, optionalTag } from './styles';
+import FieldContainer from '@components/common/Form/FieldContainer';
+import { label, optionalTag } from './styles';
 
-const Container = styled.div`
-  ${container}
-`;
 const Label = styled.label`
   ${label}
 `;
@@ -21,7 +19,7 @@ export interface FieldProps {
 }
 
 const Field = ({ label, name, optional = false, children }: FieldProps) => (
-  <Container>
+  <FieldContainer>
     {label && (
       <Label htmlFor={name}>
         {label}
@@ -29,7 +27,7 @@ const Field = ({ label, name, optional = false, children }: FieldProps) => (
       </Label>
     )}
     {children}
-  </Container>
+  </FieldContainer>
 );
 
 export default Field;
