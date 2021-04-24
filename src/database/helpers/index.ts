@@ -26,7 +26,7 @@ export const getBalanceGroupByAccountType = (accountType: string): BalancegGroup
   let result: BalancegGroupEnum = BalancegGroupEnum.CASH;
 
   accountTypes.find(({ balanceGroup, accountTypes }) => {
-    const found = accountTypes.find(({ name }) => name === accountType);
+    const found = accountTypes.find(({ value }) => value === accountType);
     if (found) result = balanceGroup;
   });
 

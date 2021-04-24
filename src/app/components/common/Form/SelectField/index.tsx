@@ -1,44 +1,56 @@
 import React from 'react';
+import { Controller, Control } from 'react-hook-form';
 import styled from 'styled-components';
+import Select from 'react-select';
 
 import Field from '@components/common/Form/Field';
 
 import { selectInput } from './styles';
 
-const Select = styled.select<any>`
+const CustomSelect = styled(Select)`
   ${selectInput}
 `;
 
-type RefReturn =
-  | string
-  | ((instance: HTMLSelectElement | null) => void)
-  | React.RefObject<HTMLSelectElement>
-  | null
-  | undefined;
-
 export type SelectFieldValue = {
-  name: string;
+  value: string;
   label: string;
 };
 
 export interface SelectFieldProps {
   label: string;
   name: string;
-  values: SelectFieldValue[];
-  register: ({ required }: { required?: boolean }) => RefReturn;
+  options: SelectFieldValue[];
+  control: Control<Record<string, any>>;
   required?: boolean;
   optional?: boolean;
 }
 
-const SelectField = ({ label, name, values, register, required = false, optional = false, }: SelectFieldProps) => (
+const SelectField = ({
+  label,
+  name,
+  options,
+  control,
+  required = false,
+  optional = false,
+}: SelectFieldProps) => (
   <Field label={label} name={name} optional={optional}>
-    <Select name={name} id={name} ref={register({ required })}>
-      {values.map(({ name, label }: SelectFieldValue, index) => (
-        <option value={name} key={index}>
-          {label}
-        </option>
-      ))}
-    </Select>
+    <Controller
+      name={name}
+      control={control}
+      render={({ ref, onChange, value, ...field }) => (
+        <CustomSelect
+          {...field}
+          inputRef={ref}
+          classNamePrefix="select"
+          options={options}
+          onChange={(e: SelectFieldValue) => onChange(e?.value)}
+          isClearable={false}
+          value={options.find(c => c.value === value)}
+        />
+      )}
+      defaultValue={options[0].value}
+      rules={{ required }}
+    />
   </Field>
 );
 

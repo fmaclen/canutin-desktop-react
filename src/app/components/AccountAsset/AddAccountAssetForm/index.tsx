@@ -20,13 +20,7 @@ import { NewAccountType } from '../../../../types/account.type';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
 
-import {
-  formContainer,
-  form,
-  formSubmitButton,
-  toggableInputContainer,
-  hrDivider,
-} from './styles';
+import { formContainer, form, formSubmitButton, toggableInputContainer, hrDivider } from './styles';
 import { AccountType } from '@database/entities';
 
 const accountTypesUnflattened = accountTypes.map(({ accountTypes }) => accountTypes);
@@ -34,7 +28,7 @@ const accountTypesValues: SelectFieldValue[] = accountTypesUnflattened.flat();
 
 const assetTypesValues: SelectFieldValue[] = [];
 const assetTypes = Object.values(AssetTypeEnum);
-assetTypes.forEach(assetType => assetTypesValues.push({ name: assetType, label: assetType }));
+assetTypes.forEach(assetType => assetTypesValues.push({ value: assetType, label: assetType }));
 
 const FormContainer = styled.div`
   ${formContainer}
@@ -64,11 +58,13 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     register: registerAssetField,
     watch: watchAssetField,
     formState: assetFormState,
+    control: controlAssetField,
   } = useForm({ mode: 'onChange' });
   const {
     handleSubmit: handleAccountSubmit,
     register: registerAccountField,
     watch: watchAccountField,
+    control: controlAccountField,
   } = useForm({ mode: 'onChange' });
 
   const onSubmitAsset = async (asset: NewAssetSubmitType) => {
@@ -84,7 +80,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     AccountIpc.getAccounts();
 
     ipcRenderer.on(DB_GET_ACCOUNTS_ACK, (_: IpcRendererEvent, accounts: AccountType[]) => {
-      const accountsValues = accounts.map(({ name, id }) => ({ name: id.toString(), label: name }));
+      const accountsValues = accounts.map(({ name, id }) => ({ value: id.toString(), label: name }));
       setAccounts(accountsValues);
     });
 
@@ -122,7 +118,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
           label="Add new"
           name="accountOrAsset"
           values={[ACCOUNT, ASSET]}
-          onSelectOption={(value : string) => {
+          onSelectOption={(value: string) => {
             setAccountOrAsset(value);
             onRadioButtonChange(value);
             assetValue = 0;
@@ -133,9 +129,9 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
             <SelectField
               label="Account Type"
               name="accountType"
-              values={accountTypesValues}
-              register={registerAccountField}
+              options={accountTypesValues}
               required
+              control={controlAccountField}
             />
             <InputTextField label="Name" name="name" register={registerAccountField} />
             <InputTextField
@@ -155,7 +151,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
                 <InputText
                   name="balance"
                   disabled={autoCalculate}
-                  setRef={registerAccountField({ validate: (v) => autoCalculate || (v !== '') })}
+                  setRef={registerAccountField({ validate: v => autoCalculate || v !== '' })}
                 />
                 <InlineCheckbox
                   name="autoCalculate"
@@ -172,12 +168,17 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
             <SelectField
               label="Asset Type"
               name="assetType"
-              values={assetTypesValues}
-              register={registerAssetField}
+              options={assetTypesValues}
+              control={controlAssetField}
               required
             />
             <InputTextField label="Name" name="name" register={registerAssetField} required />
-            <InputTextField label="Quantity" name="quantity" register={registerAssetField} required />
+            <InputTextField
+              label="Quantity"
+              name="quantity"
+              register={registerAssetField}
+              required
+            />
             <InputTextField label="Cost" name="cost" register={registerAssetField} required />
             <InputTextField label="Value" name="value" value={`$ ${assetValue}`} disabled />
             <Hr />
@@ -185,8 +186,8 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
               optional
               label="Account"
               name="account"
-              values={accounts}
-              register={registerAssetField}
+              options={accounts}
+              control={controlAccountField}
             />
           </>
         )}
