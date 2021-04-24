@@ -72,7 +72,7 @@ const SelectField = ({
             value={groupedOptions ? groupedValue(value) : optionValue(value)}
           />
         )}
-        defaultValue={defaultValue}
+        defaultValue={optional ? null : defaultValue }
         rules={{ required }}
       />
     </Field>

@@ -101,6 +101,10 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     };
   }, []);
 
+  useEffect(() => {
+    AccountIpc.getAccounts();
+  }, [accountOrAsset])
+
   const shouldDisplay = accountOrAsset !== '';
   const shouldDisplayAccount = shouldDisplay && accountOrAsset === ACCOUNT;
   const shouldDisplayAsset = shouldDisplay && accountOrAsset === ASSET;
