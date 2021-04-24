@@ -65,7 +65,6 @@ const SelectField = ({
             classNamePrefix="select"
             options={groupedOptions ? groupedOptions : options}
             onChange={(e: SelectFieldValue) => {
-              console.log(e);
               onChange(e?.value);
             }}
             isClearable={false}
