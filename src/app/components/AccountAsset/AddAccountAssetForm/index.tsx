@@ -16,6 +16,7 @@ import { ACCOUNT, ASSET } from '@appConstants/misc';
 import { AssetTypeEnum } from '../../../../enums/assetType.enum';
 import { BalanceGroupEnum } from '../../../../enums/balancegGroup.enum';
 import { accountTypes, balanceGroupLabels } from '@constants/accountTypes';
+import { assetTypes } from '@constants/assetsTypes';
 import { NewAssetSubmitType } from '../../../../types/asset.type';
 import { NewAccountType } from '../../../../types/account.type';
 import AssetIpc from '@app/data/asset.ipc';
@@ -29,9 +30,10 @@ const accountGroupedValues = accountTypes.map(({ balanceGroup, accountTypes }) =
   label: balanceGroupLabels[balanceGroup],
 }));
 
-const assetTypesValues: SelectFieldValue[] = [];
-const assetTypes = Object.values(AssetTypeEnum);
-assetTypes.forEach(assetType => assetTypesValues.push({ value: assetType, label: assetType }));
+const assetTypesValues = assetTypes.map(({ balanceGroup, assetTypes }) => ({
+  options: assetTypes,
+  label: balanceGroupLabels[balanceGroup],
+}));
 
 const FormContainer = styled.div`
   ${formContainer}
@@ -184,7 +186,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
             <SelectField
               label="Asset Type"
               name="assetType"
-              options={assetTypesValues}
+              groupedOptions={assetTypesValues}
               control={controlAssetField}
               required
             />
