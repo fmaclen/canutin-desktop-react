@@ -1,8 +1,8 @@
-import { BalancegGroupEnum } from '../enums/balancegGroup.enum';
+import { BalanceGroupEnum } from '../enums/balancegGroup.enum';
 
 export const accountTypes = [
   {
-    balanceGroup: BalancegGroupEnum.CASH,
+    balanceGroup: BalanceGroupEnum.CASH,
     accountTypes: [
       {
         label: 'Checking',
@@ -43,7 +43,7 @@ export const accountTypes = [
     ],
   },
   {
-    balanceGroup: BalancegGroupEnum.DEBT,
+    balanceGroup: BalanceGroupEnum.DEBT,
     accountTypes: [
       {
         label: 'Credit card',
@@ -92,7 +92,7 @@ export const accountTypes = [
     ],
   },
   {
-    balanceGroup: BalancegGroupEnum.INVESTMENT,
+    balanceGroup: BalanceGroupEnum.INVESTMENT,
     accountTypes: [
       {
         label: '529 (US)',
@@ -269,7 +269,7 @@ export const accountTypes = [
     ],
   },
   {
-    balanceGroup: BalancegGroupEnum.OTHER_ASSETS,
+    balanceGroup: BalanceGroupEnum.OTHER_ASSETS,
     accountTypes: [
       {
         label: 'Other',
@@ -278,3 +278,10 @@ export const accountTypes = [
     ],
   },
 ];
+
+export const balanceGroupLabels = {
+  [BalanceGroupEnum.CASH]: 'Cash',
+  [BalanceGroupEnum.DEBT]: 'Debt',
+  [BalanceGroupEnum.INVESTMENT]: 'Investment',
+  [BalanceGroupEnum.OTHER_ASSETS]: 'Other assets',
+};
