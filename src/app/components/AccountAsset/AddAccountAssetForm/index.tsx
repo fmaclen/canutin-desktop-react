@@ -5,7 +5,7 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import Field from '@components/common/Form/Field';
 import RadioGroupField from '@components/common/Form/RadioGroupField';
-import SelectField, { GroupedValue, SelectFieldValue } from '@components/common/Form/SelectField';
+import SelectField, { GroupedValue } from '@components/common/Form/SelectField';
 import InputTextField from '@components/common/Form/InputTextField';
 import InputText from '@components/common/Form/InputText';
 import InlineCheckbox from '@components/common/Form/Checkbox';
@@ -13,7 +13,6 @@ import FormFooter from '@components/common/Form/FormFooter';
 
 import { DB_GET_ACCOUNTS_ACK } from '@constants/events';
 import { ACCOUNT, ASSET } from '@appConstants/misc';
-import { AssetTypeEnum } from '../../../../enums/assetType.enum';
 import { BalanceGroupEnum } from '../../../../enums/balancegGroup.enum';
 import { accountTypes, balanceGroupLabels } from '@constants/accountTypes';
 import { assetTypes } from '@constants/assetsTypes';
