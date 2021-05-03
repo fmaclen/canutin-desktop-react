@@ -15,7 +15,7 @@ import { DB_GET_ACCOUNTS_ACK } from '@constants/events';
 import { ACCOUNT, ASSET } from '@appConstants/misc';
 import { BalanceGroupEnum } from '../../../../enums/balancegGroup.enum';
 import { accountTypes, balanceGroupLabels } from '@constants/accountTypes';
-import { assetTypes } from '@constants/assetsTypes';
+import { assetTypes } from '@constants/assetTypes';
 import { NewAssetSubmitType } from '../../../../types/asset.type';
 import { NewAccountType } from '../../../../types/account.type';
 import AssetIpc from '@app/data/asset.ipc';
