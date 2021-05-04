@@ -16,6 +16,8 @@ import {
 import { sourceExtensionFile, enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
 import { CanutinJsonType } from '@appTypes/canutin';
 
+import OtherCSVForm from './OtherCSVForm';
+
 import {
   formContainer,
   formSubmitButton,
@@ -113,6 +115,8 @@ const ImportWizardForm = () => {
     setFilePathStatus(StatusEnum.LOADING);
   };
 
+  const isSubmitDisabled = source !== enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE && !canutinJson === null;
+
   return (
     <FormContainer>
       <RadioGroupField
@@ -135,8 +139,9 @@ const ImportWizardForm = () => {
           statusMessage={filePathStatus && filePathStatusMessage(filePathStatus, sourceMessage)}
         />
       )}
+      {source === enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE && <OtherCSVForm />}
       <FormFooter>
-        <FormSubmitButton disabled={canutinJson === null} onClick={onSubmit}>
+        <FormSubmitButton disabled={isSubmitDisabled} onClick={onSubmit}>
           Continue
         </FormSubmitButton>
       </FormFooter>
