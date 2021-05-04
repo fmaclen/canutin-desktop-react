@@ -1,15 +1,5 @@
 import { css } from 'styled-components';
-import {
-  bluePlain,
-  borderGrey,
-  grey10,
-  grey20,
-  grey30,
-  grey7,
-  grey80,
-  whitePlain,
-} from '@appConstants/colors';
-import { sansSerifBold } from '@appConstants/fonts';
+import { borderGrey, grey10, grey80 } from '@appConstants/colors';
 
 export const container = css`
   border-top: 1px solid ${grey10};
@@ -17,7 +7,6 @@ export const container = css`
   display: grid;
   grid-row-gap: 8px;
 `;
-
 
 export const category = css`
   display: grid;
@@ -41,8 +30,7 @@ export const categoryList = css`
   grid-row-gap: 8px;
 `;
 
-
-export const toggableInputContainer = css`
+export const toggleInputContainer = css`
   display: grid;
   grid-template-columns: minmax(96px, 1fr) 2fr;
   grid-gap: 8px;

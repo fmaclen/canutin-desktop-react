@@ -11,17 +11,15 @@ import {
   IMPORT_SOURCE_FILE_ACK,
   ANALYZE_SOURCE_FILE,
   ANALYZE_SOURCE_FILE_ACK,
-  LOAD_FROM_CANUTIN_FILE
+  LOAD_FROM_CANUTIN_FILE,
 } from '@constants/events';
 import { sourceExtensionFile, enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
 import { CanutinJsonType } from '@appTypes/canutin';
+import { ParseResult, ParseMeta } from '@appTypes/parseCsv';
 
 import OtherCSVForm from './OtherCSVForm';
 
-import {
-  formContainer,
-  formSubmitButton,
-} from './styles';
+import { formContainer, formSubmitButton } from './styles';
 import sourceAlertsLookup from './dataSourceAlerts';
 
 const FormContainer = styled.div`
@@ -46,13 +44,15 @@ const filePathStatusMessage = (status: StatusEnum, message?: string) => {
   }
 };
 
-interface AnalyzeSourceFileType {
+export interface AnalyzeSourceMetadataType extends ParseMeta {
+  countAccounts?: number;
+  error?: string;
+}
+
+export interface AnalyzeSourceFileType {
   status: StatusEnum;
   sourceData: CanutinJsonType;
-  metadata: {
-    countAccounts?: number;
-    error?: string;
-  };
+  metadata: AnalyzeSourceMetadataType;
 }
 
 const ImportWizardForm = () => {
@@ -61,6 +61,8 @@ const ImportWizardForm = () => {
   const [filePathStatus, setFilePathStatus] = useState<StatusEnum>();
   const [sourceMessage, setSourceMessage] = useState<string>();
   const [canutinJson, setCanutinJson] = useState<CanutinJsonType | null>(null);
+  const [otherCsvData, setOtherCsvData] = useState<unknown | null>(null);
+  const [otherCsvMetadata, setOtherCsvMetadata] = useState<AnalyzeSourceMetadataType | null>(null);
 
   useEffect(() => {
     ipcRenderer.on(IMPORT_SOURCE_FILE_ACK, (_: IpcRendererEvent, { filePath: sourceFilePath }) => {
@@ -72,14 +74,23 @@ const ImportWizardForm = () => {
       (_: IpcRendererEvent, analyzeSource: AnalyzeSourceFileType) => {
         setFilePathStatus(analyzeSource.status);
 
+
         if (analyzeSource.status === StatusEnum.SUCCESS) {
-          setCanutinJson(analyzeSource.sourceData);
-          setSourceMessage(analyzeSource.metadata && `Found ${analyzeSource.metadata.countAccounts} accounts`);
+          if (analyzeSource.metadata.fields) {
+            setOtherCsvData(analyzeSource.sourceData);
+            setOtherCsvMetadata(analyzeSource.metadata);
+          } else {
+            setCanutinJson(analyzeSource.sourceData);
+          }
+
+          analyzeSource.metadata?.countAccounts &&
+            setSourceMessage(`Found ${analyzeSource.metadata.countAccounts} accounts`);
         }
 
         if (analyzeSource.status === StatusEnum.ERROR) {
           setCanutinJson(null);
-          
+          setOtherCsvData(null);
+
           if (analyzeSource.metadata) {
             setSourceMessage(analyzeSource.metadata.error);
           }
@@ -103,7 +114,7 @@ const ImportWizardForm = () => {
 
   const onSubmit = () => {
     canutinJson && ipcRenderer.send(LOAD_FROM_CANUTIN_FILE, canutinJson);
-  }
+  };
 
   const analyzeSourceFile = () => {
     ipcRenderer.send(ANALYZE_SOURCE_FILE, { pathFile: filePath, source });
@@ -115,7 +126,8 @@ const ImportWizardForm = () => {
     setFilePathStatus(StatusEnum.LOADING);
   };
 
-  const isSubmitDisabled = source !== enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE && !canutinJson === null;
+  const isSubmitDisabled =
+    source !== enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE && !canutinJson === null;
 
   return (
     <FormContainer>
@@ -139,7 +151,9 @@ const ImportWizardForm = () => {
           statusMessage={filePathStatus && filePathStatusMessage(filePathStatus, sourceMessage)}
         />
       )}
-      {source === enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE && <OtherCSVForm />}
+      {source === enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE &&
+        otherCsvData &&
+        otherCsvMetadata && <OtherCSVForm data={otherCsvData} metadata={otherCsvMetadata} />}
       <FormFooter>
         <FormSubmitButton disabled={isSubmitDisabled} onClick={onSubmit}>
           Continue

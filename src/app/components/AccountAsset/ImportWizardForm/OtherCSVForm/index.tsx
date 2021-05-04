@@ -8,8 +8,10 @@ import Select from '@components/common/Select';
 import InlineCheckbox from '@components/common/Form/Checkbox';
 import Field from '@components/common/Form/Field';
 import InputText from '@components/common/Form/InputText';
+import { AnalyzeSourceMetadataType } from '@components/AccountAsset/ImportWizardForm';
 
-import { container, categoryList, category, toggableInputContainer } from './styles';
+import { container, categoryList, category, toggleInputContainer } from './styles';
+import { SUPPORTED_DATE_FORMAT, SUPPORTED_DATE_FORMAT_OPTIONS } from './otherCsvConstants';
 
 const Container = styled.div`
   ${container}
@@ -23,13 +25,19 @@ const Category = styled.div`
   ${category}
 `;
 
-const ToggableInputContainer = styled.div`
-  ${toggableInputContainer}
+const ToggleInputContainer = styled.div`
+  ${toggleInputContainer}
 `;
-// Remove
 
-const OtherCSVForm = () => {
+export interface OtherCSVFormProps {
+  data: unknown;
+  metadata: AnalyzeSourceMetadataType;
+}
+
+const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   const { handleSubmit, register, watch, formState, control } = useForm({ mode: 'onChange' });
+
+  const columnsOptions = metadata.fields?.map(field => ({ label: field, value: field }));
 
   return (
     <>
@@ -47,42 +55,43 @@ const OtherCSVForm = () => {
         <SelectField
           label="Date column"
           name="Date column"
-          groupedOptions={[]}
+          options={columnsOptions}
+           
           required
           control={control}
         />
         <SelectField
           label="Date format"
           name="Date format"
-          groupedOptions={[]}
+          options={SUPPORTED_DATE_FORMAT_OPTIONS}
           required
           control={control}
         />
         <SelectField
           label="Description column"
           name="Description column"
-          groupedOptions={[]}
+          options={columnsOptions}
           required
           control={control}
         />
         <SelectField
           label="Amount column"
           name="Amount column"
-          groupedOptions={[]}
+          options={columnsOptions}
           required
           control={control}
         />
         <SelectField
           label="Account column"
           name="Account column"
-          groupedOptions={[]}
+          options={columnsOptions}
           control={control}
           optional
         />
         <SelectField
           label="Category column"
           name="Category column"
-          groupedOptions={[]}
+          options={columnsOptions}
           control={control}
           optional
         />
@@ -109,20 +118,16 @@ const OtherCSVForm = () => {
           control={control}
           required
         />
-        <SelectField label="Type" name="Type" groupedOptions={[]} control={control} required />
         <Field label="Balance" name="balance">
-          <ToggableInputContainer>
-            <InputText
-              name="balance"
-              setRef={register}
-            />
+          <ToggleInputContainer>
+            <InputText name="balance" setRef={register} />
             <InlineCheckbox
               name="autoCalculate"
               id="autoCalculate"
               label="Auto-calculate from transactions"
               register={register}
             />
-          </ToggableInputContainer>
+          </ToggleInputContainer>
         </Field>
       </Container>
     </>
