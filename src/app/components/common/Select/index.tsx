@@ -26,6 +26,8 @@ export interface SelectProps {
   control: Control<Record<string, any>>;
   required?: boolean;
   optional?: boolean;
+  defaultFormValue?: string;
+  placeholder?: string;
 }
 
 const Select = ({
@@ -35,6 +37,8 @@ const Select = ({
   control,
   required = false,
   optional = false,
+  defaultFormValue,
+  placeholder,
 }: SelectProps) => {
   const defaultValue = groupedOptions
     ? groupedOptions[0]?.options[0]?.value
@@ -56,6 +60,7 @@ const Select = ({
       render={({ ref, onChange, value, ...field }) => (
         <CustomSelect
           {...field}
+          placeholder={placeholder}
           inputRef={ref}
           classNamePrefix="select"
           options={groupedOptions ? groupedOptions : options}
@@ -66,7 +71,7 @@ const Select = ({
           value={groupedOptions ? groupedValue(value) : optionValue(value)}
         />
       )}
-      defaultValue={optional ? null : defaultValue}
+      defaultValue={defaultFormValue ? defaultFormValue : optional ? null : defaultValue}
       rules={{ required }}
     />
   );

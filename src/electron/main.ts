@@ -14,6 +14,8 @@ import {
   DB_NEW_ACCOUNT_ACK,
   DB_GET_ACCOUNTS,
   DB_GET_ACCOUNTS_ACK,
+  DB_GET_BALANCE_STATEMENTS,
+  DB_GET_BALANCE_STATEMENTS_ACK,
   IMPORT_SOURCE_FILE,
   IMPORT_SOURCE_FILE_ACK,
   ANALYZE_SOURCE_FILE,
@@ -32,6 +34,7 @@ import {
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
 import { importSourceData, loadFromCanutinFile } from './helpers/importSource.helper';
 import { AssetRepository } from '@database/repositories/asset.repository';
+import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
 import seedCategories from '@database/seed/seedCategories';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { NewAssetType } from '../types/asset.type';
@@ -108,6 +111,11 @@ const setupDbEvents = async () => {
   ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
     const newAccount = await AccountRepository.createAccount(account);
     win?.webContents.send(DB_NEW_ACCOUNT_ACK, newAccount);
+  });
+
+  ipcMain.on(DB_GET_BALANCE_STATEMENTS, async (_: IpcMainEvent) => {
+    const balanceStatements = await BalanceStatementRepository.getBalanceStatements();
+    win?.webContents.send(DB_GET_BALANCE_STATEMENTS_ACK, balanceStatements);
   });
 
   ipcMain.on(DB_GET_ACCOUNTS, async (_: IpcMainEvent) => {

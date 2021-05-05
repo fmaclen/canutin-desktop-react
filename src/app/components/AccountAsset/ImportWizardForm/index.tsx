@@ -127,7 +127,7 @@ const ImportWizardForm = () => {
   };
 
   const isSubmitDisabled =
-    source !== enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE && !canutinJson === null;
+    source === enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE || canutinJson === null;
 
   return (
     <FormContainer>
@@ -138,6 +138,8 @@ const ImportWizardForm = () => {
         onSelectOption={value => {
           setSource(value as enumImportTitleOptions);
           setFilePath(null);
+          setOtherCsvData(null);
+          setOtherCsvMetadata(null);
         }}
       />
       {sourceAlertsLookup(source)}

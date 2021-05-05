@@ -8,7 +8,7 @@ export const container = css`
   grid-row-gap: 8px;
 `;
 
-export const category = css`
+export const option = css`
   display: grid;
   grid-column-gap: 8px;
   grid-template-columns: 1fr 1fr;
@@ -25,7 +25,7 @@ export const category = css`
   }
 `;
 
-export const categoryList = css`
+export const optionList = css`
   display: grid;
   grid-row-gap: 8px;
 `;

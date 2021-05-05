@@ -10,6 +10,9 @@ export const DB_NEW_ACCOUNT_ACK = 'dbNewAccountAck';
 export const DB_GET_ACCOUNTS = 'dbGetAccounts';
 export const DB_GET_ACCOUNTS_ACK = 'dbGetAccountsAck';
 
+export const DB_GET_BALANCE_STATEMENTS = 'dbGetStatements';
+export const DB_GET_BALANCE_STATEMENTS_ACK = 'dbGetStatementsAck';
+
 // Import Wizard
 export const IMPORT_SOURCE_FILE = 'importSourceFile';
 export const IMPORT_SOURCE_FILE_ACK = 'importSourceFileAck';

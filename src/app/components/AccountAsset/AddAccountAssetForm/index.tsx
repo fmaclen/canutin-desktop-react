@@ -25,7 +25,7 @@ import AccountIpc from '@app/data/account.ipc';
 import { formContainer, form, formSubmitButton, toggableInputContainer, hrDivider } from './styles';
 import { Account } from '@database/entities';
 
-const accountGroupedValues = accountTypes.map(({ balanceGroup, accountTypes }) => ({
+export const accountGroupedValues = accountTypes.map(({ balanceGroup, accountTypes }) => ({
   options: accountTypes,
   label: balanceGroupLabels[balanceGroup],
 }));
