@@ -15,17 +15,17 @@ import {
 } from '@constants/events';
 import { sourceExtensionFile, enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
 import { CanutinJsonType } from '@appTypes/canutin';
-import { ParseResult, ParseMeta } from '@appTypes/parseCsv';
+import { ParseMeta } from '@appTypes/parseCsv';
 
 import OtherCSVForm from './OtherCSVForm';
 
 import { formContainer, formSubmitButton } from './styles';
 import sourceAlertsLookup from './dataSourceAlerts';
 
-const FormContainer = styled.div`
+export const FormContainer = styled.div`
   ${formContainer}
 `;
-const FormSubmitButton = styled.button`
+export const FormSubmitButton = styled.button`
   ${formSubmitButton}
 `;
 
@@ -73,7 +73,6 @@ const ImportWizardForm = () => {
       ANALYZE_SOURCE_FILE_ACK,
       (_: IpcRendererEvent, analyzeSource: AnalyzeSourceFileType) => {
         setFilePathStatus(analyzeSource.status);
-
 
         if (analyzeSource.status === StatusEnum.SUCCESS) {
           if (analyzeSource.metadata.fields) {
@@ -156,11 +155,13 @@ const ImportWizardForm = () => {
       {source === enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE &&
         otherCsvData &&
         otherCsvMetadata && <OtherCSVForm data={otherCsvData} metadata={otherCsvMetadata} />}
-      <FormFooter>
-        <FormSubmitButton disabled={isSubmitDisabled} onClick={onSubmit}>
-          Continue
-        </FormSubmitButton>
-      </FormFooter>
+      {(source !== enumImportTitleOptions.OTHER_CSV_IMPORT_TYPE_TITLE || !otherCsvData) && (
+        <FormFooter>
+          <FormSubmitButton disabled={isSubmitDisabled} onClick={onSubmit}>
+            Continue
+          </FormSubmitButton>
+        </FormFooter>
+      )}
     </FormContainer>
   );
 };

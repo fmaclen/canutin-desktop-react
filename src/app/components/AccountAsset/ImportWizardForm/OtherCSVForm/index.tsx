@@ -2,7 +2,9 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { isValid, parse } from 'date-fns';
 
+import FormFooter from '@components/common/Form/FormFooter';
 import FormAlert from '@components/common/FormAlert';
 import SelectField from '@components/common/Form/SelectField';
 import Select from '@components/common/Select';
@@ -13,17 +15,20 @@ import InputTextField from '@components/common/Form/InputTextField';
 import { AnalyzeSourceMetadataType } from '@components/AccountAsset/ImportWizardForm';
 import { accountGroupedValues } from '@components/AccountAsset/AddAccountAssetForm/index';
 
-import { DB_GET_ACCOUNTS_ACK } from '@constants/events';
+import { DB_GET_ACCOUNTS_ACK, LOAD_FROM_CANUTIN_FILE } from '@constants/events';
 import AccountIpc from '@app/data/account.ipc';
 import { Account } from '@database/entities';
+import { CanutinJsonType } from '@appTypes/canutin';
 
 import { container, optionList, option, toggleInputContainer } from './styles';
 import {
+  SUPPORTED_DATE_FORMAT,
   CATEGORY_GROUPED_OPTIONS,
   SUPPORTED_DATE_FORMAT_OPTIONS,
   NEW_ACCOUNT_OPTION,
   NEW_ACCOUNT_VALUE,
 } from './otherCsvConstants';
+import { FormSubmitButton } from '../';
 
 const Container = styled.div`
   ${container}
@@ -46,9 +51,41 @@ export interface OtherCSVFormProps {
   metadata: AnalyzeSourceMetadataType;
 }
 
+export interface OtherCSVFormSubmit {
+  account?: {
+    autoCalculate: boolean;
+    balance: undefined | number;
+    importAccount: number;
+    accountType: string | undefined;
+    institution: string | undefined;
+    name: string | undefined;
+  };
+  accounts?: { [accountColumnValue: string]: string };
+  accountColumn: null | string;
+  amountColumn: string;
+  categoryColumn: null | string;
+  dateColumn: string;
+  dateFormat: string;
+  descriptionColumn: string;
+  categories: { [categoryColumnValue: string]: string };
+}
+
+export const formToCantuinJsonFile = (formData: OtherCSVFormSubmit) => {};
+
 const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   const [accounts, setAccounts] = useState<null | Account[]>(null);
-  const { handleSubmit, register, watch, formState, control, setValue } = useForm({
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState,
+    control,
+    setValue,
+    trigger,
+    setError,
+    errors,
+    clearErrors,
+  } = useForm({
     mode: 'onChange',
   });
 
@@ -69,26 +106,41 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   const selectedAccount = watch('account.importAccount');
   const accountColumn = watch('accountColumn');
   const selectedCategoryColumn = watch('categoryColumn');
+  const dateColumn = watch('dateColumn');
+  const dateFormat = watch('dateFormat');
+
+  // Custom register's
+  const autoCalculateRegister = useMemo(() => {
+    return register({
+      validate: v => autoCalculate || v !== '',
+    });
+  }, [autoCalculate, register]);
 
   // Set values
   useEffect(() => {
     if (selectedAccount === NEW_ACCOUNT_VALUE) {
-      setValue('account.autoCalculate', false);
-      setValue('account.balance', '');
+      setValue('account.autoCalculate', false, { shouldValidate: true });
+      setValue('account.balance', '', { shouldValidate: true });
     }
 
     if (selectedAccount && accounts && selectedAccount !== NEW_ACCOUNT_VALUE) {
       const account = accounts.find(account => account.id === Number.parseInt(selectedAccount));
       setValue(
         'account.autoCalculate',
-        account?.balanceStatements ? account.balanceStatements[0].autoCalculate : false
+        account?.balanceStatements ? account.balanceStatements[0].autoCalculate : false,
+        { shouldValidate: true }
       );
       setValue(
         'account.balance',
-        account?.balanceStatements ? account.balanceStatements[0].value : false
+        account?.balanceStatements ? account.balanceStatements[0].value : false,
+        { shouldValidate: true }
       );
     }
   }, [accounts, selectedAccount, setValue]);
+
+  useEffect(() => {
+    trigger(['account.autoCalculate', 'account.balance']);
+  }, [autoCalculate]);
 
   // Calculated Options
   const columnsOptions = useMemo(
@@ -112,6 +164,30 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
     [data]
   );
 
+  // Submit validations
+  const checkDateColumnFormat = () => {
+    const isValidDateColumn = data
+      .map((value: { [x: string]: any }) => value[dateColumn])
+      .every((value: string) => isValid(parse(value, dateFormat, new Date())));
+
+    if (!isValidDateColumn) {
+      setError('dateFormat', {
+        type: 'manual',
+        message:
+          'Couldn’t detect the date format, you can try another date format or update the file manually',
+      });
+    }
+
+    return isValidDateColumn;
+  };
+
+  const onSubmit = (form: OtherCSVFormSubmit) => {
+    // Validations
+    const isValidDateColumn = checkDateColumnFormat();
+
+    // ipcRenderer.send(LOAD_FROM_CANUTIN_FILE, {});
+  };
+
   return (
     <>
       <Container>
@@ -131,6 +207,10 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
           options={columnsOptions}
           required
           control={control}
+          error={errors?.dateFormat}
+          cta={() => {
+            clearErrors('dateFormat');
+          }}
         />
         <SelectField
           label="Date format"
@@ -240,7 +320,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
               <InputText
                 name="account.balance"
                 disabled={autoCalculate}
-                setRef={register({ validate: v => autoCalculate || v !== '' })}
+                setRef={autoCalculateRegister}
               />
               <InlineCheckbox
                 name="account.autoCalculate"
@@ -265,6 +345,11 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
           )}
         </Container>
       )}
+      <FormFooter>
+        <FormSubmitButton disabled={!formState.isValid} onClick={handleSubmit(onSubmit)}>
+          Continue
+        </FormSubmitButton>
+      </FormFooter>
     </>
   );
 };
