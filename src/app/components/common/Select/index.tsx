@@ -30,7 +30,7 @@ export interface SelectProps {
   control: Control<Record<string, any>>;
   required?: boolean;
   optional?: boolean;
-  defaultFormValue?: string;
+  defaultFormValue?: string | null;
   placeholder?: string;
   error?: FieldError;
   cta?: () => void;
@@ -82,7 +82,7 @@ const Select = ({
             error={error}
           />
         )}
-        defaultValue={defaultFormValue ? defaultFormValue : optional ? null : defaultValue}
+        defaultValue={defaultFormValue !== undefined ? defaultFormValue : optional ? null : defaultValue}
         rules={{ required }}
       />
       {error && <ErrorMessage>{error.message}</ErrorMessage>}

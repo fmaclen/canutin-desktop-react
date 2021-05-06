@@ -19,10 +19,10 @@ import { DB_GET_ACCOUNTS_ACK, LOAD_FROM_CANUTIN_FILE } from '@constants/events';
 import AccountIpc from '@app/data/account.ipc';
 import { Account } from '@database/entities';
 import { CanutinJsonType } from '@appTypes/canutin';
+import { BalanceGroupEnum } from '@enums/balancegGroup.enum';
 
 import { container, optionList, option, toggleInputContainer } from './styles';
 import {
-  SUPPORTED_DATE_FORMAT,
   CATEGORY_GROUPED_OPTIONS,
   SUPPORTED_DATE_FORMAT_OPTIONS,
   NEW_ACCOUNT_OPTION,
@@ -54,11 +54,11 @@ export interface OtherCSVFormProps {
 export interface OtherCSVFormSubmit {
   account?: {
     autoCalculate: boolean;
-    balance: undefined | number;
-    importAccount: number;
-    accountType: string | undefined;
-    institution: string | undefined;
-    name: string | undefined;
+    balance: BalanceGroupEnum;
+    importAccount: string;
+    accountType: string;
+    institution: string;
+    name: string;
   };
   accounts?: { [accountColumnValue: string]: string };
   accountColumn: null | string;
@@ -70,7 +70,27 @@ export interface OtherCSVFormSubmit {
   categories: { [categoryColumnValue: string]: string };
 }
 
-export const formToCantuinJsonFile = (formData: OtherCSVFormSubmit) => {};
+export const formToCantuinJsonFile = (formData: OtherCSVFormSubmit) => {
+  const canutinFile: CanutinJsonType = { accounts: [] };
+  // New account
+  /* if (formData.account && formData.account.importAccount === NEW_ACCOUNT_VALUE) {
+    const {
+      name,
+      accountType,
+      autoCalculate,
+      balance,
+      importAccount,
+      institution,
+    } = formData.account;
+    canutinFile = {
+      accounts: [
+        { name, balanceGroup: getBalanceGroupByAccountType(accountType), accountType, institution, },
+      ],
+    };
+  } */
+
+  return canutinFile;
+};
 
 const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   const [accounts, setAccounts] = useState<null | Account[]>(null);
@@ -88,6 +108,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   } = useForm({
     mode: 'onChange',
   });
+  console.log(watch());
 
   useEffect(() => {
     AccountIpc.getAccounts();
@@ -119,7 +140,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   // Set values
   useEffect(() => {
     if (selectedAccount === NEW_ACCOUNT_VALUE) {
-      setValue('account.autoCalculate', false, { shouldValidate: true });
+      setValue('account.autoCalculate', true, { shouldValidate: true });
       setValue('account.balance', '', { shouldValidate: true });
     }
 
@@ -299,16 +320,22 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
           />
           {selectedAccount === NEW_ACCOUNT_VALUE && (
             <>
-              <InputTextField label="Name" name="account.name" register={register} required />
+              <InputTextField
+                label="Account name"
+                name="account.name"
+                register={register}
+                required
+              />
               <SelectField
-                label="Type"
+                label="Account type"
                 name="account.accountType"
                 groupedOptions={accountGroupedValues}
                 control={control}
+                defaultFormValue={null}
                 required
               />
               <InputTextField
-                label="Institution"
+                label="Account institution"
                 name="account.institution"
                 register={register}
                 optional
@@ -340,7 +367,6 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
                   statements in the “Overview” tab.
                 </div>
               }
-              label="Match columns"
             />
           )}
         </Container>

@@ -1,3 +1,5 @@
+import { BalanceGroupEnum } from '@enums/balancegGroup.enum';
+
 export interface CanutinJsonBudgetType {
   name: string;
   targetAmount: number;
@@ -18,7 +20,7 @@ export interface CanutinJsonAccountType {
   name: string;
   officialName?: string;
   institution?: string;
-  balanceGroup: string;
+  balanceGroup: BalanceGroupEnum;
   accountType: string;
   transactions: CanutinJsonTransactionType[];
 }
