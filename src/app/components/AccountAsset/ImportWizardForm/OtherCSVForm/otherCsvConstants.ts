@@ -17,4 +17,7 @@ export const CATEGORY_GROUPED_OPTIONS = categoryList.categories.map(({ name, sub
 });
 
 export const NEW_ACCOUNT_VALUE = 'newAccount';
-export const NEW_ACCOUNT_OPTION = { label: 'New account', value: NEW_ACCOUNT_VALUE };
+export const NEW_ACCOUNT_GROUPED_OPTION = {
+  label: 'New account',
+  options: [{ label: 'New account', value: NEW_ACCOUNT_VALUE }],
+};

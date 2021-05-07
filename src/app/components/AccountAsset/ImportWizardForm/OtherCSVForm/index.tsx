@@ -25,7 +25,7 @@ import { container, optionList, option, toggleInputContainer } from './styles';
 import {
   CATEGORY_GROUPED_OPTIONS,
   SUPPORTED_DATE_FORMAT_OPTIONS,
-  NEW_ACCOUNT_OPTION,
+  NEW_ACCOUNT_GROUPED_OPTION,
   NEW_ACCOUNT_VALUE,
 } from './otherCsvConstants';
 import { FormSubmitButton } from '../';
@@ -172,9 +172,9 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
     () => accounts?.map(account => ({ label: account.name, value: account.id.toString() })),
     [accounts]
   );
-  const newAccountOptions = accountOptions
-    ? [NEW_ACCOUNT_OPTION, ...accountOptions]
-    : [NEW_ACCOUNT_OPTION];
+  const newAccountGroupedOptions = accountOptions
+    ? [NEW_ACCOUNT_GROUPED_OPTION, { label: 'Canutin accounts', options: [...accountOptions] }]
+    : [NEW_ACCOUNT_GROUPED_OPTION];
   const columnOptions = useCallback(
     columnName =>
       data
@@ -314,7 +314,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
           <SelectField
             label="Import to account"
             name="account.importAccount"
-            options={newAccountOptions}
+            groupedOptions={newAccountGroupedOptions}
             control={control}
             required
           />
