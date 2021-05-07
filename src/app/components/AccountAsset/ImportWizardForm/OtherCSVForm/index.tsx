@@ -280,7 +280,9 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
                   <label>{accountName}</label>
                   <Select
                     name={`accounts.${accountName.toString()}`}
-                    options={accountOptions}
+                    groupedOptions={accountGroupedValues}
+                    defaultFormValue={'Uncategorized'}
+                    placeholder={''}
                     control={control}
                   />
                 </Option>
