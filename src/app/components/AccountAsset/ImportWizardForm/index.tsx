@@ -36,7 +36,7 @@ const filePathStatusMessage = (status: StatusEnum, message?: string) => {
 
   switch (status) {
     case StatusEnum.LOADING:
-      return 'Analyzing file...';
+      return undefined;
     case StatusEnum.ERROR:
       return "Couldn't interpret the chosen file";
     case StatusEnum.SUCCESS:
