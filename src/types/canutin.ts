@@ -18,6 +18,8 @@ export interface CanutinJsonTransactionType {
 
 export interface CanutinJsonAccountType {
   name: string;
+  autoCalculate?: boolean;
+  balance?: number;
   officialName?: string;
   institution?: string;
   balanceGroup: BalanceGroupEnum;
@@ -27,4 +29,9 @@ export interface CanutinJsonAccountType {
 
 export interface CanutinJsonType {
   accounts: CanutinJsonAccountType[];
+}
+
+export interface UpdatedAccount {
+  id: number;
+  transactions: CanutinJsonTransactionType[];
 }

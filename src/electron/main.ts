@@ -19,10 +19,11 @@ import {
   IMPORT_SOURCE_FILE,
   IMPORT_SOURCE_FILE_ACK,
   ANALYZE_SOURCE_FILE,
-  LOAD_FROM_CANUTIN_FILE
+  LOAD_FROM_CANUTIN_FILE,
+  LOAD_FROM_OTHER_CSV,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
-import { CanutinJsonType } from '@appTypes/canutin';
+import { CanutinJsonType, UpdatedAccount } from '@appTypes/canutin';
 import { enumExtensionFiles, enumImportTitleOptions } from '@appConstants/misc';
 
 import {
@@ -32,7 +33,7 @@ import {
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
-import { importSourceData, loadFromCanutinFile } from './helpers/importSource.helper';
+import { importSourceData, loadFromCanutinFile, importUpdatedAccounts } from './helpers/importSource.helper';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
 import seedCategories from '@database/seed/seedCategories';
@@ -91,15 +92,14 @@ const setupEvents = async () => {
     }
   );
 
-  ipcMain.on(
-    LOAD_FROM_CANUTIN_FILE,
-    async (
-      _: IpcMainEvent,
-      canutinFile: CanutinJsonType
-    ) => {
-      await loadFromCanutinFile(win, canutinFile);
-    }
-  );
+  ipcMain.on(LOAD_FROM_CANUTIN_FILE, async (_: IpcMainEvent, canutinFile: CanutinJsonType) => {
+    await loadFromCanutinFile(win, canutinFile);
+  });
+
+  ipcMain.on(LOAD_FROM_OTHER_CSV, async (_: IpcMainEvent, otherCsvPayload: { canutinFile: CanutinJsonType , updatedAccounts: UpdatedAccount[] }) => {
+    await loadFromCanutinFile(win, otherCsvPayload.canutinFile);
+    await importUpdatedAccounts(win, otherCsvPayload.updatedAccounts);
+  });
 };
 
 const setupDbEvents = async () => {

@@ -2,10 +2,10 @@ import { readFileSync } from 'fs';
 import { BrowserWindow } from 'electron';
 
 import { enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
-import { ANALYZE_SOURCE_FILE_ACK, LOAD_FROM_CANUTIN_FILE_ACK } from '@constants/events';
-import { CanutinJsonType } from '@appTypes/canutin';
+import { ANALYZE_SOURCE_FILE_ACK, LOAD_FROM_CANUTIN_FILE_ACK, LOAD_FROM_OTHER_CSV_ACK } from '@constants/events';
+import { CanutinJsonType, UpdatedAccount } from '@appTypes/canutin';
 import { ParseResult } from '@appTypes/parseCsv';
-import { importFromCanutinJson } from '@database/helpers/importSource';
+import { importFromCanutinJson, updateAccounts } from '@database/helpers/importSource';
 
 import { mintCsvToJson, MintCsvEntryType } from './sourceHelpers/mint';
 import {
@@ -151,6 +151,24 @@ export const loadFromCanutinFile = async (
     });
   } catch (error) {
     win?.webContents.send(LOAD_FROM_CANUTIN_FILE_ACK, {
+      status: StatusEnum.ERROR,
+    });
+  }
+};
+
+export const importUpdatedAccounts = async (
+  win: BrowserWindow | null,
+  updatedAccounts?: UpdatedAccount[]
+) => {
+  try {
+    if (updatedAccounts) {
+      await updateAccounts(updatedAccounts);
+    }
+    win?.webContents.send(LOAD_FROM_OTHER_CSV_ACK, {
+      status: StatusEnum.SUCCESS,
+    });
+  } catch (error) {
+    win?.webContents.send(LOAD_FROM_OTHER_CSV_ACK, {
       status: StatusEnum.ERROR,
     });
   }

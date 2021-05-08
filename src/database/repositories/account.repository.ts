@@ -39,4 +39,8 @@ export class AccountRepository {
       },
     });
   }
+
+  static async getAccountById(accountId: number): Promise<Account | undefined> {
+    return await getRepository<Account>(Account).findOne(accountId);
+  }
 }
