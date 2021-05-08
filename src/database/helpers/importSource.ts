@@ -63,14 +63,11 @@ export const importFromCanutinJson = async (canutinFile: CanutinJsonType) => {
   await TransactionRepository.createTransactions(transactionList);
 };
 
-
 export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
-  let transactionList: Transaction[] = [];
-
-  updatedAccounts.map(async ({ id, transactions }) => {
+  updatedAccounts.forEach(async ({ id, transactions }) => {
     const account = await AccountRepository.getAccountById(id);
 
-    if (account) {
+    if (account !== undefined) {
       const updatedTransactions = await Promise.all(
         transactions.map(async transactionInfo => {
           const transactionDate = parse(transactionInfo.date, CANUTIN_FILE_DATE_FORMAT, new Date());
@@ -82,11 +79,11 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
               transactionInfo.budget.type,
               parse(transactionInfo.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
             );
-  
+
           const category = await CategoryRepository.getOrCreateSubCategory(
             transactionInfo.category
           );
-  
+
           return new Transaction(
             transactionInfo.description,
             transactionDate,
@@ -98,9 +95,7 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
           );
         })
       );
-      transactionList = [...transactionList, ...updatedTransactions];
+      await TransactionRepository.createTransactions(updatedTransactions);
     }
-  })
-
-  await TransactionRepository.createTransactions(transactionList);
+  });
 };

@@ -5,9 +5,7 @@ import { Account } from '@database/entities';
 import { getBalanceGroupByAccountType } from '@database/helpers';
 import { CanutinJsonType, UpdatedAccount } from '@appTypes/canutin';
 
-import {
-  SupportedDateFormatType,
-} from './otherCsvConstants';
+import { SupportedDateFormatType } from './otherCsvConstants';
 import { OtherCSVFormSubmit } from './index';
 
 export const getTransactionsForOneAccount = (
@@ -89,8 +87,7 @@ export const getUpdatedTransactionsForExistingAccounts = (
   const updatedAccounts: UpdatedAccount[] = [];
   csvData.forEach(rowData => {
     const updateAccount = canutinAccounts?.find(account => account.name === rowData[accountColumn]);
-    console.log(canutinAccounts);
-    console.log(rowData[accountColumn]);
+
     if (updateAccount) {
       const accountAlreadyCreated = updatedAccounts.find(
         account => account.id === updateAccount.id
