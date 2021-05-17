@@ -30,7 +30,7 @@ export const personalCapitalCsvToJson = (personalCapitalCsv: PersonalCapitalCsvE
         date: format(parse(personalCapEntry.Date, 'yyyy-dd-MM', new Date()), 'MM/dd/yyyy'),
         amount: personalCapEntry.Amount,
         excludeFromTotals: false,
-        category: mapCategories[personalCapEntry.Category],
+        category: mapCategories(personalCapEntry.Category),
       };
 
       if (accountIndex > -1) {

@@ -1,5 +1,5 @@
 // TODO: Complete this, https://github.com/Canutin/desktop/issues/49
-const mapCategoriesToCanutinCategory = (category: string) => {
+const mapCategories = (category: string) => {
   switch (category) {
     case 'Auto & Transport':
     case 'Auto Payment':
@@ -41,4 +41,4 @@ const mapCategoriesToCanutinCategory = (category: string) => {
   }
 };
 
-export default mapCategoriesToCanutinCategory;
+export default mapCategories;
