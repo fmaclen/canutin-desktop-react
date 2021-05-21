@@ -1,23 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useContext, useEffect } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import ScrollView from '@components/common/ScrollView';
+import Section from '@components/common/Section';
 import ImportWizardForm from '@components/AccountAsset/ImportWizardForm';
 import StatusBar from '@components/common/StatusBar';
 
-import { LOAD_FROM_CANUTIN_FILE_ACK, LOAD_FROM_OTHER_CSV_ACK } from '@constants/events'
+import { LOAD_FROM_CANUTIN_FILE_ACK, LOAD_FROM_OTHER_CSV_ACK } from '@constants/events';
 import { StatusBarContext } from '@app/context';
 import AccountIpc from '@app/data/account.ipc';
-
-import { container, subTitle } from './styles';
-
-const Container = styled.div`
-  ${container}
-`;
-const SubTitle = styled.div`
-  ${subTitle}
-`;
 
 const SUCCESS_MESSAGE_TIMEOUT = 5000;
 
@@ -52,11 +43,13 @@ const AddAccountAssetByWizard = () => {
 
   return (
     <>
-      <ScrollView title="Import wizard" subTitle="Add or update accounts, assets, balances and transactions">
-        <Container>
-          <SubTitle>Data Source</SubTitle>
+      <ScrollView
+        title="Import wizard"
+        subTitle="Add or update accounts, assets, balances and transactions"
+      >
+        <Section title="Data Source">
           <ImportWizardForm />
-        </Container>
+        </Section>
       </ScrollView>
       <StatusBar successMessage={successMessage} onClickButton={onCloseMessage} />
     </>

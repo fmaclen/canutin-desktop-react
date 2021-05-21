@@ -15,10 +15,7 @@ import InputTextField from '@components/common/Form/InputTextField';
 import { AnalyzeSourceMetadataType } from '@components/AccountAsset/ImportWizardForm';
 import { accountGroupedValues } from '@components/AccountAsset/AddAccountAssetForm/index';
 
-import {
-  DB_GET_ACCOUNTS_ACK,
-  LOAD_FROM_OTHER_CSV,
-} from '@constants/events';
+import { DB_GET_ACCOUNTS_ACK, LOAD_FROM_OTHER_CSV } from '@constants/events';
 import AccountIpc from '@app/data/account.ipc';
 import { Account } from '@database/entities';
 import { BalanceGroupEnum } from '@enums/balancegGroup.enum';
@@ -31,7 +28,7 @@ import {
   NEW_ACCOUNT_GROUPED_OPTION,
   NEW_ACCOUNT_VALUE,
 } from './otherCsvConstants';
-import {formToCantuinJsonFile } from './utils';
+import { formToCantuinJsonFile } from './utils';
 import { FormSubmitButton } from '../';
 
 const Container = styled.div`
@@ -320,6 +317,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
                 groupedOptions={accountGroupedValues}
                 control={control}
                 defaultFormValue={null}
+                placeholder={''}
                 required
               />
               <InputTextField

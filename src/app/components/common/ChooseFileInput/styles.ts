@@ -51,6 +51,7 @@ const getStatusColor = (status: StatusEnum) => {
 
 export const filePathStatus = css<{ status: StatusEnum }>`
   font-size: 12px;
+  margin-top: 4px;
   color: ${({ status }) => getStatusColor(status)};
 `;
 
