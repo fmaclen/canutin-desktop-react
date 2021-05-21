@@ -11,6 +11,6 @@ export const sectionTitle = css`
   color: ${grey40};
   font-size: 12px;
   text-transform: uppercase;
-  margin-bottom: 15px;
+  line-height: 1em;
   ${monospaceRegular};
 `;
