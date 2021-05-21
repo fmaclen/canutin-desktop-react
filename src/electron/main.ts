@@ -33,7 +33,11 @@ import {
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
 import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
-import { importSourceData, loadFromCanutinFile, importUpdatedAccounts } from './helpers/importSource.helper';
+import {
+  importSourceData,
+  loadFromCanutinFile,
+  importUpdatedAccounts,
+} from './helpers/importSource.helper';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
 import seedCategories from '@database/seed/seedCategories';
@@ -96,10 +100,16 @@ const setupEvents = async () => {
     await loadFromCanutinFile(win, canutinFile);
   });
 
-  ipcMain.on(LOAD_FROM_OTHER_CSV, async (_: IpcMainEvent, otherCsvPayload: { canutinFile: CanutinJsonType , updatedAccounts: UpdatedAccount[] }) => {
-    await loadFromCanutinFile(win, otherCsvPayload.canutinFile);
-    await importUpdatedAccounts(win, otherCsvPayload.updatedAccounts);
-  });
+  ipcMain.on(
+    LOAD_FROM_OTHER_CSV,
+    async (
+      _: IpcMainEvent,
+      otherCsvPayload: { canutinFile: CanutinJsonType; updatedAccounts: UpdatedAccount[] }
+    ) => {
+      await loadFromCanutinFile(win, otherCsvPayload.canutinFile);
+      await importUpdatedAccounts(win, otherCsvPayload.updatedAccounts);
+    }
+  );
 };
 
 const setupDbEvents = async () => {
@@ -126,8 +136,8 @@ const setupDbEvents = async () => {
 
 const createWindow = async () => {
   win = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 1200,
+    minHeight: 768,
     width: 1280,
     height: 880,
     titleBarStyle: 'hidden',
