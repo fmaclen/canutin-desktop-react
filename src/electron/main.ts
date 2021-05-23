@@ -132,12 +132,12 @@ const setupDbEvents = async () => {
       if (e instanceof QueryFailedError) {
         win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
           status: EVENT_ERROR,
-          message: 'Duplicated account name, please try with other',
+          message: 'There is already an account with this name, please try a different one',
         });
       } else {
         win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
           status: EVENT_ERROR,
-          message: 'Error, please try again',
+          message: 'An error occurred, please try again',
         });
       }
     }
