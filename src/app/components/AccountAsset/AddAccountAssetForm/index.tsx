@@ -64,9 +64,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     watch: watchAssetField,
     formState: assetFormState,
     control: controlAssetField,
-    watch,
   } = useForm({ mode: 'onChange' });
-  console.log(watch());
   const {
     handleSubmit: handleAccountSubmit,
     register: registerAccountField,
