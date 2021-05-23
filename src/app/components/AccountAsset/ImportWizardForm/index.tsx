@@ -143,6 +143,8 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
   const onChooseFileInput = () => {
     source && ipcRenderer.send(IMPORT_SOURCE_FILE, sourceExtensionFile(source));
     setSourceMessage(undefined);
+    setOtherCsvData(null);
+    setOtherCsvMetadata(null);
   };
 
   const isSubmitDisabled =

@@ -206,6 +206,8 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
         <SelectField
           label="Date column"
           name="dateColumn"
+          defaultFormValue={null}
+          placeholder=""
           options={columnsOptions}
           required
           control={control}
@@ -224,6 +226,8 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
         <SelectField
           label="Description column"
           name="descriptionColumn"
+          defaultFormValue={null}
+          placeholder=""
           options={columnsOptions}
           required
           control={control}
@@ -231,6 +235,8 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
         <SelectField
           label="Amount column"
           name="amountColumn"
+          defaultFormValue={null}
+          placeholder=""
           options={columnsOptions}
           required
           control={control}
@@ -242,6 +248,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
           control={control}
           placeholder={''}
           optional
+          isClearable
         />
         <SelectField
           label="Category column"
@@ -250,6 +257,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
           control={control}
           placeholder={''}
           optional
+          isClearable
         />
       </Fieldset>
       {accountColumn && accountOptions && accountColumnOptions.length > 0 && (
@@ -283,7 +291,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
                     groupedOptions={CATEGORY_GROUPED_OPTIONS}
                     control={control}
                     defaultFormValue={'Uncategorized'}
-                    placeholder={''}
+                    placeholder={'Uncategorized'}
                   />
                 </Option>
               ))}
