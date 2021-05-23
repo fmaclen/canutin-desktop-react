@@ -42,7 +42,7 @@ const StatusBar = ({
     ? (typeof errorMessage === 'string' && errorMessage !== '') || errorMessage !== null
     : false;
   const success = successMessage
-    ? (typeof successMessage === 'string' && successMessage !== '') || successMessage !== null
+    ? ((typeof successMessage === 'string' && successMessage !== '') || successMessage !== null)
     : false;
 
   let content = breadcrumbs;
@@ -60,7 +60,7 @@ const StatusBar = ({
   }
 
   return (
-    <Container error={error} success={success}>
+    <Container error={error} success={success && !loadingPercentage}>
       {content}
       {(error || success) && !loadingPercentage && <Button onClick={onClickButton}>Dismiss</Button>}
       <ConfigurationInfo />
