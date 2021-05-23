@@ -41,6 +41,7 @@ import {
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
 import seedCategories from '@database/seed/seedCategories';
+import seedAccountTypes from '@database/seed/seedAccountTypes';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { NewAssetType } from '../types/asset.type';
 import { NewAccountType } from '../types/account.type';
@@ -56,6 +57,7 @@ const setupEvents = async () => {
 
       if (filePath) await connectAndSaveDB(win, filePath);
       await seedCategories();
+      await seedAccountTypes();
       win.webContents.send(NEW_DATABASE);
     }
   });
