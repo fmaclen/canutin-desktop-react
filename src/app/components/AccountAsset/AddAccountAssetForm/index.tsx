@@ -20,7 +20,7 @@ import { ACCOUNT, ASSET } from '@appConstants/misc';
 import { BalanceGroupEnum } from '../../../../enums/balancegGroup.enum';
 import { accountTypes, balanceGroupLabels } from '@constants/accountTypes';
 import { assetTypes } from '@constants/assetTypes';
-import { NewAssetSubmitType } from '../../../../types/asset.type';
+import { NewAssetType } from '../../../../types/asset.type';
 import { NewAccountType } from '../../../../types/account.type';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
@@ -63,9 +63,8 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     control: controlAccountField,
   } = useForm({ mode: 'onChange' });
 
-  const onSubmitAsset = async (asset: NewAssetSubmitType) => {
-    const newAssetAccount = asset.account === '' ? undefined : asset.account;
-    AssetIpc.createAsset({ ...asset, account: newAssetAccount });
+  const onSubmitAsset = async (asset: NewAssetType) => {
+    AssetIpc.createAsset(asset);
   };
 
   const onSubmitAccount = async (account: NewAccountType) => {
@@ -73,8 +72,6 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
   };
 
   useEffect(() => {
-    AccountIpc.getAccounts();
-
     ipcRenderer.on(DB_GET_ACCOUNTS_ACK, (_: IpcRendererEvent, accounts: Account[]) => {
       const accountsValues: GroupedValue[] = [];
 
@@ -95,7 +92,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
   }, []);
 
   useEffect(() => {
-    AccountIpc.getAccounts();
+    accountOrAsset === ASSET && AccountIpc.getAccounts();
   }, [accountOrAsset]);
 
   const shouldDisplay = accountOrAsset !== '';

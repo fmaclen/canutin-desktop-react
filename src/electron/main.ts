@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import settings from 'electron-settings';
+import { QueryFailedError } from 'typeorm';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent } from 'electron';
 import isDev from 'electron-is-dev';
@@ -23,7 +24,8 @@ import {
   LOAD_FROM_OTHER_CSV,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
-import { CanutinJsonType, UpdatedAccount } from '@appTypes/canutin';
+import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
+import { CanutinFileType, UpdatedAccount } from '@appTypes/canutin';
 import { enumExtensionFiles, enumImportTitleOptions } from '@appConstants/misc';
 
 import {
@@ -41,6 +43,7 @@ import {
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
 import seedCategories from '@database/seed/seedCategories';
+import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { NewAssetType } from '../types/asset.type';
@@ -57,6 +60,7 @@ const setupEvents = async () => {
 
       if (filePath) await connectAndSaveDB(win, filePath);
       await seedCategories();
+      await seedAssetTypes();
       await seedAccountTypes();
       win.webContents.send(NEW_DATABASE);
     }
@@ -98,7 +102,7 @@ const setupEvents = async () => {
     }
   );
 
-  ipcMain.on(LOAD_FROM_CANUTIN_FILE, async (_: IpcMainEvent, canutinFile: CanutinJsonType) => {
+  ipcMain.on(LOAD_FROM_CANUTIN_FILE, async (_: IpcMainEvent, canutinFile: CanutinFileType) => {
     await loadFromCanutinFile(win, canutinFile);
   });
 
@@ -106,7 +110,7 @@ const setupEvents = async () => {
     LOAD_FROM_OTHER_CSV,
     async (
       _: IpcMainEvent,
-      otherCsvPayload: { canutinFile: CanutinJsonType; updatedAccounts: UpdatedAccount[] }
+      otherCsvPayload: { canutinFile: CanutinFileType; updatedAccounts: UpdatedAccount[] }
     ) => {
       await loadFromCanutinFile(win, otherCsvPayload.canutinFile);
       await importUpdatedAccounts(win, otherCsvPayload.updatedAccounts);
@@ -121,8 +125,22 @@ const setupDbEvents = async () => {
   });
 
   ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
-    const newAccount = await AccountRepository.createAccount(account);
-    win?.webContents.send(DB_NEW_ACCOUNT_ACK, newAccount);
+    try {
+      const newAccount = await AccountRepository.createAccount(account);
+      win?.webContents.send(DB_NEW_ACCOUNT_ACK, { ...newAccount, status: EVENT_SUCCESS });
+    } catch (e) {
+      if (e instanceof QueryFailedError) {
+        win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
+          status: EVENT_ERROR,
+          message: 'There is already an account with this name, please try a different one',
+        });
+      } else {
+        win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
+          status: EVENT_ERROR,
+          message: 'An error occurred, please try again',
+        });
+      }
+    }
   });
 
   ipcMain.on(DB_GET_BALANCE_STATEMENTS, async (_: IpcMainEvent) => {
