@@ -192,7 +192,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
     if (!isValidAmountColumn) {
       setError('amountColumn', {
         type: 'manual',
-        message: `There are some entries that aren't a number`,
+        message: 'The values in the chosen column can only be numbers',
       });
     }
 
