@@ -172,32 +172,31 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
         </Fieldset>
       )}
       {shouldDisplayAsset && (
-        <Fieldset>
-          <SelectField
-            label="Asset type"
-            name="assetType"
-            groupedOptions={assetTypesValues}
-            control={controlAssetField}
-            required
-          />
-          <InputTextField label="Name" name="name" register={registerAssetField} required />
-          <InputTextField label="Quantity" type="number" name="quantity" register={registerAssetField} required />
-          <InputTextField label="Cost" type="number" name="cost" register={registerAssetField} required />
-          <InputTextField label="Value" name="value" value={`$ ${assetValue}`} disabled />
-        </Fieldset>
-      )}
-
-      {shouldDisplayAsset && (
-        <Fieldset>
-          <SelectField
-            optional
-            label="Account"
-            name="account"
-            groupedOptions={accounts}
-            control={controlAccountField}
-            placeholder={''}
-          />
-        </Fieldset>
+        <>
+          <Fieldset>
+            <SelectField
+              label="Asset type"
+              name="assetType"
+              groupedOptions={assetTypesValues}
+              control={controlAssetField}
+              required
+            />
+            <InputTextField label="Name" name="name" register={registerAssetField} required />
+            <InputTextField label="Quantity" type="number" name="quantity" register={registerAssetField} required />
+            <InputTextField label="Cost" type="number" name="cost" register={registerAssetField} required />
+            <InputTextField label="Value" name="value" value={`$ ${assetValue}`} disabled />
+          </Fieldset>
+          <Fieldset>
+            <SelectField
+              optional
+              label="Account"
+              name="accountId"
+              groupedOptions={accounts}
+              control={controlAssetField}
+              placeholder={''}
+            />
+          </Fieldset>
+        </>
       )}
       <FormFooter>
         <ButtonSubmit disabled={submitDisabled}>
