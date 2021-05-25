@@ -157,6 +157,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
             <ToggableInputContainer>
               <InputText
                 name="balance"
+                type="number"
                 disabled={autoCalculate}
                 setRef={registerAccountField({ validate: v => autoCalculate || v !== '' })}
               />
@@ -180,8 +181,8 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
             required
           />
           <InputTextField label="Name" name="name" register={registerAssetField} required />
-          <InputTextField label="Quantity" name="quantity" register={registerAssetField} required />
-          <InputTextField label="Cost" name="cost" register={registerAssetField} required />
+          <InputTextField label="Quantity" type="number" name="quantity" register={registerAssetField} required />
+          <InputTextField label="Cost" type="number" name="cost" register={registerAssetField} required />
           <InputTextField label="Value" name="value" value={`$ ${assetValue}`} disabled />
         </Fieldset>
       )}
@@ -199,7 +200,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
         </Fieldset>
       )}
       <FormFooter>
-        <ButtonSubmit disabled={submitDisabled} onClick={formSubmit}>
+        <ButtonSubmit disabled={submitDisabled}>
           Continue
         </ButtonSubmit>
       </FormFooter>

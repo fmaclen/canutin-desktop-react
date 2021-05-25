@@ -1,5 +1,4 @@
 import React, { useState, useEffect, memo } from 'react';
-import styled from 'styled-components';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import Form from '@components/common/Form/Form';

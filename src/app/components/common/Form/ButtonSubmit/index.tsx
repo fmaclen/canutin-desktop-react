@@ -5,7 +5,7 @@ import { container } from './styles';
 
 export interface SubmitButtonProp {
   children: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
 }
 
@@ -14,7 +14,7 @@ const Container = styled.button`
 `;
 
 const SubmitButton = ({ children, onClick, disabled = false }: SubmitButtonProp) => (
-  <Container onClick={!disabled ? () => onClick() : () => {}} disabled={disabled}>
+  <Container type="submit" onClick={!disabled && onClick ? () => onClick() : () => {}} disabled={disabled}>
     {children}
   </Container>
 );

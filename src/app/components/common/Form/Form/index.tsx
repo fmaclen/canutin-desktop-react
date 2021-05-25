@@ -13,6 +13,6 @@ export interface FormProps {
   onSubmit?: () => void;
 }
 
-const Form = ({ children }: FormProps) => <Container>{children}</Container>;
+const Form = ({ children, role, onSubmit }: FormProps) => <Container role={role} onSubmit={onSubmit}>{children}</Container>;
 
 export default Form;
