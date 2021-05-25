@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
-import FormContainer from '@components/common/Form/FormContainer';
+import Form from '@components/common/Form/Form';
 import Fieldset from '@components/common/Form/Fieldset';
 import Field from '@components/common/Form/Field';
 import RadioGroupField from '@components/common/Form/RadioGroupField';
@@ -118,7 +118,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
   const submitDisabled = shouldDisplayAccount ? !submitAccountEnabled : submitAssetDisabled;
 
   return (
-    <FormContainer>
+    <Form onSubmit={formSubmit} role="form">
       <Fieldset>
         <RadioGroupField
           label="Add new"
@@ -203,7 +203,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
           Continue
         </ButtonSubmit>
       </FormFooter>
-    </FormContainer>
+    </Form>
   );
 };
 
