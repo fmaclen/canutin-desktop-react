@@ -17,7 +17,7 @@ import ButtonSubmit from '@components/common/Form/ButtonSubmit';
 
 import { DB_GET_ACCOUNTS_ACK } from '@constants/events';
 import { ACCOUNT, ASSET } from '@appConstants/misc';
-import { BalanceGroupEnum } from '../../../../enums/balancegGroup.enum';
+import { BalanceGroupEnum } from '../../../../enums/balanceGroup.enum';
 import { accountTypes, balanceGroupLabels } from '@constants/accountTypes';
 import { assetTypes } from '@constants/assetTypes';
 import { NewAssetType } from '../../../../types/asset.type';

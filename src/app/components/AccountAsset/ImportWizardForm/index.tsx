@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
@@ -55,7 +55,7 @@ export interface AnalyzeSourceFileType {
 
 interface ImportWizardFormProps {
   isLoading: boolean;
-  setIsLoading: (isLoading :boolean) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) => {
@@ -66,6 +66,24 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
   const [canutinJson, setCanutinJson] = useState<CanutinFileType | null>(null);
   const [otherCsvData, setOtherCsvData] = useState<unknown | null>(null);
   const [otherCsvMetadata, setOtherCsvMetadata] = useState<AnalyzeSourceMetadataType | null>(null);
+
+  useEffect(() => {
+    ipcRenderer.on(
+      LOAD_FROM_CANUTIN_FILE_ACK,
+      (_: IpcRendererEvent, { filePath: sourceFilePath }) => {
+        setIsLoading(false);
+      }
+    );
+
+    ipcRenderer.on(LOAD_FROM_OTHER_CSV_ACK, (_: IpcRendererEvent, { filePath: sourceFilePath }) => {
+      setIsLoading(false);
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners(LOAD_FROM_CANUTIN_FILE_ACK);
+      ipcRenderer.removeAllListeners(LOAD_FROM_OTHER_CSV_ACK);
+    };
+  }, []);
 
   useEffect(() => {
     ipcRenderer.on(IMPORT_SOURCE_FILE_ACK, (_: IpcRendererEvent, { filePath: sourceFilePath }) => {
@@ -103,24 +121,11 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
       }
     );
 
-    ipcRenderer.on(
-      LOAD_FROM_CANUTIN_FILE_ACK,
-      (_: IpcRendererEvent, { filePath: sourceFilePath }) => {
-        setIsLoading(false);
-      }
-    );
-
-    ipcRenderer.on(LOAD_FROM_OTHER_CSV_ACK, (_: IpcRendererEvent, { filePath: sourceFilePath }) => {
-      setIsLoading(false);
-    });
-
     return () => {
       ipcRenderer.removeAllListeners(IMPORT_SOURCE_FILE_ACK);
       ipcRenderer.removeAllListeners(ANALYZE_SOURCE_FILE_ACK);
-      ipcRenderer.removeAllListeners(LOAD_FROM_CANUTIN_FILE_ACK);
-      ipcRenderer.removeAllListeners(LOAD_FROM_OTHER_CSV_ACK);
     };
-  }, []);
+  }, [source]);
 
   useEffect(() => {
     if (filePath) {
@@ -192,4 +197,4 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
   );
 };
 
-export default ImportWizardForm;
+export default memo(ImportWizardForm);

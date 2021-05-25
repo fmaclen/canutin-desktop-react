@@ -20,7 +20,7 @@ import ButtonSubmit from '@components/common/Form/ButtonSubmit';
 import { DB_GET_ACCOUNTS_ACK, LOAD_FROM_OTHER_CSV } from '@constants/events';
 import AccountIpc from '@app/data/account.ipc';
 import { Account } from '@database/entities';
-import { BalanceGroupEnum } from '@enums/balancegGroup.enum';
+import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
 import { optionList, option, toggleInputContainer } from './styles';
 import {
@@ -136,7 +136,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   }, [accounts, selectedAccount, setValue]);
 
   useEffect(() => {
-    trigger(['account.autoCalculate', 'account.balance']);
+    autoCalculate && trigger(['account.autoCalculate', 'account.balance']);
   }, [autoCalculate]);
 
   // Calculated Options
@@ -301,7 +301,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
       )}
       {selectedCategoryColumn && (
         <Fieldset>
-          <Field name="Match Categories" label="Match Categories">
+          <Field name="Match categories" label="Match categories">
             <OptionList>
               {columnOptions(selectedCategoryColumn).map((categoryName: string) => (
                 <Option key={categoryName}>
@@ -353,7 +353,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
               />
             </>
           )}
-          <Field label="Account balance" name="balance">
+          <Field label="Account balance" name="account.balance">
             <ToggleInputContainer>
               <InputText
                 name="account.balance"
