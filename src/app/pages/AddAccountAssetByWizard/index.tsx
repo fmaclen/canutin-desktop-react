@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import ScrollView from '@components/common/ScrollView';

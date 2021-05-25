@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
-import FormContainer from '@components/common/Form/FormContainer';
+import Form from '@components/common/Form/Form';
 import Fieldset from '@components/common/Form/Fieldset';
 import RadioGroupField from '@components/common/Form/RadioGroupField';
 import ChooseFileInput from '@components/common/ChooseFileInput';
@@ -153,7 +153,7 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
     isLoading;
 
   return (
-    <FormContainer>
+    <Form>
       <Fieldset>
         <RadioGroupField
           label="Import from"
@@ -188,7 +188,7 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
           </ButtonSubmit>
         </FormFooter>
       )}
-    </FormContainer>
+    </Form>
   );
 };
 
