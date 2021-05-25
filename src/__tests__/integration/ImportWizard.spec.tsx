@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { mocked } from 'ts-jest/utils';
 import userEvent from '@testing-library/user-event';
@@ -10,13 +10,14 @@ import {
   IMPORT_SOURCE_FILE,
   IMPORT_SOURCE_FILE_ACK,
   ANALYZE_SOURCE_FILE_ACK,
+  DB_GET_ACCOUNTS_ACK,
 } from '@constants/events';
+import { accountBuilder } from '@tests/factories/accountFactory';
+import { render } from '@tests/utils';
+
 import canutinFile from '../data/canutinFile.json';
 import csvMetadata from '../data/csvMetadata.json';
 import csvSourceData from '../data/csvSourceData.json';
-
-import { render } from '@tests/utils';
-import { act } from 'react-dom/test-utils';
 
 const initImportWizard = () => {
   render(<App />);
@@ -195,20 +196,23 @@ describe('Import Wizard tests', () => {
         });
       }
 
+      if (event === DB_GET_ACCOUNTS_ACK) {
+        const accountMock = accountBuilder();
+        callback((event as unknown) as IpcRendererEvent, [accountMock]);
+      }
+
       return ipcRenderer;
     });
 
     initImportWizard();
     const otherCSVOption = screen.getByLabelText('Other CSV');
-    await act(async () => {
-      userEvent.click(otherCSVOption);
-    });
+    userEvent.click(otherCSVOption);
     expect(screen.getByText(/testpath/i)).not.toBeNull();
 
+    const continueButton = screen.getByRole('button', { name: /Continue/i });
     const matchColumns = screen.getByText(/Match columns/i);
     const dateColumn = screen.getByLabelText(/Date column/i);
     const dateFormat = screen.getByLabelText(/Date format/i);
-    const accountBalance = screen.getByLabelText(/Account balance/i);
     const descriptionColumn = screen.getByLabelText(/Description column/i);
     const amountColumn = screen.getByLabelText(/Amount column/i);
     const accountColumn = screen.getByLabelText('Account column / Optional');
@@ -217,19 +221,47 @@ describe('Import Wizard tests', () => {
     const accountName = screen.getByLabelText(/Account name/i);
     const accountType = screen.getByLabelText(/Account type/i);
     const accountInstitution = screen.getByLabelText('Account institution / Optional');
+    const accountBalance = screen.getByLabelText(/Account balance/i);
     const autoCalculate = screen.getByLabelText('Auto-calculate from transactions');
 
-    expect(matchColumns).not.toBeNull();
-    expect(dateColumn).not.toBeNull();
-    expect(dateFormat).not.toBeNull();
-    expect(descriptionColumn).not.toBeNull();
-    expect(amountColumn).not.toBeNull();
-    expect(accountColumn).not.toBeNull();
-    expect(categoryColumn).not.toBeNull();
-    expect(importAccount).not.toBeNull();
-    expect(accountName).not.toBeNull();
-    expect(accountType).not.toBeNull();
-    expect(accountInstitution).not.toBeNull();
-    expect(autoCalculate).not.toBeNull();
+    expect(matchColumns).toBeInTheDocument();
+    expect(dateColumn).toBeInTheDocument();
+    expect(dateFormat).toBeInTheDocument();
+    expect(descriptionColumn).toBeInTheDocument();
+    expect(amountColumn).toBeInTheDocument();
+    expect(accountColumn).toBeInTheDocument();
+    expect(categoryColumn).toBeInTheDocument();
+    expect(importAccount).toBeInTheDocument();
+    expect(accountName).toBeInTheDocument();
+    expect(accountType).toBeInTheDocument();
+    expect(accountInstitution).toBeInTheDocument();
+    expect(accountBalance).toBeInTheDocument();
+    expect(autoCalculate).toBeInTheDocument();
+    expect(continueButton).toBeDisabled();
+
+    await selectEvent.select(accountColumn, 'Account Name');
+    expect(screen.queryByLabelText(/Import to account/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Account name/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Account type/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Account balance/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Account institution / Optional')).not.toBeInTheDocument();
+    expect(screen.queryByText('Choose types for new accounts')).toBeInTheDocument();
+    await selectEvent.select(categoryColumn, 'Category');
+    expect(screen.queryByText('Match categories')).toBeInTheDocument();
+    await selectEvent.select(dateColumn, 'Date');
+    await selectEvent.select(amountColumn, 'Amount');
+    await selectEvent.select(descriptionColumn, 'Description');
+    expect(continueButton).not.toBeDisabled();
+
+    await selectEvent.clearAll(categoryColumn);
+    expect(continueButton).not.toBeDisabled();
+    await selectEvent.clearAll(accountColumn);
+    expect(continueButton).toBeDisabled();
+    userEvent.type(accountName, 'Test account');
+    await selectEvent.select(screen.getByLabelText('Account type'), 'Checking');
+    userEvent.type(accountInstitution, 'Test Institution');
+    userEvent.click(autoCalculate);
+    expect(autoCalculate).not.toBeChecked();
+    userEvent.type(accountBalance, '123');
   });
 });
