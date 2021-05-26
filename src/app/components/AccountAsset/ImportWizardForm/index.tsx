@@ -1,7 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
-import Form from '@components/common/Form/Form';
+import Form from '@components/common/Form/Form/formImportWizard';
 import Fieldset from '@components/common/Form/Fieldset';
 import RadioGroupField from '@components/common/Form/RadioGroupField';
 import ChooseFileInput from '@components/common/ChooseFileInput';

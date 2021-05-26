@@ -10,7 +10,7 @@ const Container = styled.form`
 export interface FormProps {
   children: ReactNode;
   role?: string;
-  onSubmit?: () => void;
+  onSubmit: () => void;
 }
 
 const Form = ({ children, role, onSubmit }: FormProps) => <Container role={role} onSubmit={onSubmit}>{children}</Container>;
