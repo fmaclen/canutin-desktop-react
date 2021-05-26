@@ -157,7 +157,7 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
     isLoading;
 
   return (
-    <>
+    <Form>
       <Fieldset>
         <RadioGroupField
           label="Import from"
@@ -192,7 +192,7 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
           </ButtonSubmit>
         </FormFooter>
       )}
-    </>
+    </Form>
   );
 };
 
