@@ -12,6 +12,7 @@ export const container = css<{ loadingPercentage: number }>`
   height: 100%;
   min-width: ${({ loadingPercentage }) => `${loadingPercentage}%`};
   padding: 0 16px;
+  transition: min-width 250ms;
 `;
 
 export const message = css`
