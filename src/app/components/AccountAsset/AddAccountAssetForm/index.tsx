@@ -134,7 +134,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
       {shouldDisplayAccount && (
         <Fieldset>
           <SelectField
-            label="Account Type"
+            label="Account type"
             name="accountType"
             groupedOptions={accountGroupedValues}
             required
@@ -182,8 +182,20 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
               required
             />
             <InputTextField label="Name" name="name" register={registerAssetField} required />
-            <InputTextField label="Quantity" type="number" name="quantity" register={registerAssetField} required />
-            <InputTextField label="Cost" type="number" name="cost" register={registerAssetField} required />
+            <InputTextField
+              label="Quantity"
+              type="number"
+              name="quantity"
+              register={registerAssetField}
+              required
+            />
+            <InputTextField
+              label="Cost"
+              type="number"
+              name="cost"
+              register={registerAssetField}
+              required
+            />
             <InputTextField label="Value" name="value" value={`$ ${assetValue}`} disabled />
           </Fieldset>
           <Fieldset>
@@ -199,9 +211,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
         </>
       )}
       <FormFooter>
-        <ButtonSubmit disabled={submitDisabled}>
-          Continue
-        </ButtonSubmit>
+        <ButtonSubmit disabled={submitDisabled}>Continue</ButtonSubmit>
       </FormFooter>
     </Form>
   );
