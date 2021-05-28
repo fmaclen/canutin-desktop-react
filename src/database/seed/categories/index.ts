@@ -36,7 +36,7 @@ const categoryList = {
     {
       subcategories: [
         {
-          name: 'Business & services'
+          name: 'Business & services',
         },
         {
           name: 'Contractors',
