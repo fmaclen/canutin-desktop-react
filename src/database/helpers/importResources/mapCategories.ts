@@ -71,7 +71,6 @@ const mapCategories = (category: string) => {
       return 'Fees';
 
     case 'financial':
-    case 'income':
     case 'reimbursement':
     case 'returned purchase':
     case 'transfer for cash spending':
@@ -142,6 +141,7 @@ const mapCategories = (category: string) => {
     case 'rent':
       return 'Housing';
 
+    case 'income':
     case 'rental income':
     case 'investment income':
     case 'deposits':

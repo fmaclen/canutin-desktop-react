@@ -80,6 +80,9 @@ const categoryList = {
           name: 'Financial services',
         },
         {
+          name: 'Income',
+        },
+        {
           name: 'Interest',
         },
         {
