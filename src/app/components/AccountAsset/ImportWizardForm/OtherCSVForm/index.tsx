@@ -7,7 +7,7 @@ import { isValid, parse } from 'date-fns';
 import Fieldset from '@components/common/Form/Fieldset';
 import FormAlert from '@components/common/FormAlert';
 import SelectField from '@components/common/Form/SelectField';
-import Select from '@components/common/Select';
+import Select from '@app/components/common/Form/Select';
 import InlineCheckbox from '@components/common/Form/Checkbox';
 import Field from '@components/common/Form/Field';
 import InputText from '@components/common/Form/InputText';
@@ -202,7 +202,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
     const isValidDateColumn = checkDateColumnFormat();
     const isValidAmountColumn = checkAmountColumn();
 
-    if (!isValidDateColumn) { 
+    if (!isValidDateColumn) {
       dateFormatRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
