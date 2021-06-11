@@ -5,7 +5,7 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { isValid, parse } from 'date-fns';
 
 import Fieldset from '@components/common/Form/Fieldset';
-import FormNotice from '@app/components/common/Form/FormNotice';
+import FiledNotice from '@app/components/common/Form/FieldNotice';
 import SelectField from '@components/common/Form/SelectField';
 import Select from '@app/components/common/Form/Select';
 import InlineCheckbox from '@components/common/Form/Checkbox';
@@ -221,7 +221,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
   return (
     <>
       <Fieldset>
-        <FormNotice
+        <FiledNotice
           title="Interpreting your CSV file"
           description={
             <div>
@@ -376,7 +376,7 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
             </ToggleInputContainer>
           </Field>
           {!autoCalculate && (
-            <FormNotice
+            <FiledNotice
               title="Balance history"
               description={
                 <div>
