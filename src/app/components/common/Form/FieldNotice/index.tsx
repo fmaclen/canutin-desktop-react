@@ -16,13 +16,13 @@ const Description = styled.div`
   ${description}
 `;
 
-interface FiledNoticeProps {
+interface FieldNoticeProps {
   title: string;
   description: JSX.Element;
   label?: string;
 }
 
-const FiledNotice = ({ title, description, label }: FiledNoticeProps) => {
+const FieldNotice = ({ title, description, label }: FieldNoticeProps) => {
   return (
     <Field name={title} label={label}>
       <Container>
@@ -33,4 +33,4 @@ const FiledNotice = ({ title, description, label }: FiledNoticeProps) => {
   );
 };
 
-export default FiledNotice;
+export default FieldNotice;

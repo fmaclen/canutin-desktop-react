@@ -2,10 +2,10 @@ import React from 'react';
 
 import { enumImportTitleOptions } from '@appConstants/misc';
 
-import FiledNotice from '@app/components/common/Form/FieldNotice';
+import FieldNotice from '@app/components/common/Form/FieldNotice';
 
 const MintAlert = (
-  <FiledNotice
+  <FieldNotice
     title="Mint.com"
     description={
       <div>
@@ -16,7 +16,7 @@ const MintAlert = (
 );
 
 const CanutinFileAlert = (
-  <FiledNotice
+  <FieldNotice
     title="CanutinFile"
     description={
       <div>
@@ -28,7 +28,7 @@ const CanutinFileAlert = (
 );
 
 const PersonalCapitalAlert = (
-  <FiledNotice
+  <FieldNotice
     title="Personal Capital"
     description={
       <div>
@@ -39,7 +39,7 @@ const PersonalCapitalAlert = (
 );
 
 const OtherCSVAlert = (
-  <FiledNotice
+  <FieldNotice
     title="Importing a different CSV"
     description={
       <div>
