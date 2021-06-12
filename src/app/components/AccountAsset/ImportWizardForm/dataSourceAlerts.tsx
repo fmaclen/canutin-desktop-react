@@ -2,7 +2,7 @@ import React from 'react';
 
 import { enumImportTitleOptions } from '@appConstants/misc';
 
-import FieldNotice from '@app/components/common/Form/FieldNotice';
+import FieldNotice from '@components/common/Form/FieldNotice';
 
 const MintAlert = (
   <FieldNotice

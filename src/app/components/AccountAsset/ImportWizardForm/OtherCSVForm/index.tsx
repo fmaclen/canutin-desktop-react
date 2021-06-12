@@ -5,9 +5,9 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { isValid, parse } from 'date-fns';
 
 import Fieldset from '@components/common/Form/Fieldset';
-import FieldNotice from '@app/components/common/Form/FieldNotice';
+import FieldNotice from '@components/common/Form/FieldNotice';
 import SelectField from '@components/common/Form/SelectField';
-import Select from '@app/components/common/Form/Select';
+import Select from '@components/common/Form/Select';
 import InlineCheckbox from '@components/common/Form/Checkbox';
 import Field from '@components/common/Form/Field';
 import InputText from '@components/common/Form/InputText';
