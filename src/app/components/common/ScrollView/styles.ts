@@ -21,6 +21,7 @@ export const container = css`
 `;
 
 export const header = css`
+  position: relative;
   background-color: ${grey3};
   border-bottom: 1px solid ${grey10};
   display: flex;
@@ -94,6 +95,9 @@ export const main = css<{ wizard?: boolean }>`
 `;
 
 export const backButton = css`
+  position: absolute;
+  top: 0;
+  left: 0;
   cursor: pointer;
   padding: 20px;
   opacity: 0.5;

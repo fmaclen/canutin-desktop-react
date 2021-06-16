@@ -3,7 +3,7 @@ import { css } from 'styled-components';
 import { sansSerifBold } from '@appConstants/fonts';
 import { grey20, grey30, grey40, grey80, bluePlain, whitePlain } from '@appConstants/colors';
 
-const scaleOnHover = css`
+const scaleOnClick = css`
   &:focus {
     outline: none;
   }
@@ -14,7 +14,7 @@ const scaleOnHover = css`
 `;
 
 export const defaultContainer = css<{ disabled: boolean }>`
-  ${scaleOnHover};
+  ${scaleOnClick};
   ${sansSerifBold};
   background-color: ${bluePlain};
   border: none;
@@ -35,7 +35,7 @@ export const defaultContainer = css<{ disabled: boolean }>`
 `;
 
 export const secondaryContainer = css<{ disabled: boolean }>`
-  ${scaleOnHover};
+  ${scaleOnClick};
   border: 1px solid ${grey20};
   border-radius: 4px;
   background-color: transparent;

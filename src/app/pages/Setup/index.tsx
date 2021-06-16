@@ -72,28 +72,26 @@ const Setup = () => {
   };
 
   return !isLoading ? (
-    <>
-      <ScrollView title="Canutin setup" wizard={true}>
-        <SectionRow>
-          <Section title="Choose vault">
-            <PrimaryCardRow>
-              <PrimaryCard
-                icon={<Vault />}
-                title="New vault"
-                subTitle="Create a brand new vault"
-                onClick={onOpenCreateVault}
-              />
-              <PrimaryCard
-                icon={<Browse />}
-                title="Existing vault"
-                subTitle="Locate an existing vault file"
-                onClick={onOpenExistingVault}
-              />
-            </PrimaryCardRow>
-          </Section>
-        </SectionRow>
-      </ScrollView>
-    </>
+    <ScrollView title="Canutin setup" wizard={true}>
+      <SectionRow>
+        <Section title="Choose vault">
+          <PrimaryCardRow>
+            <PrimaryCard
+              icon={<Vault />}
+              title="New vault"
+              subTitle="Create a brand new vault"
+              onClick={onOpenCreateVault}
+            />
+            <PrimaryCard
+              icon={<Browse />}
+              title="Existing vault"
+              subTitle="Locate an existing vault file"
+              onClick={onOpenExistingVault}
+            />
+          </PrimaryCardRow>
+        </Section>
+      </SectionRow>
+    </ScrollView>
   ) : null;
 };
 
