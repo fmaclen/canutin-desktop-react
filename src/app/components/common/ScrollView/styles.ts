@@ -85,7 +85,7 @@ export const main = css<{ wizard?: boolean }>`
         background-image: url(${backgroundPattern});
         background-size: 256px;
         background-color: ${grey5};
-        animation: 10s linear 0s infinite background-loop;
+        animation: 15s linear 0s infinite background-loop;
         z-index: -1;
       }
 
