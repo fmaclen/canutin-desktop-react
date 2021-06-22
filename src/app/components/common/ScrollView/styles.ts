@@ -67,7 +67,13 @@ export const main = css<{ wizard?: boolean }>`
       position: relative;
       place-items: center;
       height: 100%;
-      background: radial-gradient(50% 50% at 50% 50%, ${grey5} 31.77%, rgba(242, 242, 242, 0) 100%);
+      background: linear-gradient(
+        270deg,
+        ${grey5} 0%,
+        rgba(0, 0, 0, 0) 25%,
+        rgba(0, 0, 0, 0) 75%,
+        ${grey5} 100%
+      );
 
       &:before {
         position: absolute;
@@ -89,6 +95,12 @@ export const main = css<{ wizard?: boolean }>`
         }
         to {
           background-position: 256px 0;
+        }
+      }
+
+      @media (prefers-reduced-motion) {
+        &:before {
+          animation: none;
         }
       }
     `}

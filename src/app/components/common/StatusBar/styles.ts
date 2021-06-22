@@ -13,39 +13,69 @@ import {
   grey50,
 } from '@appConstants/colors';
 
+import { SUCCESS_MESSAGE_TIMEOUT } from './index';
+
 export const container = css<{ error: boolean; success: boolean }>`
   grid-area: status-bar;
   align-items: center;
   background-color: ${({ error, success }) =>
     error ? redLight : success ? greenLight : whitePlain};
-  box-shadow: inset 0 1px 0 ${grey10};
+  border-top: 1px solid ${grey10};
   display: flex;
   justify-content: space-between;
   line-height: 1em;
   padding: 0 16px;
-
   -webkit-user-select: none;
+
+  ${({ success }) =>
+    success &&
+    css`
+      position: relative;
+
+      > * {
+        z-index: 1;
+      }
+
+      &:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: '';
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        animation: ${SUCCESS_MESSAGE_TIMEOUT}ms ease-out autoDismissProgress;
+
+        @keyframes autoDismissProgress {
+          0% {
+            width: 0%;
+          }
+          100% {
+            width: 100%;
+            background-color: ${whitePlain};
+          }
+        }
+      }
+    `}
+  }
 `;
 
 export const error = css`
   color: ${redPlain};
   font-size: 11px;
-  padding: 0 16px;
-  width: 100%;
 `;
 
 export const success = css`
   color: ${greenPlain};
   font-size: 11px;
-  padding: 0 16px;
-  width: 100%;
 `;
 
 export const closeError = css`
   ${sansSerifBold};
   cursor: pointer;
   padding: 8px 16px;
-  margin-right: 16px;
   font-size: 12px;
   border-radius: 3px;
   color: ${grey70};

@@ -1,28 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import styled from 'styled-components';
 
 import LoadingStatusBar from '@components/common/LoadingStatusBar';
 import Breadcrumbs from '@components/common/Breadcrumbs';
+import Button from '@components/common/Button';
 
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { AppContext } from '@app/context/appContext';
 import { routesConfig } from '@routes';
 
-import {
-  container,
-  closeError,
-  error,
-  success,
-  currentSettings,
-  currentSettingsLabel,
-} from './styles';
+import { container, error, success, currentSettings, currentSettingsLabel } from './styles';
 
 const Container = styled.div`
   ${container}
-`;
-const Button = styled.button`
-  ${closeError}
 `;
 const Error = styled.p`
   ${error}
@@ -37,12 +28,15 @@ const CurrentSettingsLabel = styled.div`
   ${currentSettingsLabel}
 `;
 
+export const SUCCESS_MESSAGE_TIMEOUT = 5000;
+
 const StatusBar = () => {
   const {
     loadingMessage,
     loadingPercentage,
     errorMessage,
     successMessage,
+    setSuccessMessage,
     onClickButton,
     breadcrumbs,
   } = useContext(StatusBarContext);
@@ -72,10 +66,21 @@ const StatusBar = () => {
     );
   }
 
+  // Auto-dismiss success messages
+  useEffect(() => {
+    if (successMessage !== '') {
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, SUCCESS_MESSAGE_TIMEOUT);
+    }
+  }, [successMessage]);
+
   return (
     <Container error={error} success={success && !loadingPercentage}>
       {content}
-      {(error || success) && !loadingPercentage && <Button onClick={onClickButton}>Dismiss</Button>}
+      {(error || success) && !loadingPercentage && (
+        <Button label="Dismiss" onClick={onClickButton} />
+      )}
       {!(error || success) && !loadingPercentage && isAppInitialized && (
         <CurrentSettings>
           <CurrentSettingsLabel>ENGLISH</CurrentSettingsLabel>

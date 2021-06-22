@@ -14,8 +14,6 @@ import { StatusBarContext } from '@app/context/statusBarContext';
 import { AppContext } from '@app/context/appContext';
 import AccountIpc from '@app/data/account.ipc';
 
-const SUCCESS_MESSAGE_TIMEOUT = 5000;
-
 const AddAccountAssetByWizard = () => {
   const {
     setSuccessMessage,
@@ -36,9 +34,6 @@ const AddAccountAssetByWizard = () => {
       setSuccessMessage(`The CanutinFile has been imported successfully`);
       setIsDbEmpty(false);
       setIsLoading(false);
-      setTimeout(() => {
-        setSuccessMessage('');
-      }, SUCCESS_MESSAGE_TIMEOUT);
       setLoadingPercentage(undefined);
     });
 
@@ -49,9 +44,6 @@ const AddAccountAssetByWizard = () => {
       AccountIpc.getAccounts();
       setLoadingPercentage(undefined);
       setIsLoading(false);
-      setTimeout(() => {
-        setSuccessMessage('');
-      }, SUCCESS_MESSAGE_TIMEOUT);
     });
 
     ipcRenderer.on(LOADING_CSV, (_: IpcRendererEvent, { total }) => {
