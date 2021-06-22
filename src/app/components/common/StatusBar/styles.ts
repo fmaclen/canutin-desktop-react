@@ -1,10 +1,8 @@
 import { css } from 'styled-components';
-import { sansSerifBold, monospaceRegular } from '@appConstants/fonts';
+import { monospaceRegular } from '@appConstants/fonts';
 import {
   whitePlain,
   grey10,
-  grey20,
-  grey70,
   redLight,
   redPlain,
   greenPlain,
@@ -70,27 +68,6 @@ export const error = css`
 export const success = css`
   color: ${greenPlain};
   font-size: 11px;
-`;
-
-export const closeError = css`
-  ${sansSerifBold};
-  cursor: pointer;
-  padding: 8px 16px;
-  font-size: 12px;
-  border-radius: 3px;
-  color: ${grey70};
-  border: 1px solid ${grey20};
-  background-color: transparent;
-  line-height: 1em;
-  transition: transform 100ms;
-
-  &:hover {
-    border-color: ${grey70};
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
 `;
 
 export const currentSettings = css`

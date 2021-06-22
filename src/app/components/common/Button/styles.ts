@@ -1,7 +1,7 @@
 import { css } from 'styled-components';
 
 import { sansSerifBold } from '@appConstants/fonts';
-import { grey20, grey70 } from '@appConstants/colors';
+import { grey20, grey40, grey70 } from '@appConstants/colors';
 
 export const container = css`
   ${sansSerifBold};
@@ -14,9 +14,12 @@ export const container = css`
   background-color: transparent;
   line-height: 1em;
   transition: transform 100ms;
+  outline: none;
 
+  &:active,
+  &:focus,
   &:hover {
-    border-color: ${grey70};
+    border-color: ${grey40};
   }
 
   &:active {

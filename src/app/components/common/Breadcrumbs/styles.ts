@@ -22,7 +22,9 @@ export const text = css`
   font-size: 11px;
   line-height: 11px;
   text-decoration: none;
+  outline: none;
 
+  &:focus,
   &:hover {
     color: ${grey80};
   }
