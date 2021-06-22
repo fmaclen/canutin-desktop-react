@@ -1,10 +1,20 @@
 import { css } from 'styled-components';
 
-import { grey40 } from '@appConstants/colors';
+import { grey40, grey80 } from '@appConstants/colors';
+
+const breadcrumbSpacing = css`
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 8px;
+  align-items: center;
+`;
 
 export const container = css`
-  align-items: center;
-  display: flex;
+  ${breadcrumbSpacing};
+`;
+
+export const breadcrumb = css`
+  ${breadcrumbSpacing};
 `;
 
 export const text = css`
@@ -12,6 +22,8 @@ export const text = css`
   font-size: 11px;
   line-height: 11px;
   text-decoration: none;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+
+  &:hover {
+    color: ${grey80};
+  }
 `;
