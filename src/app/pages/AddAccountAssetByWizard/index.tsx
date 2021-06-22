@@ -31,14 +31,14 @@ const AddAccountAssetByWizard = () => {
 
   useEffect(() => {
     ipcRenderer.on(LOAD_FROM_CANUTIN_FILE_ACK, (_: IpcRendererEvent, { name }) => {
-      setSuccessMessage(`The CanutinFile has been imported successfully`);
+      setSuccessMessage(`The CanutinFile was imported successfully`);
       setIsDbEmpty(false);
       setIsLoading(false);
       setLoadingPercentage(undefined);
     });
 
     ipcRenderer.on(LOAD_FROM_OTHER_CSV_ACK, (_: IpcRendererEvent, { name }) => {
-      setSuccessMessage(`The CSV has been imported successfully`);
+      setSuccessMessage(`The CSV was imported successfully`);
       setIsDbEmpty(false);
       // Reload accounts on other CSV form
       AccountIpc.getAccounts();
