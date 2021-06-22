@@ -14,8 +14,8 @@ import {
   closeError,
   error,
   success,
-  configurationInfo,
-  configurationLabel,
+  currentSettings,
+  currentSettingsLabel,
 } from './styles';
 
 const Container = styled.div`
@@ -30,11 +30,11 @@ const Error = styled.p`
 const Success = styled.p`
   ${success}
 `;
-const ConfigurationInfo = styled.div`
-  ${configurationInfo}
+const CurrentSettings = styled.div`
+  ${currentSettings}
 `;
-const ConfigurationLabel = styled.div`
-  ${configurationLabel}
+const CurrentSettingsLabel = styled.div`
+  ${currentSettingsLabel}
 `;
 
 const StatusBar = () => {
@@ -77,10 +77,10 @@ const StatusBar = () => {
       {content}
       {(error || success) && !loadingPercentage && <Button onClick={onClickButton}>Dismiss</Button>}
       {!(error || success) && !loadingPercentage && isAppInitialized && (
-        <ConfigurationInfo>
-          <ConfigurationLabel>ENGLISH</ConfigurationLabel>
-          <ConfigurationLabel>USD $</ConfigurationLabel>
-        </ConfigurationInfo>
+        <CurrentSettings>
+          <CurrentSettingsLabel>ENGLISH</CurrentSettingsLabel>
+          <CurrentSettingsLabel>USD $</CurrentSettingsLabel>
+        </CurrentSettings>
       )}
     </Container>
   );

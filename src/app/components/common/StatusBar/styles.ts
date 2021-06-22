@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { sansSerifBold } from '@appConstants/fonts';
+import { sansSerifBold, monospaceRegular } from '@appConstants/fonts';
 import {
   whitePlain,
   grey10,
@@ -22,6 +22,7 @@ export const container = css<{ error: boolean; success: boolean }>`
   display: flex;
   justify-content: space-between;
   line-height: 1em;
+  padding: 0 16px;
 
   -webkit-user-select: none;
 `;
@@ -62,22 +63,18 @@ export const closeError = css`
   }
 `;
 
-export const configurationInfo = css`
-  display: flex;
-  margin-right: 16px;
+export const currentSettings = css`
+  display: grid;
+  grid-gap: 4px;
+  grid-auto-flow: column;
 `;
 
-export const configurationLabel = css`
-  align-items: center;
-  background-color: ${grey7};
-  border-radius: 4px;
-  color: ${grey50};
+export const currentSettingsLabel = css`
+  ${monospaceRegular};
   font-size: 11px;
-  font-family: 'Decima Mono Pro';
   letter-spacing: -0.025em;
-  display: flex;
-  margin-left: 4px;
-  justify-content: center;
-  height: 23px;
-  width: 61px;
+  color: ${grey50};
+  background-color: ${grey7};
+  padding: 4px 8px;
+  border-radius: 4px;
 `;
