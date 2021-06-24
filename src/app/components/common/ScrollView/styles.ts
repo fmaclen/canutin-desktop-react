@@ -43,8 +43,6 @@ export const title = css`
   ${componentConstraints};
   ${sansSerifBold};
   font-size: 24px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 `;
 
 export const subTitle = css`
