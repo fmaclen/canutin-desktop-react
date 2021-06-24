@@ -130,18 +130,3 @@ export const headerContainer = css`
   grid-gap: 32px;
   align-items: flex-end;
 `;
-
-export const back = css`
-  cursor: pointer;
-  margin-left: 22.5px;
-  margin-bottom: auto;
-`;
-
-export const information = css`
-  display: flex;
-  justify-content: space-between;
-`;
-
-export const rightInformation = css`
-  margin-right: 119px;
-`;

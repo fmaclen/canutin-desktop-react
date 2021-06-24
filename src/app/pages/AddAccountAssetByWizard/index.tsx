@@ -31,10 +31,10 @@ const AddAccountAssetByWizard = () => {
 
   useEffect(() => {
     ipcRenderer.on(LOAD_FROM_CANUTIN_FILE_ACK, (_: IpcRendererEvent, { name }) => {
-      setSuccessMessage(`The CanutinFile was imported successfully`);
+      setLoadingPercentage(undefined);
       setIsDbEmpty(false);
       setIsLoading(false);
-      setLoadingPercentage(undefined);
+      setSuccessMessage(`The file was imported successfully`);
     });
 
     ipcRenderer.on(LOAD_FROM_OTHER_CSV_ACK, (_: IpcRendererEvent, { name }) => {

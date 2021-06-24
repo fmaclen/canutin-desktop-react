@@ -14,6 +14,7 @@ import {
 import { SUCCESS_MESSAGE_TIMEOUT } from './index';
 
 export const container = css<{ error: boolean; success: boolean }>`
+  position: relative;
   grid-area: status-bar;
   align-items: center;
   background-color: ${({ error, success }) =>
