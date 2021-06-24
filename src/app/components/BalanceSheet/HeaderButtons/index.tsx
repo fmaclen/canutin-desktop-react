@@ -16,11 +16,10 @@ const HeaderButtons = () => {
 
   return (
     <ButtonRow>
-      <Button label="Add new" onClick={() => history.push(routesPaths.addAccountOrAssetByHand)} />
-      <Button
-        label="Import wizard"
-        onClick={() => history.push(routesPaths.addAccountOrAssetByWizard)}
-      />
+      <Button onClick={() => history.push(routesPaths.addAccountOrAssetByHand)}>Add new</Button>
+      <Button onClick={() => history.push(routesPaths.addAccountOrAssetByWizard)}>
+        Import wizard
+      </Button>
     </ButtonRow>
   );
 };

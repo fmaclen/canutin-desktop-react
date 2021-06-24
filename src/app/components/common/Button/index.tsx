@@ -8,14 +8,14 @@ const Container = styled.button`
 `;
 
 export interface ButtonProps {
-  label: ReactNode;
+  children: ReactNode;
   onClick: (() => void) | undefined;
   disabled?: boolean;
 }
 
-const Button = ({ label, onClick, disabled = false }: ButtonProps) => (
+const Button = ({ children, onClick, disabled = false }: ButtonProps) => (
   <Container onClick={!disabled && onClick ? () => onClick() : () => {}} disabled={disabled}>
-    {label}
+    {children}
   </Container>
 );
 

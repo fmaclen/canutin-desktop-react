@@ -78,9 +78,7 @@ const StatusBar = () => {
   return (
     <Container error={error} success={success && !loadingPercentage}>
       {content}
-      {(error || success) && !loadingPercentage && (
-        <Button label="Dismiss" onClick={onClickButton} />
-      )}
+      {(error || success) && !loadingPercentage && <Button onClick={onClickButton}>Dismiss</Button>}
       {!(error || success) && !loadingPercentage && isAppInitialized && (
         <CurrentSettings>
           <CurrentSettingsLabel>ENGLISH</CurrentSettingsLabel>
