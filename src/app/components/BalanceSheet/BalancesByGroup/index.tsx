@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import BalanceItem from '@components/BalanceSheet/BalanceItem';
+import BalanceGroupList from '@app/components/BalanceSheet/BalanceGroupList';
 import { BalanceGroupCardTypeEnum } from '@app/components/common/BalanceGroupCard/constants';
 
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
@@ -23,29 +23,29 @@ export type BalanceData = {
   };
 };
 
-export interface BalanceListProps {
-  balanceListData: BalanceData;
+export interface BalancesByGroupProps {
+  balancesByGroupData: BalanceData;
 }
 
-const BalanceList = ({ balanceListData }: BalanceListProps) => (
+const BalancesByGroup = ({ balancesByGroupData }: BalancesByGroupProps) => (
   <Container>
-    <BalanceItem
+    <BalanceGroupList
       type={BalanceGroupCardTypeEnum.CASH}
-      balanceData={balanceListData[BalanceGroupEnum.CASH]}
+      balanceData={balancesByGroupData[BalanceGroupEnum.CASH]}
     />
-    <BalanceItem
+    <BalanceGroupList
       type={BalanceGroupCardTypeEnum.DEBT}
-      balanceData={balanceListData[BalanceGroupEnum.DEBT]}
+      balanceData={balancesByGroupData[BalanceGroupEnum.DEBT]}
     />
-    <BalanceItem
+    <BalanceGroupList
       type={BalanceGroupCardTypeEnum.INVESTMENTS}
-      balanceData={balanceListData[BalanceGroupEnum.INVESTMENT]}
+      balanceData={balancesByGroupData[BalanceGroupEnum.INVESTMENT]}
     />
-    <BalanceItem
+    <BalanceGroupList
       type={BalanceGroupCardTypeEnum.OTHER_ASSETS}
-      balanceData={balanceListData[BalanceGroupEnum.OTHER_ASSETS]}
+      balanceData={balancesByGroupData[BalanceGroupEnum.OTHER_ASSETS]}
     />
   </Container>
 );
 
-export default BalanceList;
+export default BalancesByGroup;

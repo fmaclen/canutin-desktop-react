@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Section from '@components/common/Section';
 import { SegmentedControl, Segment } from '@components/common/SegmentedControl';
-import BalanceList from '@components/BalanceSheet/BalanceList';
+import BalancesByGroup from '@app/components/BalanceSheet/BalancesByGroup';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
 export enum BalanceSheetSegmentsEnum {
@@ -26,14 +26,14 @@ const BalanceSheetSection = () => {
     all: {
       [BalanceGroupEnum.CASH]: {
         Checking: [
-          { name: 'Personal Checking', type: 'Account', amount: 250 },
-          { name: 'My Checking', type: 'Account', amount: 250 },
-          { name: 'Advantage Plus Checking Total', type: 'Account', amount: 250 },
+          { name: 'Personal Checking', type: 'Account', amount: 750 },
+          { name: 'My Checking', type: 'Account', amount: 1283 },
+          { name: 'Advantage Plus Checking Total', type: 'Account', amount: 33.23 },
         ],
-        Checking2: [
-          { name: 'Personal Checking', type: 'Account', amount: 250 },
-          { name: 'My Checking', type: 'Asset', amount: 250 },
-          { name: 'Advantage Plus Checking Total', type: 'Account', amount: 250 },
+        Savings: [
+          { name: 'Personal Checking', type: 'Account', amount: 506.23 },
+          { name: 'My Checking', type: 'Asset', amount: 99.1 },
+          { name: 'Advantage Plus Checking Total', type: 'Account', amount: 0 },
         ],
       },
     },
@@ -54,7 +54,7 @@ const BalanceSheetSection = () => {
     </SegmentedControl>
   );
 
-  const allBalanceSheet = <BalanceList balanceListData={balanceList.all} />;
+  const allBalanceSheet = <BalancesByGroup balancesByGroupData={balanceList.all} />;
   const accountsBalanceSheet = <div>Accounts</div>;
   const assetsBalanceSheet = <div>Assets</div>;
 
