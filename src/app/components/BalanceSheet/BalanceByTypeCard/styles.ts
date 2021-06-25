@@ -31,7 +31,7 @@ export const balanceTypeCardContainer = css`
 
 export const balanceItemContainer = css`
   display: grid;
-  grid-template-columns: 2fr max-content;
+  grid-template-columns: auto max-content;
   grid-gap: 8px;
   padding: 16px;
   border-bottom: 1px solid ${grey5};
