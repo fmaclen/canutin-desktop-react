@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import BalanceItem from '@components/BalanceSheet/BalanceItem';
-import { SummaryChipTypeEnum } from '@components/common/SummaryChip/constants';
+import { BalanceGroupCardTypeEnum } from '@app/components/common/BalanceGroupCard/constants';
 
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { container } from './styles';
@@ -30,19 +30,19 @@ export interface BalanceListProps {
 const BalanceList = ({ balanceListData }: BalanceListProps) => (
   <Container>
     <BalanceItem
-      type={SummaryChipTypeEnum.CASH}
+      type={BalanceGroupCardTypeEnum.CASH}
       balanceData={balanceListData[BalanceGroupEnum.CASH]}
     />
     <BalanceItem
-      type={SummaryChipTypeEnum.DEBT}
+      type={BalanceGroupCardTypeEnum.DEBT}
       balanceData={balanceListData[BalanceGroupEnum.DEBT]}
     />
     <BalanceItem
-      type={SummaryChipTypeEnum.INVESTMENTS}
+      type={BalanceGroupCardTypeEnum.INVESTMENTS}
       balanceData={balanceListData[BalanceGroupEnum.INVESTMENT]}
     />
     <BalanceItem
-      type={SummaryChipTypeEnum.OTHER_ASSETS}
+      type={BalanceGroupCardTypeEnum.OTHER_ASSETS}
       balanceData={balanceListData[BalanceGroupEnum.OTHER_ASSETS]}
     />
   </Container>

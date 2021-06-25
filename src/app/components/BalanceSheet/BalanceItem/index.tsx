@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { SummaryChipTypeEnum } from '@components/common/SummaryChip/constants';
+import { BalanceGroupCardTypeEnum } from '@app/components/common/BalanceGroupCard/constants';
 import { AccountAssetBalance } from '@components/BalanceSheet/BalanceList';
 import BalanceCard from '@components/BalanceSheet/BalanceCard';
 import EmptyBalanceCard from '@components/BalanceSheet/EmptyBalanceCard';
-import SummaryChip from '@app/components/common/SummaryChip';
+import BalanceGroupCard from '@app/components/common/BalanceGroupCard';
 
 import { container, cardsContainer } from './styles';
 
@@ -18,7 +18,7 @@ const CardsContainer = styled.div`
 `;
 
 interface BalanceItemProps {
-  type: SummaryChipTypeEnum;
+  type: BalanceGroupCardTypeEnum;
   balanceData?: {
     [nameOfBalance: string]: AccountAssetBalance[];
   };
@@ -37,7 +37,7 @@ const BalanceItem = ({ type, balanceData }: BalanceItemProps) => {
 
   return (
     <Container>
-      <SummaryChip type={type} amount={totalAmount} />
+      <BalanceGroupCard type={type} amount={totalAmount} />
       <CardsContainer>
         {!balanceData && <EmptyBalanceCard />}
         {balanceData &&
