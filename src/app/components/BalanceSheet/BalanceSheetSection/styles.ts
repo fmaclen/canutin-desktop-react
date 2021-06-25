@@ -1,8 +1,7 @@
 import { css } from 'styled-components';
 
-export const container = css`
+export const balanceSheetbyGroup = css`
   display: grid;
-  grid-auto-flow: column;
   justify-content: space-between;
-  grid-gap: 24px;
+  grid-gap: 16px;
 `;
