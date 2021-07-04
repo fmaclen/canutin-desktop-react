@@ -173,13 +173,13 @@ export const loadFromCanutinFile = async (
   win: BrowserWindow | null,
   canutinFile: CanutinFileType
 ) => {
-  try {
-    await importFromCanutinFile(canutinFile, win);
+  const isSuccess = await importFromCanutinFile(canutinFile, win);
 
+  if (isSuccess) {
     win?.webContents.send(LOAD_FROM_CANUTIN_FILE_ACK, {
       status: StatusEnum.SUCCESS,
     });
-  } catch (error) {
+  } else {
     win?.webContents.send(LOAD_FROM_CANUTIN_FILE_ACK, {
       status: StatusEnum.ERROR,
     });
