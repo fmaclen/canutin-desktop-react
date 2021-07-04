@@ -50,8 +50,6 @@ describe('Add asset by Hand tests', () => {
 
     // Required fields
     const nameInput = screen.getByLabelText('Name');
-    // const quantityInput = screen.getByLabelText('Quantity');
-    // const costInput = screen.getByLabelText('Cost');
     const valueInput = screen.getByLabelText('Value');
     
     const continueButton = screen.getByRole('button', { name: /Continue/i });
@@ -87,10 +85,12 @@ describe('Add asset by Hand tests', () => {
 
     // Required fields
     const nameInput = screen.getByLabelText('Name');
-    const symbolInput = screen.getByLabelText('Symbol / Optional');
     const quantityInput = screen.getByLabelText('Quantity');
     const costInput = screen.getByLabelText('Cost');
     const valueInput = screen.getByLabelText('Value');
+
+    // Optional fields
+    const symbolInput = screen.getByLabelText('Symbol / Optional');
     
     const continueButton = screen.getByRole('button', { name: /Continue/i });
     expect(continueButton).toBeDisabled();

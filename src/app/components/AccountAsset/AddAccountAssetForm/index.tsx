@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import Form from '@components/common/Form/Form';
 import Fieldset from '@components/common/Form/Fieldset';
 import Field from '@components/common/Form/Field';
 import RadioGroupField from '@components/common/Form/RadioGroupField';
 import SelectField from '@components/common/Form/SelectField';
-import { GroupedValue } from '@components/common/Form/Select';
 import InputTextField from '@components/common/Form/InputTextField';
 import InputText from '@components/common/Form/InputText';
 import InlineCheckbox from '@components/common/Form/Checkbox';
 import FormFooter from '@components/common/Form/FormFooter';
 import SubmitButton from '@app/components/common/Form/SubmitButton';
 
-import { DB_GET_ACCOUNTS_ACK } from '@constants/events';
 import { ACCOUNT, ASSET } from '@appConstants/misc';
-import { BalanceGroupEnum } from '../../../../enums/balanceGroup.enum';
 import { accountTypes, balanceGroupLabels } from '@constants/accountTypes';
 import { assetTypes, assetTypesWithSymbol } from '@constants/assetTypes';
 import { NewAssetType } from '../../../../types/asset.type';
@@ -26,7 +22,6 @@ import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
 
 import { toggableInputContainer } from './styles';
-import { Account } from '@database/entities';
 
 export const accountGroupedValues = accountTypes.map(({ balanceGroup, accountTypes }) => ({
   options: accountTypes,
@@ -48,7 +43,6 @@ export interface AddAccountAssetFormProps {
 
 const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) => {
   const [accountOrAsset, setAccountOrAsset] = useState('');
-  const [accounts, setAccounts] = useState<GroupedValue[]>([]);
   const {
     handleSubmit: handleAssetSubmit,
     register: registerAssetField,
@@ -71,30 +65,6 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
   const onSubmitAccount = async (account: NewAccountType) => {
     AccountIpc.createAccount(account);
   };
-
-  useEffect(() => {
-    ipcRenderer.on(DB_GET_ACCOUNTS_ACK, (_: IpcRendererEvent, accounts: Account[]) => {
-      const accountsValues: GroupedValue[] = [];
-
-      Object.keys(balanceGroupLabels).forEach(balanceGroup => {
-        accountsValues.push({
-          label: balanceGroupLabels[parseInt(balanceGroup) as BalanceGroupEnum],
-          options: accounts
-            .filter(account => account.balanceGroup === parseInt(balanceGroup))
-            .map(({ name, id }) => ({ value: id.toString(), label: name })),
-        });
-      });
-      setAccounts(accountsValues);
-    });
-
-    return () => {
-      ipcRenderer.removeAllListeners(DB_GET_ACCOUNTS_ACK);
-    };
-  }, []);
-
-  useEffect(() => {
-    accountOrAsset === ASSET && AccountIpc.getAccounts();
-  }, [accountOrAsset]);
 
   const shouldDisplay = accountOrAsset !== '';
   const shouldDisplayAccount = shouldDisplay && accountOrAsset === ACCOUNT;
