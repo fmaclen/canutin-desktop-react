@@ -1,3 +1,4 @@
+import { AssetTypeEnum } from '../enums/assetType.enum'
 import { BalanceGroupEnum } from '../enums/balanceGroup.enum';
 
 export const assetTypes = [
@@ -5,7 +6,7 @@ export const assetTypes = [
     balanceGroup: BalanceGroupEnum.CASH,
     assetTypes: [
       {
-        label: 'Cash',
+        label: AssetTypeEnum.CASH,
         value: 'cash',
       },
     ],
@@ -14,11 +15,11 @@ export const assetTypes = [
     balanceGroup: BalanceGroupEnum.INVESTMENT,
     assetTypes: [
       {
-        label: 'Security',
+        label: AssetTypeEnum.SECURITY,
         value: 'security',
       },
       {
-        label: 'Cryptocurrency',
+        label: AssetTypeEnum.CRYPTOCURRENCY,
         value: 'cryptocurrency',
       },
     ],
@@ -27,27 +28,27 @@ export const assetTypes = [
     balanceGroup: BalanceGroupEnum.OTHER_ASSETS,
     assetTypes: [
       {
-        label: 'Collectible',
+        label: AssetTypeEnum.COLLECTIBLE,
         value: 'collectible',
       },
       {
-        label: 'Precious metal',
+        label: AssetTypeEnum.PRECIOUS_METAL,
         value: 'precious metal',
       },
       {
-        label: 'Vehicle',
+        label: AssetTypeEnum.VEHICLE,
         value: 'vehicle',
       },
       {
-        label: 'Real state',
+        label: AssetTypeEnum.REAL_STATE,
         value: 'real state',
       },
       {
-        label: 'Business',
+        label: AssetTypeEnum.BUSINESS,
         value: 'business',
       },
       {
-        label: 'Other',
+        label: AssetTypeEnum.OTHER,
         value: 'other',
       },
     ],
