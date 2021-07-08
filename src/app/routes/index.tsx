@@ -11,6 +11,7 @@ import AddAccountAssetByHand from '@pages/AddAccountAssetByHand';
 import AddAccountAssetByWizard from '@pages/AddAccountAssetByWizard';
 import Setup from '@pages/Setup';
 import Settings from '@pages/Settings';
+import Link from '@pages/Link';
 
 export const rootRoutesPaths = {
   bigpicture: '/bigpicture',
@@ -21,6 +22,7 @@ export const rootRoutesPaths = {
   settings: '/settings',
   account: '/account',
   addAccountOrAsset: '/account/addAccountOrAsset',
+  link: '/link',
 };
 
 export const routesPaths = {
@@ -109,5 +111,11 @@ export const routesConfig: RouteConfigProps[] = [
     exact: true,
     component: <Setup />,
     breadcrumb: 'Canutin Setup',
+  },
+  {
+    path: routesPaths.link,
+    exact: true,
+    component: <Link />,
+    breadcrumb: 'Canutin Link',
   },
 ];
