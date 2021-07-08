@@ -8,7 +8,12 @@ export const generateSourceMessage = (metadata: AnalyzeSourceMetadataType) => {
   }
 
   if (metadata.countAccounts) {
-    sourceMessage = sourceMessage.concat(`${metadata.countAccounts} accounts, `);
+
+    if (metadata.countTransactions) {
+      sourceMessage = sourceMessage.concat(`${metadata.countAccounts} accounts, `);
+    } else {
+      sourceMessage = sourceMessage.concat(`and ${metadata.countAccounts} accounts`);
+    }
   }
 
   if (metadata.countTransactions) {
