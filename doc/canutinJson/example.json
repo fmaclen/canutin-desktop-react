@@ -87,13 +87,15 @@
       "name": "Alice's Roth IRA",
       "balanceGroup": "investment",
       "accountType": "roth",
-      "balance": 6500
+      "autoCalculate": false,
+      "balance": 16500
     },
     {
       "name": "Initech 401k Plan",
       "balanceGroup": "investment",
       "autoCalculate": false,
-      "accountType": "401k"
+      "accountType": "401k",
+      "balance": 0
     }
   ],
   "assets": [
