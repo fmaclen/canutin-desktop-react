@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import { StatusEnum } from '@appConstants/misc';
 import { AppContext } from '@app/context/appContext';
 import { routesPaths } from '@routes';
 import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
@@ -30,8 +31,10 @@ const HeaderButtons = () => {
   if (isUserLoggedIn) {
     return (
       <ButtonRow>
-        <Button onClick={() => console.log('TODO: Sync')}>Sync</Button>
-        <Button onClick={() => console.log('TODO: Link institution')}>Link institution</Button>
+        <Button onClick={() => console.log('TODO: Sync')} status={StatusEnum.LOADING}>
+          Sync
+        </Button>
+        <Button onClick={() => history.push(routesPaths.linkInstitution)}>Link institution</Button>
         <Button onClick={() => handleLogout()}>Logout</Button>
       </ButtonRow>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
+import { Switch, Route, BrowserRouter, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 

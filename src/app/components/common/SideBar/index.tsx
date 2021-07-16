@@ -110,7 +110,7 @@ const SideBar = () => {
             text="Add accounts or assets"
             toggled={toggled}
             to={routesPaths.addAccountOrAsset}
-            primaryAction={!isUserLoggedIn}
+            isPrimary={!isUserLoggedIn}
           />
 
           {isUserLoggedIn && (
@@ -119,7 +119,7 @@ const SideBar = () => {
               text="Sync"
               toggled={toggled}
               to={'/'}
-              primaryAction={isUserLoggedIn}
+              isPrimary={isUserLoggedIn}
             />
           )}
         </NavItems>

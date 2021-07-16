@@ -20,7 +20,7 @@ export interface NavItemProps {
   toggled: boolean;
   to: string;
   disabled?: boolean;
-  primaryAction?: boolean;
+  isPrimary?: boolean;
 }
 
 const NavItem = ({
@@ -29,7 +29,7 @@ const NavItem = ({
   toggled,
   to,
   disabled = false,
-  primaryAction = false,
+  isPrimary = false,
 }: NavItemProps) => {
   const { pathname } = useLocation();
   const isActive = pathname === to ? 1 : 0;
@@ -40,7 +40,7 @@ const NavItem = ({
       toggled={toggled ? 1 : 0}
       to={to}
       disabled={disabled}
-      primaryAction={primaryAction}
+      primary={isPrimary ? 1 : 0}
     >
       <Icon>{icon}</Icon>
       <Text toggled={toggled}>{text}</Text>

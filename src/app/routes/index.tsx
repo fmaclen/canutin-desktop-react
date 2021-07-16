@@ -13,6 +13,7 @@ import Setup from '@pages/Setup';
 import Settings from '@pages/Settings';
 import CanutinLink from '@pages/CanutinLink';
 import CanutinLinkCreateAccount from '@pages/CanutinLinkCreateAccount';
+import CanutinLinkInstitution from '@pages/CanutinLinkInstitution';
 
 export const rootRoutesPaths = {
   bigpicture: '/bigpicture',
@@ -33,6 +34,8 @@ export const routesPaths = {
   addAccountOrAssetByWizard: '/account/addAccountOrAsset/byWizard',
   canutinSetup: '/canutinSetup',
   linkCreateAccount: '/link/create-account',
+  linkInstitution: '/link/link-institution',
+  updateInstitution: '/link/link-institution/:institution_id',
 };
 
 export interface RouteConfigProps {
@@ -125,5 +128,17 @@ export const routesConfig: RouteConfigProps[] = [
     exact: true,
     component: <CanutinLinkCreateAccount />,
     breadcrumb: 'Create account',
+  },
+  {
+    path: routesPaths.linkInstitution,
+    exact: true,
+    component: <CanutinLinkInstitution />,
+    breadcrumb: 'Institution',
+  },
+  {
+    path: routesPaths.updateInstitution,
+    exact: true,
+    component: <CanutinLinkInstitution />,
+    breadcrumb: 'Fix',
   },
 ];

@@ -1,3 +1,5 @@
+import { StatusEnum } from './misc';
+
 export const redPlain = '#FF3162';
 export const redLight = '#F9ECEF';
 export const greenPlain = '#00A36F';
@@ -21,3 +23,14 @@ export const grey90 = '#191919';
 export const blackOpacity10 = 'rgba(0, 0, 0, .1)';
 export const blackOpacity25 = 'rgba(0, 0, 0, .25)';
 export const shadowPlate = '0px 4px 15px rgba(0, 0, 0, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05)';
+
+export const getStatusColor = (status: StatusEnum) => {
+  switch (status) {
+    case StatusEnum.ERROR:
+      return redPlain;
+    case StatusEnum.LOADING:
+      return bluePlain;
+    case StatusEnum.SUCCESS:
+      return greenPlain;
+  }
+};

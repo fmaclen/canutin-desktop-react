@@ -6,7 +6,12 @@ export interface NavItemProps {
   disabled?: boolean;
 }
 
-export const container = css<NavItemProps & { active: boolean | number; primaryAction: boolean }>`
+export const container = css<
+  NavItemProps & {
+    active: boolean | number;
+    primary: boolean | number;
+  }
+>`
   color: ${grey80};
   cursor: default;
   display: flex;
@@ -46,15 +51,15 @@ export const container = css<NavItemProps & { active: boolean | number; primaryA
       grid-gap: none;
     `}
 
-  ${({ disabled }) =>
+    ${({ disabled }) =>
     disabled &&
     css`
       color: ${grey10};
       pointer-events: none;
     `};
 
-  ${({ primaryAction }) =>
-    primaryAction &&
+  ${({ primary }) =>
+    primary &&
     css`
       border-top: 1px solid ${grey10};
     `};

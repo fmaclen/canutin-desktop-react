@@ -1,5 +1,14 @@
 import { sansSerifRegular } from '@appConstants/fonts';
-import { whitePlain, borderGrey, grey80, bluePlain } from '@appConstants/colors';
+import {
+  whitePlain,
+  borderGrey,
+  grey80,
+  bluePlain,
+  redPlain,
+  greenPlain,
+} from '@appConstants/colors';
+
+import { StatusEnum } from '@appConstants/misc';
 
 export const inputFocusColor = `
   &:focus {
