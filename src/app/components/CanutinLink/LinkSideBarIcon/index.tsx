@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as Lightning } from '@assets/icons/Lightning.svg';
 
 import { container, icon } from './styles';
+import { AppContext } from '@app/context/appContext';
 
 const Container = styled.div`
   ${container};
@@ -13,8 +14,10 @@ const Icon = styled(Lightning)`
 `;
 
 const LinkSideBarIcon = () => {
+  const { isUserLoggedIn } = useContext(AppContext);
+
   return (
-    <Container>
+    <Container active={isUserLoggedIn}>
       <Icon />
     </Container>
   );

@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { AppContext } from '@app/context/appContext';
 import { routesPaths } from '@routes';
+import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
 
 import Button from '@components/common/Button';
 import { buttonRow } from './styles';
@@ -13,16 +14,25 @@ const ButtonRow = styled.div`
 `;
 
 const HeaderButtons = () => {
-  const { isUserLoggedIn } = useContext(AppContext);
+  const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AppContext);
   const history = useHistory();
   const { pathname } = useLocation();
+
+  const handleLogout = async () => {
+    await canutinLinkApi
+      .post(ApiEndpoints.USER_LOGOUT, {})
+      .then(res => {
+        setIsUserLoggedIn(false);
+      })
+      .catch(e => {});
+  };
 
   if (isUserLoggedIn) {
     return (
       <ButtonRow>
         <Button onClick={() => console.log('TODO: Sync')}>Sync</Button>
         <Button onClick={() => console.log('TODO: Link institution')}>Link institution</Button>
-        <Button onClick={() => console.log('TODO: Logout')}>Logout</Button>
+        <Button onClick={() => handleLogout()}>Logout</Button>
       </ButtonRow>
     );
   } else if (pathname === '/link') {

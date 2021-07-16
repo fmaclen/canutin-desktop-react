@@ -4,6 +4,7 @@ export enum ApiEndpoints {
   USER_AUTH = '/auth',
   USER_LOGIN = '/login',
   USER_CREATE_ACCOUNT = '/create-account',
+  USER_LOGOUT = '/logout',
 }
 
 const getApiURL = () => {

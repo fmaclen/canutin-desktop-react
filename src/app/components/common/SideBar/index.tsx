@@ -16,7 +16,7 @@ import { ReactComponent as Sync } from '@assets/icons/Sync.svg';
 
 import NavItem from '@components/common/SideBar/NavItem';
 import LinkSideBarIcon from '@components/CanutinLink/LinkSideBarIcon';
-import { container, burgerButton, topNav, bottomNav, navItems, primaryNavItem } from './styles';
+import { container, burgerButton, topNav, bottomNav, navItems } from './styles';
 
 const Container = styled.nav`
   ${container}
@@ -32,10 +32,6 @@ const TopNav = styled.nav`
 `;
 const BottomNav = styled.nav`
   ${bottomNav}
-`;
-const PrimaryNavItem = styled(NavItem)`
-  ${primaryNavItem}
-  color: tomato;
 `;
 
 const SideBar = () => {
@@ -122,7 +118,7 @@ const SideBar = () => {
               icon={<Sync />}
               text="Sync"
               toggled={toggled}
-              to={routesPaths.addAccountOrAsset}
+              to={'/'}
               primaryAction={isUserLoggedIn}
             />
           )}
