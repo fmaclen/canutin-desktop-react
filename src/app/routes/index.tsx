@@ -11,7 +11,8 @@ import AddAccountAssetByHand from '@pages/AddAccountAssetByHand';
 import AddAccountAssetByWizard from '@pages/AddAccountAssetByWizard';
 import Setup from '@pages/Setup';
 import Settings from '@pages/Settings';
-import Link from '@pages/Link';
+import CanutinLink from '@pages/CanutinLink';
+import CanutinLinkCreateAccount from '@pages/CanutinLinkCreateAccount';
 
 export const rootRoutesPaths = {
   bigpicture: '/bigpicture',
@@ -31,6 +32,7 @@ export const routesPaths = {
   addAccountOrAssetByHand: '/account/addAccountOrAsset/byHand',
   addAccountOrAssetByWizard: '/account/addAccountOrAsset/byWizard',
   canutinSetup: '/canutinSetup',
+  linkCreateAccount: '/link/create-account',
 };
 
 export interface RouteConfigProps {
@@ -56,7 +58,7 @@ export const routesConfig: RouteConfigProps[] = [
     path: routesPaths.balance,
     exact: true,
     component: <BalanceSheet />,
-    breadcrumb: 'Balance Sheet',
+    breadcrumb: 'Balance sheet',
   },
   {
     path: routesPaths.budget,
@@ -110,12 +112,18 @@ export const routesConfig: RouteConfigProps[] = [
     path: routesPaths.canutinSetup,
     exact: true,
     component: <Setup />,
-    breadcrumb: 'Canutin Setup',
+    breadcrumb: 'Canutin setup',
   },
   {
     path: routesPaths.link,
     exact: true,
-    component: <Link />,
+    component: <CanutinLink />,
     breadcrumb: 'Canutin Link',
+  },
+  {
+    path: routesPaths.linkCreateAccount,
+    exact: true,
+    component: <CanutinLinkCreateAccount />,
+    breadcrumb: 'Create account',
   },
 ];
