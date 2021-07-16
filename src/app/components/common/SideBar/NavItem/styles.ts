@@ -6,14 +6,17 @@ export interface NavItemProps {
   disabled?: boolean;
 }
 
-export const container = css<NavItemProps & { active: boolean | number }>`
+export const container = css<NavItemProps & { active: boolean | number; primaryAction: boolean }>`
   color: ${grey80};
   cursor: default;
   display: flex;
   font-size: 13px;
-  grid-gap: 16px;
+  grid-gap: 12px;
   grid-template-columns: max-content auto;
-  padding: 16px 24px;
+  padding: 8px 24px;
+  box-sizing: border-box;
+  height: 48px;
+  align-items: center;
   text-decoration: none;
   stroke: ${grey30};
   outline: none;
@@ -49,6 +52,22 @@ export const container = css<NavItemProps & { active: boolean | number }>`
       color: ${grey10};
       pointer-events: none;
     `};
+
+  ${({ primaryAction }) =>
+    primaryAction &&
+    css`
+      border-top: 1px solid ${grey10};
+    `};
+`;
+
+export const icon = css`
+  display: flex;
+  align-items: center;
+
+  > svg {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 export const text = css<NavItemProps>`

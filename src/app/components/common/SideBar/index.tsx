@@ -8,14 +8,15 @@ import { ReactComponent as BurgerIcon } from '@assets/icons/Burger.svg';
 import { ReactComponent as BigPicture } from '@assets/icons/BigPicture.svg';
 import { ReactComponent as BalanceSheet } from '@assets/icons/BalanceSheet.svg';
 import { ReactComponent as Settings } from '@assets/icons/Settings.svg';
-import { ReactComponent as Lightning } from '@assets/icons/Lightning.svg';
 import { ReactComponent as Budget } from '@assets/icons/Budget.svg';
 import { ReactComponent as Transactions } from '@assets/icons/Transactions.svg';
 import { ReactComponent as Trends } from '@assets/icons/Trends.svg';
 import { ReactComponent as AddIcon } from '@assets/icons/Add.svg';
+import { ReactComponent as Sync } from '@assets/icons/Sync.svg';
 
-import { container, burgerButton, nav, navItems } from './styles';
-import NavItem from './NavItem';
+import NavItem from '@components/common/SideBar/NavItem';
+import LinkSideBarIcon from '@components/CanutinLink/LinkSideBarIcon';
+import { container, burgerButton, topNav, bottomNav, navItems, primaryNavItem } from './styles';
 
 const Container = styled.nav`
   ${container}
@@ -26,17 +27,24 @@ const BurgerButton = styled.button`
 const NavItems = styled.div`
   ${navItems}
 `;
-const Nav = styled.nav`
-  ${nav}
+const TopNav = styled.nav`
+  ${topNav}
+`;
+const BottomNav = styled.nav`
+  ${bottomNav}
+`;
+const PrimaryNavItem = styled(NavItem)`
+  ${primaryNavItem}
+  color: tomato;
 `;
 
 const SideBar = () => {
   const [toggled, setToggled] = useState(true);
-  const { isDbEmpty } = useContext(AppContext);
+  const { isDbEmpty, isUserLoggedIn } = useContext(AppContext);
 
   return (
     <Container>
-      <Nav>
+      <TopNav>
         <BurgerButton onClick={() => setToggled(!toggled)}>
           <BurgerIcon />
         </BurgerButton>
@@ -82,16 +90,44 @@ const SideBar = () => {
             disabled={isDbEmpty}
           />
         </NavItems>
-      </Nav>
+      </TopNav>
 
-      <NavItem icon={<Lightning />} text="Link" toggled={toggled} to={routesPaths.link} />
-      <NavItem icon={<Settings />} text="Settings" toggled={toggled} to={routesPaths.settings} />
-      <NavItem
-        icon={<AddIcon />}
-        text="Add accounts or assets"
-        toggled={toggled}
-        to={routesPaths.addAccountOrAsset}
-      />
+      <BottomNav>
+        <NavItems>
+          <NavItem
+            icon={<LinkSideBarIcon />}
+            text="Link"
+            toggled={toggled}
+            to={routesPaths.link}
+            disabled={isDbEmpty}
+          />
+
+          <NavItem
+            icon={<Settings />}
+            text="Settings"
+            toggled={toggled}
+            to={routesPaths.settings}
+          />
+
+          <NavItem
+            icon={<AddIcon />}
+            text="Add accounts or assets"
+            toggled={toggled}
+            to={routesPaths.addAccountOrAsset}
+            primaryAction={!isUserLoggedIn}
+          />
+
+          {isUserLoggedIn && (
+            <NavItem
+              icon={<Sync />}
+              text="Sync"
+              toggled={toggled}
+              to={routesPaths.addAccountOrAsset}
+              primaryAction={isUserLoggedIn}
+            />
+          )}
+        </NavItems>
+      </BottomNav>
     </Container>
   );
 };
