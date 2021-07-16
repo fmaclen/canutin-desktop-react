@@ -15,25 +15,23 @@ const ButtonRow = styled.div`
 const HeaderButtons = () => {
   const { isUserLoggedIn } = useContext(AppContext);
   const history = useHistory();
-  const location = useLocation();
+  const { pathname } = useLocation();
 
-  return (
-    <ButtonRow>
-      {isUserLoggedIn && (
-        <>
-          <Button onClick={() => console.log('TODO: Sync')}>Sync</Button>
-          <Button onClick={() => console.log('TODO: Link institution')}>Link institution</Button>
-          <Button onClick={() => console.log('TODO: Logout')}>Logout</Button>
-        </>
-      )}
-
-      {!isUserLoggedIn && location.pathname === '/link' ? (
-        <Button onClick={() => history.push(routesPaths.linkCreateAccount)}>Create account</Button>
-      ) : (
-        <Button onClick={() => history.push(routesPaths.link)}>Already have an account?</Button>
-      )}
-    </ButtonRow>
-  );
+  if (isUserLoggedIn) {
+    return (
+      <ButtonRow>
+        <Button onClick={() => console.log('TODO: Sync')}>Sync</Button>
+        <Button onClick={() => console.log('TODO: Link institution')}>Link institution</Button>
+        <Button onClick={() => console.log('TODO: Logout')}>Logout</Button>
+      </ButtonRow>
+    );
+  } else if (pathname === '/link') {
+    return (
+      <Button onClick={() => history.push(routesPaths.linkCreateAccount)}>Create account</Button>
+    );
+  } else {
+    return <Button onClick={() => history.push(routesPaths.link)}>Already have an account?</Button>;
+  }
 };
 
 export default HeaderButtons;

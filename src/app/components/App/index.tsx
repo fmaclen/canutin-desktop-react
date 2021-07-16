@@ -7,6 +7,7 @@ import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
 import { AppContext } from '@app/context/appContext';
+import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
 
 import Setup from '@pages/Setup';
 
@@ -33,9 +34,19 @@ const App = () => {
     setFilePath,
     isDbEmpty,
     setIsDbEmpty,
+    setIsUserLoggedIn,
   } = useContext(AppContext);
   const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [assets, setAssets] = useState<Asset[] | null>(null);
+
+  const authCurrentSession = async () => {
+    await canutinLinkApi
+      .get(ApiEndpoints.USER_AUTH)
+      .then(res => {
+        setIsUserLoggedIn(true);
+      })
+      .catch(e => {});
+  };
 
   useEffect(() => {
     ipcRenderer.on(DB_GET_ACCOUNTS_ACK, (_: IpcRendererEvent, accounts: Account[]) => {
@@ -77,6 +88,7 @@ const App = () => {
       setIsDbEmpty(true);
     } else {
       setIsDbEmpty(false);
+      authCurrentSession();
     }
   }, [assets, accounts]);
 

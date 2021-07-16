@@ -32,11 +32,9 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
   } = useForm<UserAuthProps>();
 
   const formSubmit: SubmitHandler<UserAuthProps> = async data => {
-    console.log(data);
     canutinLinkApi
       .post(endpoint, data)
       .then(res => {
-        console.log(res);
         setIsUserLoggedIn(true);
       })
       .catch(e => {
