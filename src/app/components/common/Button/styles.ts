@@ -3,7 +3,7 @@ import { css } from 'styled-components';
 import { StatusEnum } from '@appConstants/misc';
 
 import { sansSerifBold } from '@appConstants/fonts';
-import { grey20, grey40, grey70, getStatusColor } from '@appConstants/colors';
+import { grey20, grey40, grey70, redLight, blueLight, getStatusColor } from '@appConstants/colors';
 
 export const container = css<{ status?: StatusEnum }>`
   ${sansSerifBold};
@@ -27,7 +27,16 @@ export const container = css<{ status?: StatusEnum }>`
     border-color: ${({ status }) => status && getStatusColor(status)};
   }
 
+  &:hover {
+    background-color: ${({ status }) =>
+      status === StatusEnum.NEGATIVE
+        ? redLight
+        : status === StatusEnum.NEUTRAL
+        ? blueLight
+        : 'transparent'};
+  }
+
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.95);
   }
 `;

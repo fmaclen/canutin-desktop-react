@@ -35,6 +35,7 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
         .post(ApiEndpoints.UPDATE_INSTITUTION, metadata)
         .then(res => {
           setSuccessMessage('The institution is now fixed');
+          history.push(routesPaths.link);
         })
         .catch(e => {
           setErrorMessage("Couldn't fix the institution, please try again later.");

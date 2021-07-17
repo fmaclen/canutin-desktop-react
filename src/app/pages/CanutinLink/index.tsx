@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import * as timeago from 'timeago.js';
 
 import { AppContext } from '@app/context/appContext';
 import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
@@ -26,7 +27,7 @@ interface InstitutionProps {
   id: string;
   name: string;
   linked_accounts: number;
-  error_code: string;
+  error_title: string;
   error_message: string;
   last_update: Date;
 }
@@ -68,7 +69,7 @@ const CanutinLink = () => {
   };
 
   const handleUnlink = async (id: string) => {
-    if (window.confirm("Are you sure? \n This action can't be un-done.")) {
+    if (window.confirm('Are you sure you want to unlink this institution?')) {
       await canutinLinkApi
         .post(ApiEndpoints.UNLINK_INSTITUTION, { id: id })
         .then(res => {
@@ -99,11 +100,11 @@ const CanutinLink = () => {
                     <Fieldset key={institution.id}>
                       <Institution>
                         <Label>Institution</Label>
-                        <Value hasErrors={institution.error_code ? true : false}>
+                        <Value hasErrors={institution.error_title ? true : false}>
                           <span>{institution.name}</span>
                           <ButtonRow>
                             <Button onClick={() => handleUnlink(institution.id)}>Unlink</Button>
-                            {institution.error_code && (
+                            {institution.error_title && (
                               <Button
                                 status={StatusEnum.NEGATIVE}
                                 onClick={() =>
@@ -116,10 +117,10 @@ const CanutinLink = () => {
                           </ButtonRow>
                         </Value>
                       </Institution>
-                      {institution.error_code && (
+                      {institution.error_title && (
                         <FieldNotice
                           error={true}
-                          title={institution.error_code}
+                          title={institution.error_title}
                           description={<div>{institution.error_message}</div>}
                         />
                       )}
@@ -132,7 +133,7 @@ const CanutinLink = () => {
                       <InputTextField
                         label="Last sync"
                         name="lastSync"
-                        value={`${institution.last_update}`}
+                        value={timeago.format(institution.last_update)}
                         disabled
                       />
                     </Fieldset>
