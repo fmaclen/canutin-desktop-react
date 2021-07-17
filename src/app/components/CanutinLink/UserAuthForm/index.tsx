@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 
 import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
 import { AppContext } from '@app/context/appContext';
@@ -11,6 +12,7 @@ import InputTextField from '@app/components/common/Form/InputTextField';
 import FormFooter from '@app/components/common/Form/FormFooter';
 import SubmitButton from '@app/components/common/Form/SubmitButton';
 import Section from '@app/components/common/Section';
+import { routesPaths } from '@app/routes';
 
 interface UserAuthProps {
   login: string;
@@ -30,12 +32,14 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
     setError,
     formState: { errors },
   } = useForm<UserAuthProps>();
+  const history = useHistory();
 
   const formSubmit: SubmitHandler<UserAuthProps> = async data => {
     canutinLinkApi
       .post(endpoint, data)
       .then(res => {
         setIsUserLoggedIn(true);
+        history.push(routesPaths.index);
       })
       .catch(e => {
         setError(e.response.data['field-error'][0], {

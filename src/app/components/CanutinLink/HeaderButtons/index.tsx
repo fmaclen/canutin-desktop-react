@@ -40,7 +40,7 @@ const HeaderButtons = () => {
     );
   } else if (pathname === '/link') {
     return (
-      <Button onClick={() => history.push(routesPaths.linkCreateAccount)}>Create account</Button>
+      <Button onClick={() => history.push(routesPaths.linkCreateAccount)}>Join private beta</Button>
     );
   } else {
     return <Button onClick={() => history.push(routesPaths.link)}>Already have an account?</Button>;

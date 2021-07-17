@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { usePlaidLink, PlaidLinkOptions, PlaidLinkOnSuccess } from 'react-plaid-link';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { routesPaths } from '@routes';
@@ -22,7 +22,7 @@ const PlaidWizard = styled.main`
 `;
 
 const PlaidLink = ({ token }: PlaidLinkProps) => {
-  const { setSuccessMessage, setErrorMessage } = useContext(StatusBarContext);
+  const { successMessage, setSuccessMessage, setErrorMessage } = useContext(StatusBarContext);
   const { institution_id } = useParams<InstitutionParams>();
   const history = useHistory();
 
@@ -33,6 +33,7 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
         .post(ApiEndpoints.UPDATE_INSTITUTION, metadata)
         .then(res => {
           setSuccessMessage('The institution is now fixed');
+          history.push(routesPaths.link);
         })
         .catch(e => {
           setErrorMessage("Couldn't fix the institution, please try again later.");
@@ -43,18 +44,17 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
         .post(ApiEndpoints.NEW_INSTITUTION, metadata)
         .then(res => {
           setSuccessMessage('The institution is now linked');
+          history.push(routesPaths.balance);
         })
         .catch(e => {
           setErrorMessage("Couldn't link the institution, please try again later.");
         });
     }
-    history.push(routesPaths.link);
-
     // eslint-disable-next-line
   }, []);
 
   const onExit = () => {
-    history.push(routesPaths.link);
+    !successMessage && history.push(routesPaths.link);
   };
 
   const config: PlaidLinkOptions = { token, onSuccess, onExit };
