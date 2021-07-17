@@ -1,4 +1,4 @@
-import { StatusEnum } from './misc';
+import { StatusEnum } from '@appConstants/misc';
 
 export const redPlain = '#FF3162';
 export const redLight = '#F9ECEF';
@@ -7,6 +7,8 @@ export const greenLight = '#ECF9F6';
 export const bluePlain = '#0366D6';
 export const blueLight = '#EFF7FF';
 export const goldPlain = '#B19B70';
+export const yellowPlain = '#FBA500';
+export const yellowLight = '#FFF8E4';
 export const borderGrey = '#E2E2E2';
 export const whitePlain = '#FFFFFF';
 export const grey3 = '#FAFAFA';
@@ -26,11 +28,13 @@ export const shadowPlate = '0px 4px 15px rgba(0, 0, 0, 0.1), 0px 1px 1px rgba(0,
 
 export const getStatusColor = (status: StatusEnum) => {
   switch (status) {
-    case StatusEnum.ERROR:
+    case StatusEnum.NEGATIVE:
       return redPlain;
-    case StatusEnum.LOADING:
+    case StatusEnum.NEUTRAL:
       return bluePlain;
-    case StatusEnum.SUCCESS:
+    case StatusEnum.POSITIVE:
       return greenPlain;
+    case StatusEnum.WARNING:
+      return yellowPlain;
   }
 };
