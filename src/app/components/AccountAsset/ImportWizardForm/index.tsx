@@ -176,9 +176,7 @@ const ImportWizardForm = ({ isLoading, setIsLoading }: ImportWizardFormProps) =>
             onSelect={onChooseFileInput}
             filePath={filePath}
             status={filePathStatus}
-            statusMessage={
-              filePathStatus ? filePathStatusMessage(filePathStatus, sourceMessage) : ''
-            }
+            statusMessage={filePathStatus && filePathStatusMessage(filePathStatus, sourceMessage)}
           />
         )}
       </Fieldset>

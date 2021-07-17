@@ -41,8 +41,8 @@ export const sourceExtensionFile = (sourceTitle: enumImportTitleOptions) => {
 
 // General
 export enum StatusEnum {
-  NEUTRAL,
-  POSITIVE,
-  NEGATIVE,
-  WARNING,
+  NEUTRAL = 'neutral',
+  POSITIVE = 'positive',
+  NEGATIVE = 'negative',
+  WARNING = 'warning',
 }
