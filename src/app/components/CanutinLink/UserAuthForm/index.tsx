@@ -60,7 +60,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             name="login"
             type="email"
             register={registerAuthForm}
-            status={errors.login && { status: StatusEnum.ERROR, message: errors.login.message }}
+            status={errors.login && { status: StatusEnum.NEGATIVE, message: errors.login.message }}
             required
           />
           <InputTextField
@@ -69,7 +69,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             type="password"
             register={registerAuthForm}
             status={
-              errors.password && { status: StatusEnum.ERROR, message: errors.password.message }
+              errors.password && { status: StatusEnum.NEGATIVE, message: errors.password.message }
             }
             required
           />

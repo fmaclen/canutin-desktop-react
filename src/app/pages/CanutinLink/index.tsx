@@ -79,7 +79,7 @@ const CanutinLink = () => {
   };
 
   useEffect(() => {
-    getUserDetails();
+    isUserLoggedIn && getUserDetails();
     // eslint-disable-next-line
   }, []);
 
@@ -105,7 +105,7 @@ const CanutinLink = () => {
                             <Button onClick={() => handleUnlink(institution.id)}>Unlink</Button>
                             {institution.error_code && (
                               <Button
-                                status={StatusEnum.ERROR}
+                                status={StatusEnum.NEGATIVE}
                                 onClick={() =>
                                   history.push(`${routesPaths.linkInstitution}/${institution.id}`)
                                 }

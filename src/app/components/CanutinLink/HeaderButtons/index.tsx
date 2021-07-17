@@ -31,7 +31,7 @@ const HeaderButtons = () => {
   if (isUserLoggedIn) {
     return (
       <ButtonRow>
-        <Button onClick={() => console.log('TODO: Sync')} status={StatusEnum.LOADING}>
+        <Button onClick={() => console.log('TODO: Sync')} status={StatusEnum.NEUTRAL}>
           Sync
         </Button>
         <Button onClick={() => history.push(routesPaths.linkInstitution)}>Link institution</Button>
