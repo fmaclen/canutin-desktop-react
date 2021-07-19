@@ -160,7 +160,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
                 name="balance"
                 control={controlAccountField}
                 disabled={autoCalculate}
-                rules={{ required: true, validate: v => autoCalculate || v !== '' }}
+                rules={{ validate: v => autoCalculate || v !== '' }}
               />
               <InlineCheckbox
                 name="autoCalculate"

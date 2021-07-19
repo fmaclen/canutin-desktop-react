@@ -32,7 +32,7 @@ const InputCurrency = ({
 }: InputCurrencyProps) => (
   <div>
     <Controller
-      render={({ value, ref, onChange }) => {
+      render={({ value, onChange, name }) => {
         return (
           <NumberFormat
             allowNegative={true}
@@ -40,8 +40,8 @@ const InputCurrency = ({
             thousandSeparator
             prefix="$"
             value={value}
+            id={name}
             onValueChange={values => {
-              console.log(values)
               onChange(values.value);
             }}
             disabled={disabled}
