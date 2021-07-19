@@ -25,7 +25,7 @@ interface UserAuthFormProps {
 }
 
 const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
-  const { setIsUserLoggedIn } = useContext(AppContext);
+  const { setLinkAccount } = useContext(AppContext);
   const {
     register: registerAuthForm,
     handleSubmit: handleLoginSubmit,
@@ -37,8 +37,8 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
   const formSubmit: SubmitHandler<UserAuthProps> = async data => {
     canutinLinkApi
       .post(endpoint, data)
-      .then(res => {
-        setIsUserLoggedIn(true);
+      .then(response => {
+        setLinkAccount(response.data);
         history.push(routesPaths.index);
       })
       .catch(e => {

@@ -178,7 +178,6 @@ const createWindow = async () => {
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 16, y: 32 },
     webPreferences: {
-      webviewTag: true,
       nodeIntegration: true,
       enableRemoteModule: true,
     },

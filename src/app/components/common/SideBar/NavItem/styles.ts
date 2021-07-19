@@ -65,7 +65,7 @@ export const container = css<
     `};
 `;
 
-export const icon = css`
+export const icon = css<{ isSyncing: boolean }>`
   display: flex;
   align-items: center;
 
@@ -73,6 +73,21 @@ export const icon = css`
     width: 16px;
     height: 16px;
   }
+
+  ${({ isSyncing }) =>
+    isSyncing &&
+    css`
+      animation: spin-animation 1.5s infinite;
+
+      @keyframes spin-animation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(359deg);
+        }
+      }
+    `};
 `;
 
 export const text = css<NavItemProps>`

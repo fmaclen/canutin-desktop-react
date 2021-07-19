@@ -5,7 +5,7 @@ import { StatusEnum } from '@appConstants/misc';
 import { sansSerifBold } from '@appConstants/fonts';
 import { grey20, grey40, grey70, redLight, blueLight, getStatusColor } from '@appConstants/colors';
 
-export const container = css<{ status?: StatusEnum }>`
+export const container = css<{ disabled?: boolean; status?: StatusEnum }>`
   ${sansSerifBold};
   cursor: pointer;
   padding: 8px 16px;
@@ -39,4 +39,13 @@ export const container = css<{ status?: StatusEnum }>`
   &:active {
     transform: scale(0.95);
   }
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: wait;
+      filter: saturate(0);
+    `};
 `;

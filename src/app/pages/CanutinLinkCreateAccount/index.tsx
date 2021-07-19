@@ -8,11 +8,11 @@ import HeaderButtons from '@app/components/CanutinLink/HeaderButtons';
 import UserAuthForm from '@app/components/CanutinLink/UserAuthForm';
 
 const CanutinLinkCreateAccount = () => {
-  const { isUserLoggedIn } = useContext(AppContext);
+  const { linkAccount } = useContext(AppContext);
 
   return (
     <ScrollView title="Canutin Link" headerNav={<HeaderButtons />}>
-      {!isUserLoggedIn && <UserAuthForm endpoint={ApiEndpoints.USER_CREATE_ACCOUNT} />}
+      {!linkAccount && <UserAuthForm endpoint={ApiEndpoints.USER_CREATE_ACCOUNT} />}
     </ScrollView>
   );
 };

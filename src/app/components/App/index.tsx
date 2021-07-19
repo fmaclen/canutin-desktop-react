@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Switch, Route, BrowserRouter, Redirect, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
+import styled from 'styled-components';
 
 import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
 import { AppContext } from '@app/context/appContext';
-import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
+import canutinLinkApi, {
+  requestSync,
+  ApiEndpoints,
+  LinkAccountProps,
+} from '@app/data/canutinLink.api';
 
 import Setup from '@pages/Setup';
 
@@ -34,18 +38,21 @@ const App = () => {
     setFilePath,
     isDbEmpty,
     setIsDbEmpty,
-    setIsUserLoggedIn,
+    setLinkAccount,
+    linkAccount,
   } = useContext(AppContext);
   const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [assets, setAssets] = useState<Asset[] | null>(null);
 
   const authCurrentSession = async () => {
     await canutinLinkApi
-      .get(ApiEndpoints.USER_AUTH)
-      .then(res => {
-        setIsUserLoggedIn(true);
+      .get<LinkAccountProps>(ApiEndpoints.USER_AUTH)
+      .then(response => {
+        setLinkAccount(response.data);
       })
-      .catch(e => {});
+      .catch(e => {
+        setLinkAccount(null);
+      });
   };
 
   useEffect(() => {
@@ -91,6 +98,17 @@ const App = () => {
       authCurrentSession();
     }
   }, [assets, accounts]);
+
+  useEffect(() => {
+    if (linkAccount?.isSyncing) {
+      const handleSync = async () => {
+        await requestSync();
+        setLinkAccount({ ...linkAccount, isSyncing: false });
+      };
+
+      handleSync();
+    }
+  }, [linkAccount]);
 
   return (
     <>

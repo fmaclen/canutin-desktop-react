@@ -36,7 +36,7 @@ const BottomNav = styled.nav`
 
 const SideBar = () => {
   const [toggled, setToggled] = useState(true);
-  const { isDbEmpty, isUserLoggedIn } = useContext(AppContext);
+  const { isDbEmpty, linkAccount } = useContext(AppContext);
 
   return (
     <Container>
@@ -110,16 +110,16 @@ const SideBar = () => {
             text="Add accounts or assets"
             toggled={toggled}
             to={routesPaths.addAccountOrAsset}
-            isPrimary={!isUserLoggedIn}
+            primary={!linkAccount}
           />
 
-          {isUserLoggedIn && (
+          {linkAccount && (
             <NavItem
               icon={<Sync />}
-              text="Sync"
+              text={linkAccount.isSyncing ? 'Syncing...' : 'Sync'}
               toggled={toggled}
-              to={'/'}
-              isPrimary={isUserLoggedIn}
+              to={'#sync'}
+              primary={true}
             />
           )}
         </NavItems>

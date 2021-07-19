@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import * as timeago from 'timeago.js';
 
 import { AppContext } from '@app/context/appContext';
-import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
+import canutinLinkApi, { ApiEndpoints, InstitutionProps } from '@app/data/canutinLink.api';
 import { StatusEnum } from '@appConstants/misc';
 
 import ScrollView from '@components/common/ScrollView';
@@ -22,15 +22,6 @@ import { container as institution } from '@components/common/Form/FieldContainer
 import { label } from '@components/common/Form/Field/styles';
 import { row, value } from './styles';
 import { routesPaths } from '@app/routes';
-
-interface InstitutionProps {
-  id: string;
-  name: string;
-  linked_accounts: number;
-  error_title: string;
-  error_message: string;
-  last_update: Date;
-}
 
 interface UserAccountProps {
   email: string;
@@ -51,12 +42,11 @@ const Value = styled.div`
 `;
 const ButtonRow = styled.div`
   ${row};
-  grid-gap: 4px;
 `;
 
 const CanutinLink = () => {
   const [userAccount, setUserAccount] = useState<UserAccountProps | null>(null);
-  const { isUserLoggedIn } = useContext(AppContext);
+  const { linkAccount } = useContext(AppContext);
   const history = useHistory();
 
   const getUserDetails = async () => {
@@ -80,14 +70,14 @@ const CanutinLink = () => {
   };
 
   useEffect(() => {
-    isUserLoggedIn && getUserDetails();
+    linkAccount && getUserDetails();
     // eslint-disable-next-line
   }, []);
 
   return (
     <ScrollView title="Canutin Link" headerNav={<HeaderButtons />}>
-      {!isUserLoggedIn && <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />}
-      {isUserLoggedIn && userAccount && (
+      {!linkAccount && <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />}
+      {linkAccount && userAccount && (
         <>
           <Section title="Summary">
             <EmptyCard message={`Logged in as: ${userAccount.email}`} />
@@ -124,12 +114,6 @@ const CanutinLink = () => {
                           description={<div>{institution.error_message}</div>}
                         />
                       )}
-                      <InputTextField
-                        label="Linked accounts"
-                        name="linkedAccounts"
-                        value={`${institution.linked_accounts}`}
-                        disabled
-                      />
                       <InputTextField
                         label="Last sync"
                         name="lastSync"

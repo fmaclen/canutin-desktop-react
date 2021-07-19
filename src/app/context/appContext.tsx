@@ -1,5 +1,7 @@
 import { createContext, PropsWithChildren, useState } from 'react';
 
+import { LinkAccountProps } from '@app/data/canutinLink.api';
+
 interface AppContextValue {
   isLoading: boolean;
   setIsLoading: (_: boolean) => void;
@@ -9,8 +11,8 @@ interface AppContextValue {
   setFilePath: (_: string) => void;
   isDbEmpty: boolean;
   setIsDbEmpty: (_: boolean) => void;
-  isUserLoggedIn: boolean;
-  setIsUserLoggedIn: (_: boolean) => void;
+  linkAccount: LinkAccountProps | null;
+  setLinkAccount: (_: LinkAccountProps | null) => void;
 }
 
 export const AppContext = createContext<AppContextValue>({
@@ -22,8 +24,8 @@ export const AppContext = createContext<AppContextValue>({
   setFilePath: () => {},
   isDbEmpty: false,
   setIsDbEmpty: () => {},
-  isUserLoggedIn: false,
-  setIsUserLoggedIn: () => {},
+  linkAccount: null,
+  setLinkAccount: () => {},
 });
 
 export const AppCtxProvider = ({ children }: PropsWithChildren<Record<string, unknown>>) => {
@@ -31,7 +33,7 @@ export const AppCtxProvider = ({ children }: PropsWithChildren<Record<string, un
   const [isAppInitialized, setIsAppInitialized] = useState(false);
   const [filePath, setFilePath] = useState<string | null>(null);
   const [isDbEmpty, setIsDbEmpty] = useState(false);
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [linkAccount, setLinkAccount] = useState<LinkAccountProps | null>(null);
 
   const value = {
     isLoading,
@@ -42,8 +44,8 @@ export const AppCtxProvider = ({ children }: PropsWithChildren<Record<string, un
     setFilePath,
     isDbEmpty,
     setIsDbEmpty,
-    isUserLoggedIn,
-    setIsUserLoggedIn,
+    linkAccount,
+    setLinkAccount,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

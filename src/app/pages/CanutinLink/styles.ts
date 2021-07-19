@@ -5,7 +5,7 @@ import { whitePlain, shadowPlate } from '@appConstants/colors';
 export const row = css`
   display: grid;
   grid-auto-flow: column;
-  grid-gap: 8px;
+  grid-gap: 4px;
 `;
 
 export const value = css<{ hasErrors?: boolean }>`

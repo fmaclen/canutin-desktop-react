@@ -1,8 +1,9 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { container, icon, text } from './styles';
+import { AppContext } from '@app/context/appContext';
 
 const Container = styled(Link)`
   ${container}
@@ -20,18 +21,12 @@ export interface NavItemProps {
   toggled: boolean;
   to: string;
   disabled?: boolean;
-  isPrimary?: boolean;
+  primary?: boolean;
 }
 
-const NavItem = ({
-  icon,
-  text,
-  toggled,
-  to,
-  disabled = false,
-  isPrimary = false,
-}: NavItemProps) => {
+const NavItem = ({ icon, text, toggled, to, disabled = false, primary = false }: NavItemProps) => {
   const { pathname } = useLocation();
+  const { linkAccount, setLinkAccount } = useContext(AppContext);
   const isActive = pathname === to ? 1 : 0;
 
   return (
@@ -40,9 +35,12 @@ const NavItem = ({
       toggled={toggled ? 1 : 0}
       to={to}
       disabled={disabled}
-      primary={isPrimary ? 1 : 0}
+      primary={primary ? 1 : 0}
+      onClick={() =>
+        to === '#sync' && linkAccount && setLinkAccount({ ...linkAccount, isSyncing: true })
+      }
     >
-      <Icon>{icon}</Icon>
+      <Icon isSyncing={to === '#sync' && linkAccount ? linkAccount.isSyncing : false}>{icon}</Icon>
       <Text toggled={toggled}>{text}</Text>
     </Container>
   );
