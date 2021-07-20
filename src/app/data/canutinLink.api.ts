@@ -60,6 +60,19 @@ export interface LinkAccountProps {
 //   accounts: CanutinFileAccountType[];
 // }
 
+export const getLinkSummary = async () => {
+  let linkAccount;
+  await canutinLinkApi
+    .get<LinkAccountProps>(ApiEndpoints.SUMMARY)
+    .then(response => {
+      linkAccount = response && { ...response.data, isSyncing: false };
+    })
+    .catch(e => {
+      return null;
+    });
+  return linkAccount;
+};
+
 export const requestSync = async () => {
   await canutinLinkApi
     .post(ApiEndpoints.SYNC, { data: 'sync_assets' })

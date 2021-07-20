@@ -7,11 +7,7 @@ import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
 import { AppContext } from '@app/context/appContext';
-import canutinLinkApi, {
-  requestSync,
-  ApiEndpoints,
-  LinkAccountProps,
-} from '@app/data/canutinLink.api';
+import { requestSync, getLinkSummary } from '@app/data/canutinLink.api';
 
 import Setup from '@pages/Setup';
 
@@ -43,17 +39,6 @@ const App = () => {
   } = useContext(AppContext);
   const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [assets, setAssets] = useState<Asset[] | null>(null);
-
-  const authCurrentSession = async () => {
-    await canutinLinkApi
-      .get<LinkAccountProps>(ApiEndpoints.USER_AUTH)
-      .then(response => {
-        setLinkAccount(response.data);
-      })
-      .catch(e => {
-        setLinkAccount(null);
-      });
-  };
 
   useEffect(() => {
     ipcRenderer.on(DB_GET_ACCOUNTS_ACK, (_: IpcRendererEvent, accounts: Account[]) => {
@@ -95,13 +80,22 @@ const App = () => {
       setIsDbEmpty(true);
     } else {
       setIsDbEmpty(false);
-      authCurrentSession();
+
+      const handleSync = async () => {
+        const summary = await getLinkSummary();
+        summary && setLinkAccount(summary);
+      };
+
+      handleSync();
     }
   }, [assets, accounts]);
 
   useEffect(() => {
     if (linkAccount?.isSyncing) {
       const handleSync = async () => {
+        const summary = await getLinkSummary();
+        summary && setLinkAccount(summary);
+
         await requestSync();
         setLinkAccount({ ...linkAccount, isSyncing: false });
       };
