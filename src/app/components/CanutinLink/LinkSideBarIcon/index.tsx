@@ -17,9 +17,11 @@ const Icon = styled(Lightning)`
 const LinkSideBarIcon = () => {
   const { linkAccount } = useContext(AppContext);
 
+  const linkAccountErrors = linkAccount?.errors?.user || linkAccount?.errors?.institution;
+
   return (
     <Container
-      status={!linkAccount ? null : linkAccount.errors ? StatusEnum.NEGATIVE : StatusEnum.POSITIVE}
+      status={!linkAccount ? null : linkAccountErrors ? StatusEnum.NEGATIVE : StatusEnum.POSITIVE}
     >
       <Icon />
     </Container>

@@ -77,10 +77,10 @@ export const requestSync = async () => {
   await canutinLinkApi
     .post(ApiEndpoints.SYNC, { data: 'sync_assets' })
     .then(response => {
-      const { assets, accounts, removedTransactions } = response.data;
+      const { asset_prices, accounts, removedTransactions } = response.data;
       console.log('ACCOUNTS:', accounts);
       console.log('REMOVED TRANSACTIONS:', removedTransactions);
-      console.log('ASSETS:', assets);
+      console.log('ASSETS:', asset_prices);
 
       return true;
     })

@@ -8,6 +8,7 @@ import { StatusBarContext } from '@app/context/statusBarContext';
 import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
 
 import { main } from '@components/common/ScrollView/styles';
+import { plaidWizard } from './styles';
 
 interface PlaidLinkProps {
   token: string;
@@ -19,6 +20,7 @@ type InstitutionParams = {
 
 const PlaidWizard = styled.main`
   ${main}
+  ${plaidWizard};
 `;
 
 let isNewInstitution = false;
@@ -66,6 +68,15 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
 
   useEffect(() => {
     open();
+
+    // Re-position Plaid's Iframe so it's a child of <ScrollView />
+    const linkIframe = document.querySelector<HTMLElement>('iframe[id^=plaid-link-iframe]');
+    const mainFrame = document.querySelector<HTMLElement>('#root > div > main');
+
+    if (linkIframe) {
+      linkIframe.style.position = 'relative';
+      mainFrame?.appendChild(linkIframe);
+    }
     // eslint-disable-next-line
   }, [ready]);
 
