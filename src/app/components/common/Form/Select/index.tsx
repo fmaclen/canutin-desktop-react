@@ -19,7 +19,7 @@ export type GroupedValue = {
 };
 
 export type SelectFieldValue = {
-  value: string | undefined;
+  value: any;
   label: string;
 };
 
