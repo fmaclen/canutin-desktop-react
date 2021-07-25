@@ -24,7 +24,7 @@ const TransactionsOverviewSection = () => {
   useEffect(() => {
     TransactionIpc.getFilterTransactions(filterOption?.value);
 
-    ipcRenderer.on(FILTER_TRANSACTIONS_ACK, (_: IpcRendererEvent, transactions: Transaction[]) => {
+    ipcRenderer.on(FILTER_TRANSACTIONS_ACK, (_: IpcRendererEvent, { transactions }) => {
       setTransactions(transactions);
     });
 
@@ -46,9 +46,26 @@ const TransactionsOverviewSection = () => {
     </SegmentedControl>
   );
 
+  const showedTransactions = () => {
+    switch(selectedSegment) {
+      case TransactionOverviewSegmentsEnum.ALL: {
+        return transactions;
+      }
+      case TransactionOverviewSegmentsEnum.CREDITS: {
+        return transactions.filter(({ amount }) => amount >= 0);
+      }
+      case TransactionOverviewSegmentsEnum.DEBITS: {
+        return transactions.filter(({ amount }) => amount < 0)
+      }
+      default: {
+        return [];
+      }
+    }
+  }
+
   return (
     <Section title="Filter transactions" scope={balanceSheetSegments}>
-      <TransactionsFilterTable transactions={transactions} />
+      <TransactionsFilterTable transactions={showedTransactions()} />
     </Section>
   );
 };

@@ -24,7 +24,7 @@ export class TransactionRepository {
 
   static async getFilterTransactions(filter: FilterTransactionInterface): Promise<Transaction[]> {
     return await getRepository<Transaction>(Transaction).find({
-      relations: ['account'],
+      relations: ['account', 'category'],
       where: {
         date: Between(filter.dateFrom.toISOString(), filter.dateTo.toISOString()),
       },
