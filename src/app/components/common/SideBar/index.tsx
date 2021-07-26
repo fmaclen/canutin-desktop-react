@@ -90,13 +90,7 @@ const SideBar = () => {
 
       <BottomNav>
         <NavItems>
-          <NavItem
-            icon={<LinkSideBarIcon />}
-            text="Link"
-            toggled={toggled}
-            to={routesPaths.link}
-            disabled={isDbEmpty}
-          />
+          <NavItem icon={<LinkSideBarIcon />} text="Link" toggled={toggled} to={routesPaths.link} />
 
           <NavItem
             icon={<Settings />}

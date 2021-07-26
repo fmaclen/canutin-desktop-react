@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { StatusEnum } from '@appConstants/misc';
 import { AppContext } from '@app/context/appContext';
 import { routesPaths } from '@routes';
-import canutinLinkApi, { ApiEndpoints, requestSync } from '@app/data/canutinLink.api';
+import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
 
 import Button from '@components/common/Button';
 import { buttonRow } from './styles';
@@ -30,7 +30,6 @@ const HeaderButtons = () => {
 
   const handleSync = () => {
     setLinkAccount(linkAccount && { ...linkAccount, isSyncing: true });
-    requestSync();
   };
 
   if (linkAccount) {

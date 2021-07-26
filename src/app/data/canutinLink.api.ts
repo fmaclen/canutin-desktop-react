@@ -1,8 +1,4 @@
-import React, { useContext } from 'react';
 import axios from 'axios';
-
-import { CanutinFileAccountType } from '@appTypes/canutin';
-import { AppContext } from '@app/context/appContext';
 
 export enum ApiEndpoints {
   USER_AUTH = '/auth',
@@ -53,12 +49,6 @@ export interface LinkAccountProps {
   errors: LinkAccountErrorProps;
   isSyncing: boolean;
 }
-
-// interface InstitutionType {
-//   institution_name: string;
-//   institution_id: string;
-//   accounts: CanutinFileAccountType[];
-// }
 
 export const getLinkSummary = async () => {
   let linkAccount;

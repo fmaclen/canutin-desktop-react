@@ -2,8 +2,9 @@ import React, { useContext } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 
-import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
+import canutinLinkApi, { ApiEndpoints, getLinkSummary } from '@app/data/canutinLink.api';
 import { AppContext } from '@app/context/appContext';
+import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@appConstants/misc';
 
 import Form from '@app/components/common/Form/Form';
@@ -26,6 +27,7 @@ interface UserAuthFormProps {
 
 const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
   const { setLinkAccount } = useContext(AppContext);
+  const { setErrorMessage } = useContext(StatusBarContext);
   const {
     register: registerAuthForm,
     handleSubmit: handleLoginSubmit,
@@ -37,15 +39,24 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
   const formSubmit: SubmitHandler<UserAuthProps> = async data => {
     canutinLinkApi
       .post(endpoint, data)
-      .then(response => {
-        setLinkAccount(response.data);
-        history.push(routesPaths.index);
+      .then(async response => {
+        if (response.data.success) {
+          const summary = await getLinkSummary();
+          if (summary) {
+            setLinkAccount(summary);
+          }
+        }
+        history.push(routesPaths.link);
       })
       .catch(e => {
-        setError(e.response.data['field-error'][0], {
-          type: 'server',
-          message: e.response.data['field-error'][1],
-        });
+        if (e.response) {
+          setError(e.response.data['field-error'][0], {
+            type: 'server',
+            message: e.response.data['field-error'][1],
+          });
+        } else {
+          setErrorMessage("Couldn't connect to Canutin's server, please try again later.");
+        }
       });
   };
 

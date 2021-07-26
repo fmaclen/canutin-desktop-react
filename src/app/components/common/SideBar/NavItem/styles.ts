@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { grey3, grey5, grey10, grey30, grey80, bluePlain } from '@appConstants/colors';
+import { grey3, grey5, grey10, grey30, grey40, grey80, bluePlain } from '@appConstants/colors';
 
 export interface NavItemProps {
   toggled: boolean | number;
@@ -54,7 +54,8 @@ export const container = css<
     ${({ disabled }) =>
     disabled &&
     css`
-      color: ${grey10};
+      opacity: 0.5;
+      color: ${grey40};
       pointer-events: none;
     `};
 

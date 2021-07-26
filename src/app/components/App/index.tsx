@@ -20,6 +20,7 @@ import { Account, Asset } from '@database/entities';
 
 import GlobalStyle from '@app/styles/global';
 import { container } from './styles';
+import { StatusBarContext } from '@app/context/statusBarContext';
 
 const Container = styled.div`
   ${container}
@@ -37,6 +38,7 @@ const App = () => {
     setLinkAccount,
     linkAccount,
   } = useContext(AppContext);
+  const { setErrorMessage } = useContext(StatusBarContext);
   const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [assets, setAssets] = useState<Asset[] | null>(null);
 
@@ -94,12 +96,20 @@ const App = () => {
     if (linkAccount?.isSyncing) {
       const handleSync = async () => {
         const summary = await getLinkSummary();
-        summary && setLinkAccount(summary);
 
-        await requestSync();
-        setLinkAccount({ ...linkAccount, isSyncing: false });
+        if (summary) {
+          setLinkAccount(summary);
+          await requestSync();
+          setLinkAccount({ ...linkAccount, isSyncing: false });
+        } else {
+          setLinkAccount({
+            ...linkAccount,
+            errors: { user: true, institution: false },
+            isSyncing: false,
+          });
+          setErrorMessage("Couldn't connect to Canutin's server, please try again later.");
+        }
       };
-
       handleSync();
     }
   }, [linkAccount]);
