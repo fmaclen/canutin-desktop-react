@@ -51,7 +51,7 @@ export const container = css<
       grid-gap: none;
     `}
 
-    ${({ disabled }) =>
+  ${({ disabled }) =>
     disabled &&
     css`
       opacity: 0.5;
