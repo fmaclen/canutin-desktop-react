@@ -178,6 +178,7 @@ const TransactionsFilterTable = ({ transactions }: TransactionsFilterTableProps)
       <TransactionsGlobalFilter
         globalFilter={state.globalFilter}
         setGlobalFilter={setGlobalFilter}
+        transactionsData={transactionsData}
       />
       <TransactionsFilterTableInfo
         netBalanceCount={netBalanceCount}
