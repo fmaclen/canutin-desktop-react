@@ -7,7 +7,6 @@ import Button from '@components/common/Button';
 import { ReactComponent as Loading } from '@assets/icons/Loading.svg';
 
 import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
-import { AppContext } from '@app/context/appContext';
 import { routesConfig } from '@routes';
 
 import { container, currentSettings, currentSettingsLabel, statusMessage } from './styles';
