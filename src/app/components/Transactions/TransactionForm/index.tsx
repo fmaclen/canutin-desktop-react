@@ -139,7 +139,7 @@ const TransactionForm = () => {
     });
   };
 
-  const submitIsDisabled = description === '' && !formState.isValid;
+  const submitIsDisabled = description === '' || !formState.isValid;
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)} role="form">
