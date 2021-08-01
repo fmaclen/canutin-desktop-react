@@ -5,7 +5,7 @@ import { StatusEnum } from '@appConstants/misc';
 
 import { container } from './styles';
 
-const Container = styled.button`
+export const Container = styled.button`
   ${container}
 `;
 
