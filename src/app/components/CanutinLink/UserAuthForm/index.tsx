@@ -27,7 +27,7 @@ interface UserAuthFormProps {
 
 const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
   const { setLinkAccount } = useContext(AppContext);
-  const { setErrorMessage } = useContext(StatusBarContext);
+  const { setStatusMessage } = useContext(StatusBarContext);
   const {
     register: registerAuthForm,
     handleSubmit: handleLoginSubmit,
@@ -55,7 +55,11 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             message: e.response.data['field-error'][1],
           });
         } else {
-          setErrorMessage("Couldn't connect to Canutin's server, please try again later.");
+          setStatusMessage({
+            sentiment: StatusEnum.WARNING,
+            message: "Couldn't connect to Canutin's server, please try again later",
+            isLoading: false,
+          });
         }
       });
   };

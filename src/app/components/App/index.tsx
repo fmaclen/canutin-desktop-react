@@ -21,6 +21,7 @@ import { Account, Asset } from '@database/entities';
 import GlobalStyle from '@app/styles/global';
 import { container } from './styles';
 import { StatusBarContext } from '@app/context/statusBarContext';
+import { StatusEnum } from '@app/constants/misc';
 
 const Container = styled.div`
   ${container}
@@ -38,7 +39,7 @@ const App = () => {
     setLinkAccount,
     linkAccount,
   } = useContext(AppContext);
-  const { setErrorMessage } = useContext(StatusBarContext);
+  const { setStatusMessage } = useContext(StatusBarContext);
   const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [assets, setAssets] = useState<Asset[] | null>(null);
 
@@ -107,7 +108,11 @@ const App = () => {
             errors: { user: true, institution: false },
             isSyncing: false,
           });
-          setErrorMessage("Couldn't connect to Canutin's server, please try again later.");
+          setStatusMessage({
+            sentiment: StatusEnum.WARNING,
+            message: "Couldn't connect to Canutin's server, please try again later",
+            isLoading: false,
+          });
         }
       };
       handleSync();

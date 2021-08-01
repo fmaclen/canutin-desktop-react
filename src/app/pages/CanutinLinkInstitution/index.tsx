@@ -9,6 +9,7 @@ import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
 
 import { main } from '@components/common/ScrollView/styles';
 import { plaidWizard } from './styles';
+import { StatusEnum } from '@app/constants/misc';
 
 interface PlaidLinkProps {
   token: string;
@@ -26,7 +27,7 @@ const PlaidWizard = styled.main`
 let isNewInstitution = false;
 
 const PlaidLink = ({ token }: PlaidLinkProps) => {
-  const { setSuccessMessage, setErrorMessage } = useContext(StatusBarContext);
+  const { setStatusMessage } = useContext(StatusBarContext);
   const { institution_id } = useParams<InstitutionParams>();
   const history = useHistory();
 
@@ -36,11 +37,19 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
       await canutinLinkApi
         .post(ApiEndpoints.UPDATE_INSTITUTION, metadata)
         .then(res => {
-          setSuccessMessage('The institution is now fixed');
+          setStatusMessage({
+            sentiment: StatusEnum.POSITIVE,
+            message: 'The institution is now fixed.',
+            isLoading: false,
+          });
           history.push(routesPaths.link);
         })
         .catch(e => {
-          setErrorMessage("Couldn't fix the institution, please try again later.");
+          setStatusMessage({
+            sentiment: StatusEnum.NEGATIVE,
+            message: "Couldn't fix the institution, please try again later.",
+            isLoading: false,
+          });
         });
     } else {
       // Creates new item
@@ -48,11 +57,19 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
         .post(ApiEndpoints.NEW_INSTITUTION, metadata)
         .then(res => {
           isNewInstitution = true;
-          setSuccessMessage('The institution is now linked');
+          setStatusMessage({
+            sentiment: StatusEnum.POSITIVE,
+            message: 'The institution is now linked.',
+            isLoading: false,
+          });
           history.push(routesPaths.balance);
         })
         .catch(e => {
-          setErrorMessage("Couldn't link the institution, please try again later.");
+          setStatusMessage({
+            sentiment: StatusEnum.NEGATIVE,
+            message: "Couldn't link the institution, please try again later",
+            isLoading: false,
+          });
         });
     }
 
@@ -89,7 +106,7 @@ const LinkInstitution = () => {
 
   const newLinkToken = async () => {
     await canutinLinkApi.get(ApiEndpoints.NEW_INSTITUTION_TOKEN).then(response => {
-      setToken(response.data.link_token);
+      setToken(response.data.linkToken);
     });
   };
 
@@ -97,7 +114,7 @@ const LinkInstitution = () => {
     await canutinLinkApi
       .post(ApiEndpoints.UPDATE_INSTITUTION_TOKEN, { id: institution_id })
       .then(response => {
-        setToken(response.data.link_token);
+        setToken(response.data.linkToken);
       });
   };
 
