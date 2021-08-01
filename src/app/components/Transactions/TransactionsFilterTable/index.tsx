@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { useTable, useSortBy, Column, useGlobalFilter, useFilters } from 'react-table';
 import { FixedSizeList } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import styled from 'styled-components';
 
 import { Transaction } from '@database/entities';
