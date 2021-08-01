@@ -16,6 +16,7 @@ import { Account } from '@database/entities';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import TransactionIpc from '@app/data/transaction.ipc';
 import { AppContext } from '@app/context/appContext';
+import { StatusEnum } from '@app/constants/misc';
 import { EVENT_SUCCESS, EVENT_ERROR } from '@constants/eventStatus';
 
 import Form from '@components/common/Form/Form';
@@ -59,7 +60,7 @@ type TransactionSubmitType = {
 const DATE_INFORMATION = getCurrentDateInformation();
 
 const TransactionForm = ({ initialState }: TransactionFormProps) => {
-  const { setSuccessMessage, setErrorMessage, setOnClickButton } = useContext(StatusBarContext);
+  const { setStatusMessage, statusMessage } = useContext(StatusBarContext);
   const { setIsDbEmpty } = useContext(AppContext);
   const { handleSubmit, control, register, watch, setValue, formState } = useForm({
     mode: 'onChange',
@@ -83,10 +84,6 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
   const balance = watch('balance');
   const description = watch('description');
 
-  const onCloseMessage = () => {
-    setSuccessMessage('');
-  };
-
   useEffect(() => {
     AccountIpc.getAccounts();
 
@@ -96,27 +93,25 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
 
     ipcRenderer.on(DB_NEW_TRANSACTION_ACK, (_: IpcRendererEvent, { status, message }) => {
       if (status === EVENT_SUCCESS) {
-        setSuccessMessage(<>Transaction created/edit</>);
+        setStatusMessage({ message: 'Transaction created/edit', sentiment: StatusEnum.POSITIVE, isLoading: false });
         setIsDbEmpty(false);
       }
 
       if (status === EVENT_ERROR) {
-        setErrorMessage(message);
+        setStatusMessage(message);
       }
     });
 
     ipcRenderer.on(DB_EDIT_TRANSACTION_ACK, (_: IpcRendererEvent, { status, message }) => {
       if (status === EVENT_SUCCESS) {
-        setSuccessMessage(<>Transaction created/edit</>);
+        setStatusMessage({ message: 'Transaction created/edit', sentiment: StatusEnum.POSITIVE, isLoading: false });
         setIsDbEmpty(false);
       }
 
       if (status === EVENT_ERROR) {
-        setErrorMessage(message);
+        setStatusMessage(message);
       }
     });
-
-    setOnClickButton(() => onCloseMessage);
 
     return () => {
       ipcRenderer.removeAllListeners(DB_GET_ACCOUNTS_ACK);
@@ -156,7 +151,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
       date,
       description,
       excludeFromTotals,
-      id: initialState?.id
+      id: initialState?.id,
     };
 
     if (initialState) {
