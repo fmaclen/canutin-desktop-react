@@ -3,25 +3,24 @@ import { css } from 'styled-components';
 import { monospaceRegular } from '@app/constants/fonts';
 import {
   greenPlain,
+  grey3,
   grey10,
   grey30,
+  grey50,
   grey80,
   grey90,
   underline,
   underlineHover,
   blackPlain,
-  bluePlain,
-  blackOpacity15,
-  grey3,
   shadowPlate,
   borderGrey,
-  grey50,
   whitePlain,
+  grey5,
 } from '@app/constants/colors';
 
 export const container = css`
   background-color: ${grey3};
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: ${shadowPlate};
   display: flex;
   flex-direction: column;
@@ -60,6 +59,7 @@ export const dateCell = css`
   color: ${grey80};
   font-size: 11px;
   text-transform: uppercase;
+  white-space: nowrap;
 `;
 
 export const descriptionCell = css`
@@ -123,8 +123,8 @@ export const tableHeaderItem = css<{ isSorted: boolean }>`
 `;
 
 export const tableContainer = css`
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
   border-collapse: collapse;
   background-color: ${whitePlain};
 `;
@@ -156,4 +156,11 @@ export const rowItem = css`
     text-align: right;
     padding-right: 12px;
   }
+`;
+
+export const tableEmptyCard = css`
+  border-top: 1px solid ${borderGrey};
+  background-color: ${grey5};
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 `;

@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useAsyncDebounce } from 'react-table';
 import styled from 'styled-components';
 
-import SelectButton from '@app/components/common/SelectButton';
 import { Transaction } from '@database/entities';
 import { TransactionsContext, filterOptions } from '@app/context/transactionsContext';
 
-import { container } from './styles';
 import { inputElement } from '@components/common/Form/InputText/styles';
+import { CustomSelect } from '@app/components/common/Form/Select';
+import { container } from './styles';
 
 const Container = styled.div`
   ${container}
@@ -45,9 +45,15 @@ const TransactionsGlobalFilter = ({
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder="Search by date, description, category, account or amount"
+        placeholder="Type to filter by date, description, category, account or amount"
       />
-      <SelectButton options={filterOptions} onChange={setFilterOption} value={filterOption} />
+      <CustomSelect
+        options={filterOptions}
+        value={filterOption}
+        onChange={setFilterOption}
+        isSearchable={false}
+        classNamePrefix="select"
+      />
     </Container>
   );
 };

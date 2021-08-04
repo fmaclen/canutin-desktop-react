@@ -7,7 +7,6 @@ import { Transaction } from '@database/entities';
 import { DateCell, AmountCell, DescriptionCell, LinkCell } from './TransactionsFilterTableCells';
 import TransactionsGlobalFilter from '../TransactionsGlobalFilter';
 import TransactionsFilterSummary from '../TransactionsFilterSummary';
-import EmptyFilterTable from '../EmptyFilterTable';
 import {
   container,
   filterContainer,
@@ -17,7 +16,9 @@ import {
   tableSortIcon,
   row,
   rowItem,
+  tableEmptyCard,
 } from './styles';
+import EmptyCard from '@app/components/common/EmptyCard';
 
 const Container = styled.div`
   ${container}
@@ -42,6 +43,9 @@ const Row = styled.tr`
 `;
 const RowItem = styled.td`
   ${rowItem}
+`;
+const TableEmptyCard = styled(EmptyCard)`
+  ${tableEmptyCard}
 `;
 
 interface TransactionsFilterTableProps {
@@ -172,11 +176,13 @@ const TransactionsFilterTable = ({ transactions }: TransactionsFilterTableProps)
           transactionsCount={transactionsCount}
         />
       </FilterContainer>
-      <TableContainer {...getTableProps()}>
-        <thead>{RenderHeader()}</thead>
-        <tbody {...getTableBodyProps()}>{RenderRow()}</tbody>
-      </TableContainer>
-      {rows.length === 0 && <EmptyFilterTable />}
+      {rows.length === 0 && <TableEmptyCard message="No transactions were found" />}
+      {rows.length !== 0 && (
+        <TableContainer {...getTableProps()}>
+          <thead>{RenderHeader()}</thead>
+          <tbody {...getTableBodyProps()}>{RenderRow()}</tbody>
+        </TableContainer>
+      )}
     </Container>
   );
 };

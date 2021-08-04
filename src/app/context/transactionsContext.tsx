@@ -10,6 +10,11 @@ interface TransactionsContextValue {
 
 export const filters = [
   {
+    label: 'This month',
+    dateFrom: subMonths(new Date(), 1),
+    dateTo: new Date(),
+  },
+  {
     label: 'Last 3 months',
     dateFrom: subMonths(new Date(), 3),
     dateTo: new Date(),
@@ -17,11 +22,6 @@ export const filters = [
   {
     label: 'Last 6 months',
     dateFrom: subMonths(new Date(), 6),
-    dateTo: new Date(),
-  },
-  {
-    label: 'Last 9 months',
-    dateFrom: subMonths(new Date(), 9),
     dateTo: new Date(),
   },
   {
