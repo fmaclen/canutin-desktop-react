@@ -15,6 +15,16 @@ export const filters = [
     dateTo: new Date(),
   },
   {
+    label: 'Last 6 months',
+    dateFrom: subMonths(new Date(), 6),
+    dateTo: new Date(),
+  },
+  {
+    label: 'Last 9 months',
+    dateFrom: subMonths(new Date(), 9),
+    dateTo: new Date(),
+  },
+  {
     label: 'Last 12 months',
     dateFrom: subMonths(new Date(), 12),
     dateTo: new Date(),

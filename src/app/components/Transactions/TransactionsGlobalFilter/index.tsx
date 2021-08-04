@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useAsyncDebounce, TableState } from 'react-table';
+import React, { useState, useEffect, useContext } from 'react';
+import { useAsyncDebounce } from 'react-table';
 import styled from 'styled-components';
 
+import SelectButton from '@app/components/common/SelectButton';
 import { Transaction } from '@database/entities';
+import { TransactionsContext, filterOptions } from '@app/context/transactionsContext';
 
-import { globalInput } from './styles';
+import { container } from './styles';
+import { inputElement } from '@components/common/Form/InputText/styles';
 
+const Container = styled.div`
+  ${container}
+`;
 const GlobalInput = styled.input`
-  ${globalInput}
+  ${inputElement};
 `;
 
 interface TransactionsGlobalFilterProps {
@@ -21,6 +27,7 @@ const TransactionsGlobalFilter = ({
   setGlobalFilter,
   transactionsData,
 }: TransactionsGlobalFilterProps) => {
+  const { filterOption, setFilterOption } = useContext(TransactionsContext);
   const [value, setValue] = useState(globalFilter);
   const onChange = useAsyncDebounce(value => {
     setGlobalFilter(value || undefined);
@@ -31,14 +38,17 @@ const TransactionsGlobalFilter = ({
   }, [transactionsData]);
 
   return (
-    <GlobalInput
-      value={value || ''}
-      onChange={e => {
-        setValue(e.target.value);
-        onChange(e.target.value);
-      }}
-      placeholder="Search by date, description, category, account or amount"
-    />
+    <Container>
+      <GlobalInput
+        value={value || ''}
+        onChange={e => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder="Search by date, description, category, account or amount"
+      />
+      <SelectButton options={filterOptions} onChange={setFilterOption} value={filterOption} />
+    </Container>
   );
 };
 
