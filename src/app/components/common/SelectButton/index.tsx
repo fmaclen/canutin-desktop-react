@@ -1,9 +1,7 @@
 import React from 'react';
-import Select, { components, OptionTypeBase, ControlProps } from 'react-select';
 
 import { SelectFieldValue, CustomSelect } from '@components/common/Form/Select';
-import { grey70 } from '@appConstants/colors';
-import { sansSerifBold } from '@appConstants/fonts';
+import { grey70, borderGrey, whitePlain } from '@appConstants/colors';
 
 interface SelectButtonProps {
   options: SelectFieldValue[];
@@ -17,25 +15,26 @@ const customStyles = {
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: '8px',
-    borderRadius: '3px'
+    borderRadius: '3px',
   }),
   control: (base: any) => ({
     ...base,
-    height: 30,
-    minHeight: 30,
-    width: 125,
-    background: 'none',
+    borderWidth: 2,
+    borderColor: `${borderGrey}`,
+    height: 40,
+    minHeight: 40,
+    width: 196,
+    background: `${whitePlain}`,
   }),
   singleValue: (base: any) => ({
     ...base,
     fontSize: '12px',
-    fontWeight: '600',
     color: grey70,
   }),
   indicatorsContainer: () => ({
     fontSize: '8px',
-    paddingRight: '12px'
-  })
+    paddingRight: '12px',
+  }),
 };
 
 const DropdownIndicator = () => <>▼</>;
