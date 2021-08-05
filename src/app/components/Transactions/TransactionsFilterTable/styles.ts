@@ -140,6 +140,16 @@ export const row = css`
     > td {
       background-color: ${grey3};
     }
+
+    &:last-child {
+      > td:first-child {
+        border-bottom-left-radius: 4px;
+      }
+
+      > td:last-child {
+        border-bottom-right-radius: 4px;
+      }
+    }
   }
 `;
 
