@@ -1,5 +1,13 @@
 import { createContext, PropsWithChildren, useState, Dispatch, SetStateAction } from 'react';
-import { subMonths, subYears } from 'date-fns';
+import {
+  subMonths,
+  subYears,
+  startOfMonth,
+  endOfMonth,
+  addMonths,
+  startOfYear,
+  endOfYear,
+} from 'date-fns';
 
 import { SelectFieldValue } from '@components/common/Form/Select';
 
@@ -8,7 +16,22 @@ interface TransactionsContextValue {
   setFilterOption: Dispatch<SetStateAction<SelectFieldValue | null>>;
 }
 
+const thisMonthFrom = startOfMonth(new Date());
+const thisMonthTo = endOfMonth(new Date());
+const thisYearFrom = startOfYear(new Date());
+const thisYearTo = endOfYear(new Date());
+
 export const filters = [
+  {
+    label: 'This month',
+    dateFrom: thisMonthFrom,
+    dateTo: thisMonthTo,
+  },
+  {
+    label: 'Last month',
+    dateFrom: addMonths(thisMonthFrom, -1),
+    dateTo: addMonths(thisMonthTo, -1),
+  },
   {
     label: 'Last 3 months',
     dateFrom: subMonths(new Date(), 3),
@@ -18,6 +41,16 @@ export const filters = [
     label: 'Last 12 months',
     dateFrom: subMonths(new Date(), 12),
     dateTo: new Date(),
+  },
+  {
+    label: 'Year to date',
+    dateFrom: thisYearFrom,
+    dateTo: new Date(),
+  },
+  {
+    label: 'Last year',
+    dateFrom: subYears(thisYearFrom, 1),
+    dateTo: subYears(thisYearTo, 1),
   },
   {
     label: 'Lifetime',
