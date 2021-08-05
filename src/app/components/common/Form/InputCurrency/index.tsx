@@ -7,7 +7,7 @@ import { NumberFormatPropsBase } from 'react-number-format';
 import FieldStatus from '@components/common/Form/FieldStatus';
 import NumberFormat from '@components/common/NumberFormat';
 
-import { StatusEnum, TransactionTypesEnum } from '@appConstants/misc';
+import { StatusEnum } from '@appConstants/misc';
 
 import { inputElement } from './styles';
 
@@ -22,7 +22,6 @@ export interface InputCurrencyProps extends NumberFormatPropsBase {
   defaultFormValue?: string | null;
   error?: FieldError;
   rules?: Exclude<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
-  transactionType?: TransactionTypesEnum;
   allowNegative?: boolean;
 }
 
