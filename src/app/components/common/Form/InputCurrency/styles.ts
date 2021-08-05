@@ -7,6 +7,7 @@ import { TransactionTypesEnum } from '@appConstants/misc';
 export const inputElement = css<{ disabled?: boolean; transactionType?: TransactionTypesEnum }>`
   ${inputShared};
   ${monospaceRegular};
+  min-height: 40px;
 
   background-color: ${whitePlain};
 

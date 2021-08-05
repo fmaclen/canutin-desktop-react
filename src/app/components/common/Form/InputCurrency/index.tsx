@@ -37,7 +37,7 @@ const InputCurrency = ({
   allowNegative = true,
   ...numberFormatProps
 }: InputCurrencyProps) => (
-  <div>
+  <>
     <Controller
       render={({ value, onChange, name }) => {
         return (
@@ -57,6 +57,7 @@ const InputCurrency = ({
             name={name}
             customInput={CustomNumberFormat}
             {...numberFormatProps}
+            placeholder="$0.00"
           />
         );
       }}
@@ -66,7 +67,7 @@ const InputCurrency = ({
       rules={rules}
     />
     {error && <FieldStatus status={StatusEnum.NEGATIVE}>{error.message}</FieldStatus>}
-  </div>
+  </>
 );
 
 export default InputCurrency;
