@@ -24,12 +24,12 @@ import InputTextField from '@components/common/Form/InputTextField';
 import Field from '@components/common/Form/Field';
 import SelectField from '@components/common/Form/SelectField';
 import Select from '@app/components/common/Form/Select';
+import InputCurrency from '@app/components/common/Form/InputCurrency';
 import FormFooter from '@components/common/Form/FormFooter';
 import SubmitButton from '@components/common/Form/SubmitButton';
 import InlineCheckbox from '@components/common/Form/Checkbox';
 
 import { toggableInputContainer, dateField } from './styles';
-import InputCurrency from '@app/components/common/Form/InputCurrency';
 
 const ToggableInputContainer = styled.div`
   ${toggableInputContainer}
