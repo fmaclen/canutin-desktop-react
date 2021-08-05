@@ -32,7 +32,6 @@ const InputCurrency = ({
   defaultFormValue,
   error,
   rules,
-  transactionType,
   allowNegative = true,
   ...numberFormatProps
 }: InputCurrencyProps) => (
@@ -52,7 +51,6 @@ const InputCurrency = ({
             }}
             disabled={disabled}
             // @ts-ignore
-            transactionType={transactionType}
             name={name}
             customInput={CustomNumberFormat}
             {...numberFormatProps}
