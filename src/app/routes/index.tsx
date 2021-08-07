@@ -126,10 +126,4 @@ export const routesConfig: RouteConfigProps[] = [
     component: <Setup />,
     breadcrumb: 'Canutin Setup',
   },
-  {
-    path: routesPaths.editTransaction,
-    exact: true,
-    component: <EditTransaction />,
-    breadcrumb: 'Edit Transaction'
-  }
 ];

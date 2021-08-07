@@ -143,8 +143,6 @@ const TransactionsFilterTable = ({ transactions }: TransactionsFilterTableProps)
       headerGroups.map(headerGroup => (
         <TableHeaderRow {...headerGroup.getHeaderGroupProps()}>
           {headerGroup.headers.map(column => (
-            // Add the sorting props to control sorting. For this example
-            // we can add them into the header props
             <TableHeaderItem
               isSorted={column.isSorted}
               {...column.getHeaderProps(column.getSortByToggleProps())}
@@ -155,7 +153,6 @@ const TransactionsFilterTable = ({ transactions }: TransactionsFilterTableProps)
                   {column.isSorted ? (column.isSortedDesc ? '▼' : '▲') : ''}
                 </TableSortIcon>
               </div>
-              {/* Add a sort direction indicator */}
             </TableHeaderItem>
           ))}
         </TableHeaderRow>
