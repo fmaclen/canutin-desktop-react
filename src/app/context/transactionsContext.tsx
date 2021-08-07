@@ -1,25 +1,19 @@
 import { createContext, PropsWithChildren, useState, Dispatch, SetStateAction } from 'react';
-import {
-  subMonths,
-  subYears,
-  startOfMonth,
-  endOfMonth,
-  addMonths,
-  startOfYear,
-  endOfYear,
-} from 'date-fns';
+import { subMonths, subYears, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
 
 import { SelectFieldValue } from '@components/common/Form/Select';
+import { dateInUTC } from '@app/utils/date.utils';
 
 interface TransactionsContextValue {
   filterOption: SelectFieldValue | null;
   setFilterOption: Dispatch<SetStateAction<SelectFieldValue | null>>;
 }
 
-const thisMonthFrom = startOfMonth(new Date());
-const thisMonthTo = endOfMonth(new Date());
-const thisYearFrom = startOfYear(new Date());
-const thisYearTo = endOfYear(new Date());
+const today = new Date();
+const thisMonthFrom = startOfMonth(today);
+const thisMonthTo = endOfMonth(today);
+const thisYearFrom = startOfYear(today);
+const thisYearTo = endOfYear(today);
 
 export const filters = [
   {
@@ -29,28 +23,28 @@ export const filters = [
   },
   {
     label: 'Last month',
-    dateFrom: addMonths(thisMonthFrom, -1),
-    dateTo: addMonths(thisMonthTo, -1),
+    dateFrom: subMonths(thisMonthFrom, 1),
+    dateTo: subMonths(thisMonthTo, 1),
   },
   {
     label: 'Last 3 months',
-    dateFrom: subMonths(new Date(), 3),
-    dateTo: new Date(),
+    dateFrom: subMonths(today, 3),
+    dateTo: today,
   },
   {
     label: 'Last 6 months',
-    dateFrom: subMonths(new Date(), 6),
-    dateTo: new Date(),
+    dateFrom: subMonths(today, 6),
+    dateTo: today,
   },
   {
     label: 'Last 12 months',
-    dateFrom: subMonths(new Date(), 12),
-    dateTo: new Date(),
+    dateFrom: subMonths(today, 12),
+    dateTo: today,
   },
   {
     label: 'Year to date',
     dateFrom: thisYearFrom,
-    dateTo: new Date(),
+    dateTo: today,
   },
   {
     label: 'Last year',
@@ -59,8 +53,8 @@ export const filters = [
   },
   {
     label: 'Lifetime',
-    dateFrom: subYears(new Date(), 900),
-    dateTo: new Date(),
+    dateFrom: subYears(today, 900),
+    dateTo: today,
   },
 ];
 export const filterOptions = filters.map(({ label, dateFrom, dateTo }) => ({
