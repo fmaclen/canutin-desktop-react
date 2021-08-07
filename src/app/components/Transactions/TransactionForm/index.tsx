@@ -98,7 +98,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
       }
 
       if (status === EVENT_ERROR) {
-        setStatusMessage(message);
+        setStatusMessage({ message, sentiment: StatusEnum.NEGATIVE, isLoading: false });
       }
     });
 
