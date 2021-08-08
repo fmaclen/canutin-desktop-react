@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { container } from './styles';
-import Card, { CardAppearanceEnum } from '@app/components/common/Card';
+import Card, { CardAppearanceEnum } from '@components/common/Card';
 
 const Container = styled.div`
   ${container}

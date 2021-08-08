@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { BalanceGroupCardTypeEnum } from '@app/components/common/BalanceGroupCard/constants';
-import { AccountAssetBalance } from '@app/components/BalanceSheet/BalancesByGroup';
-import BalancesByTypeCard from '@app/components/BalanceSheet/BalanceByTypeCard';
-import EmptyCard from '@app/components/common/EmptyCard';
-import BalanceGroupCard from '@app/components/common/BalanceGroupCard';
+import { BalanceGroupCardTypeEnum } from '@components/common/BalanceGroupCard/constants';
+import { AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
+import BalancesByTypeCard from '@components/BalanceSheet/BalanceByTypeCard';
+import EmptyCard from '@components/common/EmptyCard';
+import BalanceGroupCard from '@components/common/BalanceGroupCard';
 
 import { container } from './styles';
 

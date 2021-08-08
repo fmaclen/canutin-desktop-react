@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import BalanceGroupList from '@app/components/BalanceSheet/BalanceGroupList';
-import { BalanceGroupCardTypeEnum } from '@app/components/common/BalanceGroupCard/constants';
+import BalanceGroupList from '@components/BalanceSheet/BalanceGroupList';
+import { BalanceGroupCardTypeEnum } from '@components/common/BalanceGroupCard/constants';
 
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { container } from './styles';
