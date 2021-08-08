@@ -37,8 +37,8 @@ const BalancesByGroup = ({ balancesByGroupData }: BalancesByGroupProps) => (
       balanceData={balancesByGroupData[BalanceGroupEnum.DEBT]}
     />
     <BalanceGroupList
-      type={BalanceGroupEnum.INVESTMENT}
-      balanceData={balancesByGroupData[BalanceGroupEnum.INVESTMENT]}
+      type={BalanceGroupEnum.INVESTMENTS}
+      balanceData={balancesByGroupData[BalanceGroupEnum.INVESTMENTS]}
     />
     <BalanceGroupList
       type={BalanceGroupEnum.OTHER_ASSETS}

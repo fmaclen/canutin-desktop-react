@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
+import {
+  BalanceGroupEnum,
+  balanceGroupLabels,
+  balanceGroupApperances,
+} from '@enums/balanceGroup.enum';
 import { AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
 import BalancesByTypeCard from '@components/BalanceSheet/BalanceByTypeCard';
 import EmptyCard from '@components/common/EmptyCard';
-import Card, { CardAppearanceEnum } from '@components/common/Card';
+import Card from '@components/common/Card';
 
 import { container } from './styles';
 
@@ -28,20 +32,6 @@ const sortBalanceDataByTotalAmount = (balanceData: { [x: string]: AccountAssetBa
     (balanceB, balanceA) => getTotal(balanceA[1]) - getTotal(balanceB[1])
   );
 
-// TODO: DRY the BalanceGroupEnum and CardApeparanceEnum
-const cardPropsFromBalanceType = {
-  [BalanceGroupEnum.CASH]: { label: 'Cash', appearance: CardAppearanceEnum.CASH },
-  [BalanceGroupEnum.DEBT]: { label: 'Debt', appearance: CardAppearanceEnum.DEBT },
-  [BalanceGroupEnum.INVESTMENT]: {
-    label: 'Investment',
-    appearance: CardAppearanceEnum.INVESTMENTS,
-  },
-  [BalanceGroupEnum.OTHER_ASSETS]: {
-    label: 'Other assets',
-    appearance: CardAppearanceEnum.OTHER_ASSETS,
-  },
-};
-
 const BalanceGroupList = ({ type, balanceData }: BalanceGroupListProps) => {
   const totalAmount = balanceData
     ? Object.keys(balanceData).reduce((acc, assetTypeKey) => {
@@ -56,8 +46,8 @@ const BalanceGroupList = ({ type, balanceData }: BalanceGroupListProps) => {
   return (
     <Container>
       <Card
-        label={cardPropsFromBalanceType[type].label}
-        appearance={cardPropsFromBalanceType[type].appearance}
+        label={balanceGroupLabels[type]}
+        appearance={balanceGroupApperances[type]}
         value={Math.round(totalAmount)}
         isCurrency={true}
       />

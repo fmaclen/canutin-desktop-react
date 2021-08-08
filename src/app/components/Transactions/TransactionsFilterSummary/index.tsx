@@ -18,10 +18,14 @@ const TransactionsFilterSummary = ({
   transactionsCount,
 }: TransactionsFilterSummaryProps) => (
   <Container>
-    <Card label="Transactions" appearance={CardAppearanceEnum.SUMMARY} value={transactionsCount} />
+    <Card
+      label="Transactions"
+      appearance={CardAppearanceEnum.SECONDARY}
+      value={transactionsCount}
+    />
     <Card
       label="Net balance"
-      appearance={CardAppearanceEnum.SUMMARY}
+      appearance={CardAppearanceEnum.SECONDARY}
       value={netBalanceCount}
       isCurrency={true}
     />
