@@ -2,12 +2,12 @@ import { css } from 'styled-components';
 
 import {
   whitePlain,
-  grey80,
   shadowPlate,
   borderGrey,
   greenPlain,
   goldPlain,
   purplePlain,
+  redPlain,
 } from '@appConstants/colors';
 import { sansSerifBold, monospaceRegular } from '@appConstants/fonts';
 import { CardAppearanceEnum } from '.';
@@ -35,7 +35,7 @@ export const container = css<{ appearance?: CardAppearanceEnum }>`
         `
       : appearance === CardAppearanceEnum.DEBT
       ? css`
-          background-color: ${greenPlain};
+          background-color: ${redPlain};
           color: ${whitePlain};
         `
       : appearance === CardAppearanceEnum.INVESTMENTS
@@ -55,7 +55,6 @@ export const container = css<{ appearance?: CardAppearanceEnum }>`
 
 export const label = css`
   ${sansSerifBold}
-  color: ${grey80};
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -64,5 +63,4 @@ export const label = css`
 export const value = css`
   ${monospaceRegular}
   font-size: 14px;
-  color: ${grey80};
 `;

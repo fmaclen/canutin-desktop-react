@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { BalanceGroupCardTypeEnum } from '@components/common/BalanceGroupCard/constants';
+import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
 import BalancesByTypeCard from '@components/BalanceSheet/BalanceByTypeCard';
 import EmptyCard from '@components/common/EmptyCard';
-import BalanceGroupCard from '@components/common/BalanceGroupCard';
+import Card, { CardAppearanceEnum } from '@components/common/Card';
 
 import { container } from './styles';
 
@@ -14,7 +14,7 @@ const Container = styled.div`
 `;
 
 interface BalanceGroupListProps {
-  type: BalanceGroupCardTypeEnum;
+  type: BalanceGroupEnum;
   balanceData?: {
     [nameOfBalance: string]: AccountAssetBalance[];
   };
@@ -27,6 +27,20 @@ const sortBalanceDataByTotalAmount = (balanceData: { [x: string]: AccountAssetBa
   Object.entries(balanceData).sort(
     (balanceB, balanceA) => getTotal(balanceA[1]) - getTotal(balanceB[1])
   );
+
+// TODO: DRY the BalanceGroupEnum and CardApeparanceEnum
+const cardPropsFromBalanceType = {
+  [BalanceGroupEnum.CASH]: { label: 'Cash', appearance: CardAppearanceEnum.CASH },
+  [BalanceGroupEnum.DEBT]: { label: 'Debt', appearance: CardAppearanceEnum.DEBT },
+  [BalanceGroupEnum.INVESTMENT]: {
+    label: 'Investment',
+    appearance: CardAppearanceEnum.INVESTMENTS,
+  },
+  [BalanceGroupEnum.OTHER_ASSETS]: {
+    label: 'Other assets',
+    appearance: CardAppearanceEnum.OTHER_ASSETS,
+  },
+};
 
 const BalanceGroupList = ({ type, balanceData }: BalanceGroupListProps) => {
   const totalAmount = balanceData
@@ -41,7 +55,12 @@ const BalanceGroupList = ({ type, balanceData }: BalanceGroupListProps) => {
 
   return (
     <Container>
-      <BalanceGroupCard type={type} amount={Math.round(totalAmount)} />
+      <Card
+        label={cardPropsFromBalanceType[type].label}
+        appearance={cardPropsFromBalanceType[type].appearance}
+        value={Math.round(totalAmount)}
+        isCurrency={true}
+      />
       {!balanceData ||
         (Object.keys(balanceData).length === 0 && (
           <EmptyCard message="No balances are available in this group." />

@@ -24,8 +24,9 @@ export const container = css`
 export const balanceTypeCardContainer = css`
   align-items: center;
   border-bottom: 1px dashed ${grey20};
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: auto max-content;
   padding: 16px;
 `;
 
