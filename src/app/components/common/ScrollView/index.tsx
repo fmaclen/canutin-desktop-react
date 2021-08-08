@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
@@ -52,7 +52,7 @@ const ScrollView = ({
   children,
 }: ScrollViewProps) => {
   const history = useHistory();
-  const [selectedSection, setSelectedSection] = useState(sections?.[0]);
+  const [selectedSection, setSelectedSection] = useState(sections?.[0].label);
 
   return (
     <Container>
@@ -79,7 +79,11 @@ const ScrollView = ({
           />
         ) : null}
       </Header>
-      <Main wizard={wizard}>{selectedSection ? selectedSection.component : children}</Main>
+      <Main wizard={wizard}>
+        {selectedSection
+          ? sections?.find(({ label }) => label === selectedSection)?.component
+          : children}
+      </Main>
     </Container>
   );
 };

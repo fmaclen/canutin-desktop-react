@@ -1,4 +1,4 @@
-import { CardAppearanceEnum } from '@components/common/Card';
+import { CardAppearanceEnum } from '@app/components/common/Card';
 
 export enum BalanceGroupEnum {
   CASH,

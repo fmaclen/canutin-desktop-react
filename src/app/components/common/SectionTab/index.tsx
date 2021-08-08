@@ -18,16 +18,17 @@ export type SectionType = {
 
 interface SectionTabProps {
   sections: SectionType[];
-  selectedSection: SectionType;
-  setSelectedSection: Dispatch<SetStateAction<SectionType | undefined>>;
+  selectedSection: string;
+  setSelectedSection: Dispatch<SetStateAction<string | undefined>>;
 }
 
 const SectionTab = ({ selectedSection, setSelectedSection, sections }: SectionTabProps) => (
   <Container>
-    {sections.map(({ label, component }) => (
+    {sections.map(({ label }) => (
       <Section
-        onClick={() => setSelectedSection({ label, component })}
-        isSelected={selectedSection.label === label}
+        key={label}
+        onClick={() => setSelectedSection(label)}
+        isSelected={selectedSection === label}
       >
         {label}
       </Section>

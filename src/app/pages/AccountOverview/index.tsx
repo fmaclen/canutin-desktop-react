@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { Account } from '@database/entities';
+import { Account, Transaction } from '@database/entities';
 import { getAccountInformationLabel } from '@app/utils/account.utils';
+import { getSelectedTransactions } from '@app/constants/filters';
+import useGlobalFilterTable from '@app/hooks/useGlobalFilterTable';
 
 import ScrollView from '@components/common/ScrollView';
 import AccountOverviewHeader from '@components/Account/AccountOverviewHeader';
@@ -10,7 +12,6 @@ import AccountOverviewInformation from '@components/Account/AccountOverviewInfor
 import AccountOverviewEdit from '@components/Account/AccountOverviewEdit';
 
 // TODO:
-// - Generate transaction table
 // - Balance history component
 // - Edit tab
 
@@ -18,17 +19,44 @@ const AccountOverview = () => {
   const {
     state: { balance: account },
   } = useLocation<{ balance: Account }>();
-
-  const accountOverviewSections = [
+  const { selectedFilterOption, setSelectedFilterOption } = useGlobalFilterTable();
+  const [accountOverviewSections, setAccountOverviewSections] = useState([
     {
       label: 'Overview',
-      component: <AccountOverviewInformation account={account} />,
+      component: (
+        <AccountOverviewInformation
+          transactions={account.transactions as Transaction[]}
+          account={account}
+        />
+      ),
     },
     {
       label: 'Edit',
-      component: <AccountOverviewEdit />
-    }
-  ];
+      component: <AccountOverviewEdit />,
+    },
+  ]);
+
+  useEffect(() => {
+    setAccountOverviewSections([
+      {
+        label: 'Overview',
+        component: (
+          <AccountOverviewInformation
+            transactions={getSelectedTransactions(
+              account.transactions as Transaction[],
+              selectedFilterOption.value.dateFrom,
+              selectedFilterOption.value.dateTo
+            )}
+            account={account}
+          />
+        ),
+      },
+      {
+        label: 'Edit',
+        component: <AccountOverviewEdit />,
+      },
+    ]);
+  }, [selectedFilterOption.label]);
 
   return (
     <>
