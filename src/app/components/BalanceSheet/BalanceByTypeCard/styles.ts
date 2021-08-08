@@ -34,7 +34,7 @@ export const balanceItemContainer = css`
   display: grid;
   grid-template-columns: auto max-content;
   grid-gap: 8px;
-  padding: 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid ${grey5};
 
   &:nth-child(even) {
