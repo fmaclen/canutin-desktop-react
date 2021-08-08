@@ -2,6 +2,7 @@ import { css } from 'styled-components';
 
 import {
   whitePlain,
+  grey80,
   shadowPlate,
   borderGrey,
   greenPlain,
@@ -31,7 +32,10 @@ export const container = css<{ appearance?: CardAppearanceEnum }>`
       : appearance === CardAppearanceEnum.CASH
       ? css`
           background-color: ${greenPlain};
-          color: ${whitePlain};
+
+          * {
+            color: ${whitePlain} !important;
+          }
         `
       : appearance === CardAppearanceEnum.DEBT
       ? css`
@@ -41,26 +45,48 @@ export const container = css<{ appearance?: CardAppearanceEnum }>`
       : appearance === CardAppearanceEnum.INVESTMENTS
       ? css`
           background-color: ${purplePlain};
-          color: ${whitePlain};
+
+          * {
+            color: ${whitePlain} !important;
+          }
         `
       : appearance === CardAppearanceEnum.OTHER_ASSETS
       ? css`
           background-color: ${goldPlain};
-          color: ${whitePlain};
+
+          * {
+            color: ${whitePlain} !important;
+          }
+        `
+      : appearance === CardAppearanceEnum.NET_WORTH
+      ? css`
+          background-color: ${grey80};
+          grid-auto-flow: row;
+          grid-gap: 30px;
+
+          * {
+            color: ${whitePlain} !important;
+          }
         `
       : css`
           background-color: ${whitePlain};
         `};
 `;
 
-export const label = css`
+export const label = css<{ appearance?: CardAppearanceEnum }>`
   ${sansSerifBold}
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.02em;
 `;
 
-export const value = css`
+export const value = css<{ appearance?: CardAppearanceEnum }>`
   ${monospaceRegular}
   font-size: 14px;
+
+  ${({ appearance }) =>
+    appearance === CardAppearanceEnum.NET_WORTH &&
+    css`
+      font-size: 28px;
+    `}
 `;
