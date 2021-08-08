@@ -21,6 +21,7 @@ export const grey20 = '#CCCCCC';
 export const grey30 = '#B2B2B2';
 export const grey40 = '#999999';
 export const grey50 = '#7F7F7F';
+export const grey60 = '#666';
 export const grey70 = '#4C4C4C';
 export const grey80 = '#333333';
 export const grey90 = '#191919';
