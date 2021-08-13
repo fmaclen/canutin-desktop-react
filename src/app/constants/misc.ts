@@ -46,3 +46,9 @@ export enum StatusEnum {
   NEGATIVE = 'negative',
   WARNING = 'warning',
 }
+
+export enum WindowControlEnum {
+  CLOSE = 'close',
+  MINIMIZE = 'minimize',
+  MAXIMIZE = 'maximize',
+}

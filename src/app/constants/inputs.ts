@@ -1,14 +1,5 @@
 import { sansSerifRegular } from '@appConstants/fonts';
-import {
-  whitePlain,
-  borderGrey,
-  grey80,
-  bluePlain,
-  redPlain,
-  greenPlain,
-} from '@appConstants/colors';
-
-import { StatusEnum } from '@appConstants/misc';
+import { whitePlain, borderGrey, grey30, grey80, bluePlain } from '@appConstants/colors';
 
 export const inputFocusColor = `
   &:focus {
@@ -27,6 +18,10 @@ export const inputShared = `
   border-radius: 4px;
   padding: 8px;
   box-sizing: border-box;
+
+  &::placeholder {
+    color: ${grey30};
+  }
 `;
 
 export const inlineInput = `

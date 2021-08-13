@@ -123,7 +123,7 @@ const App = () => {
     <>
       <GlobalStyle />
       <BrowserRouter>
-        <Container>
+        <Container hasSidebar={isAppInitialized}>
           {!isLoading && isAppInitialized && (
             <>
               <TitleBar />

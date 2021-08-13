@@ -124,11 +124,13 @@ export const generateAccountsBalanceInfo = (accounts: Account[]) => {
     accountsBalances = [
       ...accountsBalances,
       {
+        ...account,
         amount: account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate
           ? account.transactions?.reduce((sum, transaction) => transaction.amount + sum, 0)
           : account.balanceStatements?.[account.balanceStatements?.length - 1].value,
         type: 'Account',
         name: account.name,
+        id: account.id,
       },
     ];
   });
@@ -137,6 +139,7 @@ export const generateAccountsBalanceInfo = (accounts: Account[]) => {
 };
 
 export const generateAssetBalanceInfo = (asset: Asset) => ({
+  ...asset,
   name: asset.name,
   type: 'Asset',
   amount: asset.value,
@@ -156,3 +159,42 @@ export const getTypesByBalanceGroup = (balanceGroup: BalanceGroupEnum) => [
     .find(accountType => accountType.balanceGroup === balanceGroup)
     ?.accountTypes.map(accountTypes => accountTypes.value) || []),
 ];
+
+export type TotalBalanceType = { [value in BalanceGroupEnum]: number } | undefined;
+
+export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => {
+  const balances = getBalanceForAllAccountsAssets(assets, accounts);
+  return (
+    balances &&
+    [...Object.keys(balances), BalanceGroupEnum.NET_WORTH].reduce(
+      (acc, value) => {
+        if (Number(value) === BalanceGroupEnum.NET_WORTH) {
+          acc[BalanceGroupEnum.NET_WORTH] = Object.keys(acc).reduce(
+            (total, key) => total + acc[(Number(key) as unknown) as BalanceGroupEnum],
+            0
+          );
+        } else {
+          const balanceData = balances[(value as unknown) as BalanceGroupEnum];
+          const totalAmount = balanceData
+            ? Object.keys(balanceData).reduce((acc, assetTypeKey) => {
+                const totalBalance = balanceData[assetTypeKey].reduce((acc, assetTypeBalance) => {
+                  return acc + assetTypeBalance.amount;
+                }, 0);
+
+                return acc + totalBalance;
+              }, 0)
+            : 0;
+          acc[Number(value) as BalanceGroupEnum] = Math.floor(totalAmount);
+        }
+        return acc;
+      },
+      {
+        [BalanceGroupEnum.CASH]: 0,
+        [BalanceGroupEnum.DEBT]: 0,
+        [BalanceGroupEnum.INVESTMENTS]: 0,
+        [BalanceGroupEnum.OTHER_ASSETS]: 0,
+        [BalanceGroupEnum.NET_WORTH]: 0,
+      }
+    )
+  );
+};

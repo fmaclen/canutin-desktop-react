@@ -8,6 +8,9 @@ import {
   grey80,
   shadowPlate,
   whitePlain,
+  yellowUnderline,
+  blackPlain,
+  yellowUnderlineHover,
 } from '@app/constants/colors';
 import { monospaceRegular } from '@app/constants/fonts';
 
@@ -24,8 +27,9 @@ export const container = css`
 export const balanceTypeCardContainer = css`
   align-items: center;
   border-bottom: 1px dashed ${grey20};
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: auto max-content;
   padding: 16px;
 `;
 
@@ -33,7 +37,7 @@ export const balanceItemContainer = css`
   display: grid;
   grid-template-columns: auto max-content;
   grid-gap: 8px;
-  padding: 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid ${grey5};
 
   &:nth-child(even) {
@@ -69,9 +73,20 @@ export const balanceItemAmount = css`
 `;
 
 export const balanceName = css`
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: ${yellowUnderline};
+  text-decoration-thickness: 3px;
+  text-decoration-offset: -5px;
+  border-bottom: 2px;
   color: ${grey80};
   font-size: 12px;
   flex: 1;
+
+  &:hover {
+    color: ${blackPlain};
+    text-decoration-color: ${yellowUnderlineHover};
+  }
 `;
 
 export const balanceType = css`

@@ -5,6 +5,7 @@ import TheBigPicture from '@pages/TheBigPicture';
 import BalanceSheet from '@pages/BalanceSheet';
 import Budget from '@pages/Budget';
 import Transactions from '@pages/Transactions';
+import AddTransactions from '@app/pages/AddTransaction';
 import Trends from '@pages/Trends';
 import AddAccountOrAsset from '@pages/AddAccountOrAsset';
 import AddAccountAssetByHand from '@pages/AddAccountAssetByHand';
@@ -14,6 +15,8 @@ import Settings from '@pages/Settings';
 import CanutinLink from '@pages/CanutinLink';
 import CanutinLinkCreateAccount from '@pages/CanutinLinkCreateAccount';
 import CanutinLinkInstitution from '@pages/CanutinLinkInstitution';
+import EditTransaction from '@app/pages/EditTransaction';
+import AccountOverview from '@app/pages/AccountOverview';
 
 export const rootRoutesPaths = {
   bigpicture: '/bigpicture',
@@ -32,6 +35,9 @@ export const routesPaths = {
   ...rootRoutesPaths,
   addAccountOrAssetByHand: '/account/addAccountOrAsset/byHand',
   addAccountOrAssetByWizard: '/account/addAccountOrAsset/byWizard',
+  accountOverview: '/account/:accountName/',
+  addTransaction: '/transactions/addTransaction',
+  editTransaction: '/transactions/:categoryName/:accountName/Edit',
   canutinSetup: '/canutinSetup',
   linkCreateAccount: '/link/create-account',
   linkInstitution: '/link/link-institution',
@@ -74,6 +80,18 @@ export const routesConfig: RouteConfigProps[] = [
     exact: true,
     component: <Transactions />,
     breadcrumb: 'Transactions',
+  },
+  {
+    path: routesPaths.addTransaction,
+    exact: true,
+    component: <AddTransactions />,
+    breadcrumb: 'Add new',
+  },
+  {
+    path: routesPaths.editTransaction,
+    exact: true,
+    component: <EditTransaction />,
+    breadcrumb: 'Edit',
   },
   {
     path: routesPaths.trends,
@@ -140,5 +158,10 @@ export const routesConfig: RouteConfigProps[] = [
     exact: true,
     component: <CanutinLinkInstitution />,
     breadcrumb: 'Fix',
+  },
+  {
+    path: routesPaths.accountOverview,
+    exact: true,
+    component: <AccountOverview />,
   },
 ];

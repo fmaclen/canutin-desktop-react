@@ -6,6 +6,7 @@ import { inputShared } from '@appConstants/inputs';
 export const inputElement = css<{ disabled?: boolean }>`
   ${inputShared};
   ${monospaceRegular};
+  min-height: 40px;
 
   background-color: ${whitePlain};
 
@@ -15,5 +16,3 @@ export const inputElement = css<{ disabled?: boolean }>`
       background-color: ${grey10};
     `}
 `;
-
-

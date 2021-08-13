@@ -19,6 +19,15 @@ export const DB_GET_BALANCE_STATEMENTS_ACK = 'dbGetStatementsAck';
 export const DB_GET_TRANSACTIONS = 'dbGetTransactions';
 export const DB_GET_TRANSACTIONS_ACK = 'dbGetTransactionsAck';
 
+export const DB_NEW_TRANSACTION = 'dbNewTransaction';
+export const DB_NEW_TRANSACTION_ACK = 'dbNewTransactionAck';
+
+export const DB_EDIT_TRANSACTION = 'dbEditTransaction';
+export const DB_EDIT_TRANSACTION_ACK = 'dbEditTransactionAck';
+
+export const DB_DELETE_TRANSACTION = 'dbDeleteTransaction';
+export const DB_DELETE_TRANSACTION_ACK = 'dbDeleteTransactionAck';
+
 // Import Wizard
 export const IMPORT_SOURCE_FILE = 'importSourceFile';
 export const IMPORT_SOURCE_FILE_ACK = 'importSourceFileAck';
@@ -33,3 +42,6 @@ export const LOADING_CSV = 'loadingCsv';
 // Transactions
 export const FILTER_TRANSACTIONS = 'filterTransactions';
 export const FILTER_TRANSACTIONS_ACK = 'filterTransactionsAck';
+
+// Window
+export const WINDOW_CONTROL = 'windowControl';
