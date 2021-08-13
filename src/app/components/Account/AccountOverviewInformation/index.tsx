@@ -6,11 +6,7 @@ import { Account, Transaction } from '@database/entities';
 import Section from '@app/components/common/Section';
 import TransactionsFilterTable from '@app/components/Transactions/TransactionsFilterTable';
 
-import { container } from './styles';
-
-const Container = styled.div`
-  ${container}
-`;
+const Container = styled.div``;
 
 interface AccountOverviewInformationProps {
   account: Account;
