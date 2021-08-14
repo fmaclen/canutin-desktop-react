@@ -5,7 +5,7 @@ import { AccountTypeRepository } from '@database/repositories/accountType.reposi
 import { PREVIOUS_AUTO_CALCULATED } from '@constants';
 
 import { Account } from '../entities';
-import { NewAccountType } from '../../types/account.type';
+import { NewAccountType, AccountEditBalanceSubmitType } from '../../types/account.type';
 
 export class AccountRepository {
   static async createAccount(account: NewAccountType): Promise<Account> {
@@ -110,5 +110,25 @@ export class AccountRepository {
     }
 
     return accountDb;
+  }
+
+  static async editBalance(accountBalance: AccountEditBalanceSubmitType): Promise<Account> {
+    await getRepository<Account>(Account).update(accountBalance.accountId, {
+      closed: accountBalance.closed,
+    });
+
+    const updatedAccount = await getRepository<Account>(Account).findOne({
+      where: {
+        id: accountBalance.accountId
+      }
+    })
+
+    await BalanceStatementRepository.createBalanceStatement({
+      value: accountBalance.balance,
+      autoCalculate: accountBalance.autoCalculate,
+      account: updatedAccount as Account,
+    });
+
+    return updatedAccount as Account;
   }
 }
