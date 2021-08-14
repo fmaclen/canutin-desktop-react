@@ -20,7 +20,7 @@ const AccountOverview = () => {
     state: { balance: account },
   } = useLocation<{ balance: Account }>();
   const { selectedFilterOption, setSelectedFilterOption } = useGlobalFilterTable();
-  const editAccount = useMemo(() => <AccountOverviewEdit account={account}/>, []);
+  const editAccount = useMemo(() => <AccountOverviewEdit temporalAccount={account}/>, []);
   
   const [accountOverviewSections, setAccountOverviewSections] = useState([
     {

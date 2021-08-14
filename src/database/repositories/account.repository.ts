@@ -56,7 +56,12 @@ export class AccountRepository {
   }
 
   static async getAccountById(accountId: number): Promise<Account | undefined> {
-    return await getRepository<Account>(Account).findOne(accountId);
+    return await getRepository<Account>(Account).findOne(accountId, {
+      relations: [
+        'balanceStatements',
+        'accountType',
+      ]
+    });
   }
 
   static async getOrCreateAccount(account: NewAccountType): Promise<Account> {

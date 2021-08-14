@@ -24,7 +24,6 @@ interface AccountEditBalanceFormProps {
   account: Account;
 }
 
-// TODO: Add find by account id for refresh account values when the user moves between the tabs
 
 const AccountEditBalanceForm = ({ account }: AccountEditBalanceFormProps) => {
   const { setStatusMessage } = useContext(StatusBarContext);
@@ -59,7 +58,6 @@ const AccountEditBalanceForm = ({ account }: AccountEditBalanceFormProps) => {
   }, []);
 
   const onSubmit = (editBalanceSubmit: AccountEditBalanceSubmitType) => {
-    console.log(editBalanceSubmit);
     AccountIpc.editBalance({ ...editBalanceSubmit, accountId: account.id });
   };
 
