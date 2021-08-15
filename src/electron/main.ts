@@ -48,6 +48,8 @@ import {
   DB_GET_ASSET_ACK,
   DB_EDIT_ASSET_VALUE,
   DB_EDIT_ASSET_VALUE_ACK,
+  DB_EDIT_ASSET_DETAILS,
+  DB_EDIT_ASSET_DETAILS_ACK,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -76,7 +78,7 @@ import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import { AccountRepository } from '@database/repositories/account.repository';
-import { AssetEditValueSubmitType, NewAssetType } from '../types/asset.type';
+import { AssetEditDetailsSubmitType, AssetEditValueSubmitType, NewAssetType } from '../types/asset.type';
 import { NewAccountType } from '../types/account.type';
 
 let win: BrowserWindow | null = null;
@@ -240,29 +242,41 @@ const setupDbEvents = async () => {
     }
   });
 
-  ipcMain.on(DB_EDIT_ACCOUNT_BALANCE, async (_: IpcMainEvent, accountBalance: AccountEditBalanceSubmitType) => {
-    try {
-      const newAccount = await AccountRepository.editBalance(accountBalance);
-      win?.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, { ...newAccount, status: EVENT_SUCCESS });
-    } catch (e) {
-      win?.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
-        status: EVENT_ERROR,
-        message: 'An error occurred, please try again',
-      });
+  ipcMain.on(
+    DB_EDIT_ACCOUNT_BALANCE,
+    async (_: IpcMainEvent, accountBalance: AccountEditBalanceSubmitType) => {
+      try {
+        const newAccount = await AccountRepository.editBalance(accountBalance);
+        win?.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
+          ...newAccount,
+          status: EVENT_SUCCESS,
+        });
+      } catch (e) {
+        win?.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
+          status: EVENT_ERROR,
+          message: 'An error occurred, please try again',
+        });
+      }
     }
-  });
+  );
 
-  ipcMain.on(DB_EDIT_ACCOUNT_DETAILS, async (_: IpcMainEvent, accountDetails: AccountEditDetailsSubmitType) => {
-    try {
-      const newAccount = await AccountRepository.editDetails(accountDetails);
-      win?.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, { ...newAccount, status: EVENT_SUCCESS });
-    } catch (e) {
-      win?.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
-        status: EVENT_ERROR,
-        message: 'An error occurred, please try again',
-      });
+  ipcMain.on(
+    DB_EDIT_ACCOUNT_DETAILS,
+    async (_: IpcMainEvent, accountDetails: AccountEditDetailsSubmitType) => {
+      try {
+        const newAccount = await AccountRepository.editDetails(accountDetails);
+        win?.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
+          ...newAccount,
+          status: EVENT_SUCCESS,
+        });
+      } catch (e) {
+        win?.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
+          status: EVENT_ERROR,
+          message: 'An error occurred, please try again',
+        });
+      }
     }
-  });
+  );
 
   ipcMain.on(DB_DELETE_ACCOUNT, async (_: IpcMainEvent, accountId: number) => {
     try {
@@ -323,6 +337,21 @@ const setupDbEvents = async () => {
       });
     }
   });
+
+  ipcMain.on(
+    DB_EDIT_ASSET_DETAILS,
+    async (_: IpcMainEvent, assetValue: AssetEditDetailsSubmitType) => {
+      try {
+        const newAsset = await AssetRepository.editDetails(assetValue);
+        win?.webContents.send(DB_EDIT_ASSET_DETAILS_ACK, { ...newAsset, status: EVENT_SUCCESS });
+      } catch (e) {
+        win?.webContents.send(DB_EDIT_ASSET_DETAILS_ACK, {
+          status: EVENT_ERROR,
+          message: 'An error occurred, please try again',
+        });
+      }
+    }
+  );
 
   ipcMain.on(WINDOW_CONTROL, async (e, action: WindowControlEnum) => {
     if (win) {

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { Asset } from '@database/entities';
-import AssetIpc from '@app/data/asset.ipc';
 import { getAssetInformationLabel } from '@app/utils/asset.utils';
 import useGlobalFilterTable from '@app/hooks/useGlobalFilterTable';
 

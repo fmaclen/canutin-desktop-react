@@ -14,6 +14,7 @@ import { DB_GET_ASSET_ACK, DB_DELETE_ASSET_ACK } from '@constants/events';
 import { rootRoutesPaths } from '@app/routes';
 
 import AssetEditValueForm from '../AssetEditValueForm';
+import AssetEditDetailsForm from '../AssetEditDetailsForm';
 
 interface AssetOverviewEditProps {
   temporalAsset: Asset;
@@ -61,7 +62,9 @@ const AssetOverviewEdit = ({ temporalAsset }: AssetOverviewEditProps) => {
       <Section title="Asset value">
         <AssetEditValueForm asset={asset} />
       </Section>
-      <Section title="Assert details"></Section>
+      <Section title="Assert details">
+        <AssetEditDetailsForm asset={asset} />
+      </Section>
       <RemoveSection
         confirmationMessage="Are you sure you want to remove this asset?"
         onRemove={onRemove}

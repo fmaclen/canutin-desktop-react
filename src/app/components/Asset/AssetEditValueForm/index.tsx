@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import { Asset } from '@database/entities';
@@ -10,6 +11,7 @@ import { DB_EDIT_ASSET_VALUE_ACK } from '@constants/events';
 import { StatusEnum } from '@app/constants/misc';
 import { assetTypesWithSymbol } from '@constants/assetTypes';
 import { AssetEditValueSubmitType } from '@appTypes/asset.type';
+import { routesPaths } from '@app/routes';
 
 import Form from '@components/common/Form/Form';
 import Fieldset from '@components/common/Form/Fieldset';
@@ -19,15 +21,15 @@ import FormFooter from '@components/common/Form/FormFooter';
 import SubmitButton from '@components/common/Form/SubmitButton';
 import InlineCheckbox from '@components/common/Form/Checkbox';
 import FieldNotice from '@components/common/Form/FieldNotice';
-import InputTextField from '@app/components/common/Form/InputTextField';
+import InputTextField from '@components/common/Form/InputTextField';
 
 interface AssetEditValueFormProps {
   asset: Asset;
 }
 
 const AssetEditValueForm = ({ asset }: AssetEditValueFormProps) => {
+  const { push } = useHistory();
   const lastBalanceStatement = asset.balanceStatements?.[asset.balanceStatements?.length - 1];
-  console.log(lastBalanceStatement);
   const { setStatusMessage } = useContext(StatusBarContext);
   const { handleSubmit, control, register, watch, setValue, formState } = useForm({
     defaultValues: {
@@ -51,6 +53,7 @@ const AssetEditValueForm = ({ asset }: AssetEditValueFormProps) => {
           sentiment: StatusEnum.POSITIVE,
           isLoading: false,
         });
+        push(routesPaths.balance);
       }
 
       if (status === EVENT_ERROR) {

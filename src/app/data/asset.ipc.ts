@@ -8,7 +8,11 @@ import {
   DB_EDIT_ASSET_DETAILS,
   DB_EDIT_ASSET_VALUE,
 } from '@constants/events';
-import { NewAssetType, AssetEditValueSubmitType } from '../../types/asset.type';
+import {
+  NewAssetType,
+  AssetEditValueSubmitType,
+  AssetEditDetailsSubmitType,
+} from '../../types/asset.type';
 
 export default class AssetIpc {
   static createAsset(asset: NewAssetType) {
@@ -29,5 +33,9 @@ export default class AssetIpc {
 
   static editValue(editAsset: AssetEditValueSubmitType) {
     ipcRenderer.send(DB_EDIT_ASSET_VALUE, editAsset);
+  }
+
+  static editDetails(editDetails: AssetEditDetailsSubmitType) {
+    ipcRenderer.send(DB_EDIT_ASSET_DETAILS, editDetails);
   }
 }

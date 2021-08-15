@@ -16,3 +16,11 @@ export type AssetEditValueSubmitType = {
   sold: boolean;
   assetId: number;
 };
+
+export type AssetEditDetailsSubmitType = {
+  assetType: string;
+  balanceGroup: number;
+  name: string;
+  symbol?: string;
+  assetId: number;
+};

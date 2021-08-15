@@ -3,8 +3,9 @@ import { getRepository } from 'typeorm';
 import { AssetTypeRepository } from '@database/repositories/assetTypes.repository';
 
 import { Asset } from '../entities';
-import { AssetEditValueSubmitType, NewAssetType } from '../../types/asset.type';
+import { AssetEditDetailsSubmitType, AssetEditValueSubmitType, NewAssetType } from '../../types/asset.type';
 import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
+import { AssetTypeEnum } from '@enums/assetType.enum';
 
 export class AssetRepository {
   static async createAsset(asset: NewAssetType): Promise<Asset> {
@@ -73,5 +74,25 @@ export class AssetRepository {
       }));
 
     return asset as Asset;
+  }
+
+  static async editDetails(assetValue: AssetEditDetailsSubmitType): Promise<Asset> {
+    const assetType = await AssetTypeRepository.createOrGetAssetType({
+      name: assetValue.assetType.toLowerCase() as AssetTypeEnum,
+    });
+    await getRepository<Asset>(Asset).update(assetValue.assetId, {
+      assetType: assetType,
+      balanceGroup: assetValue.balanceGroup,
+      name: assetValue.name,
+      symbol: assetValue.symbol
+    });
+   
+    const updatedAsset = await getRepository<Asset>(Asset).findOne({
+    where: {
+        id: assetValue.assetId,
+      },
+    });
+
+    return updatedAsset as Asset;
   }
 }
