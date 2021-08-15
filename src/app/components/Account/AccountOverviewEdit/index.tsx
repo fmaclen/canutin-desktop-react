@@ -70,7 +70,7 @@ const AccountOverviewEdit = ({ temporalAccount }: AccountOverviewEditProps) => {
         onRemove={onRemove}
         removeMessage={
           <>
-            Remove transaction <b>{account.name}</b>
+            Remove account <b>{account.name}</b>
           </>
         }
       />

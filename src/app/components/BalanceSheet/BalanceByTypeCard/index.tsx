@@ -63,11 +63,12 @@ const BalanceTypeCard = ({ assetTypeName, balanceData }: BalancesByTypeCardProps
 };
 
 const BalanceItem = ({ balance }: BalanceItemProps) => {
-  // TODO: Add condition to redirect to asset/account overview page
+  const redirectPathName = balance.type === "Asset" ? `/asset/${balance.name}` : `/account/${balance.name}`
+
   return (
     <BalanceItemContainer>
       <div>
-        <BalanceName to={{ pathname: `/account/${balance.name}`, state: { balance } }}>
+        <BalanceName to={{ pathname: redirectPathName, state: { balance } }}>
           {balance.name}
         </BalanceName>
         <BalanceType>{balance.type}</BalanceType>
