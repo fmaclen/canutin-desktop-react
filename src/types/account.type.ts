@@ -13,3 +13,11 @@ export type AccountEditBalanceSubmitType = {
   balance: number;
   closed: boolean;
 };
+
+export type AccountEditDetailsSubmitType = {
+  accountId: number;
+  accountTypeName: string;
+  balanceGroup: number;
+  name: string;
+  institution?: string;
+};

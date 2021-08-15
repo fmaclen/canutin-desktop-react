@@ -5,7 +5,12 @@ import { AccountTypeRepository } from '@database/repositories/accountType.reposi
 import { PREVIOUS_AUTO_CALCULATED } from '@constants';
 
 import { Account } from '../entities';
-import { NewAccountType, AccountEditBalanceSubmitType } from '../../types/account.type';
+import {
+  NewAccountType,
+  AccountEditBalanceSubmitType,
+  AccountEditDetailsSubmitType,
+} from '../../types/account.type';
+import { TransactionRepository } from './transaction.repository';
 
 export class AccountRepository {
   static async createAccount(account: NewAccountType): Promise<Account> {
@@ -57,10 +62,7 @@ export class AccountRepository {
 
   static async getAccountById(accountId: number): Promise<Account | undefined> {
     return await getRepository<Account>(Account).findOne(accountId, {
-      relations: [
-        'balanceStatements',
-        'accountType',
-      ]
+      relations: ['balanceStatements', 'accountType'],
     });
   }
 
@@ -124,9 +126,9 @@ export class AccountRepository {
 
     const updatedAccount = await getRepository<Account>(Account).findOne({
       where: {
-        id: accountBalance.accountId
-      }
-    })
+        id: accountBalance.accountId,
+      },
+    });
 
     await BalanceStatementRepository.createBalanceStatement({
       value: accountBalance.balance,
@@ -135,5 +137,41 @@ export class AccountRepository {
     });
 
     return updatedAccount as Account;
+  }
+
+  static async editDetails(accountDetails: AccountEditDetailsSubmitType): Promise<Account> {
+    const accountType = await AccountTypeRepository.createOrGetAccountType({
+      name: accountDetails.accountTypeName.toLowerCase(),
+    });
+    await getRepository<Account>(Account).update(accountDetails.accountId, {
+      name: accountDetails.name,
+      balanceGroup: accountDetails.balanceGroup,
+      institution: accountDetails.institution,
+      accountType,
+    });
+
+    const updatedAccount = await getRepository<Account>(Account).findOne({
+      where: {
+        id: accountDetails.accountId,
+      },
+      relations: ['accountType'],
+    });
+
+    return updatedAccount as Account;
+  }
+
+  static async deleteAccount(accountId: number) {
+    const account = await getRepository<Account>(Account).findOne(Number(accountId), {
+      relations: ['transactions', 'balanceStatements'],
+    });
+    account?.transactions &&
+      await TransactionRepository.deleteTransactions(account.transactions.map(({ id }) => id));
+
+    account?.balanceStatements &&
+      await BalanceStatementRepository.deleteBalanceStatements(
+        account.balanceStatements.map(({ id }) => id)
+      );
+
+    await getRepository<Account>(Account).delete(accountId);
   }
 }

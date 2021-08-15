@@ -13,7 +13,6 @@ import AccountOverviewEdit from '@components/Account/AccountOverviewEdit';
 
 // TODO:
 // - Balance history component
-// - Edit tab
 
 const AccountOverview = () => {
   const {

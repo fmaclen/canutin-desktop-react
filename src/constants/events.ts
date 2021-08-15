@@ -34,6 +34,12 @@ export const DB_EDIT_ACCOUNT_BALANCE_ACK = 'dbEditAccountBalanceAck';
 export const DB_GET_ACCOUNT = 'dbGetAccount';
 export const DB_GET_ACCOUNT_ACK = 'dbGetAccountAck';
 
+export const DB_EDIT_ACCOUNT_DETAILS = 'dbEditAccountDetails';
+export const DB_EDIT_ACCOUNT_DETAILS_ACK = 'dbEditAccountDetailsAck';
+
+export const DB_DELETE_ACCOUNT = 'dbDeleteAccount';
+export const DB_DELETE_ACCOUNT_ACK = 'dbDeleteAccountAck';
+
 // Import Wizard
 export const IMPORT_SOURCE_FILE = 'importSourceFile';
 export const IMPORT_SOURCE_FILE_ACK = 'importSourceFileAck';
