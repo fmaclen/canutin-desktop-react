@@ -4,6 +4,7 @@ import { AssetTypeRepository } from '@database/repositories/assetTypes.repositor
 
 import { Asset } from '../entities';
 import { NewAssetType } from '../../types/asset.type';
+import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
 
 export class AssetRepository {
   static async createAsset(asset: NewAssetType): Promise<Asset> {
@@ -11,14 +12,24 @@ export class AssetRepository {
       name: asset.assetType,
     });
 
-    return await getRepository<Asset>(Asset).save(
-      new Asset(asset.name, assetType, asset.value, asset.quantity, asset.cost, asset.symbol)
+    const savedAsset = await getRepository<Asset>(Asset).save(
+      new Asset(asset.name, assetType, asset.symbol)
     );
+
+    await AssetBalanceStatementRepository.createBalanceStatement({
+      asset: savedAsset,
+      sold: false,
+      value: asset.value,
+      cost: asset.cost,
+      quantity: asset.quantity,
+    });
+
+    return savedAsset;
   }
 
   static async getAssets(): Promise<Asset[]> {
     return await getRepository<Asset>(Asset).find({
-      relations: ['assetType'],
+      relations: ['assetType', 'balanceStatements'],
       order: {
         name: 'ASC',
         id: 'DESC',

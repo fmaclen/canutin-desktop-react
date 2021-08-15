@@ -6,5 +6,5 @@ export type NewAssetType = {
   cost?: number;
   value?: number;
   assetType: AssetTypeEnum;
-  symbol?: string; 
+  symbol?: string;
 };
