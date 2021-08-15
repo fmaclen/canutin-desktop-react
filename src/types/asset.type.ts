@@ -8,3 +8,11 @@ export type NewAssetType = {
   assetType: AssetTypeEnum;
   symbol?: string;
 };
+
+export type AssetEditValueSubmitType = {
+  quantity?: number;
+  cost?: number;
+  value: number;
+  sold: boolean;
+  assetId: number;
+};

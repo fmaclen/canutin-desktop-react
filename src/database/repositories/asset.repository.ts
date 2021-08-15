@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { AssetTypeRepository } from '@database/repositories/assetTypes.repository';
 
 import { Asset } from '../entities';
-import { NewAssetType } from '../../types/asset.type';
+import { AssetEditValueSubmitType, NewAssetType } from '../../types/asset.type';
 import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
 
 export class AssetRepository {
@@ -35,5 +35,43 @@ export class AssetRepository {
         id: 'DESC',
       },
     });
+  }
+
+  static async getAssetById(assetId: number): Promise<Asset | undefined> {
+    return await getRepository<Asset>(Asset).findOne(assetId, {
+      relations: ['balanceStatements', 'assetType'],
+    });
+  }
+
+  static async deleteAsset(assetId: number) {
+    const asset = await getRepository<Asset>(Asset).findOne(Number(assetId), {
+      relations: ['assetType', 'balanceStatements'],
+    });
+
+    asset?.balanceStatements &&
+      (await AssetBalanceStatementRepository.deleteBalanceStatements(
+        asset.balanceStatements.map(({ id }) => id)
+      ));
+
+    await getRepository<Asset>(Asset).delete(assetId);
+  }
+
+  static async editValue(assetValue: AssetEditValueSubmitType): Promise<Asset> {
+    const asset = await getRepository<Asset>(Asset).findOne({
+      where: {
+        id: assetValue.assetId,
+      },
+    });
+
+    asset &&
+      (await AssetBalanceStatementRepository.createBalanceStatement({
+        value: assetValue.value,
+        asset,
+        sold: assetValue.sold,
+        quantity: assetValue.quantity,
+        cost: assetValue.cost,
+      }));
+
+    return asset as Asset;
   }
 }

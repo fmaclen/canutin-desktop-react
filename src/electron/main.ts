@@ -42,6 +42,12 @@ import {
   WINDOW_CONTROL,
   DB_DELETE_ACCOUNT,
   DB_DELETE_ACCOUNT_ACK,
+  DB_DELETE_ASSET,
+  DB_GET_ASSET,
+  DB_DELETE_ASSET_ACK,
+  DB_GET_ASSET_ACK,
+  DB_EDIT_ASSET_VALUE,
+  DB_EDIT_ASSET_VALUE_ACK,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -70,7 +76,7 @@ import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import { AccountRepository } from '@database/repositories/account.repository';
-import { NewAssetType } from '../types/asset.type';
+import { AssetEditValueSubmitType, NewAssetType } from '../types/asset.type';
 import { NewAccountType } from '../types/account.type';
 
 let win: BrowserWindow | null = null;
@@ -276,6 +282,42 @@ const setupDbEvents = async () => {
       win?.webContents.send(DB_GET_ACCOUNT_ACK, { account, status: EVENT_SUCCESS });
     } catch (e) {
       win?.webContents.send(DB_GET_ACCOUNT_ACK, {
+        status: EVENT_ERROR,
+        message: 'An error occurred, please try again',
+      });
+    }
+  });
+
+  ipcMain.on(DB_DELETE_ASSET, async (_: IpcMainEvent, assetId: number) => {
+    try {
+      await AssetRepository.deleteAsset(assetId);
+      win?.webContents.send(DB_DELETE_ASSET_ACK, { status: EVENT_SUCCESS });
+    } catch (e) {
+      win?.webContents.send(DB_DELETE_ASSET_ACK, {
+        status: EVENT_ERROR,
+        message: 'An error occurred, please try again',
+      });
+    }
+  });
+
+  ipcMain.on(DB_GET_ASSET, async (_: IpcMainEvent, assetId: number) => {
+    try {
+      const asset = await AssetRepository.getAssetById(assetId);
+      win?.webContents.send(DB_GET_ASSET_ACK, { asset, status: EVENT_SUCCESS });
+    } catch (e) {
+      win?.webContents.send(DB_GET_ASSET_ACK, {
+        status: EVENT_ERROR,
+        message: 'An error occurred, please try again',
+      });
+    }
+  });
+
+  ipcMain.on(DB_EDIT_ASSET_VALUE, async (_: IpcMainEvent, assetValue: AssetEditValueSubmitType) => {
+    try {
+      const newAsset = await AssetRepository.editValue(assetValue);
+      win?.webContents.send(DB_EDIT_ASSET_VALUE_ACK, { ...newAsset, status: EVENT_SUCCESS });
+    } catch (e) {
+      win?.webContents.send(DB_EDIT_ASSET_VALUE_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
