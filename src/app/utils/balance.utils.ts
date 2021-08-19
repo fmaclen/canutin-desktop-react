@@ -1,4 +1,5 @@
-import { Asset, Account } from '@database/entities';
+import { isAfter, isBefore, eachWeekOfInterval, subWeeks, getWeek, endOfWeek, max } from 'date-fns';
+import { Asset, Account, Transaction } from '@database/entities';
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { accountTypes } from '@constants/accountTypes';
@@ -8,7 +9,10 @@ export const getBalanceForAllAccountsAssets = (
   assets: Asset[],
   accounts: Account[]
 ): BalanceData | undefined => {
-  const assetsNoSold = assets.filter(({ balanceStatements }) => balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold);
+  const assetsNoSold = assets.filter(
+    ({ balanceStatements }) =>
+      balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
+  );
   const accountsNoClosed = accounts.filter(({ closed }) => !closed);
 
   const listOfBalancesByGroup = Object.keys(BalanceGroupEnum).reduce(
@@ -29,7 +33,9 @@ export const getBalanceForAllAccountsAssets = (
           ...getAssetByType(type, assetsNoSold).map(asset => generateAssetBalanceInfo(asset)),
         ];
 
-        accountTransactions = generateAccountsBalanceInfo(getAccountsByType(type, accountsNoClosed));
+        accountTransactions = generateAccountsBalanceInfo(
+          getAccountsByType(type, accountsNoClosed)
+        );
 
         if (accountTransactions.length > 0 || assetTransactions.length > 0) {
           typeList[type] = [...accountTransactions, ...assetTransactions].sort(
@@ -51,7 +57,10 @@ export const getBalanceForAllAccountsAssets = (
 };
 
 export const getBalanceForAssets = (assets: Asset[]) => {
-  const assetsNoSold = assets.filter(({ balanceStatements }) => balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold);
+  const assetsNoSold = assets.filter(
+    ({ balanceStatements }) =>
+      balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
+  );
   const listOfBalancesByGroup = Object.keys(BalanceGroupEnum).reduce(
     (listOfBalancesByGroup, balanceGroup) => {
       if (isNaN(Number(balanceGroup))) {
@@ -101,7 +110,9 @@ export const getBalanceForAccounts = (accounts: Account[]) => {
       types.forEach(type => {
         accountTransactions = [];
 
-        accountTransactions = generateAccountsBalanceInfo(getAccountsByType(type, accountsNoClosed));
+        accountTransactions = generateAccountsBalanceInfo(
+          getAccountsByType(type, accountsNoClosed)
+        );
 
         if (accountTransactions.length > 0) {
           typeList[type] = accountTransactions.sort(
@@ -204,4 +215,55 @@ export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => 
       }
     )
   );
+};
+
+export const getSelectedTransactions = (transactions: Transaction[], from: Date, to: Date) =>
+  transactions.filter(
+    transaction => isBefore(from, transaction.date) && isAfter(to, transaction.date)
+  );
+
+export const getTransactionsBalance = (transactions: Transaction[]) => {
+  return transactions.reduce((acc, transaction) => transaction.amount + acc, 0);
+};
+
+export type TransactionBalanceType = {
+  week: number;
+  dateWeek: Date;
+  balance: number;
+  difference: number;
+  id: number;
+};
+
+export const calculateBalanceDifference = (secondBalance: number, firstBalance: number) => {
+  if (secondBalance === firstBalance) {
+    return 0;
+  } else {
+    return Number((((secondBalance - firstBalance) / firstBalance) * 100).toFixed(2));
+  }
+};
+
+export const getTransactionBalanceByWeeks = (
+  transactions: Transaction[],
+  weeks: number
+): TransactionBalanceType[] => {
+  const weeksDates = eachWeekOfInterval({
+    start: max([transactions[0].date, subWeeks(new Date(), weeks)]),
+    end: new Date(),
+  });
+  return weeksDates.reduce((acc: TransactionBalanceType[], weekDate, index) => {
+    // Get transactions from -weeks ago to current week and calculate balance
+    const balance = getTransactionsBalance(
+      getSelectedTransactions(transactions, weekDate, endOfWeek(weekDate))
+    );
+    return [
+      ...acc,
+      {
+        week: getWeek(weekDate),
+        balance,
+        dateWeek: weekDate,
+        difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
+        id: index
+      },
+    ];
+  }, []);
 };
