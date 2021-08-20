@@ -8,6 +8,7 @@ import {
   PeriodBalance,
   PeriodBarPlaceholder,
   PeriodBar,
+  PeriodLabel,
 } from './styles';
 
 const proportionBetween = (num1: number, num2: number) => {
@@ -24,6 +25,7 @@ interface ChartPeriodProps {
   peakNegativeBalance: number;
   isActive: boolean;
   isCurrentPeriod: boolean;
+  label: string;
   handleMouseEnter: (id: number) => void;
 }
 
@@ -35,12 +37,13 @@ const ChartPeriod = ({
   balanceProportion,
   isActive,
   isCurrentPeriod,
+  label,
   handleMouseEnter,
 }: ChartPeriodProps) => {
   const isBalancePositive = balance >= 0;
 
   return (
-    <ThemeProvider theme={{ isActive, isCurrentPeriod }}>
+    <ThemeProvider theme={{ isActive, isCurrentPeriod, label, balance }}>
       <Period onMouseEnter={() => handleMouseEnter(id)}>
         <PeriodBalance proportion={balanceProportion}>
           {isBalancePositive ? (
@@ -59,6 +62,9 @@ const ChartPeriod = ({
             </>
           )}
         </PeriodBalance>
+        <PeriodLabel>
+          {label}
+        </PeriodLabel>
       </Period>
     </ThemeProvider>
   );

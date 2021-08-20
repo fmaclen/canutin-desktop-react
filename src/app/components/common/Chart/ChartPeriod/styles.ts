@@ -5,6 +5,7 @@ import {
   greenLight,
   greenPlain,
   grey10,
+  grey30,
   grey3,
   redLight,
   redPlain,
@@ -24,6 +25,12 @@ export const Period = styled.div`
       z-index: 1;
       background-color: ${grey3};
       border-bottom-color: transparent;
+    `}
+
+  ${props =>
+    props.theme.label === '1' &&
+    css`
+      border-left: 1px dashed ${grey30};
     `}
 
   &:first-child {
@@ -58,8 +65,8 @@ export const Bar = styled.div<{ height: number }>`
 `;
 
 export const BarPositive = styled(Bar)`
-  border-top: 3px solid ${greenPlain};
   border-bottom: 1px solid ${grey10};
+  margin-top: auto;
 
   ${props => {
     let background = css`
@@ -79,6 +86,12 @@ export const BarPositive = styled(Bar)`
     }
     return background;
   }}
+
+  ${props =>
+    props.theme.balance > 0 &&
+    css`
+      border-top: 3px solid ${greenPlain};
+    `}
 `;
 
 export const BarNegative = styled(Bar)`
@@ -114,7 +127,8 @@ export const PeriodLabel = styled.time`
   margin-top: auto;
   font-size: 11px;
   line-height: 1em;
-  padding: 8px;
+  padding: 12px 3px 8px;
   box-sizing: border-box;
-  color: var(--grey-30);
+  text-align: center;
+  color: ${grey30};
 `;

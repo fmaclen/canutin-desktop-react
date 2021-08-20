@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { TransactionBalanceType } from '@app/utils/balance.utils';
+import { ChartPeriodType } from '@app/utils/balance.utils';
 
 import Period from './ChartPeriod';
 import ChartSummary from './ChartSummary';
@@ -14,20 +14,20 @@ const proportionBetween = (num1: number, num2: number) => {
 };
 
 interface ChartProps {
-  transactionData: TransactionBalanceType[];
+  chartData: ChartPeriodType[];
 }
 
-const Chart = ({ transactionData }: ChartProps) => {
+const Chart = ({ chartData }: ChartProps) => {
   // Determine the highest positive balance
   const peakPositive = Math.max(
-    ...transactionData.map(peak => {
+    ...chartData.map(peak => {
       return peak.balance > 0 ? peak.balance : 0;
     })
   );
 
   // Determine the highest negative balance
   const peakNegative = Math.min(
-    ...transactionData.map(peak => {
+    ...chartData.map(peak => {
       return peak.balance < 0 ? peak.balance : 0;
     })
   );
@@ -46,15 +46,15 @@ const Chart = ({ transactionData }: ChartProps) => {
     `; // i.e. 0.85fr 0.15fr
   };
 
-  const [activeBalance, setActiveBalance] = useState(transactionData[transactionData.length - 1]);
+  const [activeBalance, setActiveBalance] = useState(chartData[chartData.length - 1]);
 
   const handleMouseEnter = (selectedId: number) => {
-    setActiveBalance(transactionData.find(({ id }) => id === selectedId) as TransactionBalanceType);
+    setActiveBalance(chartData.find(({ id }) => id === selectedId) as ChartPeriodType);
   };
 
   return (
-    <Frame columns={transactionData.length}>
-      {transactionData.map(period => {
+    <Frame columns={chartData.length}>
+      {chartData.map((period, index) => {
         return (
           <Period
             key={period.id}
@@ -63,13 +63,14 @@ const Chart = ({ transactionData }: ChartProps) => {
             balanceProportion={balanceProportion()}
             peakPositiveBalance={peakPositive}
             peakNegativeBalance={peakNegative}
-            isCurrentPeriod={period.id === transactionData.length - 1}
+            isCurrentPeriod={index === chartData.length - 1}
             isActive={activeBalance.id === period.id}
+            label={period.label}
             handleMouseEnter={handleMouseEnter}
           />
         );
       })}
-      <ChartSummary periodsLength={transactionData.length} activeBalance={activeBalance} />
+      <ChartSummary periodsLength={chartData.length} activeBalance={activeBalance} />
     </Frame>
   );
 };

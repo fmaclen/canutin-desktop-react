@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { TransactionBalanceType } from '@app/utils/balance.utils';
+import { ChartPeriodType } from '@app/utils/balance.utils';
 
 import { container } from './styles';
 import Card, { CardAppearanceEnum } from '../../Card';
@@ -11,7 +11,7 @@ const Container = styled.div`
 `;
 
 interface ChartSummaryProps {
-  activeBalance: TransactionBalanceType;
+  activeBalance: ChartPeriodType;
   periodsLength: number;
 }
 
@@ -25,7 +25,7 @@ const ChartSummary = ({ periodsLength, activeBalance }: ChartSummaryProps) => {
     <Card
       label="Difference"
       appearance={CardAppearanceEnum.SECONDARY}
-      value={`${activeBalance.balance}%`}
+      value={`${activeBalance.difference}%`}
     />
     <Card
       label="Balance"
