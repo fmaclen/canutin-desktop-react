@@ -90,11 +90,11 @@ const CanutinLink = () => {
                     <Fieldset key={institution.id}>
                       <Institution>
                         <Label>Institution</Label>
-                        <Value hasErrors={institution.error_title ? true : false}>
+                        <Value hasErrors={institution.errorTitle ? true : false}>
                           <span>{institution.name}</span>
                           <ButtonRow>
                             <Button onClick={() => handleUnlink(institution.id)}>Unlink</Button>
-                            {institution.error_title && (
+                            {institution.errorTitle && (
                               <Button
                                 status={StatusEnum.NEGATIVE}
                                 onClick={() =>
@@ -107,17 +107,17 @@ const CanutinLink = () => {
                           </ButtonRow>
                         </Value>
                       </Institution>
-                      {institution.error_title && (
+                      {institution.errorTitle && (
                         <FieldNotice
                           error={true}
-                          title={institution.error_title}
-                          description={<div>{institution.error_message}</div>}
+                          title={institution.errorTitle}
+                          description={<div>{institution.errorMessage}</div>}
                         />
                       )}
                       <InputTextField
                         label="Last sync"
                         name="lastSync"
-                        value={timeago.format(institution.last_update)}
+                        value={timeago.format(institution.lastUpdate)}
                         disabled
                       />
                     </Fieldset>

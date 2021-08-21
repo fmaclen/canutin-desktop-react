@@ -151,6 +151,9 @@ export const getAccountsByType = (type: string, accounts: Account[]) =>
 export const getAssetByType = (type: string, assets: Asset[]) =>
   assets.filter(asset => asset.assetType.name === type);
 
+export const getAssetByTypes = (types: string[], assets: Asset[]) =>
+  types.map(type => getAssetByType(type, assets)).flat();
+
 export const getTypesByBalanceGroup = (balanceGroup: BalanceGroupEnum) => [
   ...(assetTypes
     .find(assetType => assetType.balanceGroup === balanceGroup)

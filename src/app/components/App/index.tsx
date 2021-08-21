@@ -100,7 +100,7 @@ const App = () => {
 
         if (summary) {
           setLinkAccount(summary);
-          await requestSync();
+          await requestSync(assets);
           setLinkAccount({ ...linkAccount, isSyncing: false });
         } else {
           setLinkAccount({

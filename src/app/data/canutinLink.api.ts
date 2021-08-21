@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { getAssetByTypes } from '@app/utils/balance.utils';
+import { Asset } from '@database/entities';
 
 export enum ApiEndpoints {
   USER_AUTH = '/auth',
@@ -33,9 +35,9 @@ const canutinLinkApi = axios.create({
 export interface InstitutionProps {
   id: string;
   name: string;
-  error_title: string;
-  error_message: string;
-  last_update: Date;
+  errorTitle: string;
+  errorMessage: string;
+  lastUpdate: Date;
 }
 
 interface LinkAccountErrorProps {
@@ -63,14 +65,20 @@ export const getLinkSummary = async () => {
   return linkAccount;
 };
 
-export const requestSync = async () => {
+export const requestSync = async (assets: Asset[] | null) => {
+  const assetList = assets && getAssetByTypes(['security', 'cryptocurrency'], assets);
+  const updatableAssets = assetList?.map(asset => ({
+    symbol: asset.symbol,
+    type: asset.assetType.name,
+  }));
+
   await canutinLinkApi
-    .post(ApiEndpoints.SYNC, { data: 'sync_assets' })
+    .post(ApiEndpoints.SYNC, { assets: updatableAssets })
     .then(response => {
-      const { asset_prices, accounts, removedTransactions } = response.data;
+      const { assetPrices, accounts, removedTransactions } = response.data;
       console.log('ACCOUNTS:', accounts);
       console.log('REMOVED TRANSACTIONS:', removedTransactions);
-      console.log('ASSETS:', asset_prices);
+      console.log('ASSETS:', assetPrices);
 
       return true;
     })
