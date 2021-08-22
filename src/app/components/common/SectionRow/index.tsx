@@ -9,8 +9,11 @@ const Container = styled.div`
 
 export interface SectionRowProps {
   children: ReactNode;
+  className?: string;
 }
 
-const SectionRow = ({ children }: SectionRowProps) => <Container>{children}</Container>;
+const SectionRow = ({ className, children }: SectionRowProps) => (
+  <Container className={className}>{children}</Container>
+);
 
 export default SectionRow;

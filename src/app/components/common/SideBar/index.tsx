@@ -106,7 +106,7 @@ const SideBar = () => {
 
           <NavItem
             icon={<AddIcon />}
-            text="Add accounts or assets"
+            text="Add or update data"
             toggled={toggled}
             to={routesPaths.addAccountOrAsset}
             primary={!linkAccount}
