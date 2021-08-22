@@ -23,6 +23,7 @@ import { container } from './styles';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';
 import { newAssetBalanceStatement } from '@app/utils/asset.utils';
+import { createOrUpdateAccounts } from '@app/utils/account.utils';
 
 const Container = styled.div`
   ${container}
@@ -103,8 +104,14 @@ const App = () => {
           setLinkAccount(summary);
           const syncResponse = await requestLinkSync(assets);
 
+          // Update assets
           if (assets && syncResponse && syncResponse.assetPrices) {
             newAssetBalanceStatement(assets, syncResponse.assetPrices);
+          }
+
+          // Create or update accounts
+          if (accounts && syncResponse && syncResponse.accounts) {
+            createOrUpdateAccounts(accounts, syncResponse.accounts);
           }
 
           setLinkAccount({ ...linkAccount, isSyncing: false });

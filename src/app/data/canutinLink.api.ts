@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-import { Account, Asset } from '@database/entities';
+import { Asset } from '@database/entities';
 import { uniqueUpatableAssetSymbols } from '@app/utils/asset.utils';
+import { RemoteAccountProps } from '@app/utils/account.utils';
 
 export enum ApiEndpoints {
   USER_AUTH = '/auth',
@@ -61,7 +62,7 @@ export interface AssetPricesProps {
 }
 
 export interface SyncResponseProps {
-  accounts: Account[];
+  accounts: RemoteAccountProps[];
   removedTransactions: string[];
   assetPrices: AssetPricesProps[];
 }

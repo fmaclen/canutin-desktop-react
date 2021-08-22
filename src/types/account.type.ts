@@ -3,6 +3,7 @@ export type NewAccountType = {
   accountType: string;
   officialName?: string;
   institution?: string;
+  linkId?: string;
   balance?: number;
   autoCalculate: boolean | string;
 };

@@ -18,6 +18,9 @@ export class Account extends Base {
   @Column({ nullable: true })
   institution?: string;
 
+  @Column({ nullable: true })
+  linkId?: string;
+
   @Column()
   closed: boolean;
 
@@ -40,6 +43,7 @@ export class Account extends Base {
     accountType: AccountType,
     officialName?: string,
     institution?: string,
+    linkId?: string,
     transactions?: Transaction[],
     balanceStatements?: BalanceStatement[]
   ) {
@@ -47,6 +51,7 @@ export class Account extends Base {
     this.name = name;
     this.officialName = officialName;
     this.institution = institution;
+    this.linkId = linkId;
     this.closed = closed;
     this.balanceGroup = getBalanceGroupByAccountType(accountType?.name);
     this.accountType = accountType;
