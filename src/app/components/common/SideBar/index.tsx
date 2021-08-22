@@ -1,8 +1,10 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
+import * as timeago from 'timeago.js';
 
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
+import { capitalize } from '@app/utils/strings.utils';
 
 import { ReactComponent as BurgerIcon } from '@assets/icons/Burger.svg';
 import { ReactComponent as BigPicture } from '@assets/icons/BigPicture.svg';
@@ -16,7 +18,7 @@ import { ReactComponent as Sync } from '@assets/icons/Sync.svg';
 
 import NavItem from '@components/common/SideBar/NavItem';
 import LinkSideBarIcon from '@components/CanutinLink/LinkSideBarIcon';
-import { container, burgerButton, topNav, bottomNav, navItems } from './styles';
+import { container, burgerButton, topNav, bottomNav, navItems, lastSync } from './styles';
 
 const Container = styled.nav`
   ${container}
@@ -32,6 +34,9 @@ const TopNav = styled.nav`
 `;
 const BottomNav = styled.nav`
   ${bottomNav}
+`;
+const LastSync = styled.p`
+  ${lastSync};
 `;
 
 const SideBar = () => {
@@ -114,6 +119,7 @@ const SideBar = () => {
               toggled={toggled}
               to={'#sync'}
               primary={true}
+              status={<LastSync>{capitalize(timeago.format(linkAccount.lastSync))}</LastSync>}
             />
           )}
         </NavItems>

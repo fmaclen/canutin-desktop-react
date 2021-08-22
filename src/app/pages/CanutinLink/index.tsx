@@ -6,6 +6,7 @@ import * as timeago from 'timeago.js';
 import { AppContext } from '@app/context/appContext';
 import canutinLinkApi, { ApiEndpoints, InstitutionProps } from '@app/data/canutinLink.api';
 import { StatusEnum } from '@appConstants/misc';
+import { capitalize } from '@app/utils/strings.utils';
 
 import ScrollView from '@components/common/ScrollView';
 import Section from '@components/common/Section';
@@ -70,6 +71,10 @@ const CanutinLink = () => {
   };
 
   useEffect(() => {
+    getUserDetails();
+  }, [linkAccount]);
+
+  useEffect(() => {
     linkAccount && getUserDetails();
     // eslint-disable-next-line
   }, []);
@@ -117,7 +122,7 @@ const CanutinLink = () => {
                       <InputTextField
                         label="Last sync"
                         name="lastSync"
-                        value={timeago.format(institution.lastUpdate)}
+                        value={capitalize(timeago.format(institution.lastUpdate))}
                         disabled
                       />
                     </Fieldset>

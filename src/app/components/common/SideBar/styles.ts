@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { grey3, grey5, grey10, whitePlain, grey80 } from '@appConstants/colors';
+import { grey3, grey5, grey10, grey50, whitePlain, grey80 } from '@appConstants/colors';
 
 export const container = css`
   grid-area: side-bar;
@@ -45,4 +45,9 @@ export const navItems = css`
 
 export const primaryNavItem = css`
   border-top: 1px solid ${grey10};
+`;
+
+export const lastSync = css`
+  font-size: 11px;
+  color: ${grey50};
 `;

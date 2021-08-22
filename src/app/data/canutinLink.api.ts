@@ -51,6 +51,7 @@ export interface LinkAccountProps {
   institutions?: InstitutionProps[];
   errors: LinkAccountErrorProps;
   isSyncing: boolean;
+  lastSync: Date;
 }
 
 export interface AssetPricesProps {
@@ -69,7 +70,7 @@ export const requestLinkSummary = async () => {
   const linkSummary = await canutinLinkApi
     .get<LinkAccountProps>(ApiEndpoints.SUMMARY)
     .then(response => {
-      return response && { ...response.data, isSyncing: false };
+      return response && { ...response.data, isSyncing: false, lastSync: new Date() };
     })
     .catch(e => {
       return null;

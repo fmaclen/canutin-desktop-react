@@ -6,6 +6,7 @@ import canutinLinkApi, { ApiEndpoints, requestLinkSummary } from '@app/data/canu
 import { AppContext } from '@app/context/appContext';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@appConstants/misc';
+import { capitalize } from '@app/utils/strings.utils';
 
 import Form from '@app/components/common/Form/Form';
 import Fieldset from '@app/components/common/Form/Fieldset';
@@ -75,7 +76,12 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             name="login"
             type="email"
             register={registerAuthForm}
-            status={errors.login && { status: StatusEnum.NEGATIVE, message: errors.login.message }}
+            status={
+              errors.login && {
+                status: StatusEnum.NEGATIVE,
+                message: errors.login.message && capitalize(errors.login.message),
+              }
+            }
             required
           />
           <InputTextField
@@ -84,7 +90,10 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             type="password"
             register={registerAuthForm}
             status={
-              errors.password && { status: StatusEnum.NEGATIVE, message: errors.password.message }
+              errors.password && {
+                status: StatusEnum.NEGATIVE,
+                message: errors.password.message && capitalize(errors.password.message),
+              }
             }
             required
           />

@@ -14,6 +14,9 @@ const Icon = styled.div`
 const Text = styled.p`
   ${text}
 `;
+const Status = styled.div`
+  margin-left: auto;
+`;
 
 export interface NavItemProps {
   icon: ReactNode;
@@ -22,9 +25,18 @@ export interface NavItemProps {
   to: string;
   disabled?: boolean;
   primary?: boolean;
+  status?: ReactNode;
 }
 
-const NavItem = ({ icon, text, toggled, to, disabled = false, primary = false }: NavItemProps) => {
+const NavItem = ({
+  icon,
+  text,
+  toggled,
+  to,
+  disabled = false,
+  primary = false,
+  status = false,
+}: NavItemProps) => {
   const { pathname } = useLocation();
   const { linkAccount, setLinkAccount } = useContext(AppContext);
   const isActive = pathname === to ? 1 : 0;
@@ -42,6 +54,7 @@ const NavItem = ({ icon, text, toggled, to, disabled = false, primary = false }:
     >
       <Icon isSyncing={to === '#sync' && linkAccount ? linkAccount.isSyncing : false}>{icon}</Icon>
       <Text toggled={toggled}>{text}</Text>
+      {status && <Status>{status}</Status>}
     </Container>
   );
 };
