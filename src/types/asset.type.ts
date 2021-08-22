@@ -9,6 +9,7 @@ export type NewAssetType = {
   symbol?: string;
 };
 
+// FIXME: maybe rename this to `AssetBalanceStatementType`?
 export type AssetEditValueSubmitType = {
   quantity?: number;
   cost?: number;

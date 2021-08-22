@@ -7,7 +7,7 @@ import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
 import { AppContext } from '@app/context/appContext';
-import { requestSync, getLinkSummary } from '@app/data/canutinLink.api';
+import { requestLinkSync, requestLinkSummary } from '@app/data/canutinLink.api';
 
 import Setup from '@pages/Setup';
 
@@ -22,6 +22,7 @@ import GlobalStyle from '@app/styles/global';
 import { container } from './styles';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';
+import { newAssetBalanceStatement } from '@app/utils/asset.utils';
 
 const Container = styled.div`
   ${container}
@@ -85,7 +86,7 @@ const App = () => {
       setIsDbEmpty(false);
 
       const handleSync = async () => {
-        const summary = await getLinkSummary();
+        const summary = await requestLinkSummary();
         summary && setLinkAccount(summary);
       };
 
@@ -96,11 +97,16 @@ const App = () => {
   useEffect(() => {
     if (linkAccount?.isSyncing) {
       const handleSync = async () => {
-        const summary = await getLinkSummary();
+        const summary = await requestLinkSummary();
 
         if (summary) {
           setLinkAccount(summary);
-          await requestSync(assets);
+          const syncResponse = await requestLinkSync(assets);
+
+          if (assets && syncResponse && syncResponse.assetPrices) {
+            newAssetBalanceStatement(assets, syncResponse.assetPrices);
+          }
+
           setLinkAccount({ ...linkAccount, isSyncing: false });
         } else {
           setLinkAccount({

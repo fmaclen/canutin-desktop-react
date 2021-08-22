@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { getAssetByTypes } from '@app/utils/balance.utils';
-import { Asset } from '@database/entities';
+
+import { Account, Asset } from '@database/entities';
+import { uniqueUpatableAssetSymbols } from '@app/utils/asset.utils';
 
 export enum ApiEndpoints {
   USER_AUTH = '/auth',
@@ -52,38 +53,41 @@ export interface LinkAccountProps {
   isSyncing: boolean;
 }
 
-export const getLinkSummary = async () => {
-  let linkAccount;
-  await canutinLinkApi
+export interface AssetPricesProps {
+  symbol: string;
+  type: string;
+  latestPrice: number;
+}
+
+export interface SyncResponseProps {
+  accounts: Account[];
+  removedTransactions: string[];
+  assetPrices: AssetPricesProps[];
+}
+
+export const requestLinkSummary = async () => {
+  const linkSummary = await canutinLinkApi
     .get<LinkAccountProps>(ApiEndpoints.SUMMARY)
     .then(response => {
-      linkAccount = response && { ...response.data, isSyncing: false };
+      return response && { ...response.data, isSyncing: false };
     })
     .catch(e => {
       return null;
     });
-  return linkAccount;
+  return linkSummary;
 };
 
-export const requestSync = async (assets: Asset[] | null) => {
-  const assetList = assets && getAssetByTypes(['security', 'cryptocurrency'], assets);
-  const updatableAssets = assetList?.map(asset => ({
-    symbol: asset.symbol,
-    type: asset.assetType.name,
-  }));
-
-  await canutinLinkApi
-    .post(ApiEndpoints.SYNC, { assets: updatableAssets })
+export const requestLinkSync = async (assets: Asset[] | null) => {
+  const syncResponse = await canutinLinkApi
+    .post<SyncResponseProps>(ApiEndpoints.SYNC, {
+      assets: assets && uniqueUpatableAssetSymbols(assets),
+    })
     .then(response => {
       const { assetPrices, accounts, removedTransactions } = response.data;
-      console.log('ACCOUNTS:', accounts);
-      console.log('REMOVED TRANSACTIONS:', removedTransactions);
-      console.log('ASSETS:', assetPrices);
-
-      return true;
+      return (assetPrices || accounts || removedTransactions) && response.data;
     })
     .catch(e => {});
-  // Update balanceStatements
+  return syncResponse;
 };
 
 export default canutinLinkApi;

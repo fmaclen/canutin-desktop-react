@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 
-import canutinLinkApi, { ApiEndpoints, getLinkSummary } from '@app/data/canutinLink.api';
+import canutinLinkApi, { ApiEndpoints, requestLinkSummary } from '@app/data/canutinLink.api';
 import { AppContext } from '@app/context/appContext';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@appConstants/misc';
@@ -41,7 +41,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
       .post(endpoint, data)
       .then(async response => {
         if (response.data.success) {
-          const summary = await getLinkSummary();
+          const summary = await requestLinkSummary();
           if (summary) {
             setLinkAccount(summary);
           }
