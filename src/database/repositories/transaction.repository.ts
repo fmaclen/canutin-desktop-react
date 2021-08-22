@@ -50,6 +50,10 @@ export class TransactionRepository {
     await getRepository<Transaction>(Transaction).delete(transactionId);
   }
 
+  static async deleteTransactions(transactionsIds: number[]) {
+    await getRepository<Transaction>(Transaction).delete(transactionsIds);
+  }
+
   static async createTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     const q = getRepository(Transaction).createQueryBuilder().insert().values(transactions);
     const [sql, args] = q.getQueryAndParameters();
@@ -62,7 +66,7 @@ export class TransactionRepository {
     return await getRepository<Transaction>(Transaction).find({
       relations: ['account', 'account.accountType'],
       order: {
-        id: 'DESC',
+        date: 'DESC',
       },
     });
   }

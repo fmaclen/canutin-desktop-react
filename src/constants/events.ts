@@ -13,6 +13,18 @@ export const DB_GET_ACCOUNTS_ACK = 'dbGetAccountsAck';
 export const DB_GET_ASSETS = 'dbGetAssets';
 export const DB_GET_ASSETS_ACK = 'dbGetAssetsAck';
 
+export const DB_GET_ASSET = 'dbGetAsset';
+export const DB_GET_ASSET_ACK = 'dbGetAssetAck';
+
+export const DB_DELETE_ASSET = 'dbDeleteAsset';
+export const DB_DELETE_ASSET_ACK = 'dbDeleteAssetAck';
+
+export const DB_EDIT_ASSET_VALUE = 'dbEditAssetValue';
+export const DB_EDIT_ASSET_VALUE_ACK = 'dbEditAssetValueAck';
+
+export const DB_EDIT_ASSET_DETAILS = 'dbEditAssetDetails';
+export const DB_EDIT_ASSET_DETAILS_ACK = 'dbEditAssetDetailsAck';
+
 export const DB_GET_BALANCE_STATEMENTS = 'dbGetStatements';
 export const DB_GET_BALANCE_STATEMENTS_ACK = 'dbGetStatementsAck';
 
@@ -27,6 +39,18 @@ export const DB_EDIT_TRANSACTION_ACK = 'dbEditTransactionAck';
 
 export const DB_DELETE_TRANSACTION = 'dbDeleteTransaction';
 export const DB_DELETE_TRANSACTION_ACK = 'dbDeleteTransactionAck';
+
+export const DB_EDIT_ACCOUNT_BALANCE = 'dbEditAccountBalance';
+export const DB_EDIT_ACCOUNT_BALANCE_ACK = 'dbEditAccountBalanceAck';
+
+export const DB_GET_ACCOUNT = 'dbGetAccount';
+export const DB_GET_ACCOUNT_ACK = 'dbGetAccountAck';
+
+export const DB_EDIT_ACCOUNT_DETAILS = 'dbEditAccountDetails';
+export const DB_EDIT_ACCOUNT_DETAILS_ACK = 'dbEditAccountDetailsAck';
+
+export const DB_DELETE_ACCOUNT = 'dbDeleteAccount';
+export const DB_DELETE_ACCOUNT_ACK = 'dbDeleteAccountAck';
 
 // Import Wizard
 export const IMPORT_SOURCE_FILE = 'importSourceFile';

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { Account, Transaction } from '@database/entities';
 import { getAccountInformationLabel } from '@app/utils/account.utils';
-import { getSelectedTransactions } from '@app/constants/filters';
+import { getSelectedTransactions } from '@app/utils/balance.utils';
 import useGlobalFilterTable from '@app/hooks/useGlobalFilterTable';
 
 import ScrollView from '@components/common/ScrollView';
@@ -13,26 +13,31 @@ import AccountOverviewEdit from '@components/Account/AccountOverviewEdit';
 
 // TODO:
 // - Balance history component
-// - Edit tab
 
 const AccountOverview = () => {
   const {
     state: { balance: account },
   } = useLocation<{ balance: Account }>();
   const { selectedFilterOption, setSelectedFilterOption } = useGlobalFilterTable();
+  const editAccount = useMemo(() => <AccountOverviewEdit temporalAccount={account}/>, []);
+  
   const [accountOverviewSections, setAccountOverviewSections] = useState([
     {
       label: 'Overview',
       component: (
         <AccountOverviewInformation
-          transactions={account.transactions as Transaction[]}
+          transactions={getSelectedTransactions(
+            account.transactions as Transaction[],
+            selectedFilterOption.value.dateFrom,
+            selectedFilterOption.value.dateTo
+          )}
           account={account}
         />
       ),
     },
     {
       label: 'Edit',
-      component: <AccountOverviewEdit />,
+      component: editAccount,
     },
   ]);
 
@@ -53,7 +58,7 @@ const AccountOverview = () => {
       },
       {
         label: 'Edit',
-        component: <AccountOverviewEdit />,
+        component: editAccount,
       },
     ]);
   }, [selectedFilterOption.label]);
