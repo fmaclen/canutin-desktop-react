@@ -34,7 +34,7 @@ const AddAccountOrAsset = () => {
               icon={<LightningPrimaryCard />}
               title="Canutin Link"
               subTitle="Automatically import and sync accounts from your financial institution."
-              onClick={() => {}}
+              onClick={() => push(routesPaths.link)}
             />
           </PrimaryCardRow>
         </Section>

@@ -119,7 +119,9 @@ const SideBar = () => {
               toggled={toggled}
               to={'#sync'}
               primary={true}
-              status={<LastSync>{capitalize(timeago.format(linkAccount.lastSync))}</LastSync>}
+              status={
+                toggled && <LastSync>{capitalize(timeago.format(linkAccount.lastSync))}</LastSync>
+              }
             />
           )}
         </NavItems>
