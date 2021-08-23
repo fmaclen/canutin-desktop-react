@@ -81,7 +81,7 @@ const CanutinLink = () => {
   }, []);
 
   return (
-    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={true}>
+    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={!linkAccount}>
       {!linkAccount && (
         <SectionRow>
           <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />
