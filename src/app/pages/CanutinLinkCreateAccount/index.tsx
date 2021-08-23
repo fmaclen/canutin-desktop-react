@@ -6,13 +6,16 @@ import { ApiEndpoints } from '@app/data/canutinLink.api';
 import ScrollView from '@components/common/ScrollView';
 import HeaderButtons from '@app/components/CanutinLink/HeaderButtons';
 import UserAuthForm from '@app/components/CanutinLink/UserAuthForm';
+import SectionRow from '@app/components/common/SectionRow';
 
 const CanutinLinkCreateAccount = () => {
   const { linkAccount } = useContext(AppContext);
 
   return (
-    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />}>
-      {!linkAccount && <UserAuthForm endpoint={ApiEndpoints.USER_CREATE_ACCOUNT} />}
+    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={true}>
+      <SectionRow>
+        {!linkAccount && <UserAuthForm endpoint={ApiEndpoints.USER_CREATE_ACCOUNT} />}
+      </SectionRow>
     </ScrollView>
   );
 };

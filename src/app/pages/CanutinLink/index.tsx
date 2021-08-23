@@ -23,6 +23,7 @@ import { container as institution } from '@components/common/Form/FieldContainer
 import { label } from '@components/common/Form/Field/styles';
 import { row, value } from './styles';
 import { routesPaths } from '@app/routes';
+import SectionRow from '@app/components/common/SectionRow';
 
 interface UserAccountProps {
   email: string;
@@ -80,8 +81,12 @@ const CanutinLink = () => {
   }, []);
 
   return (
-    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />}>
-      {!linkAccount && <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />}
+    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={true}>
+      {!linkAccount && (
+        <SectionRow>
+          <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />
+        </SectionRow>
+      )}
       {linkAccount && userAccount && (
         <>
           <Section title="Summary">

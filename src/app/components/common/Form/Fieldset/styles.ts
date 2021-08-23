@@ -1,8 +1,9 @@
 import { css } from 'styled-components';
-import { grey10 } from '@appConstants/colors';
+import { grey5, grey10 } from '@appConstants/colors';
 
 export const container = css`
   border: none;
+  background-color: ${grey5};
   border-top: 1px solid ${grey10};
   padding: 12px 0;
   display: grid;
