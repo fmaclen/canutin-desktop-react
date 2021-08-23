@@ -1,7 +1,6 @@
 import React from 'react';
 import { CellProps } from 'react-table';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 import { formatDate } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities';
