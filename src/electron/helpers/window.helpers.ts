@@ -11,16 +11,13 @@ export const calculateWindowWidth = (displayWidth: number) => {
     ? displayWidth * 0.7 + DEV_TOOLS_PANEL_WIDTH
     : displayWidth * 0.7;
 
-  let winWidth: number;
   if (relativeWindowWidth < MIN_WINDOW_WIDTH) {
-    winWidth = MIN_WINDOW_WIDTH;
+    return MIN_WINDOW_WIDTH;
   } else if (relativeWindowWidth > idealMaxWindowWidth) {
-    winWidth = idealMaxWindowWidth;
+    return idealMaxWindowWidth;
   } else {
-    winWidth = relativeWindowWidth;
+    return relativeWindowWidth;
   }
-
-  return winWidth;
 };
 
 export const calculateWindowHeight = (displayHeight: number) => {
