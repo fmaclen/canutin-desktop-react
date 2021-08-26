@@ -42,7 +42,12 @@ const HeaderButtons = () => {
         >
           Sync
         </Button>
-        <Button onClick={() => history.push(routesPaths.linkInstitution)}>Link institution</Button>
+        <Button
+          onClick={() => history.push(routesPaths.linkInstitution)}
+          disabled={!linkAccount.isOnline}
+        >
+          Link institution
+        </Button>
         <Button onClick={() => handleLogout()}>Logout</Button>
       </ButtonRow>
     );

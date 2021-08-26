@@ -21,7 +21,15 @@ const LinkSideBarIcon = () => {
 
   return (
     <Container
-      status={!linkAccount ? null : linkAccountErrors ? StatusEnum.NEGATIVE : StatusEnum.POSITIVE}
+      status={
+        !linkAccount
+          ? null
+          : !linkAccount.isOnline
+          ? StatusEnum.WARNING
+          : linkAccountErrors
+          ? StatusEnum.NEGATIVE
+          : StatusEnum.POSITIVE
+      }
     >
       <Icon />
     </Container>

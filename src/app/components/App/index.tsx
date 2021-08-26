@@ -20,8 +20,11 @@ import { Account, Asset } from '@database/entities';
 
 import GlobalStyle from '@app/styles/global';
 import { container } from './styles';
-import { StatusBarContext } from '@app/context/statusBarContext';
-import { StatusEnum } from '@app/constants/misc';
+import {
+  emptyStatusMessage,
+  serverErrorStatusMessage,
+  StatusBarContext,
+} from '@app/context/statusBarContext';
 import { newAssetBalanceStatement } from '@app/utils/asset.utils';
 import { createOrUpdateAccounts } from '@app/utils/account.utils';
 
@@ -38,10 +41,10 @@ const App = () => {
     setFilePath,
     isDbEmpty,
     setIsDbEmpty,
-    setLinkAccount,
     linkAccount,
+    setLinkAccount,
   } = useContext(AppContext);
-  const { setStatusMessage } = useContext(StatusBarContext);
+  const { statusMessage, setStatusMessage } = useContext(StatusBarContext);
   const [accounts, setAccounts] = useState<Account[] | null>(null);
   const [assets, setAssets] = useState<Asset[] | null>(null);
 
@@ -88,7 +91,10 @@ const App = () => {
 
       const handleSync = async () => {
         const summary = await requestLinkSummary();
-        summary && setLinkAccount(summary);
+        if (summary) {
+          setLinkAccount(summary);
+          statusMessage === serverErrorStatusMessage && setStatusMessage(emptyStatusMessage);
+        }
       };
 
       handleSync();
@@ -114,18 +120,15 @@ const App = () => {
             createOrUpdateAccounts(accounts, syncResponse.accounts);
           }
 
-          setLinkAccount({ ...linkAccount, isSyncing: false });
+          setLinkAccount({ ...linkAccount, isSyncing: false, isOnline: true });
+          statusMessage === serverErrorStatusMessage && setStatusMessage(emptyStatusMessage);
         } else {
           setLinkAccount({
             ...linkAccount,
-            errors: { user: true, institution: false },
             isSyncing: false,
+            isOnline: false,
           });
-          setStatusMessage({
-            sentiment: StatusEnum.WARNING,
-            message: "Couldn't connect to Canutin's server, please try again later",
-            isLoading: false,
-          });
+          setStatusMessage(serverErrorStatusMessage);
         }
       };
       handleSync();

@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { grey20, greenPlain, redPlain } from '@appConstants/colors';
+import { grey20, greenPlain, redPlain, yellowPlain } from '@appConstants/colors';
 
 import { StatusEnum } from '@app/constants/misc';
 
@@ -29,6 +29,12 @@ export const container = css<{ status: StatusEnum | null }>`
       status === StatusEnum.NEGATIVE &&
       css`
         background-color: ${redPlain};
+      `};
+
+    ${({ status }) =>
+      status === StatusEnum.WARNING &&
+      css`
+        background-color: ${yellowPlain};
       `};
   }
 `;

@@ -51,6 +51,7 @@ export interface LinkAccountProps {
   email: string;
   institutions?: InstitutionProps[];
   errors: LinkAccountErrorProps;
+  isOnline: boolean;
   isSyncing: boolean;
   lastSync: Date;
 }
@@ -71,7 +72,9 @@ export const requestLinkSummary = async () => {
   const linkSummary = await canutinLinkApi
     .get<LinkAccountProps>(ApiEndpoints.SUMMARY)
     .then(response => {
-      return response && { ...response.data, isSyncing: false, lastSync: new Date() };
+      return (
+        response && { ...response.data, isSyncing: false, lastSync: new Date(), isOnline: true }
+      );
     })
     .catch(e => {
       return null;

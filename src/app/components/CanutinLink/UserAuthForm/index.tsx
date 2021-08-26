@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import canutinLinkApi, { ApiEndpoints, requestLinkSummary } from '@app/data/canutinLink.api';
 import { AppContext } from '@app/context/appContext';
-import { StatusBarContext } from '@app/context/statusBarContext';
+import { serverErrorStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@appConstants/misc';
 import { capitalize } from '@app/utils/strings.utils';
 
@@ -27,7 +27,7 @@ interface UserAuthFormProps {
 }
 
 const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
-  const { setLinkAccount } = useContext(AppContext);
+  const { linkAccount, setLinkAccount } = useContext(AppContext);
   const { setStatusMessage } = useContext(StatusBarContext);
   const {
     register: registerAuthForm,
@@ -56,11 +56,13 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             message: e.response.data['field-error'][1],
           });
         } else {
-          setStatusMessage({
-            sentiment: StatusEnum.WARNING,
-            message: "Couldn't connect to Canutin's server, please try again later",
-            isLoading: false,
-          });
+          linkAccount &&
+            setLinkAccount({
+              ...linkAccount,
+              errors: { user: true, institution: false },
+              isSyncing: false,
+            });
+          setStatusMessage(serverErrorStatusMessage);
         }
       });
   };

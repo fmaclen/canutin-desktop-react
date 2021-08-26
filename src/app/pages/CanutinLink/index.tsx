@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import * as timeago from 'timeago.js';
 
 import { AppContext } from '@app/context/appContext';
+import { serverErrorStatusMessage } from '@app/context/statusBarContext';
 import canutinLinkApi, { ApiEndpoints, InstitutionProps } from '@app/data/canutinLink.api';
 import { StatusEnum } from '@appConstants/misc';
 import { capitalize } from '@app/utils/strings.utils';
@@ -82,6 +83,11 @@ const CanutinLink = () => {
 
   return (
     <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={!linkAccount}>
+      {linkAccount && !linkAccount.isOnline && (
+        <Section title="Connection error">
+          <EmptyCard message={serverErrorStatusMessage.message} />
+        </Section>
+      )}
       {!linkAccount && (
         <SectionRow>
           <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />
