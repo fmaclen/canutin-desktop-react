@@ -14,7 +14,6 @@ interface AssetOverviewInformationProps {
 }
 
 const AssetOverviewInformation = ({ assetBalanceStatements }: AssetOverviewInformationProps) => {
-  console.log(assetBalanceStatements);
   const assetChartBalances =
     assetBalanceStatements && assetBalanceStatements.length > 0
       ? getAssetBalancesByWeeks(assetBalanceStatements, 52)
