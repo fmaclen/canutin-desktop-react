@@ -51,7 +51,6 @@ const Chart = ({ chartData }: ChartProps) => {
   const handleMouseEnter = (selectedId: number) => {
     setActiveBalance(chartData.find(({ id }) => id === selectedId) as ChartPeriodType);
   };
-  console.log(chartData);
 
   return (
     <Frame columns={chartData.length}>
