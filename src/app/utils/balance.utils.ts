@@ -217,15 +217,11 @@ export type ChartPeriodType = {
   id: number;
 };
 
-export const calculateBalanceDifference = (originalBalance: number, newBalance: number) => {
-  if (originalBalance === newBalance) {
+export const calculateBalanceDifference = (value1: number, value2: number) => {
+  if (value2 === value1 || value2 === 0) {
     return 0;
   } else {
-    if (originalBalance > 0) {
-      return Number((((originalBalance - newBalance) / originalBalance) * 100).toFixed(2));
-    } else {
-      return Number((((newBalance - originalBalance) / originalBalance) * 100).toFixed(2));
-    }
+    return Number((((value2 - value1) / Math.abs(value2)) * 100).toFixed(2)) * -1;
   }
 };
 
@@ -343,12 +339,10 @@ export const generatePlaceholdersChartPeriod = (
   if (weeks === weeksOffset) {
     return [];
   } else {
-    const weeksDates = eachWeekOfInterval(
-      {
-        start: sub(from, { weeks: weeks - weeksOffset + 1 }),
-        end: sub(from, { weeks: 1 }),
-      }
-    );
+    const weeksDates = eachWeekOfInterval({
+      start: sub(from, { weeks: weeks - weeksOffset + 1 }),
+      end: sub(from, { weeks: 1 }),
+    });
 
     return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
       return [
