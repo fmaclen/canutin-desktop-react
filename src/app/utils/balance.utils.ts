@@ -217,11 +217,11 @@ export type ChartPeriodType = {
   id: number;
 };
 
-export const calculateBalanceDifference = (value1: number, value2: number) => {
-  if (value2 === value1 || value2 === 0) {
+export const calculateBalanceDifference = (originalBalance: number, newBalance: number) => {
+  if (originalBalance === newBalance || newBalance === 0) {
     return 0;
   } else {
-    return Number((((value2 - value1) / Math.abs(value2)) * 100).toFixed(2)) * -1;
+    return Number((((newBalance - originalBalance) / Math.abs(newBalance)) * 100).toFixed(2)) * -1;
   }
 };
 
