@@ -269,8 +269,6 @@ export const getAccountBalancesByWeeks = (
     }
   );
 
-  console.log(weeksDates);
-
   return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
     // Get transactions from -weeks ago to current week and calculate balance
     const balanceStatementValue = getSelectedBalanceStatementValue(
