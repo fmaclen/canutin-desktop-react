@@ -113,15 +113,19 @@ export const generateAssetBalanceInfo = (asset: Asset) => ({
     : 0,
 });
 
+// FIXME: remove when https://github.com/Canutin/desktop/issues/191 is finished
 export const getAccountsByType = (type: string, accounts: Account[]) =>
   accounts.filter(account => account.accountType.name === type);
 
+// FIXME: remove when https://github.com/Canutin/desktop/issues/191 is finished
 export const getAssetByType = (type: string, assets: Asset[]) =>
   assets.filter(asset => asset.assetType.name === type);
 
+// FIXME: remove when https://github.com/Canutin/desktop/issues/191 is finished
 export const getAssetByTypes = (types: string[], assets: Asset[]) =>
   types.map(type => getAssetByType(type, assets)).flat();
 
+// FIXME: remove when https://github.com/Canutin/desktop/issues/191 is finished
 export const getTypesByBalanceGroup = (balanceGroup: BalanceGroupEnum) => [
   ...(assetTypes
     .find(assetType => assetType.balanceGroup === balanceGroup)
