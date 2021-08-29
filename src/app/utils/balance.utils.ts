@@ -8,160 +8,101 @@ import {
   max,
   sub,
 } from 'date-fns';
-import { Asset, Account, Transaction, BalanceStatement, AssetBalanceStatement } from '@database/entities';
+import merge from 'deepmerge';
+
+import {
+  Asset,
+  Account,
+  Transaction,
+  BalanceStatement,
+  AssetBalanceStatement,
+} from '@database/entities';
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { accountTypes } from '@constants/accountTypes';
 import { assetTypes } from '@constants/assetTypes';
 
-export const getBalanceForAllAccountsAssets = (
-  assets: Asset[],
-  accounts: Account[]
-): BalanceData | undefined => {
+export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
   const assetsNoSold = assets.filter(
     ({ balanceStatements }) =>
       balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
   );
+
+  return assetsNoSold.reduce(
+    (listOfBalancesByGroup, asset) => {
+      let balanceData = listOfBalancesByGroup?.[asset.balanceGroup]?.[asset.assetType.name];
+
+      if (balanceData) {
+        balanceData = [...balanceData, generateAssetBalanceInfo(asset)].sort(
+          (balanceSheetA: AccountAssetBalance, balanceSheetB: AccountAssetBalance) =>
+            balanceSheetB.amount - balanceSheetA.amount
+        );
+      } else {
+        balanceData = [generateAssetBalanceInfo(asset)];
+      }
+
+      return {
+        ...listOfBalancesByGroup,
+        [asset.balanceGroup]: {
+          ...listOfBalancesByGroup[asset.balanceGroup],
+          [asset.assetType.name]: [...balanceData],
+        },
+      };
+    },
+    {
+      [BalanceGroupEnum.CASH]: {},
+      [BalanceGroupEnum.DEBT]: {},
+      [BalanceGroupEnum.INVESTMENTS]: {},
+      [BalanceGroupEnum.OTHER_ASSETS]: {},
+    } as BalanceData
+  );
+};
+
+export const getBalanceForAccountsByBalanceGroup = (accounts: Account[]) => {
   const accountsNoClosed = accounts.filter(({ closed }) => !closed);
 
-  const listOfBalancesByGroup = Object.keys(BalanceGroupEnum).reduce(
-    (listOfBalancesByGroup, balanceGroup) => {
-      if (isNaN(Number(balanceGroup))) {
-        return listOfBalancesByGroup;
-      }
+  return accountsNoClosed.reduce(
+    (listOfBalancesByGroup, account) => {
+      let balanceData = listOfBalancesByGroup?.[account.balanceGroup]?.[account.accountType.name];
 
-      const types = getTypesByBalanceGroup(Number(balanceGroup));
-      const typeList: Record<string, any> = {};
-      let accountTransactions: AccountAssetBalance[] = [];
-      let assetTransactions: AccountAssetBalance[] = [];
-      types.forEach(type => {
-        accountTransactions = [];
-        assetTransactions = [];
-
-        assetTransactions = [
-          ...getAssetByType(type, assetsNoSold).map(asset => generateAssetBalanceInfo(asset)),
-        ];
-
-        accountTransactions = generateAccountsBalanceInfo(
-          getAccountsByType(type, accountsNoClosed)
+      if (balanceData) {
+        balanceData = [
+          ...balanceData,
+          generateAccountBalanceInfo(account) as AccountAssetBalance,
+        ].sort(
+          (balanceSheetA: AccountAssetBalance, balanceSheetB: AccountAssetBalance) =>
+            balanceSheetB.amount - balanceSheetA.amount
         );
-
-        if (accountTransactions.length > 0 || assetTransactions.length > 0) {
-          typeList[type] = [...accountTransactions, ...assetTransactions].sort(
-            (balanceSheetA: AccountAssetBalance, balanceSheetB: AccountAssetBalance) =>
-              balanceSheetB.amount - balanceSheetA.amount
-          );
-        }
-      });
-
-      return {
-        [balanceGroup]: typeList,
-        ...listOfBalancesByGroup,
-      };
-    },
-    {}
-  );
-
-  return listOfBalancesByGroup;
-};
-
-export const getBalanceForAssets = (assets: Asset[]) => {
-  const assetsNoSold = assets.filter(
-    ({ balanceStatements }) =>
-      balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
-  );
-  const listOfBalancesByGroup = Object.keys(BalanceGroupEnum).reduce(
-    (listOfBalancesByGroup, balanceGroup) => {
-      if (isNaN(Number(balanceGroup))) {
-        return listOfBalancesByGroup;
+      } else {
+        balanceData = [generateAccountBalanceInfo(account) as AccountAssetBalance];
       }
 
-      const types = getTypesByBalanceGroup(Number(balanceGroup));
-      const typeList: Record<string, any> = {};
-      let assetTransactions: AccountAssetBalance[] = [];
-      types.forEach(type => {
-        assetTransactions = [];
-
-        assetTransactions = [
-          ...getAssetByType(type, assetsNoSold).map(asset => generateAssetBalanceInfo(asset)),
-        ];
-
-        if (assetTransactions.length > 0) {
-          typeList[type] = [...assetTransactions].sort(
-            (balanceSheetA: AccountAssetBalance, balanceSheetB: AccountAssetBalance) =>
-              balanceSheetB.amount - balanceSheetA.amount
-          );
-        }
-      });
-
       return {
-        [balanceGroup]: typeList,
         ...listOfBalancesByGroup,
+        [account.balanceGroup]: {
+          ...listOfBalancesByGroup[account.balanceGroup],
+          [account.accountType.name]: [...balanceData],
+        },
       };
     },
-    {}
+    {
+      [BalanceGroupEnum.CASH]: {},
+      [BalanceGroupEnum.DEBT]: {},
+      [BalanceGroupEnum.INVESTMENTS]: {},
+      [BalanceGroupEnum.OTHER_ASSETS]: {},
+    } as BalanceData
   );
-
-  return listOfBalancesByGroup;
 };
 
-export const getBalanceForAccounts = (accounts: Account[]) => {
-  const accountsNoClosed = accounts.filter(({ closed }) => !closed);
-  const listOfBalancesByGroup = Object.keys(BalanceGroupEnum).reduce(
-    (listOfBalancesByGroup, balanceGroup) => {
-      if (isNaN(Number(balanceGroup))) {
-        return listOfBalancesByGroup;
-      }
-
-      const types = getTypesByBalanceGroup(Number(balanceGroup));
-      const typeList: Record<string, any> = {};
-      let accountTransactions: AccountAssetBalance[] = [];
-      types.forEach(type => {
-        accountTransactions = [];
-
-        accountTransactions = generateAccountsBalanceInfo(
-          getAccountsByType(type, accountsNoClosed)
-        );
-
-        if (accountTransactions.length > 0) {
-          typeList[type] = accountTransactions.sort(
-            (balanceSheetA: AccountAssetBalance, balanceSheetB: AccountAssetBalance) =>
-              balanceSheetB.amount - balanceSheetA.amount
-          );
-        }
-      });
-
-      return {
-        [balanceGroup]: typeList,
-        ...listOfBalancesByGroup,
-      };
-    },
-    {}
-  );
-
-  return listOfBalancesByGroup;
-};
-
-export const generateAccountsBalanceInfo = (accounts: Account[]) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let accountsBalances: any = [];
-  accounts.forEach(account => {
-    accountsBalances = [
-      ...accountsBalances,
-      {
-        ...account,
-        amount: account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate
-          ? account.transactions?.reduce((sum, transaction) => transaction.amount + sum, 0)
-          : account.balanceStatements?.[account.balanceStatements?.length - 1].value,
-        type: 'Account',
-        name: account.name,
-        id: account.id,
-      },
-    ];
-  });
-
-  return accountsBalances;
-};
+export const generateAccountBalanceInfo = (account: Account) => ({
+  ...account,
+  amount: account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate
+    ? account.transactions?.reduce((sum, transaction) => transaction.amount + sum, 0)
+    : account.balanceStatements?.[account.balanceStatements?.length - 1].value,
+  type: 'Account',
+  name: account.name,
+  id: account.id,
+});
 
 export const generateAssetBalanceInfo = (asset: Asset) => ({
   ...asset,
@@ -193,10 +134,18 @@ export const getTypesByBalanceGroup = (balanceGroup: BalanceGroupEnum) => [
 export type TotalBalanceType = { [value in BalanceGroupEnum]: number } | undefined;
 
 export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => {
-  const balances = getBalanceForAllAccountsAssets(assets, accounts);
+  const assetsBalancesListData = assets && getBalanceForAssetByBalanceGroup(assets);
+  const accountBalancesListData = accounts && getBalanceForAccountsByBalanceGroup(accounts);
+  const allBalancesListData =
+    (assetsBalancesListData || accountBalancesListData) &&
+    merge(
+      assetsBalancesListData ? assetsBalancesListData : {},
+      accountBalancesListData ? accountBalancesListData : {}
+    );
+
   return (
-    balances &&
-    Object.keys(balances).reduce(
+    allBalancesListData &&
+    Object.keys(BalanceGroupEnum).reduce(
       (acc, value) => {
         if (Number(value) === BalanceGroupEnum.NET_WORTH) {
           acc[BalanceGroupEnum.NET_WORTH] = Object.keys(acc).reduce(
@@ -204,7 +153,7 @@ export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => 
             0
           );
         } else {
-          const balanceData = balances[(value as unknown) as BalanceGroupEnum];
+          const balanceData = allBalancesListData[(value as unknown) as BalanceGroupEnum];
           const totalAmount = balanceData
             ? Object.keys(balanceData).reduce((acc, assetTypeKey) => {
                 const totalBalance = balanceData[assetTypeKey].reduce((acc, assetTypeBalance) => {
@@ -229,10 +178,23 @@ export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => 
   );
 };
 
-export const getSelectedTransactions = (transactions: Transaction[], from: Date, to: Date) =>
-  transactions.filter(
+export const getSelectedTransactions = (transactions: Transaction[], from: Date, to: Date) => {
+  return transactions.filter(
     transaction => isBefore(from, transaction.date) && isAfter(to, transaction.date)
   );
+};
+
+export const getSelectedBalanceStatements = (
+  assetBalanceStatements: AssetBalanceStatement[],
+  from: Date,
+  to: Date
+) => {
+  return assetBalanceStatements.filter(
+    assetBalanceStatement =>
+      isBefore(from, assetBalanceStatement.updatedAt) &&
+      isAfter(to, assetBalanceStatement.updatedAt)
+  );
+};
 
 export const getTransactionsBalance = (transactions: Transaction[]) => {
   return transactions.reduce((acc, transaction) => transaction.amount + acc, 0);
@@ -261,7 +223,7 @@ export const getSelectedAssetBalanceStatementValue = (
       balanceStatement =>
         isBefore(from, balanceStatement.createdAt) && isAfter(to, balanceStatement.createdAt)
     )
-    .slice(-1)[0].value;
+    .slice(-1)[0]?.value;
 };
 
 export type ChartPeriodType = {
@@ -304,7 +266,7 @@ export const getTransactionBalanceByWeeks = (
         week: getWeek(weekDate),
         balance,
         dateWeek: weekDate,
-        label: getWeek(weekDate, { weekStartsOn: 1 }).toString(),
+        label: getWeek(weekDate).toString(),
         difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
         id: index,
       },
@@ -332,7 +294,7 @@ export const getAccountBalancesByWeeks = (
     const balanceStatementValue = getSelectedBalanceStatementValue(
       filterBalanceStatements,
       weekDate,
-      endOfWeek(weekDate)
+      endOfWeek(weekDate, { weekStartsOn: 1 })
     );
     const balance = balanceStatementValue ? balanceStatementValue : 0;
 
@@ -342,7 +304,7 @@ export const getAccountBalancesByWeeks = (
         week: getWeek(weekDate),
         balance,
         dateWeek: weekDate,
-        label: getWeek(weekDate, { weekStartsOn: 1 }).toString(),
+        label: getWeek(weekDate).toString(),
         difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
         id: index,
       },
@@ -371,7 +333,11 @@ export const getAssetBalancesByWeeks = (
       weekDate,
       endOfWeek(weekDate)
     );
-    const balance = balanceStatementValue ? balanceStatementValue : 0;
+    const balance = balanceStatementValue
+      ? balanceStatementValue
+      : acc[index - 1]?.balance
+      ? acc[index - 1].balance
+      : 0;
 
     return [
       ...acc,
@@ -379,7 +345,7 @@ export const getAssetBalancesByWeeks = (
         week: getWeek(weekDate),
         balance,
         dateWeek: weekDate,
-        label: getWeek(weekDate, { weekStartsOn: 1 }).toString(),
+        label: getWeek(weekDate).toString(),
         difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
         id: index,
       },
@@ -395,15 +361,10 @@ export const generatePlaceholdersChartPeriod = (
   if (weeks === weeksOffset) {
     return [];
   } else {
-    const weeksDates = eachWeekOfInterval(
-      {
-        start: sub(from, { weeks: weeks - weeksOffset }),
-        end: from,
-      },
-      {
-        weekStartsOn: 1,
-      }
-    );
+    const weeksDates = eachWeekOfInterval({
+      start: sub(from, { weeks: weeks - weeksOffset + 1 }),
+      end: sub(from, { weeks: 1 }),
+    });
 
     return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
       return [
@@ -412,7 +373,7 @@ export const generatePlaceholdersChartPeriod = (
           week: getWeek(weekDate),
           balance: 0,
           dateWeek: weekDate,
-          label: getWeek(weekDate, { weekStartsOn: 1 }).toString(),
+          label: getWeek(weekDate).toString(),
           difference: 0,
           id: index + weeksOffset,
         },

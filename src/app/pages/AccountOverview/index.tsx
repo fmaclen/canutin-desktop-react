@@ -11,16 +11,13 @@ import AccountOverviewHeader from '@components/Account/AccountOverviewHeader';
 import AccountOverviewInformation from '@components/Account/AccountOverviewInformation';
 import AccountOverviewEdit from '@components/Account/AccountOverviewEdit';
 
-// TODO:
-// - Balance history component
-
 const AccountOverview = () => {
   const {
     state: { balance: account },
   } = useLocation<{ balance: Account }>();
-  const { selectedFilterOption, setSelectedFilterOption } = useGlobalFilterTable();
-  const editAccount = useMemo(() => <AccountOverviewEdit temporalAccount={account}/>, []);
-  
+  const { selectedFilterOption, setSelectedFilterOption, numberOfWeeks } = useGlobalFilterTable();
+  const editAccount = useMemo(() => <AccountOverviewEdit temporalAccount={account} />, []);
+
   const [accountOverviewSections, setAccountOverviewSections] = useState([
     {
       label: 'Overview',
@@ -32,6 +29,7 @@ const AccountOverview = () => {
             selectedFilterOption.value.dateTo
           )}
           account={account}
+          numberOfWeeks={numberOfWeeks}
         />
       ),
     },
@@ -53,6 +51,7 @@ const AccountOverview = () => {
               selectedFilterOption.value.dateTo
             )}
             account={account}
+            numberOfWeeks={numberOfWeeks}
           />
         ),
       },
@@ -68,7 +67,9 @@ const AccountOverview = () => {
       <ScrollView
         title={account.name}
         subTitle={getAccountInformationLabel(account)}
-        headerNav={<AccountOverviewHeader />}
+        headerNav={
+          <AccountOverviewHeader filterOption={selectedFilterOption} setFilterOption={setSelectedFilterOption} />
+        }
         sections={accountOverviewSections}
       />
     </>

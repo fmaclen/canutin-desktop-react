@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Asset } from '@database/entities';
+import { AssetBalanceStatement } from '@database/entities';
 import { generatePlaceholdersChartPeriod, getAssetBalancesByWeeks } from '@app/utils/balance.utils';
 
 import Section from '@app/components/common/Section';
@@ -10,13 +10,15 @@ import Chart from '@app/components/common/Chart';
 const Container = styled.div``;
 
 interface AssetOverviewInformationProps {
-  asset: Asset;
+  assetBalanceStatements: AssetBalanceStatement[] | undefined;
+  numberOfWeeks: number;
 }
 
-const AssetOverviewInformation = ({ asset }: AssetOverviewInformationProps) => {
-  const assetChartBalances = asset.balanceStatements
-    ? getAssetBalancesByWeeks(asset.balanceStatements, 53)
-    : [];
+const AssetOverviewInformation = ({ assetBalanceStatements, numberOfWeeks }: AssetOverviewInformationProps) => {
+  const assetChartBalances =
+    assetBalanceStatements && assetBalanceStatements.length > 0
+      ? getAssetBalancesByWeeks(assetBalanceStatements, 52)
+      : [];
 
   return (
     <Container>
@@ -24,9 +26,9 @@ const AssetOverviewInformation = ({ asset }: AssetOverviewInformationProps) => {
         <Chart
           chartData={[
             ...generatePlaceholdersChartPeriod(
-              assetChartBalances[0].dateWeek,
-              53,
-              assetChartBalances.length
+              assetChartBalances?.[0]?.dateWeek ? assetChartBalances?.[0].dateWeek : new Date(),
+              numberOfWeeks,
+              assetChartBalances.length > numberOfWeeks ? numberOfWeeks : assetChartBalances.length
             ),
             ...assetChartBalances,
           ]}

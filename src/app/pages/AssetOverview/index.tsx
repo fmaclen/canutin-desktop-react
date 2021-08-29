@@ -9,21 +9,31 @@ import ScrollView from '@components/common/ScrollView';
 import AssetOverviewHeader from '@components/Asset/AssetOverviewHeader';
 import AssetOverviewInformation from '@components/Asset/AssetOverviewInformation';
 import AssetOverviewEdit from '@components/Asset/AssetOverviewEdit';
-
-// TODO:
-// - Balance history component
+import { getSelectedBalanceStatements } from '@app/utils/balance.utils';
 
 const AssetOverview = () => {
   const {
     state: { balance },
   } = useLocation<{ balance: Asset }>();
-  const { selectedFilterOption, setSelectedFilterOption } = useGlobalFilterTable();
+  const { selectedFilterOption, setSelectedFilterOption, numberOfWeeks } = useGlobalFilterTable();
   const editAsset = useMemo(() => <AssetOverviewEdit temporalAsset={balance} />, []);
 
   const [assetOverviewSections, setAssetOverviewSections] = useState([
     {
       label: 'Overview',
-      component: <AssetOverviewInformation asset={balance} />,
+      component: (
+        <AssetOverviewInformation
+          assetBalanceStatements={
+            balance.balanceStatements &&
+            getSelectedBalanceStatements(
+              balance.balanceStatements,
+              selectedFilterOption.value.dateFrom,
+              selectedFilterOption.value.dateTo
+            )
+          }
+          numberOfWeeks={numberOfWeeks}
+        />
+      ),
     },
     {
       label: 'Edit',
@@ -35,7 +45,19 @@ const AssetOverview = () => {
     setAssetOverviewSections([
       {
         label: 'Overview',
-        component: <AssetOverviewInformation asset={balance} />,
+        component: (
+          <AssetOverviewInformation
+            assetBalanceStatements={
+              balance.balanceStatements &&
+              getSelectedBalanceStatements(
+                balance.balanceStatements,
+                selectedFilterOption.value.dateFrom,
+                selectedFilterOption.value.dateTo
+              )
+            }
+            numberOfWeeks={numberOfWeeks}
+          />
+        ),
       },
       {
         label: 'Edit',
@@ -49,7 +71,12 @@ const AssetOverview = () => {
       <ScrollView
         title={balance.name}
         subTitle={getAssetInformationLabel(balance)}
-        headerNav={<AssetOverviewHeader />}
+        headerNav={
+          <AssetOverviewHeader
+            filterOption={selectedFilterOption}
+            setFilterOption={setSelectedFilterOption}
+          />
+        }
         sections={assetOverviewSections}
       />
     </>
