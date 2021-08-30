@@ -221,7 +221,7 @@ export const calculateBalanceDifference = (originalBalance: number, newBalance: 
   if (originalBalance === newBalance || newBalance === 0) {
     return 0;
   } else {
-    return Number((((newBalance - originalBalance) / Math.abs(newBalance)) * 100).toFixed(2)) * -1;
+    return Number((((originalBalance - newBalance) / Math.abs(newBalance)) * 100).toFixed(2));
   }
 };
 
