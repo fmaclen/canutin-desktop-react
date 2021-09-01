@@ -187,12 +187,11 @@ export const getSelectedBalanceStatementValue = (
   from: Date,
   to: Date
 ) => {
-  return balanceStatements
-    .filter(
-      balanceStatement =>
-        isBefore(from, balanceStatement.createdAt) && isAfter(to, balanceStatement.createdAt)
-    )
-    .slice(-1)[0].value;
+  const balanceStatement = balanceStatements.filter(
+    balanceStatement =>
+      isBefore(from, balanceStatement.createdAt) && isAfter(to, balanceStatement.createdAt)
+  );
+  return balanceStatement.length > 0 && balanceStatement.slice(-1)[0].value;
 };
 
 export const getSelectedAssetBalanceStatementValue = (
