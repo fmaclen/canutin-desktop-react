@@ -19,8 +19,6 @@ import {
 } from '@database/entities';
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
-import { accountTypes } from '@constants/accountTypes';
-import { assetTypes } from '@constants/assetTypes';
 
 export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
   const assetsNoSold = assets.filter(
@@ -255,6 +253,10 @@ export const getTransactionBalanceByWeeks = (
   transactions: Transaction[],
   weeks: number
 ): ChartPeriodType[] => {
+  if (transactions.length === 0) {
+    return [];
+  }
+
   const weeksDates = eachWeekOfInterval({
     start: max([transactions[0].date, subWeeks(new Date(), weeks)]),
     end: new Date(),
@@ -262,7 +264,7 @@ export const getTransactionBalanceByWeeks = (
   return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
     // Get transactions from -weeks ago to current week and calculate balance
     const balance = getTransactionsBalance(
-      getSelectedTransactions(transactions, weekDate, endOfWeek(weekDate))
+      getSelectedTransactions(transactions, weekDate, endOfWeek(weekDate, { weekStartsOn: 1 }))
     );
     return [
       ...acc,
@@ -335,7 +337,7 @@ export const getAssetBalancesByWeeks = (
     const balanceStatementValue = getSelectedAssetBalanceStatementValue(
       balanceStatements,
       weekDate,
-      endOfWeek(weekDate)
+      endOfWeek(weekDate, { weekStartsOn: 1 })
     );
     const balance = balanceStatementValue
       ? balanceStatementValue
