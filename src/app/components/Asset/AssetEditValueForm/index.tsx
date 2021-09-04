@@ -89,6 +89,7 @@ const AssetEditValueForm = ({ asset }: AssetEditValueFormProps) => {
             <InputCurrencyField
               label="Cost"
               name="cost"
+              allowNegative={false}
               control={control}
               rules={{ required: true }}
             />
@@ -109,6 +110,7 @@ const AssetEditValueForm = ({ asset }: AssetEditValueFormProps) => {
         <InputCurrencyField
           label="Value"
           name="value"
+          allowNegative={false}
           control={control}
           disabled={shouldDisplayAssetWithSymbolFields}
           rules={{ required: !shouldDisplayAssetWithSymbolFields }}
