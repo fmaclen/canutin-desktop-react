@@ -123,16 +123,6 @@ export const getAssetByType = (type: string, assets: Asset[]) =>
 export const getAssetByTypes = (types: string[], assets: Asset[]) =>
   types.map(type => getAssetByType(type, assets)).flat();
 
-// FIXME: remove when https://github.com/Canutin/desktop/issues/191 is finished
-export const getTypesByBalanceGroup = (balanceGroup: BalanceGroupEnum) => [
-  ...(assetTypes
-    .find(assetType => assetType.balanceGroup === balanceGroup)
-    ?.assetTypes.map(assetTypeValue => assetTypeValue.value) || []),
-  ...(accountTypes
-    .find(accountType => accountType.balanceGroup === balanceGroup)
-    ?.accountTypes.map(accountTypes => accountTypes.value) || []),
-];
-
 export type TotalBalanceType = { [value in BalanceGroupEnum]: number } | undefined;
 
 export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => {

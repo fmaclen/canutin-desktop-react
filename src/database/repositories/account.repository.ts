@@ -18,7 +18,14 @@ export class AccountRepository {
       name: account.accountType.toLowerCase(),
     });
     const accountSaved = await getRepository<Account>(Account).save(
-      new Account(account.name, false, accountType, account.officialName, account.institution)
+      new Account(
+        account.name,
+        false,
+        accountType,
+        account.officialName,
+        account.institution,
+        account.linkId
+      )
     );
 
     await BalanceStatementRepository.createBalanceStatement({
