@@ -43,7 +43,7 @@ interface TransactionFormProps {
 
 type TransactionSubmitType = {
   account: string | null;
-  balance: string | null;
+  amount: string | null;
   category: string;
   year: number;
   month: number;
@@ -69,7 +69,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
           day: DATE_INFORMATION.day,
           month: DATE_INFORMATION.month,
           year: DATE_INFORMATION.year,
-          balance: null,
+          amount: null,
           excludeFromTotals: false,
         },
   });
@@ -77,7 +77,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
   const [accounts, setAccounts] = useState<null | Account[]>(null);
   const excludeFromTotals = watch('excludeFromTotals');
   const description = watch('description');
-  const balance = watch('balance');
+  const amount = watch('amount');
 
   useEffect(() => {
     AccountIpc.getAccounts();
@@ -130,7 +130,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
 
   const onSubmit = ({
     account,
-    balance,
+    amount,
     category,
     year,
     month,
@@ -141,7 +141,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
     const date = new Date(year, month, day);
     const transaction = {
       accountId: Number(account),
-      balance: Number(balance),
+      amount: Number(amount),
       categoryName: category,
       date: dateInUTC(date),
       description,
@@ -185,10 +185,10 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
           control={control}
           required
         />
-        <Field label="Amount" name="balance">
+        <Field label="Amount" name="amount">
           <ToggleInputField>
             <InputCurrency
-              value={balance && Number(balance)}
+              value={amount && Number(amount)}
               rules={{ validate: v => excludeFromTotals || v !== '' }}
               name="balance"
               control={control}
