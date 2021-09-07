@@ -26,7 +26,7 @@ export interface RemoteAccountProps {
   transactions?: NewTransactionType[];
 }
 
-export const createOrUpdateAccounts = (
+export const handleLinkedAccounts = (
   localAccounts: Account[],
   remoteAccounts: RemoteAccountProps[]
 ) => {
@@ -65,6 +65,19 @@ export const createOrUpdateAccounts = (
       accountId = newAccount.id;
     }
 
-    // TODO: add transactions
+    // Add transactions
+    remoteAccount.transactions?.forEach(async remoteTransaction => {
+      const transaction = {
+        accountId: accountId,
+        amount: remoteTransaction.amount,
+        categoryName: 'Uncategorized', // FIXME: The API returns `category` instead of `categoryName`.
+        date: dateInUTC(new Date(remoteTransaction.date)),
+        description: remoteTransaction.description,
+        excludeFromTotals: false, // FIXME: The API returns `excluded` instead of `excludeFromTotals`.
+        // FIXME: The API needs to return a `linkId` for transactions.
+      };
+
+      TransactionIpc.addTransaction(transaction);
+    });
   });
 };

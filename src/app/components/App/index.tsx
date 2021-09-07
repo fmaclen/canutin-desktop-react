@@ -26,7 +26,7 @@ import {
   StatusBarContext,
 } from '@app/context/statusBarContext';
 import { newAssetBalanceStatement } from '@app/utils/asset.utils';
-import { createOrUpdateAccounts } from '@app/utils/account.utils';
+import { handleLinkedAccounts } from '@app/utils/account.utils';
 
 const Container = styled.div`
   ${container}
@@ -115,9 +115,9 @@ const App = () => {
             newAssetBalanceStatement(assets, syncResponse.assetPrices);
           }
 
-          // Create or update accounts
+          // Create or update accounts and create transactions
           if (accounts && syncResponse && syncResponse.accounts) {
-            createOrUpdateAccounts(accounts, syncResponse.accounts);
+            handleLinkedAccounts(accounts, syncResponse.accounts);
           }
 
           setLinkAccount({ ...linkAccount, isSyncing: false, isOnline: true });
