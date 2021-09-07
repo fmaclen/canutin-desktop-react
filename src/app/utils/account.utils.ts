@@ -1,7 +1,10 @@
-import { Account, Transaction } from '@database/entities';
+import { Account } from '@database/entities';
+import { NewTransactionType } from '@appTypes/transaction.type';
 import AccountIpc from '@app/data/account.ipc';
+import TransactionIpc from '@app/data/transaction.ipc';
 
 import { capitalize } from './strings.utils';
+import { dateInUTC } from './date.utils';
 
 export const getAccountInformationLabel = (account: Account) => {
   if (account.institution) {
@@ -20,7 +23,7 @@ export interface RemoteAccountProps {
   linkId: string;
   name: string;
   officialName: string;
-  transactions?: Transaction[];
+  transactions?: NewTransactionType[];
 }
 
 export const createOrUpdateAccounts = (
@@ -33,6 +36,8 @@ export const createOrUpdateAccounts = (
     const existingLinkedAccount = localAccounts.filter(
       localAccount => localAccount.linkId === remoteAccount.linkId
     )[0];
+
+    let accountId = (existingLinkedAccount && existingLinkedAccount.id) || 0;
 
     // Update existing account
     if (existingLinkedAccount) {
@@ -47,7 +52,7 @@ export const createOrUpdateAccounts = (
         AccountIpc.editBalance({ ...editBalanceFromLink, accountId: existingLinkedAccount.id });
     } else {
       // Create new account
-      await AccountIpc.createAccount({
+      const newAccount = await AccountIpc.createLinkedAccount({
         name: remoteAccount.name,
         accountType: remoteAccount.accountType,
         officialName: remoteAccount.officialName,
@@ -56,6 +61,8 @@ export const createOrUpdateAccounts = (
         balance: remoteAccount.balance,
         autoCalculate: remoteAccount.autoCalculate,
       });
+
+      accountId = newAccount.id;
     }
 
     // TODO: add transactions

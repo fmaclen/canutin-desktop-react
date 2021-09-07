@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron';
 import {
   DB_GET_ACCOUNTS,
   DB_NEW_ACCOUNT,
+  DB_NEW_LINKED_ACCOUNT,
   DB_EDIT_ACCOUNT_BALANCE,
   DB_GET_ACCOUNT,
   DB_EDIT_ACCOUNT_DETAILS,
@@ -15,8 +16,12 @@ import {
 } from '@appTypes/account.type';
 
 export default class AccountIpc {
-  static createAccount(account: NewAccountType) {
+  static async createAccount(account: NewAccountType) {
     ipcRenderer.send(DB_NEW_ACCOUNT, account);
+  }
+
+  static async createLinkedAccount(account: NewAccountType) {
+    return await ipcRenderer.invoke(DB_NEW_LINKED_ACCOUNT, account);
   }
 
   static getAccounts() {

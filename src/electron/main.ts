@@ -2,7 +2,15 @@ import 'reflect-metadata';
 import settings from 'electron-settings';
 import { QueryFailedError } from 'typeorm';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, nativeTheme } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  IpcMainEvent,
+  IpcMainInvokeEvent,
+  nativeTheme,
+} from 'electron';
 import isDev from 'electron-is-dev';
 import * as path from 'path';
 
@@ -10,6 +18,7 @@ import {
   OPEN_CREATE_VAULT,
   OPEN_EXISTING_VAULT,
   DB_NEW_ACCOUNT,
+  DB_NEW_LINKED_ACCOUNT,
   DB_NEW_ASSET,
   DB_NEW_ASSET_ACK,
   DB_NEW_ACCOUNT_ACK,
@@ -78,7 +87,11 @@ import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import { AccountRepository } from '@database/repositories/account.repository';
-import { AssetEditDetailsSubmitType, AssetEditValueSubmitType, NewAssetType } from '../types/asset.type';
+import {
+  AssetEditDetailsSubmitType,
+  AssetEditValueSubmitType,
+  NewAssetType,
+} from '../types/asset.type';
 import { NewAccountType } from '../types/account.type';
 
 let win: BrowserWindow | null = null;
@@ -160,10 +173,11 @@ const setupDbEvents = async () => {
     win?.webContents.send(DB_NEW_ASSET_ACK, newAsset);
   });
 
-  ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
+  ipcMain.handle(DB_NEW_ACCOUNT, async (_: IpcMainInvokeEvent, account: NewAccountType) => {
     try {
       const newAccount = await AccountRepository.createAccount(account);
       win?.webContents.send(DB_NEW_ACCOUNT_ACK, { ...newAccount, status: EVENT_SUCCESS });
+      return newAccount;
     } catch (e) {
       if (e instanceof QueryFailedError) {
         win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
@@ -176,6 +190,18 @@ const setupDbEvents = async () => {
           message: 'An error occurred, please try again',
         });
       }
+    }
+  });
+
+  // FIXME: This is almost identical to `DB_NEW_ACCOUNT` and might need to be DRY'd.
+  ipcMain.handle(DB_NEW_LINKED_ACCOUNT, async (_: IpcMainInvokeEvent, account: NewAccountType) => {
+    try {
+      return await AccountRepository.createAccount(account);
+    } catch (e) {
+      win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
+        status: EVENT_ERROR,
+        message: 'An error occurred, please try again',
+      });
     }
   });
 
