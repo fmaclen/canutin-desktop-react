@@ -2,15 +2,7 @@ import 'reflect-metadata';
 import settings from 'electron-settings';
 import { QueryFailedError } from 'typeorm';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import {
-  app,
-  BrowserWindow,
-  dialog,
-  ipcMain,
-  IpcMainEvent,
-  IpcMainInvokeEvent,
-  nativeTheme,
-} from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, nativeTheme, screen } from 'electron';
 import isDev from 'electron-is-dev';
 import * as path from 'path';
 
@@ -80,6 +72,12 @@ import {
   loadFromCanutinFile,
   importUpdatedAccounts,
 } from './helpers/importSource.helper';
+import {
+  MIN_WINDOW_WIDTH,
+  MIN_WINDOW_HEIGHT,
+  calculateWindowWidth,
+  calculateWindowHeight,
+} from './helpers/window.helpers';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
@@ -93,6 +91,7 @@ import {
   NewAssetType,
 } from '../types/asset.type';
 import { NewAccountType } from '../types/account.type';
+import { IpcMainInvokeEvent } from 'electron/main';
 
 let win: BrowserWindow | null = null;
 
@@ -173,7 +172,7 @@ const setupDbEvents = async () => {
     win?.webContents.send(DB_NEW_ASSET_ACK, newAsset);
   });
 
-  ipcMain.handle(DB_NEW_ACCOUNT, async (_: IpcMainInvokeEvent, account: NewAccountType) => {
+  ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
     try {
       const newAccount = await AccountRepository.createAccount(account);
       win?.webContents.send(DB_NEW_ACCOUNT_ACK, { ...newAccount, status: EVENT_SUCCESS });
@@ -396,11 +395,13 @@ const setupDbEvents = async () => {
 };
 
 const createWindow = async () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
   win = new BrowserWindow({
-    minWidth: 1200,
-    minHeight: 768,
-    width: 1280,
-    height: 880,
+    minWidth: MIN_WINDOW_WIDTH,
+    minHeight: MIN_WINDOW_HEIGHT,
+    width: calculateWindowWidth(width),
+    height: calculateWindowHeight(height),
     frame: false,
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 16, y: 32 },
