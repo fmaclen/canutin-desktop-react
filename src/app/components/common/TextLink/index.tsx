@@ -12,10 +12,13 @@ interface TextLinkProps {
   label: string;
   pathname: string;
   state?: any;
+  disabled?: boolean;
 }
 
-const TextLink = ({ pathname, state, label }: TextLinkProps) => (
-  <Container to={{ pathname, state }}>{label}</Container>
+const TextLink = ({ pathname, state, label, disabled }: TextLinkProps) => (
+  <Container disabled={disabled} to={{ pathname, state }}>
+    {label}
+  </Container>
 );
 
 export default TextLink;
