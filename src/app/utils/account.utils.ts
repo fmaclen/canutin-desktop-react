@@ -70,11 +70,12 @@ export const handleLinkedAccounts = (
       const transaction = {
         accountId: accountId,
         amount: remoteTransaction.amount,
-        categoryName: 'Uncategorized', // FIXME: The API returns `category` instead of `categoryName`.
+        categoryName: remoteTransaction.categoryName,
         date: dateInUTC(new Date(remoteTransaction.date)),
         description: remoteTransaction.description,
-        excludeFromTotals: false, // FIXME: The API returns `excluded` instead of `excludeFromTotals`.
-        // FIXME: The API needs to return a `linkId` for transactions.
+        excludeFromTotals: remoteTransaction.excludeFromTotals,
+        linkId: remoteTransaction.linkId,
+        pending: remoteTransaction.pending,
       };
 
       TransactionIpc.addTransaction(transaction);
