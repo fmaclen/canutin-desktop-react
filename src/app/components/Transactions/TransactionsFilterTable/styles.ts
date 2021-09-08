@@ -7,16 +7,15 @@ import {
   grey10,
   grey30,
   grey50,
+  grey70,
   grey80,
   grey90,
-  underline,
-  underlineHover,
-  blackPlain,
   shadowPlate,
   borderGrey,
   whitePlain,
   grey5,
 } from '@app/constants/colors';
+import pendingBackground from '@assets/icons/ChartCurrentBackground.svg';
 
 export const container = css`
   background-color: ${grey3};
@@ -65,6 +64,12 @@ export const dateCell = css`
 export const linkCell = css`
   color: ${grey80};
   font-size: 12px;
+`;
+
+export const descriptionCellContainer = css`
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
 `;
 
 export const tableHeaderRow = css`
@@ -122,13 +127,17 @@ export const tableSortIcon = css`
   padding-left: 4px;
 `;
 
-export const row = css`
+export const row = css<{ isPending: boolean }>`
+  border-bottom: 1px solid ${borderGrey};
+
   &:nth-child(odd) {
     > td {
-      background-color: ${grey3};
+      background-color: rgba(0, 0, 0, 0.025);
     }
 
     &:last-child {
+      border-bottom: none;
+
       > td:first-child {
         border-bottom-left-radius: 4px;
       }
@@ -138,6 +147,18 @@ export const row = css`
       }
     }
   }
+
+  ${({ isPending }) =>
+    isPending &&
+    css`
+      background-image: url('${pendingBackground}');
+      background-size: 40px;
+      opacity: 0.5;
+
+      * {
+        color: ${grey70};
+      }
+    `}
 `;
 
 export const rowItem = css`

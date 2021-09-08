@@ -6,9 +6,9 @@ import { formatDate } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities';
 
 import NumberFormat from '@components/common/NumberFormat';
-
-import { amountCell, dateCell, linkCell } from './styles';
-import TextLink from '@app/components/common/TextLink';
+import TextLink from '@components/common/TextLink';
+import Tag from '@components/common/Tag';
+import { amountCell, dateCell, linkCell, descriptionCellContainer } from './styles';
 
 const AmountCellField = styled(NumberFormat)`
   ${amountCell}
@@ -19,6 +19,9 @@ const DateCellField = styled.span`
 const LinkCellField = styled.p`
   ${linkCell}
 `;
+const DescriptionCellContainer = styled.div`
+  ${descriptionCellContainer};
+`;
 
 export const DateCell = ({ value }: CellProps<Transaction>) => (
   <DateCellField>{formatDate(value)}</DateCellField>
@@ -27,25 +30,34 @@ export const DateCell = ({ value }: CellProps<Transaction>) => (
 export const AmountCell = ({
   value,
   row: {
-    original: { excludeFromTotals },
+    original: { pending, excludeFromTotals },
   },
 }: CellProps<Transaction>) => {
+  const isExcluded = pending || excludeFromTotals;
   return (
     <AmountCellField
-      title={excludeFromTotals ? 'This transaction is excluded from totals' : undefined}
+      title={isExcluded ? 'This transaction is excluded from totals' : undefined}
       displayType="text"
       value={value}
-      excludeFromTotals={excludeFromTotals}
+      excludeFromTotals={isExcluded}
     />
   );
 };
 
 export const DescriptionCell = ({ value, ...props }: CellProps<Transaction>) => (
-  <TextLink
-    pathname={`transactions/${props.row.original.category.name}/${props.row.original.account.name}/Edit`}
-    state={{ transaction: props.row.original }}
-    label={value}
-  />
+  <DescriptionCellContainer>
+    {props.row.original.pending && (
+      <Tag title="The transaction has been authorized by your financial institution but hasn't been finalized">
+        Pending
+      </Tag>
+    )}
+    <TextLink
+      pathname={`transactions/${props.row.original.category.name}/${props.row.original.account.name}/Edit`}
+      state={{ transaction: props.row.original }}
+      label={value}
+      disabled={props.row.original.pending}
+    />
+  </DescriptionCellContainer>
 );
 
 export const LinkCell = ({ value }: CellProps<Transaction>) => (
