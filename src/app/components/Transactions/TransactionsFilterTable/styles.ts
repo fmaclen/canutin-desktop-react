@@ -7,7 +7,6 @@ import {
   grey10,
   grey30,
   grey50,
-  grey70,
   grey80,
   grey90,
   shadowPlate,
@@ -153,10 +152,18 @@ export const row = css<{ isPending: boolean }>`
     css`
       background-image: url('${pendingBackground}');
       background-size: 40px;
-      opacity: 0.5;
+      filter: grayscale(100);
 
       * {
-        color: ${grey70};
+        color: ${grey50};
+      }
+
+      &:hover {
+        filter: grayscale(0);
+
+        * {
+          color: ${grey80};
+        }
       }
     `}
 `;

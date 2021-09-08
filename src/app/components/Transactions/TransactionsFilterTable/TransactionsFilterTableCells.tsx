@@ -55,7 +55,6 @@ export const DescriptionCell = ({ value, ...props }: CellProps<Transaction>) => 
       pathname={`transactions/${props.row.original.category.name}/${props.row.original.account.name}/Edit`}
       state={{ transaction: props.row.original }}
       label={value}
-      disabled={props.row.original.pending}
     />
   </DescriptionCellContainer>
 );
