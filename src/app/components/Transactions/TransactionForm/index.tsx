@@ -30,6 +30,7 @@ import FormFooter from '@components/common/Form/FormFooter';
 import SubmitButton from '@components/common/Form/SubmitButton';
 import InlineCheckbox from '@components/common/Form/Checkbox';
 import ToggleInputField from '@components/common/Form/ToggleInputField';
+import FieldNotice from '@components/common/Form/FieldNotice';
 
 import { dateField } from './styles';
 
@@ -50,6 +51,7 @@ type TransactionSubmitType = {
   day: number;
   description: string | null;
   excludeFromTotals: boolean;
+  pending: boolean;
   id?: number;
 };
 
@@ -70,12 +72,14 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
           month: DATE_INFORMATION.month,
           year: DATE_INFORMATION.year,
           amount: null,
+          pending: false,
           excludeFromTotals: false,
         },
   });
 
   const [accounts, setAccounts] = useState<null | Account[]>(null);
   const excludeFromTotals = watch('excludeFromTotals');
+  const pending = watch('pending');
   const description = watch('description');
   const amount = watch('amount');
 
@@ -136,6 +140,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
     month,
     day,
     description,
+    pending,
     excludeFromTotals,
   }: TransactionSubmitType) => {
     const date = new Date(year, month, day);
@@ -146,7 +151,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
       date: dateInUTC(date),
       description,
       excludeFromTotals,
-      pending: false,
+      pending: pending || false,
       id: initialState?.id,
     };
 
@@ -171,6 +176,21 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
         />
       </Fieldset>
       <Fieldset>
+        {pending && (
+          <>
+            <InputTextField label="Status" name="status" value="Pending" disabled />
+            <FieldNotice
+              title="Transaction hasn't posted yet"
+              description={
+                <div>
+                  The transaction has been authorized by your financial institution but hasn't been
+                  finalized. Changes made to this transaction will be overwriten when the
+                  institution confirms the transaction.
+                </div>
+              }
+            />
+          </>
+        )}
         <InputTextField label="Description" name="description" register={register} />
         <Field label="Date" name="date">
           <DateField>
@@ -191,7 +211,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
             <InputCurrency
               value={amount && Number(amount)}
               rules={{ validate: v => excludeFromTotals || v !== '' }}
-              name="balance"
+              name="amount"
               control={control}
             />
             <InlineCheckbox
