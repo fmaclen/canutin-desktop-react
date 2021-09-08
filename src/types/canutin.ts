@@ -13,7 +13,9 @@ export interface CanutinFileTransactionType {
   amount: number;
   excludeFromTotals: boolean;
   category: string;
+  pending: boolean;
   budget?: CanutinFileBudgetType;
+  linkId?: string;
 }
 
 export interface CanutinFileAccountType {
@@ -34,7 +36,7 @@ export interface CanutinFileAssetType {
   symbol?: string;
   quantity?: number;
   cost?: number;
-  vale?: number; 
+  vale?: number;
 }
 
 export interface CanutinFileType {

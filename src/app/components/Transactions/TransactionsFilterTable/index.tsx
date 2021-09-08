@@ -133,7 +133,7 @@ const TransactionsFilterTable = ({
       rows.map(row => {
         prepareRow(row);
         return (
-          <Row {...row.getRowProps()}>
+          <Row {...row.getRowProps()} isPending={row.original.pending}>
             {row.cells.map(cell => {
               return <RowItem {...cell.getCellProps()}>{cell.render('Cell')}</RowItem>;
             })}

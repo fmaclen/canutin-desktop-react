@@ -19,6 +19,12 @@ export class Transaction extends Base {
   @Column()
   excludeFromTotals: boolean;
 
+  @Column()
+  pending: boolean;
+
+  @Column({ nullable: true })
+  linkId?: string;
+
   @ManyToOne(() => Account, account => account.transactions, {
     cascade: true,
   })
@@ -45,7 +51,9 @@ export class Transaction extends Base {
     excludeFromTotals: boolean,
     account: Account,
     category: TransactionSubCategory,
-    budget?: Budget
+    pending: boolean,
+    budget?: Budget,
+    linkId?: string
   ) {
     super();
     this.description = description;
@@ -53,7 +61,9 @@ export class Transaction extends Base {
     this.amount = amount;
     this.excludeFromTotals = excludeFromTotals ? excludeFromTotals : false;
     this.account = account;
-    this.budget = budget;
     this.category = category;
+    this.pending = pending;
+    this.budget = budget;
+    this.linkId = linkId;
   }
 }

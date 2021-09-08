@@ -12,6 +12,7 @@ export class TransactionRepository {
   static async createTransaction(transaction: NewTransactionType): Promise<Transaction> {
     const account = await AccountRepository.getAccountById(transaction.accountId);
     const category = await CategoryRepository.getOrCreateSubCategory(transaction.categoryName);
+    const budget = transaction.budget || undefined;
 
     const newTransaction = await getRepository<Transaction>(Transaction).save(
       new Transaction(
@@ -20,7 +21,10 @@ export class TransactionRepository {
         transaction.amount,
         transaction.excludeFromTotals,
         account as Account,
-        category
+        category,
+        transaction.pending,
+        budget,
+        transaction.linkId
       )
     );
 

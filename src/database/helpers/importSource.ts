@@ -43,6 +43,7 @@ export const importFromCanutinFile = async (
                 transactionInfo.budget.type,
                 parse(transactionInfo.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
               );
+            const pending = transactionInfo.pending ? transactionInfo.pending : false;
             const category = await CategoryRepository.getOrCreateSubCategory(
               transactionInfo.category
             );
@@ -53,6 +54,7 @@ export const importFromCanutinFile = async (
               transactionInfo.excludeFromTotals,
               account,
               category,
+              pending,
               budget
             );
           })
@@ -88,6 +90,7 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
       const updatedTransactions = await Promise.all(
         transactions?.map(async transactionInfo => {
           const transactionDate = parse(transactionInfo.date, CANUTIN_FILE_DATE_FORMAT, new Date());
+          const pending = transactionInfo.pending ? transactionInfo.pending : false;
           const budget =
             transactionInfo.budget &&
             new Budget(
@@ -108,7 +111,9 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
             false,
             account,
             category,
-            budget
+            pending,
+            budget,
+            transactionInfo.linkId
           );
         })
       );

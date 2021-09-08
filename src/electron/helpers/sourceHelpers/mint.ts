@@ -36,6 +36,7 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
         date: format(parse(mintEntry.Date, 'M/dd/yyyy', new Date()), CANUTIN_FILE_DATE_FORMAT),
         amount: mintEntry['Transaction Type'] === 'credit' ? mintEntry.Amount : -mintEntry.Amount,
         excludeFromTotals: false,
+        pending: false,
         category: mapCategories(mintEntry.Category),
       };
 
