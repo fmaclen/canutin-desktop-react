@@ -26,7 +26,7 @@ describe('Add account by Hand tests', () => {
       </AppCtxProvider>
     );
 
-    const addAccountsOrAssetsButton = screen.getByText('Add accounts or assets').closest('a');
+    const addAccountsOrAssetsButton = screen.getByText('Add or update data').closest('a');
 
     if (addAccountsOrAssetsButton) {
       userEvent.click(addAccountsOrAssetsButton);
@@ -38,7 +38,7 @@ describe('Add account by Hand tests', () => {
   });
 
   test('Create new account only with required fields', async () => {
-    const addAccountsOrAssetsButton = screen.getByText('Add accounts or assets').closest('a');
+    const addAccountsOrAssetsButton = screen.getByText('Add or update data').closest('a');
     expect(screen.getByRole('form')).toHaveFormValues({});
     expect(addAccountsOrAssetsButton).toHaveAttribute('href', '/account/addAccountOrAsset');
 
@@ -82,7 +82,7 @@ describe('Add account by Hand tests', () => {
   });
 
   test('Create new account with optional fields', async () => {
-    const addAccountsOrAssetsButton = screen.getByText('Add accounts or assets').closest('a');
+    const addAccountsOrAssetsButton = screen.getByText('Add or update data').closest('a');
     expect(screen.getByRole('form')).toHaveFormValues({});
     expect(addAccountsOrAssetsButton).toHaveAttribute('href', '/account/addAccountOrAsset');
 

@@ -61,7 +61,7 @@ test('Setup Page in case there is a database set', async () => {
     </AppCtxProvider>
   );
 
-  expect(await screen.getAllByText('Add accounts or assets')).toHaveLength(1);
+  expect(await screen.getAllByText('Add or update data')).toHaveLength(1);
   expect(screen.getByText('Balance sheet')).toBeInTheDocument();
   expect(screen.getByText('Budget')).toBeInTheDocument();
   expect(screen.getByText('Transactions')).toBeInTheDocument();

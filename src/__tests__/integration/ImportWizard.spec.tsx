@@ -28,7 +28,7 @@ const initImportWizard = () => {
     </AppCtxProvider>
   );
 
-  const addAccountsOrAssetsButton = screen.getByText('Add accounts or assets').closest('a');
+  const addAccountsOrAssetsButton = screen.getByText('Add or update data').closest('a');
 
   if (addAccountsOrAssetsButton) {
     userEvent.click(addAccountsOrAssetsButton);
