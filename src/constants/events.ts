@@ -31,6 +31,7 @@ export const DB_GET_BALANCE_STATEMENTS_ACK = 'dbGetStatementsAck';
 
 export const DB_GET_TRANSACTIONS = 'dbGetTransactions';
 export const DB_GET_TRANSACTIONS_ACK = 'dbGetTransactionsAck';
+export const DB_DELETE_LINKED_TRANSACTION = 'dbDeleteLinkedTransaction';
 
 export const DB_NEW_TRANSACTION = 'dbNewTransaction';
 export const DB_NEW_TRANSACTION_ACK = 'dbNewTransactionAck';

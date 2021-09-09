@@ -16,6 +16,7 @@ import { DATABASE_CONNECTED, DATABASE_NOT_DETECTED } from '@constants';
 import { DB_GET_ACCOUNTS_ACK, DB_GET_ASSETS_ACK } from '@constants/events';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
+import TransactionIpc from '@app/data/transaction.ipc';
 import { Account, Asset } from '@database/entities';
 
 import GlobalStyle from '@app/styles/global';
@@ -110,14 +111,21 @@ const App = () => {
           setLinkAccount(summary);
           const syncResponse = await requestLinkSync(assets);
 
-          // Update assets
-          if (assets && syncResponse && syncResponse.assetPrices) {
-            newAssetBalanceStatement(assets, syncResponse.assetPrices);
-          }
+          if (syncResponse) {
+            // Update assets
+            if (assets && syncResponse.assetPrices) {
+              newAssetBalanceStatement(assets, syncResponse.assetPrices);
+            }
 
-          // Create or update accounts and create transactions
-          if (accounts && syncResponse && syncResponse.accounts) {
-            handleLinkedAccounts(accounts, syncResponse.accounts);
+            // Create/update accounts and create transactions
+            if (accounts && syncResponse.accounts) {
+              handleLinkedAccounts(accounts, syncResponse.accounts);
+            }
+
+            // Remove transactions
+            syncResponse.removedTransactions.forEach(linkId => {
+              TransactionIpc.deleteLinkedTransaction(linkId);
+            });
           }
 
           setLinkAccount({ ...linkAccount, isSyncing: false, isOnline: true });

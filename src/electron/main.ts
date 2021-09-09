@@ -27,6 +27,7 @@ import {
   LOAD_FROM_OTHER_CSV,
   DB_GET_TRANSACTIONS,
   DB_GET_TRANSACTIONS_ACK,
+  DB_DELETE_LINKED_TRANSACTION,
   DB_NEW_TRANSACTION,
   DB_NEW_TRANSACTION_ACK,
   DB_EDIT_TRANSACTION,
@@ -241,6 +242,10 @@ const setupDbEvents = async () => {
         });
       }
     }
+  });
+
+  ipcMain.on(DB_DELETE_LINKED_TRANSACTION, async (_: IpcMainEvent, linkId: string) => {
+    await TransactionRepository.deleteLinkedTransaction(linkId);
   });
 
   ipcMain.on(DB_EDIT_TRANSACTION, async (_: IpcMainEvent, transaction: NewTransactionType) => {

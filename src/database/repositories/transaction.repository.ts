@@ -58,6 +58,10 @@ export class TransactionRepository {
     await getRepository<Transaction>(Transaction).delete(transactionsIds);
   }
 
+  static async deleteLinkedTransaction(linkId: string) {
+    await getRepository<Transaction>(Transaction).delete({ linkId: linkId });
+  }
+
   static async createTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     const q = getRepository(Transaction).createQueryBuilder().insert().values(transactions);
     const [sql, args] = q.getQueryAndParameters();
