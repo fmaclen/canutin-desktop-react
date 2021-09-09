@@ -56,6 +56,10 @@ export const selectInput = css<{ error: string | undefined; isClearable: boolean
       padding: 0;
     }
 
+    &__menu {
+      z-index: 2;
+    }
+
     &__option {
       &:hover {
         background-color: ${blueLight};

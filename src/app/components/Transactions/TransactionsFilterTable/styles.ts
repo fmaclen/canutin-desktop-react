@@ -85,6 +85,7 @@ export const tableHeaderItem = css<{ isSorted: boolean }>`
   top: 0;
   padding: 12px;
   box-shadow: 0 2px 0 ${borderGrey}, 0 -1px 0 ${borderGrey};
+  z-index: 1;
 
   > div {
     align-items: center;
