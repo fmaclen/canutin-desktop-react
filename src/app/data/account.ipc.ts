@@ -16,7 +16,7 @@ import {
 } from '@appTypes/account.type';
 
 export default class AccountIpc {
-  static async createAccount(account: NewAccountType) {
+  static createAccount(account: NewAccountType) {
     ipcRenderer.send(DB_NEW_ACCOUNT, account);
   }
 
