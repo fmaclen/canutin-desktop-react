@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { routesPaths } from '@routes';
 import { StatusBarContext } from '@app/context/statusBarContext';
-import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
+import canutinLinkApi, { ApiEndpoints, requestLinkSync } from '@app/data/canutinLink.api';
 
 import { main } from '@components/common/ScrollView/styles';
 import { plaidWizard } from './styles';
@@ -52,22 +52,42 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
           });
         });
     } else {
+      setStatusMessage({
+        sentiment: StatusEnum.NEUTRAL,
+        message: 'Please wait while we gather the institution data...',
+        isLoading: true,
+      });
+
+      history.push(routesPaths.balance);
+
       // Creates new item
       await canutinLinkApi
         .post(ApiEndpoints.NEW_INSTITUTION, metadata)
-        .then(res => {
+        .then(response => {
           isNewInstitution = true;
-          setStatusMessage({
-            sentiment: StatusEnum.POSITIVE,
-            message: 'The institution is now linked.',
-            isLoading: false,
-          });
-          history.push(routesPaths.balance);
+
+          if (response.status === 201) {
+            setStatusMessage({
+              sentiment: StatusEnum.POSITIVE,
+              message: 'The institution has been linked succesfully',
+              isLoading: false,
+            });
+          } else if (response.status === 204) {
+            setStatusMessage({
+              sentiment: StatusEnum.WARNING,
+              message:
+                'The institution has been linked but transaction data is not available yet, please try again later',
+              isLoading: false,
+            });
+          }
+
+          // TODO: handle `response.data.accounts`
+          // Blocked by https://github.com/Canutin/desktop/issues/191
         })
         .catch(e => {
           setStatusMessage({
             sentiment: StatusEnum.NEGATIVE,
-            message: "Couldn't link the institution, please try again later",
+            message: "Couldn't link the institution, please try again later.",
             isLoading: false,
           });
         });
