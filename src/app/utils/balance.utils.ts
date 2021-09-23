@@ -8,6 +8,8 @@ import {
   max,
   sub,
   eachMonthOfInterval,
+  getMonth,
+  format
 } from 'date-fns';
 import merge from 'deepmerge';
 
@@ -276,12 +278,16 @@ export const getSelectedBalanceStatementValue = (
 };
 
 export type ChartPeriodType = {
-  week: number;
-  dateWeek: Date;
-  balance: number;
-  difference: number;
-  label: string;
   id: number;
+  balance: number;
+  label: string;
+  month?: Date;
+  income?: number;
+  expenses?: number;
+  surplus?: number; 
+  week?: number;
+  dateWeek?: Date;
+  difference?: number;
 };
 
 export const calculateBalanceDifference = (originalBalance: number, newBalance: number) => {
@@ -387,6 +393,37 @@ export const generatePlaceholdersChartPeriod = (
           label: getWeek(weekDate).toString(),
           difference: 0,
           id: index + weeksOffset,
+        },
+      ];
+    }, []);
+  }
+};
+
+
+export const generatePlaceholdersChartMonthPeriod = (
+  from: Date,
+  months: number,
+  monthsOffset: number
+): ChartPeriodType[] => {
+  if (months === monthsOffset) {
+    return [];
+  } else {
+    const monthsDates = eachWeekOfInterval({
+      start: sub(from, { months: months - monthsOffset + 1 }),
+      end: sub(from, { months: 1 }),
+    });
+
+    return monthsDates.reduce((acc: ChartPeriodType[], monthDate, index) => {
+      return [
+        ...acc,
+        {
+          month: monthDate,
+          balance: 0,
+          label: format(monthDate, 'MMM'),
+          expenses: 0,
+          income: 0,
+          surplus: 0,
+          id: index + monthsOffset,
         },
       ];
     }, []);
