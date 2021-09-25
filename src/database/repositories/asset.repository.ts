@@ -107,7 +107,6 @@ export class AssetRepository {
       .where('assets.name like :name', { name: `%${asset.name}%` })
       .getOne();
 
-    console.log(assetDb);
     if (!assetDb) {
       return AssetRepository.createAsset(asset);
     }
