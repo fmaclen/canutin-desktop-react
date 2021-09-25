@@ -4,6 +4,7 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 import ScrollView from '@components/common/ScrollView';
 import BigPictureSummary from '@components/BigPicture/BigPictureSummary';
 import TrailingCashflow from '@components/BigPicture/TrailingCashflow';
+import CashflowChart from '@components/BigPicture/CashflowChart';
 import SectionRow from '@components/common/SectionRow';
 
 import { DB_GET_ACCOUNTS_ACK, DB_GET_ASSETS_ACK, DB_GET_TRANSACTIONS_ACK } from '@constants/events';
@@ -64,6 +65,7 @@ const TheBigPicture = () => {
         <SectionRow>
           <TrailingCashflow trailingCashflow={trailingCashflow} />
         </SectionRow>
+        <CashflowChart trailingCashflow={trailingCashflow} />
       </ScrollView>
     </>
   );
