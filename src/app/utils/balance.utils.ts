@@ -7,6 +7,9 @@ import {
   endOfWeek,
   max,
   sub,
+  eachMonthOfInterval,
+  getMonth,
+  format,
 } from 'date-fns';
 import merge from 'deepmerge';
 
@@ -19,6 +22,7 @@ import {
 } from '@database/entities';
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
+import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 
 export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
   const assetsNoSold = assets.filter(
@@ -176,6 +180,94 @@ export const getSelectedTransactions = (transactions: Transaction[], from: Date,
   );
 };
 
+export type TransactionsTrailingCashflowType = {
+  month: Date;
+  income: number;
+  expenses: number;
+  surplus: number;
+  id: number;
+};
+
+export const getTransactionsTrailingCashflow = (transactions: Transaction[]) => {
+  const transactionsNoAutocalculated = transactions.filter(
+    transaction =>
+      !transaction.account.balanceStatements?.[transaction?.account.balanceStatements?.length - 1]
+        .autoCalculate
+  );
+
+  if (transactionsNoAutocalculated.length === 0) {
+    return [];
+  }
+
+  const monthDates = eachMonthOfInterval({
+    start: transactionsNoAutocalculated[transactionsNoAutocalculated.length - 1].date,
+    end: transactionsNoAutocalculated[0].date,
+  });
+
+  return monthDates.reduce((acc: TransactionsTrailingCashflowType[], monthDate, index) => {
+    const monthlyTransactions = getSelectedTransactions(
+      transactionsNoAutocalculated,
+      monthDate,
+      monthDates[index + 1] ? monthDates[index + 1] : new Date()
+    );
+    const income = monthlyTransactions.reduce(
+      (acc, transaction) => (transaction.amount > 0 ? transaction.amount + acc : acc),
+      0
+    );
+    const expenses = monthlyTransactions.reduce(
+      (acc, transaction) => (transaction.amount < 0 ? transaction.amount + acc : acc),
+      0
+    );
+    const surplus = expenses + income;
+
+    return [
+      ...acc,
+      {
+        month: monthDate,
+        income,
+        expenses,
+        surplus,
+        id: index,
+      },
+    ];
+  }, []);
+};
+
+export const getTransactionTrailingCashflowAverage = (
+  trailingCashflow: TransactionsTrailingCashflowType[],
+  option: TrailingCashflowSegmentsEnum
+) => {
+  if (option === TrailingCashflowSegmentsEnum.LAST_12_MONTHS) {
+    const afterDate = sub(new Date(), { months: 13 });
+    const beforeDate = sub(new Date(), { months: 1 });
+
+    return trailingCashflow
+      .filter(({ month }) => isAfter(month, afterDate) && isBefore(month, beforeDate))
+      .reduce(
+        (acc, { expenses, income, surplus }) => {
+          return [acc[0] + income / 12, acc[1] + expenses / 12, acc[2] + surplus / 12];
+        },
+        [0, 0, 0]
+      );
+  }
+
+  if (option === TrailingCashflowSegmentsEnum.LAST_6_MONTHS) {
+    const afterDate = sub(new Date(), { months: 7 });
+    const beforeDate = sub(new Date(), { months: 1 });
+
+    return trailingCashflow
+      .filter(({ month }) => isAfter(month, afterDate) && isBefore(month, beforeDate))
+      .reduce(
+        (acc, { expenses, income, surplus }) => {
+          return [acc[0] + income / 6, acc[1] + expenses / 6, acc[2] + surplus / 6];
+        },
+        [0, 0, 0]
+      );
+  }
+
+  return [0, 0, 0];
+};
+
 export const getSelectedBalanceStatements = (
   assetBalanceStatements: AssetBalanceStatement[],
   from: Date,
@@ -206,12 +298,16 @@ export const getSelectedBalanceStatementValue = (
 };
 
 export type ChartPeriodType = {
-  week: number;
-  dateWeek: Date;
-  balance: number;
-  difference: number;
-  label: string;
   id: number;
+  balance: number;
+  label: string;
+  month?: Date;
+  income?: number;
+  expenses?: number;
+  surplus?: number;
+  week?: number;
+  dateWeek?: Date;
+  difference?: number;
 };
 
 export const calculateBalanceDifference = (originalBalance: number, newBalance: number) => {
@@ -317,6 +413,36 @@ export const generatePlaceholdersChartPeriod = (
           label: getWeek(weekDate).toString(),
           difference: 0,
           id: index + weeksOffset,
+        },
+      ];
+    }, []);
+  }
+};
+
+export const generatePlaceholdersChartMonthPeriod = (
+  from: Date,
+  months: number,
+  monthsOffset: number
+): ChartPeriodType[] => {
+  if (months === monthsOffset) {
+    return [];
+  } else {
+    const monthsDates = eachWeekOfInterval({
+      start: sub(from, { months: months - monthsOffset + 1 }),
+      end: sub(from, { months: 1 }),
+    });
+
+    return monthsDates.reduce((acc: ChartPeriodType[], monthDate, index) => {
+      return [
+        ...acc,
+        {
+          month: monthDate,
+          balance: 0,
+          label: format(monthDate, 'MMM'),
+          expenses: 0,
+          income: 0,
+          surplus: 0,
+          id: index + monthsOffset,
         },
       ];
     }, []);
