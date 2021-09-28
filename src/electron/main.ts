@@ -220,7 +220,9 @@ const setupDbEvents = async () => {
   // FIXME: This is almost identical to `DB_NEW_ACCOUNT` and might need to be DRY'd.
   ipcMain.handle(DB_NEW_LINKED_ACCOUNT, async (_: IpcMainInvokeEvent, account: NewAccountType) => {
     try {
-      return await AccountRepository.createAccount(account);
+      const newAccount = await AccountRepository.createAccount(account);
+      await getAccounts();
+      return newAccount;
     } catch (e) {
       win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
         status: EVENT_ERROR,

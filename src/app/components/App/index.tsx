@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { ipcRenderer } from 'electron';
@@ -44,6 +44,7 @@ const App = () => {
     linkAccount,
     setLinkAccount,
   } = useContext(AppContext);
+  const { statusMessage, setStatusMessage } = useContext(StatusBarContext);
   const { accountsIndex, assetsIndex } = useContext(EntitiesContext);
 
   useEffect(() => {
@@ -98,7 +99,7 @@ const App = () => {
 
         if (summary) {
           setLinkAccount(summary);
-          const syncResponse = await requestLinkSync(assetsIndex?.assets);
+          const syncResponse = assetsIndex?.assets && (await requestLinkSync(assetsIndex.assets));
 
           if (syncResponse) {
             // Update assets
@@ -107,8 +108,8 @@ const App = () => {
             }
 
             // Create/update accounts and create transactions
-            if (assetsIndex?.accounts && syncResponse.accounts) {
-              handleLinkedAccounts(assetsIndex?.accounts, syncResponse.accounts);
+            if (accountsIndex?.accounts && syncResponse.accounts) {
+              handleLinkedAccounts(syncResponse.accounts, accountsIndex?.accounts);
             }
 
             // Remove transactions

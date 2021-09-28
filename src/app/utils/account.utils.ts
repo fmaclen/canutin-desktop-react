@@ -27,15 +27,15 @@ export interface RemoteAccountProps {
 }
 
 export const handleLinkedAccounts = (
-  localAccounts: Account[],
-  remoteAccounts: RemoteAccountProps[]
+  remoteAccounts: RemoteAccountProps[],
+  localAccounts?: Account[]
 ) => {
   // Loop through remote accounts
   remoteAccounts.forEach(async remoteAccount => {
     // Find an existing account with the same `linkId`
-    const existingLinkedAccount = localAccounts.filter(
-      localAccount => localAccount.linkId === remoteAccount.linkId
-    )[0];
+    const existingLinkedAccount =
+      localAccounts &&
+      localAccounts.filter(localAccount => localAccount.linkId === remoteAccount.linkId)[0];
 
     let accountId = (existingLinkedAccount && existingLinkedAccount.id) || 0;
 

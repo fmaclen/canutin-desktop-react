@@ -5,11 +5,13 @@ import styled from 'styled-components';
 
 import { routesPaths } from '@routes';
 import { StatusBarContext } from '@app/context/statusBarContext';
-import canutinLinkApi, { ApiEndpoints, requestLinkSync } from '@app/data/canutinLink.api';
+import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
+import { handleLinkedAccounts } from '@app/utils/account.utils';
 
 import { main } from '@components/common/ScrollView/styles';
 import { plaidWizard } from './styles';
 import { StatusEnum } from '@app/constants/misc';
+import { EntitiesContext } from '@app/context/entitiesContext';
 
 interface PlaidLinkProps {
   token: string;
@@ -28,6 +30,7 @@ let isNewInstitution = false;
 
 const PlaidLink = ({ token }: PlaidLinkProps) => {
   const { setStatusMessage } = useContext(StatusBarContext);
+  const { accountsIndex } = useContext(EntitiesContext);
   const { institution_id } = useParams<InstitutionParams>();
   const history = useHistory();
 
@@ -83,6 +86,9 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
 
           // TODO: handle `response.data.accounts`
           // Blocked by https://github.com/Canutin/desktop/issues/191
+
+          response.data.accounts &&
+            handleLinkedAccounts(response.data.accounts, accountsIndex?.accounts);
         })
         .catch(e => {
           setStatusMessage({
