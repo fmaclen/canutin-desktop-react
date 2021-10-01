@@ -189,7 +189,7 @@ export const getTransactionsTrailingCashflow = (transactions: Transaction[]) => 
 
   const monthDates = eachMonthOfInterval({
     start: transactionsNotExcludedFromTotals[transactionsNotExcludedFromTotals.length - 1].date,
-    end: transactionsNotExcludedFromTotals[0].date,
+    end: new Date(),
   });
 
   return monthDates.reduce((acc: TransactionsTrailingCashflowType[], monthDate, index) => {
