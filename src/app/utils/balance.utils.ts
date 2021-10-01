@@ -10,6 +10,7 @@ import {
   eachMonthOfInterval,
   getMonth,
   format,
+  isEqual,
 } from 'date-fns';
 import merge from 'deepmerge';
 
@@ -164,7 +165,7 @@ export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => 
 
 export const getSelectedTransactions = (transactions: Transaction[], from: Date, to: Date) => {
   return transactions.filter(
-    transaction => isBefore(from, transaction.date) && isAfter(to, transaction.date)
+    transaction => (isBefore(from, transaction.date) || isEqual(from, transaction.date)) && isAfter(to, transaction.date)
   );
 };
 
