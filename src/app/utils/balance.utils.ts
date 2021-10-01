@@ -10,6 +10,7 @@ import {
   eachMonthOfInterval,
   getMonth,
   format,
+  isEqual,
 } from 'date-fns';
 import merge from 'deepmerge';
 
@@ -176,7 +177,7 @@ export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => 
 
 export const getSelectedTransactions = (transactions: Transaction[], from: Date, to: Date) => {
   return transactions.filter(
-    transaction => isBefore(from, transaction.date) && isAfter(to, transaction.date)
+    transaction => (isBefore(from, transaction.date) || isEqual(from, transaction.date)) && isAfter(to, transaction.date)
   );
 };
 
@@ -189,24 +190,23 @@ export type TransactionsTrailingCashflowType = {
 };
 
 export const getTransactionsTrailingCashflow = (transactions: Transaction[]) => {
-  const transactionsNoAutocalculated = transactions.filter(
+  const transactionsNotExcludedFromTotals = transactions.filter(
     transaction =>
-      !transaction.account.balanceStatements?.[transaction?.account.balanceStatements?.length - 1]
-        .autoCalculate
+      !transaction.excludeFromTotals
   );
 
-  if (transactionsNoAutocalculated.length === 0) {
+  if (transactionsNotExcludedFromTotals.length === 0) {
     return [];
   }
 
   const monthDates = eachMonthOfInterval({
-    start: transactionsNoAutocalculated[transactionsNoAutocalculated.length - 1].date,
-    end: transactionsNoAutocalculated[0].date,
+    start: transactionsNotExcludedFromTotals[transactionsNotExcludedFromTotals.length - 1].date,
+    end: new Date(),
   });
 
   return monthDates.reduce((acc: TransactionsTrailingCashflowType[], monthDate, index) => {
     const monthlyTransactions = getSelectedTransactions(
-      transactionsNoAutocalculated,
+      transactionsNotExcludedFromTotals,
       monthDate,
       monthDates[index + 1] ? monthDates[index + 1] : new Date()
     );
@@ -427,7 +427,7 @@ export const generatePlaceholdersChartMonthPeriod = (
   if (months === monthsOffset) {
     return [];
   } else {
-    const monthsDates = eachWeekOfInterval({
+    const monthsDates = eachMonthOfInterval({
       start: sub(from, { months: months - monthsOffset + 1 }),
       end: sub(from, { months: 1 }),
     });
