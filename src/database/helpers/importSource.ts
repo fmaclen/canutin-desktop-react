@@ -46,6 +46,9 @@ export const importFromCanutinFile = async (
             const category = await CategoryRepository.getOrCreateSubCategory(
               transactionInfo.category
             );
+            const createdAt = new Date(
+              transactionInfo.createdAt ? transactionInfo.createdAt * 1000 : ''
+            );
             return new Transaction(
               transactionInfo.description,
               dateInUTC(transactionDate),
@@ -53,6 +56,7 @@ export const importFromCanutinFile = async (
               transactionInfo.excludeFromTotals,
               account,
               category,
+              createdAt,
               budget
             );
           })
@@ -100,7 +104,9 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
           const category = await CategoryRepository.getOrCreateSubCategory(
             transactionInfo.category
           );
-
+          const createdAt = new Date(
+            transactionInfo.createdAt ? transactionInfo.createdAt * 1000 : ''
+          );
           return new Transaction(
             transactionInfo.description,
             dateInUTC(transactionDate),
@@ -108,6 +114,7 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
             false,
             account,
             category,
+            createdAt,
             budget
           );
         })

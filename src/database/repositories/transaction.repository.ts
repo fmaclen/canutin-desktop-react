@@ -12,7 +12,7 @@ export class TransactionRepository {
   static async createTransaction(transaction: NewTransactionType): Promise<Transaction> {
     const account = await AccountRepository.getAccountById(transaction.accountId);
     const category = await CategoryRepository.getOrCreateSubCategory(transaction.categoryName);
-
+    const createdAt = new Date(transaction.createdAt ? transaction.createdAt * 1000 : '');
     const newTransaction = await getRepository<Transaction>(Transaction).save(
       new Transaction(
         transaction.description as string,
@@ -20,7 +20,8 @@ export class TransactionRepository {
         transaction.balance,
         transaction.excludeFromTotals,
         account as Account,
-        category
+        category,
+        createdAt
       )
     );
 
