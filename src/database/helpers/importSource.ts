@@ -1,7 +1,7 @@
 import { parse } from 'date-fns';
 import { BrowserWindow } from 'electron';
 
-import { dateInUTC } from '@app/utils/date.utils';
+import { dateInUTC, getCreatedAtDate } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities/transaction.entity';
 import { Budget } from '@database/entities/budget.entity';
 import { AccountRepository } from '@database/repositories/account.repository';
@@ -46,9 +46,6 @@ export const importFromCanutinFile = async (
             const category = await CategoryRepository.getOrCreateSubCategory(
               transactionInfo.category
             );
-            const createdAt = new Date(
-              transactionInfo.createdAt ? transactionInfo.createdAt * 1000 : ''
-            );
             return new Transaction(
               transactionInfo.description,
               dateInUTC(transactionDate),
@@ -56,7 +53,7 @@ export const importFromCanutinFile = async (
               transactionInfo.excludeFromTotals,
               account,
               category,
-              createdAt,
+              getCreatedAtDate(transactionInfo.createdAt),
               budget
             );
           })
@@ -104,9 +101,6 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
           const category = await CategoryRepository.getOrCreateSubCategory(
             transactionInfo.category
           );
-          const createdAt = new Date(
-            transactionInfo.createdAt ? transactionInfo.createdAt * 1000 : ''
-          );
           return new Transaction(
             transactionInfo.description,
             dateInUTC(transactionDate),
@@ -114,7 +108,7 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
             false,
             account,
             category,
-            createdAt,
+            getCreatedAtDate(transactionInfo.createdAt),
             budget
           );
         })

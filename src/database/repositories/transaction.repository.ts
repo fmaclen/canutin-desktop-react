@@ -3,7 +3,7 @@ import { subDays } from 'date-fns';
 
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 
-import { dateInUTC } from '@app/utils/date.utils';
+import { dateInUTC, getCreatedAtDate } from '@app/utils/date.utils';
 import { Transaction, Account } from '../entities';
 import { AccountRepository } from './account.repository';
 import { CategoryRepository } from './category.repository';
@@ -12,7 +12,6 @@ export class TransactionRepository {
   static async createTransaction(transaction: NewTransactionType): Promise<Transaction> {
     const account = await AccountRepository.getAccountById(transaction.accountId);
     const category = await CategoryRepository.getOrCreateSubCategory(transaction.categoryName);
-    const createdAt = new Date(transaction.createdAt ? transaction.createdAt * 1000 : '');
     const newTransaction = await getRepository<Transaction>(Transaction).save(
       new Transaction(
         transaction.description as string,
@@ -21,7 +20,7 @@ export class TransactionRepository {
         transaction.excludeFromTotals,
         account as Account,
         category,
-        createdAt
+        getCreatedAtDate(transaction.createdAt)
       )
     );
 
