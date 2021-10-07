@@ -35,7 +35,7 @@ export interface CanutinFileAssetType {
   symbol?: string;
   quantity?: number;
   cost?: number;
-  vale?: number;
+  value?: number;
 }
 
 export interface CanutinFileType {
