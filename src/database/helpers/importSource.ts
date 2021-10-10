@@ -1,7 +1,7 @@
 import { parse } from 'date-fns';
 import { BrowserWindow } from 'electron';
 
-import { dateInUTC, getCreatedAtDate } from '@app/utils/date.utils';
+import { dateInUTC, dateFromUnixTimestamp } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities/transaction.entity';
 import { Budget } from '@database/entities/budget.entity';
 import { AccountRepository } from '@database/repositories/account.repository';
@@ -53,7 +53,7 @@ export const importFromCanutinFile = async (
               transactionInfo.excludeFromTotals,
               account,
               category,
-              getCreatedAtDate(transactionInfo.createdAt),
+              dateFromUnixTimestamp(transactionInfo.createdAt),
               budget
             );
           })
@@ -108,7 +108,7 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
             false,
             account,
             category,
-            getCreatedAtDate(transactionInfo.createdAt),
+            dateFromUnixTimestamp(transactionInfo.createdAt),
             budget
           );
         })
