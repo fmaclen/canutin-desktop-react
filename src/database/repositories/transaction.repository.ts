@@ -3,7 +3,7 @@ import { subDays } from 'date-fns';
 
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 
-import { dateInUTC, dateFromUnixTimestamp } from '@app/utils/date.utils';
+import { dateInUTC, createdAtDate } from '@app/utils/date.utils';
 import { Transaction, Account } from '../entities';
 import { AccountRepository } from './account.repository';
 import { CategoryRepository } from './category.repository';
@@ -20,7 +20,7 @@ export class TransactionRepository {
         transaction.excludeFromTotals,
         account as Account,
         category,
-        dateFromUnixTimestamp(transaction.createdAt)
+        createdAtDate(transaction.createdAt)
       )
     );
 

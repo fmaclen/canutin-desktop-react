@@ -1,4 +1,4 @@
-import { format, differenceInCalendarWeeks } from 'date-fns';
+import { format, differenceInCalendarWeeks, fromUnixTime } from 'date-fns';
 
 export const dateInUTC = (date: Date) => {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0));
@@ -14,5 +14,5 @@ export const formatDate = (date: Date) => {
 
 export const getNumberOfWeeks = (from: Date, to: Date) => differenceInCalendarWeeks(to, from);
 
-export const dateFromUnixTimestamp = (unixTimestamp?: number) =>
-  new Date(unixTimestamp ? unixTimestamp * 1000 : '');
+export const createdAtDate = (unixTimestamp?: number) =>
+  unixTimestamp ? fromUnixTime(unixTimestamp) : new Date();
