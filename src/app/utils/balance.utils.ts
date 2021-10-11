@@ -165,7 +165,9 @@ export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => 
 
 export const getSelectedTransactions = (transactions: Transaction[], from: Date, to: Date) => {
   return transactions.filter(
-    transaction => (isBefore(from, transaction.date) || isEqual(from, transaction.date)) && isAfter(to, transaction.date)
+    transaction =>
+      (isBefore(from, transaction.date) || isEqual(from, transaction.date)) &&
+      isAfter(to, transaction.date)
   );
 };
 
@@ -179,8 +181,7 @@ export type TransactionsTrailingCashflowType = {
 
 export const getTransactionsTrailingCashflow = (transactions: Transaction[]) => {
   const transactionsNotExcludedFromTotals = transactions.filter(
-    transaction =>
-      !transaction.excludeFromTotals
+    transaction => !transaction.excludeFromTotals
   );
 
   if (transactionsNotExcludedFromTotals.length === 0) {
@@ -435,4 +436,8 @@ export const generatePlaceholdersChartMonthPeriod = (
       ];
     }, []);
   }
+};
+
+export const proportionBetween = (num1: number, num2: number) => {
+  return Math.round((!(num1 === 0) && !(num2 === 0) ? (num1 * 100) / num2 : 0) * 1e2) / 1e2;
 };

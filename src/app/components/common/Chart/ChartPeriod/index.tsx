@@ -1,22 +1,19 @@
 import React from 'react';
-import { ThemeProvider } from 'styled-components';
 
+import { proportionBetween } from '@app/utils/balance.utils';
+
+import { ThemeProvider } from 'styled-components';
 import {
   BarNegative,
   BarPositive,
   Period,
   PeriodBalance,
   PeriodBarPlaceholder,
+  PeriodBalanceLabel,
   PeriodBar,
   PeriodLabel,
 } from './styles';
 
-const proportionBetween = (num1: number, num2: number) => {
-  if (typeof num1 === 'number' && typeof num2 === 'number') {
-    return Math.round((!(num1 === 0) && !(num2 === 0) ? (num1 * 100) / num2 : 0) * 1e2) / 1e2;
-  }
-  throw new Error('proportionBetween() was provided a string and only accepts numbers');
-};
 interface ChartPeriodProps {
   id: number;
   balance: number;
@@ -25,6 +22,8 @@ interface ChartPeriodProps {
   peakNegativeBalance: number;
   isActive: boolean;
   isCurrentPeriod: boolean;
+  isStartOfYear: boolean;
+  isCompact: boolean;
   label: string;
   handleMouseEnter: (id: number) => void;
 }
@@ -37,18 +36,30 @@ const ChartPeriod = ({
   balanceProportion,
   isActive,
   isCurrentPeriod,
+  isStartOfYear,
+  isCompact,
   label,
   handleMouseEnter,
 }: ChartPeriodProps) => {
   const isBalancePositive = balance >= 0;
 
   return (
-    <ThemeProvider theme={{ isActive, isCurrentPeriod, label, balance }}>
+    <ThemeProvider theme={{ isActive, isCurrentPeriod, isStartOfYear, isCompact, label, balance }}>
       <Period onMouseEnter={() => handleMouseEnter(id)}>
         <PeriodBalance proportion={balanceProportion}>
           {isBalancePositive ? (
             <>
               <PeriodBar>
+                {!isCompact && (
+                  <PeriodBalanceLabel
+                    isVisible={
+                      isCurrentPeriod ||
+                      (peakPositiveBalance !== 0 && peakPositiveBalance === balance)
+                    }
+                    value={Math.floor(balance)}
+                    displayType="text"
+                  />
+                )}
                 <BarPositive height={proportionBetween(balance, peakPositiveBalance)} />
               </PeriodBar>
               <PeriodBarPlaceholder />
@@ -58,13 +69,18 @@ const ChartPeriod = ({
               <PeriodBarPlaceholder />
               <PeriodBar>
                 <BarNegative height={proportionBetween(balance, peakNegativeBalance)} />
+                {!isCompact && (
+                  <PeriodBalanceLabel
+                    isVisible={isCurrentPeriod || peakNegativeBalance === balance}
+                    value={Math.floor(balance)}
+                    displayType="text"
+                  />
+                )}
               </PeriodBar>
             </>
           )}
         </PeriodBalance>
-        <PeriodLabel>
-          {label}
-        </PeriodLabel>
+        <PeriodLabel>{label}</PeriodLabel>
       </Period>
     </ThemeProvider>
   );
