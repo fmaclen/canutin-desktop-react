@@ -1,10 +1,13 @@
 import { format, isAfter, isBefore, sub } from 'date-fns';
 
-import Chart from '@components/common/Chart';
+import Chart from '@components/common/Graph';
 import Section from '@components/common/Section';
 import EmptyCard from '@components/common/EmptyCard';
 
-import { generatePlaceholdersChartMonthPeriod, TransactionsTrailingCashflowType } from '@app/utils/balance.utils';
+import {
+  generatePlaceholdersChartMonthPeriod,
+  TransactionsTrailingCashflowType,
+} from '@app/utils/balance.utils';
 
 interface CashflowChartProps {
   trailingCashflow: TransactionsTrailingCashflowType[] | undefined;
@@ -42,7 +45,9 @@ const CashflowChart = ({ trailingCashflow }: CashflowChartProps) => {
             ...generateTrailingCashflowChartData,
           ]}
         />
-      ) : <EmptyCard message="Not enough transactions to display this chart." />}
+      ) : (
+        <EmptyCard message="Not enough transactions to display this chart." />
+      )}
     </Section>
   ) : null;
 };
