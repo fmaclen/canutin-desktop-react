@@ -16,7 +16,7 @@ interface CashflowChartProps {
 const CashflowChart = ({ trailingCashflow }: CashflowChartProps) => {
   const generateTrailingCashflowChartData = trailingCashflow
     ?.filter(
-      ({ month }) => isAfter(month, sub(new Date(), { months: 12 })) && isBefore(month, new Date())
+      ({ month }) => isAfter(month, sub(new Date(), { months: 11 })) && isBefore(month, new Date())
     )
     .map(({ id, expenses, income, month, surplus }) => ({
       id,
@@ -37,9 +37,9 @@ const CashflowChart = ({ trailingCashflow }: CashflowChartProps) => {
               generateTrailingCashflowChartData?.[0]?.month
                 ? generateTrailingCashflowChartData?.[0]?.month
                 : new Date(),
-              12,
-              generateTrailingCashflowChartData.length > 12
-                ? 12
+              11,
+              generateTrailingCashflowChartData.length > 11
+                ? 11
                 : generateTrailingCashflowChartData.length
             ),
             ...generateTrailingCashflowChartData,

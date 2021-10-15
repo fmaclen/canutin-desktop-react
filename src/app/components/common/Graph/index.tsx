@@ -7,12 +7,10 @@ import {
   XAxis,
   ReferenceLine,
   ResponsiveContainer,
-  Tooltip,
   Cell,
   LabelList,
-  YAxis,
+  Tooltip,
   CartesianAxis,
-  CartesianGrid,
 } from 'recharts';
 
 import {
@@ -23,11 +21,16 @@ import {
   borderGrey,
   grey20,
   grey3,
+  whitePlain,
+  grey50,
 } from '@app/constants/colors';
 import { frame, value } from './styles';
 import { ChartPeriodType } from '@app/utils/balance.utils';
 import ChartSummary from '../Chart/ChartSummary';
 import { CardAppearanceEnum } from '../Card';
+import { AnyPtrRecord } from 'dns';
+import { monospaceRegular } from '@app/constants/fonts';
+import { EntityRepository } from 'typeorm';
 
 interface ChartProps {
   chartData: ChartPeriodType[];
@@ -41,67 +44,80 @@ const Amount = styled(NumberFormat)`
 `;
 
 const Chart = ({ chartData }: ChartProps) => {
+  const [activeIndex, setActiveIndex] = useState(chartData.length - 1);
+
+  const handleMouseOver = (_: any, i: any) => {
+    setActiveIndex(i);
+  };
+
   return (
     <Frame>
       <ResponsiveContainer width={'100%'} height={320}>
         <BarChart
           data={chartData}
           margin={{
-            top: 32,
+            top: 0,
             right: 0,
             left: 0,
             bottom: 0,
           }}
           barGap={0}
-          barCategoryGap={0}
+          barCategoryGap={1}
         >
-          <CartesianAxis orientation={'left'} />
-          <XAxis dataKey="label" tickLine={false} axisLine={false} style={{ fontSize: '11px' }} />
-          <CartesianAxis tick={true} />
-          <Tooltip
-            formatter={(value: number) => (
-              <NumberFormat
-                value={value}
-                displayType="text"
-                renderText={formattedValue => formattedValue}
-              />
-            )}
-            animationDuration={0}
-            itemStyle={{ color: greenPlain }}
-            cursor={{ fill: grey3 }}
+          <XAxis
+            dataKey="label"
+            tickLine={false}
+            axisLine={false}
+            style={{ fontSize: '11px' }}
+            orientation={'top'}
           />
-          <ReferenceLine y={1} stroke={borderGrey} />
-          {chartData.map(entry => (
-            <ReferenceLine key={entry.id} x={entry.label} stroke={borderGrey} position={'start'} />
-          ))}
-          <Bar dataKey="balance">
-            {chartData.map(entry => (
+          <Tooltip
+            animationDuration={0}
+            cursor={{ fill: grey3 }}
+            content={({ active, payload, label }: any) => {
+              const balance = active && payload[0].payload.balance;
+              return (
+                <Amount
+                  style={{ color: balance === 0 ? grey50 : balance > 0 ? greenPlain : redPlain }}
+                  value={balance}
+                  displayType="text"
+                />
+              );
+            }}
+          />
+          <ReferenceLine y={0} stroke={borderGrey} isFront={true} />
+          {chartData.map(entry => {
+            return (
+              <ReferenceLine
+                x={entry.label}
+                stroke={entry.label === 'Jan' ? borderGrey : borderGrey}
+                strokeDasharray={entry.label === 'Jan' ? 5 : 0}
+                position={'start'}
+              />
+            );
+          })}
+          <Bar dataKey="balance" onMouseOver={handleMouseOver} style={{ cursor: 'pointer' }}>
+            {chartData.map((entry, i) => (
               <>
-                {entry.balance !== 0 && (
-                  <>
-                    <LabelList
-                      key={entry.id}
-                      dataKey="balance"
-                      position="top"
-                      formatter={(value: number) => Math.floor(value)}
-                      style={{
-                        fontSize: '11px',
-                        fontFamily: 'Decima Mono Pro, monospace',
-                        borderTop: '5px dashed purple',
-                      }}
-                    />
-                  </>
-                )}
                 <Cell
-                  style={{ borderTop: '5px dashed purple' }}
-                  fill={entry.balance === 0 ? grey20 : entry.balance > 0 ? greenPlain : redPlain}
+                  fill={
+                    entry.balance === 0
+                      ? grey20
+                      : entry.balance > 0
+                      ? i === activeIndex
+                        ? greenPlain
+                        : greenLight
+                      : i === activeIndex
+                      ? redPlain
+                      : redLight
+                  }
                 />
               </>
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-      <ChartSummary periodsLength={chartData.length} activeBalance={chartData[11]} />
+      <ChartSummary periodsLength={chartData.length} activeBalance={chartData[activeIndex]} />
     </Frame>
   );
 };
