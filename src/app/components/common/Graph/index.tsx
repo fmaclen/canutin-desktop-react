@@ -65,7 +65,7 @@ const Chart = ({ chartData }: ChartProps) => {
             bottom: 0,
           }}
           barGap={0}
-          barCategoryGap={1}
+          barCategoryGap={0.5}
         >
           <XAxis
             dataKey="label"
@@ -81,7 +81,7 @@ const Chart = ({ chartData }: ChartProps) => {
               <ReferenceLine
                 x={entry.label}
                 stroke={entry.label === 'Jan' ? borderGrey : borderGrey}
-                strokeDasharray={entry.label === 'Jan' ? 5 : 0}
+                strokeDasharray={entry.label === 'Jan' ? 8 : 0}
                 position={'start'}
               />
             );
