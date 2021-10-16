@@ -1,17 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import NumberFormat from '@components/common/NumberFormat';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  ReferenceLine,
-  ResponsiveContainer,
-  Cell,
-  LabelList,
-  Tooltip,
-  CartesianAxis,
-} from 'recharts';
+import { BarChart, Bar, XAxis, ReferenceLine, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 
 import {
   greenPlain,
@@ -21,16 +11,11 @@ import {
   borderGrey,
   grey20,
   grey3,
-  whitePlain,
   grey50,
 } from '@app/constants/colors';
 import { frame, value } from './styles';
 import { ChartPeriodType } from '@app/utils/balance.utils';
 import ChartSummary from '../Chart/ChartSummary';
-import { CardAppearanceEnum } from '../Card';
-import { AnyPtrRecord } from 'dns';
-import { monospaceRegular } from '@app/constants/fonts';
-import { EntityRepository } from 'typeorm';
 
 interface ChartProps {
   chartData: ChartPeriodType[];
@@ -44,10 +29,28 @@ const Amount = styled(NumberFormat)`
 `;
 
 const Chart = ({ chartData }: ChartProps) => {
-  const [activeIndex, setActiveIndex] = useState(chartData.length - 1);
+  const [activePayload, setActivePayload] = useState(chartData[chartData.length - 1]);
 
-  const handleMouseOver = (_: any, i: any) => {
-    setActiveIndex(i);
+  const HandleContent = (props: any) => {
+    const { active, payload } = props;
+    active && activePayload !== payload[0].payload && setActivePayload(payload[0].payload);
+
+    return active ? (
+      <Amount
+        style={{
+          color:
+            payload[0].payload.balance === 0
+              ? grey50
+              : payload[0].payload.balance > 0
+              ? greenPlain
+              : redPlain,
+        }}
+        value={payload[0].payload.balance}
+        displayType="text"
+      />
+    ) : (
+      <></>
+    );
   };
 
   return (
@@ -71,20 +74,7 @@ const Chart = ({ chartData }: ChartProps) => {
             style={{ fontSize: '11px' }}
             orientation={'top'}
           />
-          <Tooltip
-            animationDuration={0}
-            cursor={{ fill: grey3 }}
-            content={({ active, payload, label }: any) => {
-              const balance = active && payload[0].payload.balance;
-              return (
-                <Amount
-                  style={{ color: balance === 0 ? grey50 : balance > 0 ? greenPlain : redPlain }}
-                  value={balance}
-                  displayType="text"
-                />
-              );
-            }}
-          />
+          <Tooltip animationDuration={0} cursor={{ fill: grey3 }} content={<HandleContent />} />
           <ReferenceLine y={0} stroke={borderGrey} isFront={true} />
           {chartData.map(entry => {
             return (
@@ -96,7 +86,7 @@ const Chart = ({ chartData }: ChartProps) => {
               />
             );
           })}
-          <Bar dataKey="balance" onMouseOver={handleMouseOver} style={{ cursor: 'pointer' }}>
+          <Bar dataKey="balance">
             {chartData.map((entry, i) => (
               <>
                 <Cell
@@ -104,10 +94,10 @@ const Chart = ({ chartData }: ChartProps) => {
                     entry.balance === 0
                       ? grey20
                       : entry.balance > 0
-                      ? i === activeIndex
+                      ? entry === activePayload
                         ? greenPlain
                         : greenLight
-                      : i === activeIndex
+                      : entry === activePayload
                       ? redPlain
                       : redLight
                   }
@@ -117,7 +107,7 @@ const Chart = ({ chartData }: ChartProps) => {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-      <ChartSummary periodsLength={chartData.length} activeBalance={chartData[activeIndex]} />
+      <ChartSummary periodsLength={chartData.length} activeBalance={activePayload} />
     </Frame>
   );
 };
