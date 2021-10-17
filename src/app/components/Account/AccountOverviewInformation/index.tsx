@@ -3,7 +3,7 @@ import React from 'react';
 import { Account, BalanceStatement, Transaction } from '@database/entities';
 
 import Section from '@app/components/common/Section';
-import Chart from '@app/components/common/Chart';
+import Chart from '@app/components/common/Graph';
 import TransactionsFilterTable from '@app/components/Transactions/TransactionsFilterTable';
 import EmptyCard from '@app/components/common/EmptyCard';
 import {
