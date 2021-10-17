@@ -53,16 +53,37 @@ const Chart = ({ chartData }: ChartProps) => {
     );
   };
 
+  const CustomBar = (props: any) => {
+    const { fill, x, y, width, height } = props;
+
+    return props.balance === 0 ? (
+      // Don't render a bar when the balance is 0
+      <></>
+    ) : props.balance > 0 ? (
+      // Positive value bars
+      <>
+        <rect x={x} y={y} width={width} height="3" fill={greenPlain} />
+        <rect x={x} y={y + 3} width={width} height={height - 3} fill={fill} />
+      </>
+    ) : (
+      // Negative value bars
+      <>
+        <rect x={x} y={y + height} width={width} height={height * -1 + 3} fill={fill} />
+        <rect x={x} y={y > 3 ? y + 3 : y} width={width} height="3" fill={redPlain} />
+      </>
+    );
+  };
+
   return (
     <Frame>
-      <ResponsiveContainer width={'100%'} height={320}>
+      <ResponsiveContainer width={'100%'} height={384}>
         <BarChart
           data={chartData}
           margin={{
-            top: 0,
+            top: 12,
             right: 0,
             left: 0,
-            bottom: 0,
+            bottom: chartData.length > 52 ? 12 : 0,
           }}
           barGap={0}
           barCategoryGap={0.5}
@@ -72,7 +93,8 @@ const Chart = ({ chartData }: ChartProps) => {
             tickLine={false}
             axisLine={false}
             style={{ fontSize: '11px' }}
-            orientation={'top'}
+            orientation={'bottom'}
+            hide={chartData.length > 52}
           />
           <Tooltip animationDuration={0} cursor={{ fill: grey3 }} content={<HandleContent />} />
           <ReferenceLine y={0} stroke={borderGrey} isFront={true} />
@@ -80,13 +102,13 @@ const Chart = ({ chartData }: ChartProps) => {
             return (
               <ReferenceLine
                 x={entry.label}
-                stroke={entry.label === 'Jan' ? borderGrey : borderGrey}
+                stroke={borderGrey}
                 strokeDasharray={entry.label === 'Jan' ? 8 : 0}
                 position={'start'}
               />
             );
           })}
-          <Bar dataKey="balance">
+          <Bar dataKey="balance" shape={CustomBar}>
             {chartData.map((entry, i) => (
               <>
                 <Cell
@@ -107,7 +129,7 @@ const Chart = ({ chartData }: ChartProps) => {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-      <ChartSummary periodsLength={chartData.length} activeBalance={activePayload} />
+      <ChartSummary activeBalance={activePayload} />
     </Frame>
   );
 };

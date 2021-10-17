@@ -70,7 +70,7 @@ const Chart = ({ chartData }: ChartProps) => {
           />
         );
       })}
-      <ChartSummary periodsLength={chartData.length} activeBalance={activeBalance} />
+      <ChartSummary activeBalance={activeBalance} />
     </Frame>
   );
 };

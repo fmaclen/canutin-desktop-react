@@ -12,10 +12,9 @@ const Container = styled.div`
 
 interface ChartSummaryProps {
   activeBalance: ChartPeriodType;
-  periodsLength: number;
 }
 
-const ChartSummary = ({ periodsLength, activeBalance }: ChartSummaryProps) => {
+const ChartSummary = ({ activeBalance }: ChartSummaryProps) => {
   const weekSummary = (
     <>
       <Card
@@ -60,9 +59,7 @@ const ChartSummary = ({ periodsLength, activeBalance }: ChartSummaryProps) => {
     </>
   );
 
-  return <Container periodsLength={periodsLength}>
-    {activeBalance.dateWeek ? weekSummary : monthsSummary}
-  </Container>;
+  return <Container>{activeBalance.dateWeek ? weekSummary : monthsSummary}</Container>;
 };
 
 export default ChartSummary;
