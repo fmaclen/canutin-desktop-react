@@ -106,6 +106,10 @@ export const BarPositive = styled(Bar)`
     props.theme.balance > 0 &&
     css`
       border-top: 3px solid ${greenPlain};
+
+      &:first-child {
+        margin-top: auto;
+      }
     `}
 `;
 
