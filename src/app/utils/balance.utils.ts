@@ -393,13 +393,17 @@ export const generatePlaceholdersChartPeriod = (
     });
 
     return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
+      const label = getWeek(weekDate).toLocaleString('en-US', {
+        minimumIntegerDigits: 2,
+      }); // From "01" to "52"
+
       return [
         ...acc,
         {
           week: getWeek(weekDate),
           balance: 0,
           dateWeek: weekDate,
-          label: getWeek(weekDate).toString(),
+          label: label,
           difference: 0,
           id: index + weeksOffset,
         },
@@ -422,12 +426,17 @@ export const generatePlaceholdersChartMonthPeriod = (
     });
 
     return monthsDates.reduce((acc: ChartPeriodType[], monthDate, index) => {
+      const label =
+        getWeek(monthDate) === 1
+          ? `${format(monthDate, 'MMM')} '${format(monthDate, 'yy')}`
+          : format(monthDate, 'MMM'); // From "Jan '21" to "Dec"
+
       return [
         ...acc,
         {
           month: monthDate,
           balance: 0,
-          label: format(monthDate, 'MMM'),
+          label: label,
           expenses: 0,
           income: 0,
           surplus: 0,
