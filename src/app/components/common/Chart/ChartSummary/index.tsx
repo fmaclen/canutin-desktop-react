@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { endOfWeek } from 'date-fns';
 
 import { ChartPeriodType } from '@app/utils/balance.utils';
 
@@ -21,7 +22,7 @@ const ChartSummary = ({ periodsLength, activeBalance }: ChartSummaryProps) => {
       <Card
         label="Week"
         appearance={CardAppearanceEnum.SECONDARY}
-        value={`${activeBalance.label} of ${activeBalance.dateWeek?.getFullYear()}`}
+        value={`${activeBalance.label} of ${endOfWeek(activeBalance.dateWeek!).getFullYear()}`}
       />
       <Card
         label="Difference"
