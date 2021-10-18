@@ -83,8 +83,6 @@ export const Bar = styled.div<{ height: number }>`
 `;
 
 export const BarPositive = styled(Bar)`
-  border-bottom: 1px solid ${grey10};
-
   ${props => {
     let background = css`
       background-color: ${greenLight};
@@ -112,8 +110,6 @@ export const BarPositive = styled(Bar)`
 `;
 
 export const BarNegative = styled(Bar)`
-  margin-top: -1px; // Offseting the bar so it's border-top is aligned with the PositiveBar's border-bottom
-  border-top: 1px solid ${grey10};
   border-bottom: 3px solid ${redPlain};
 
   ${props => {
@@ -139,17 +135,25 @@ export const BarNegative = styled(Bar)`
 
 // CSS HACK: we need an empty element to occupy the space allocated by <PeriodBalance/>'s grid-template-rows.
 export const PeriodBarPlaceholder = styled.div`
-  height: 28px;
+  min-height: 28px;
 `;
 
 export const PeriodLabel = styled.time`
   display: flex;
   flex-direction: column;
   margin-top: auto;
-  font-size: ${props => (props.theme.isCompact ? '10px' : '11px')};
+  font-size: ${props => (props.theme.periodLength > 12 ? '8px' : '11px')};
   line-height: 1em;
-  padding: 12px 3px 8px;
+  padding: ${props => (props.theme.periodLength > 12 ? '12px 2px 8px' : '12px 3px 8px')};
   box-sizing: border-box;
   text-align: center;
   color: ${grey30};
+`;
+
+export const PeriodDivider = styled.hr`
+  height: 1px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: ${grey10};
 `;

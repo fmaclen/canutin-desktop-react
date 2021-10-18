@@ -12,6 +12,7 @@ import {
   PeriodBalanceLabel,
   PeriodBar,
   PeriodLabel,
+  PeriodDivider,
 } from './styles';
 
 interface ChartPeriodProps {
@@ -23,7 +24,7 @@ interface ChartPeriodProps {
   isActive: boolean;
   isCurrentPeriod: boolean;
   isStartOfYear: boolean;
-  isCompact: boolean;
+  periodLength: number;
   label: string;
   handleMouseEnter: (id: number) => void;
 }
@@ -37,14 +38,17 @@ const ChartPeriod = ({
   isActive,
   isCurrentPeriod,
   isStartOfYear,
-  isCompact,
+  periodLength,
   label,
   handleMouseEnter,
 }: ChartPeriodProps) => {
   const isBalancePositive = balance >= 0;
+  const isCompact = periodLength > 12;
 
   return (
-    <ThemeProvider theme={{ isActive, isCurrentPeriod, isStartOfYear, isCompact, label, balance }}>
+    <ThemeProvider
+      theme={{ isActive, isCurrentPeriod, isStartOfYear, periodLength, label, balance }}
+    >
       <Period onMouseEnter={() => handleMouseEnter(id)}>
         <PeriodBalance proportion={balanceProportion}>
           {isBalancePositive ? (
@@ -62,11 +66,13 @@ const ChartPeriod = ({
                 )}
                 <BarPositive height={proportionBetween(balance, peakPositiveBalance)} />
               </PeriodBar>
+              <PeriodDivider />
               <PeriodBarPlaceholder />
             </>
           ) : (
             <>
               <PeriodBarPlaceholder />
+              <PeriodDivider />
               <PeriodBar>
                 <BarNegative height={proportionBetween(balance, peakNegativeBalance)} />
                 {!isCompact && (
@@ -80,7 +86,7 @@ const ChartPeriod = ({
             </>
           )}
         </PeriodBalance>
-        <PeriodLabel>{label}</PeriodLabel>
+        {periodLength < 54 && <PeriodLabel>{label}</PeriodLabel>}
       </Period>
     </ThemeProvider>
   );

@@ -38,12 +38,15 @@ const Chart = ({ chartData }: ChartProps) => {
     const negativeProportion = proportionBetween(negativeBalance, balanceRange);
 
     if (positiveProportion === 0 && negativeProportion === 0) {
-      return `repeat(2, 1fr)`;
+      return `1fr 1px 1fr`;
     } else {
       return `
         ${proportionBetween(positiveBalance, balanceRange)}fr
+        1px
         ${proportionBetween(negativeBalance, balanceRange)}fr
-      `; // i.e. 0.85fr 0.15fr
+      `;
+      // i.e. 0.85fr 1px 0.15fr
+      // <PeriodBar><PeriodDivider><PeriodPaceholder>
     }
   };
 
@@ -56,6 +59,12 @@ const Chart = ({ chartData }: ChartProps) => {
   return (
     <Frame columns={chartData.length}>
       {chartData.map((period, index) => {
+        const isStartOfYear = period.month
+          ? getWeek(period.month) === 1
+          : period.dateWeek
+          ? getWeek(period.dateWeek) === 1
+          : false;
+
         return (
           <ChartPeriod
             key={period.id}
@@ -65,9 +74,9 @@ const Chart = ({ chartData }: ChartProps) => {
             peakPositiveBalance={peakPositive}
             peakNegativeBalance={peakNegative}
             isCurrentPeriod={index === chartData.length - 1}
-            isStartOfYear={period.month ? getWeek(period.month) === 1 : false}
+            isStartOfYear={isStartOfYear}
             isActive={activeBalance.id === period.id}
-            isCompact={chartData.length > 12}
+            periodLength={chartData.length}
             label={period.label}
             handleMouseEnter={handleMouseEnter}
           />
