@@ -18,6 +18,8 @@ export const breadcrumb = css`
 `;
 
 export const breadcrumbLabel = css`
+  pointer-events: none; // Disabling clickable breadcrumbs until we refactor the routing
+
   color: ${grey40};
   font-size: 11px;
   line-height: 11px;

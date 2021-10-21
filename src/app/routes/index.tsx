@@ -35,7 +35,7 @@ export const routesPaths = {
   accountOverview: '/account/:accountName/',
   assetOverview: '/asset/:assetName/',
   addTransaction: '/transactions/addTransaction',
-  editTransaction: '/transactions/:categoryName/:accountName/Edit',
+  editTransaction: '/transactions/:transactionDescription',
   canutinSetup: '/canutinSetup',
 };
 
@@ -86,7 +86,6 @@ export const routesConfig: RouteConfigProps[] = [
     path: routesPaths.editTransaction,
     exact: true,
     component: <EditTransaction />,
-    breadcrumb: 'Edit',
   },
   {
     path: routesPaths.trends,
@@ -139,5 +138,5 @@ export const routesConfig: RouteConfigProps[] = [
     path: routesPaths.assetOverview,
     exact: true,
     component: <AssetOverview />,
-  }
+  },
 ];
