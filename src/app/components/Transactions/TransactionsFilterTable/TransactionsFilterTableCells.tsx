@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { CellProps } from 'react-table';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { formatDate } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities';
+import { EntitiesContext } from '@app/context/entitiesContext';
 
 import NumberFormat from '@components/common/NumberFormat';
 
-import { amountCell, dateCell, linkCell } from './styles';
+import { amountCell, dateCell, cellField, linkCellField } from './styles';
 import TextLink from '@app/components/common/TextLink';
 
 const AmountCellField = styled(NumberFormat)`
@@ -16,8 +18,11 @@ const AmountCellField = styled(NumberFormat)`
 const DateCellField = styled.span`
   ${dateCell}
 `;
-const LinkCellField = styled.p`
-  ${linkCell}
+const CellField = styled.p`
+  ${cellField}
+`;
+const LinkCellField = styled(Link)`
+  ${linkCellField}
 `;
 
 export const DateCell = ({ value }: CellProps<Transaction>) => (
@@ -42,12 +47,27 @@ export const AmountCell = ({
 
 export const DescriptionCell = ({ value, ...props }: CellProps<Transaction>) => (
   <TextLink
-    pathname={`transactions/${props.row.original.category.name}/${props.row.original.account.name}/Edit`}
+    pathname={`transactions/${props.row.original.description}`}
     state={{ transaction: props.row.original }}
     label={value}
   />
 );
 
-export const LinkCell = ({ value }: CellProps<Transaction>) => (
-  <LinkCellField>{value}</LinkCellField>
-);
+export const AccountCell = ({ value, ...props }: CellProps<Transaction>) => {
+  const { accountsIndex } = useContext(EntitiesContext);
+  const account = {
+    balance:
+      accountsIndex &&
+      accountsIndex.accounts.find(
+        account => account.name === props.row.original.account.name && account
+      ),
+  };
+
+  return (
+    <LinkCellField to={{ pathname: `/account/${value}`, state: account }}>{value}</LinkCellField>
+  );
+};
+
+export const CategoryCell = ({ value, ...props }: CellProps<Transaction>) => {
+  return <CellField>{value}</CellField>;
+};
