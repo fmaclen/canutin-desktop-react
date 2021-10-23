@@ -441,6 +441,7 @@ const createWindow = async () => {
     trafficLightPosition: { x: 16, y: 32 },
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
