@@ -1,22 +1,11 @@
-import {
-  eachWeekOfInterval,
-  endOfWeek,
-  getWeek,
-  isAfter,
-  isBefore,
-  isEqual,
-  startOfWeek,
-} from 'date-fns';
+import { eachWeekOfInterval, endOfWeek, getWeek, isAfter, isBefore, isEqual } from 'date-fns';
 
 import { Account, Asset } from '@database/entities';
 
 import {
   calculateBalanceDifference,
   ChartPeriodType,
-  generateAccountBalanceInfo,
-  generateAssetBalanceInfo,
   generatePlaceholdersChartPeriod,
-  getTotalBalanceByGroup,
 } from './balance.utils';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
@@ -110,7 +99,6 @@ export const getNetWorthTrends = (
   return netWorthBalances;
 };
 
-
 export const generateTrendsChartData = (chartData: ChartPeriodType[], numberOfWeeks: number) => {
   return [
     ...generatePlaceholdersChartPeriod(
@@ -120,4 +108,4 @@ export const generateTrendsChartData = (chartData: ChartPeriodType[], numberOfWe
     ),
     ...chartData,
   ];
-}
+};

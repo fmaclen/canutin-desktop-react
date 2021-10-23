@@ -441,7 +441,7 @@ const createWindow = async () => {
     trafficLightPosition: { x: 16, y: 32 },
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: false, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
     },
   });
 

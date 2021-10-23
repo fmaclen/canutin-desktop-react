@@ -58,18 +58,22 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
   const history = useHistory();
   const { setStatusMessage } = useContext(StatusBarContext);
   const { accountsIndex } = useContext(EntitiesContext);
+  const accountOptions = useMemo(
+    () => accountsIndex?.accounts?.map(account => ({ label: account.name, value: account.id.toString() })),
+    [accountsIndex?.lastUpdate]
+  );
   const { handleSubmit, control, register, watch, formState } = useForm({
     mode: 'onChange',
     defaultValues: initialState
       ? initialState
       : {
-          account: null,
+          account: accountsIndex?.accounts[0].id.toString() ?? null,
           description: null,
           category: 'Uncategorized',
           day: DATE_INFORMATION.day,
           month: DATE_INFORMATION.month,
           year: DATE_INFORMATION.year,
-          balance: null,
+          balance: '',
           excludeFromTotals: false,
         },
   });
@@ -114,11 +118,6 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
       ipcRenderer.removeAllListeners(DB_EDIT_TRANSACTION_ACK);
     };
   }, []);
-
-  const accountOptions = useMemo(
-    () => accountsIndex?.accounts?.map(account => ({ label: account.name, value: account.id.toString() })),
-    [accountsIndex?.lastUpdate]
-  );
 
   const onSubmit = ({
     account,
@@ -184,6 +183,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
               rules={{ validate: v => excludeFromTotals || v !== '' }}
               name="balance"
               control={control}
+              required
             />
             <InlineCheckbox
               name="excludeFromTotals"

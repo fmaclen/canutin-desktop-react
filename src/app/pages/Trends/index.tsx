@@ -62,7 +62,7 @@ const Trends = () => {
             assetsIndex.assets,
             selectedFilterOption.value.dateFrom,
             selectedFilterOption.value.dateTo,
-            BalanceGroupEnum.INVESTMENTS
+            BalanceGroupEnum.OTHER_ASSETS
           ), numberOfWeeks)
         : undefined;
 
