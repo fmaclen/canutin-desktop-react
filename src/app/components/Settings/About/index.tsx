@@ -8,7 +8,7 @@ import Fieldset from '@components/common/Form/Fieldset';
 import InputTextField from '@components/common/Form/InputTextField';
 
 const About = () => {
-  const [appVersion, setAppVersion] = useState('');
+  const [appVersion, setAppVersion] = useState<null | string>();
 
   const getAppInfo = async () => {
     const { version } = await ipcRenderer.invoke(APP_INFO);
