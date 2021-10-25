@@ -89,7 +89,7 @@ const SideBar = () => {
         text="Add accounts or assets"
         toggled={toggled}
         to={routesPaths.addAccountOrAsset}
-        dataTestId="add-account-or-asset"
+        dataTestId="sidebar-add-account-or-assets"
       />
     </Container>
   );

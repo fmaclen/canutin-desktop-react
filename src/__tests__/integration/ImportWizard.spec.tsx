@@ -28,7 +28,7 @@ const initImportWizard = () => {
     </AppCtxProvider>
   );
 
-  const addAccountsOrAssetsButton = screen.getByTestId('add-account-or-asset');
+  const addAccountsOrAssetsButton = screen.getByTestId('sidebar-add-account-or-assets');
 
   if (addAccountsOrAssetsButton) {
     userEvent.click(addAccountsOrAssetsButton);
