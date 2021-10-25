@@ -53,21 +53,10 @@ export const DescriptionCell = ({ value, ...props }: CellProps<Transaction>) => 
   />
 );
 
-export const AccountCell = ({ value, ...props }: CellProps<Transaction>) => {
-  const { accountsIndex } = useContext(EntitiesContext);
-  const account = {
-    balance:
-      accountsIndex &&
-      accountsIndex.accounts.find(
-        account => account.name === props.row.original.account.name && account
-      ),
-  };
-
-  return (
-    <LinkCellField to={{ pathname: `/account/${value}`, state: account }}>{value}</LinkCellField>
-  );
+export const AccountCell = ({ value }: CellProps<Transaction>) => {
+  return <LinkCellField to={{ pathname: `/account/${value}` }}>{value}</LinkCellField>;
 };
 
-export const CategoryCell = ({ value, ...props }: CellProps<Transaction>) => {
+export const CategoryCell = ({ value }: CellProps<Transaction>) => {
   return <CellField>{value}</CellField>;
 };
