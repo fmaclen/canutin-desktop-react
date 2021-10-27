@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import ScrollView from '@components/common/ScrollView';
 import TrendsChart from '@app/components/Trends/TrendsChart';
@@ -6,7 +6,6 @@ import TrendsHeader from '@app/components/Trends/TrendsHeader';
 import useGlobalFilterTable from '@app/hooks/useGlobalFilterTable';
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { generateTrendsChartData, getNetWorthTrends } from '@app/utils/trends.utils';
-import { generatePlaceholdersChartPeriod } from '@app/utils/balance.utils';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
 const Trends = () => {

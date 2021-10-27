@@ -9,7 +9,7 @@ import {
 } from './balance.utils';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
-export const isBetweenWeek = (week: Date, dateCompare: Date | undefined) => {
+export const isWithinWeek = (week: Date, dateCompare: Date | undefined) => {
   return dateCompare
     ? (isBefore(week, dateCompare) || isEqual(week, dateCompare)) &&
         isAfter(endOfWeek(week, { weekStartsOn: 1 }), dateCompare)
@@ -33,7 +33,7 @@ export const getNetWorthTrends = (
         balanceGroupFilter === balanceGroup || balanceGroupFilter === BalanceGroupEnum.NET_WORTH
     );
   const accountsNoClosed = accounts
-    .filter(({ closed, balanceGroup }) => !closed)
+    .filter(({ closed }) => !closed)
     .filter(
       ({ balanceGroup }) =>
         balanceGroupFilter === balanceGroup || balanceGroupFilter === BalanceGroupEnum.NET_WORTH
@@ -48,7 +48,7 @@ export const getNetWorthTrends = (
       if (account.balanceStatements?.[account.balanceStatements.length - 1].autoCalculate) {
         const accountTotalBalanceForWeekInterval = account?.transactions
           ? account?.transactions?.reduce((total, transaction) => {
-              if (isBetweenWeek(week, transaction.date)) {
+              if (isWithinWeek(week, transaction.date)) {
                 return total + transaction.amount;
               }
 
@@ -59,7 +59,7 @@ export const getNetWorthTrends = (
         return count + accountTotalBalanceForWeekInterval;
       }
 
-      if (account.balanceStatements?.[account.balanceStatements.length - 1]?.value) {
+      if (account.balanceStatements?.[account.balanceStatements.length - 1]?.value && isBefore(account.balanceStatements?.[account.balanceStatements.length - 1]?.updatedAt, week)) {
         return (
           count +
           (account.balanceStatements?.[account.balanceStatements.length - 1]?.value as number)
@@ -71,7 +71,7 @@ export const getNetWorthTrends = (
 
     const assetBalanceWeek = assetsNoSold.reduce((count, asset) => {
       if (
-        isBetweenWeek(week, asset.balanceStatements?.[asset.balanceStatements.length - 1].updatedAt)
+        isWithinWeek(week, asset.balanceStatements?.[asset.balanceStatements.length - 1].updatedAt)
       ) {
         return (
           count + (asset.balanceStatements?.[asset.balanceStatements.length - 1].value as number)
