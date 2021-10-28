@@ -317,7 +317,7 @@ export const getTransactionBalanceByWeeks = (
   const weeksDates = eachWeekOfInterval({
     start: max([transactions[0].date, subWeeks(new Date(), weeks)]),
     end: new Date(),
-  });
+  }, { weekStartsOn: 1});
   return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
     // Get transactions from -weeks ago to current week and calculate balance
     const balance = getTransactionsBalance(

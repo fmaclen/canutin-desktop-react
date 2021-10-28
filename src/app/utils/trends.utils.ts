@@ -1,4 +1,4 @@
-import { eachWeekOfInterval, endOfWeek, getWeek, isAfter, isBefore, isEqual } from 'date-fns';
+import { eachWeekOfInterval, endOfWeek, getWeek, isAfter, isBefore, isEqual, isWithinInterval } from 'date-fns';
 
 import { Account, Asset } from '@database/entities';
 
@@ -10,10 +10,7 @@ import {
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
 export const isWithinWeek = (week: Date, dateCompare: Date | undefined) => {
-  return dateCompare
-    ? (isBefore(week, dateCompare) || isEqual(week, dateCompare)) &&
-        isAfter(endOfWeek(week, { weekStartsOn: 1 }), dateCompare)
-    : false;
+  return isWithinInterval(dateCompare as Date, { start: week, end: endOfWeek(week, { weekStartsOn: 1})});
 };
 
 export const getNetWorthTrends = (
@@ -41,7 +38,7 @@ export const getNetWorthTrends = (
   const weeksDates = eachWeekOfInterval({
     start: dateFrom,
     end: dateTo,
-  });
+  }, { weekStartsOn: 1 });
 
   const netWorthBalances = weeksDates.reduce((acc: ChartPeriodType[], week, index) => {
     const accountBalanceWeek = accountsNoClosed.reduce((count, account) => {
