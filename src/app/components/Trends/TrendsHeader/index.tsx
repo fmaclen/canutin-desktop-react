@@ -6,12 +6,12 @@ import { filterOptions } from '@app/constants/filters';
 import ButtonRow from '@components/common/ButtonRow';
 import ButtonSelect from '@components/common/ButtonSelect';
 
-interface AccountOverviewHeaderProps {
+interface TrendsHeaderProps {
   filterOption: SelectFieldValue;
   setFilterOption: Dispatch<SetStateAction<SelectFieldValue>>;
 }
 
-const TrendsHeader = ({ filterOption, setFilterOption }: AccountOverviewHeaderProps) => {
+const TrendsHeader = ({ filterOption, setFilterOption }: TrendsHeaderProps) => {
   return (
     <ButtonRow>
       <ButtonSelect

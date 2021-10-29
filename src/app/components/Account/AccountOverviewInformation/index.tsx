@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Account, BalanceStatement, Transaction } from '@database/entities';
 
 import Section from '@app/components/common/Section';

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
 import ScrollView from '@components/common/ScrollView';
 import TrendsChart from '@app/components/Trends/TrendsChart';
