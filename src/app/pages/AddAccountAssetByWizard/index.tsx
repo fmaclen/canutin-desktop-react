@@ -17,7 +17,7 @@ import { AppContext } from '@app/context/appContext';
 import AccountIpc from '@app/data/account.ipc';
 import { routesPaths } from '@app/routes';
 import AssetIpc from '@app/data/asset.ipc';
-import TransactionIpc from '@app/data/transaction.ipc';
+// import TransactionIpc from '@app/data/transaction.ipc';
 
 const AddAccountAssetByWizard = () => {
   const history = useHistory();
@@ -32,7 +32,7 @@ const AddAccountAssetByWizard = () => {
       setSuccessMessage('The file was imported successfully');
       AccountIpc.getAccounts();
       AssetIpc.getAssets();
-      TransactionIpc.getTransactions();
+      // TransactionIpc.getTransactions();
       history.push(routesPaths.balance);
     });
 
@@ -40,7 +40,7 @@ const AddAccountAssetByWizard = () => {
       setSuccessMessage('The CSV was imported successfully');
       AccountIpc.getAccounts();
       AssetIpc.getAssets();
-      TransactionIpc.getTransactions();
+      // TransactionIpc.getTransactions();
       history.push(routesPaths.balance);
     });
 

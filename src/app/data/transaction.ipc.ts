@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 
 import {
-  DB_GET_TRANSACTIONS,
+  // DB_GET_TRANSACTIONS,
   DB_NEW_TRANSACTION,
   DB_EDIT_TRANSACTION,
   DB_DELETE_TRANSACTION,
@@ -22,9 +22,9 @@ export default class TransactionIpc {
     ipcRenderer.send(DB_DELETE_TRANSACTION, transactionId);
   }
 
-  static getTransactions() {
-    ipcRenderer.send(DB_GET_TRANSACTIONS);
-  }
+  // static getTransactions() {
+  //   ipcRenderer.send(DB_GET_TRANSACTIONS);
+  // }
 
   static getFilterTransactions(filter: FilterTransactionInterface) {
     ipcRenderer.send(FILTER_TRANSACTIONS, filter);
