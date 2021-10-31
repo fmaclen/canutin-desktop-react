@@ -2,7 +2,6 @@ import { createContext, PropsWithChildren, useEffect, useState, useContext } fro
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import AssetIpc from '@app/data/asset.ipc';
-// import TransactionIpc from '@app/data/transaction.ipc';
 import AccountIpc from '@app/data/account.ipc';
 import { DB_GET_ACCOUNTS_ACK, DB_GET_ASSETS_ACK, DB_GET_ACCOUNT_ACK } from '@constants/events';
 import { Account, Asset } from '@database/entities';
@@ -37,7 +36,6 @@ export const EntitiesProvider = ({ children }: PropsWithChildren<Record<string, 
     setTimeout(() => {
       AccountIpc.getAccounts();
       AssetIpc.getAssets();
-      // TransactionIpc.getTransactions();
     }, 100);
 
     ipcRenderer.on(DB_GET_ASSETS_ACK, (_: IpcRendererEvent, assets: Asset[]) => {
