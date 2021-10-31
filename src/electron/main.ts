@@ -249,18 +249,21 @@ const setupDbEvents = async () => {
     }
   });
 
-  ipcMain.on(DB_DELETE_TRANSACTION, async (_: IpcMainEvent, transactionId: number) => {
-    try {
-      await TransactionRepository.deleteTransaction(transactionId);
-      win?.webContents.send(DB_DELETE_TRANSACTION_ACK, { status: EVENT_SUCCESS });
-      // TODO: update accounts somehow
-    } catch (e) {
-      win?.webContents.send(DB_DELETE_TRANSACTION_ACK, {
-        status: EVENT_ERROR,
-        message: 'An error occurred, please try again',
-      });
+  ipcMain.on(
+    DB_DELETE_TRANSACTION,
+    async (_: IpcMainEvent, accountId: number, transactionId: number) => {
+      try {
+        await TransactionRepository.deleteTransaction(transactionId);
+        win?.webContents.send(DB_DELETE_TRANSACTION_ACK, { status: EVENT_SUCCESS });
+        await getAccount(accountId);
+      } catch (e) {
+        win?.webContents.send(DB_DELETE_TRANSACTION_ACK, {
+          status: EVENT_ERROR,
+          message: 'An error occurred, please try again',
+        });
+      }
     }
-  });
+  );
 
   ipcMain.on(
     DB_EDIT_ACCOUNT_BALANCE,
