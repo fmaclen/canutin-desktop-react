@@ -227,7 +227,7 @@ const setupDbEvents = async () => {
       const newTransaction = await TransactionRepository.createTransaction(transaction);
       win?.webContents.send(DB_NEW_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
       // await getTransactions();
-      await getAccounts();
+      await getAccount(transaction.accountId);
     } catch (e) {
       if (e instanceof QueryFailedError) {
         win?.webContents.send(DB_NEW_TRANSACTION_ACK, {
@@ -248,7 +248,7 @@ const setupDbEvents = async () => {
       const newTransaction = await TransactionRepository.editTransaction(transaction);
       win?.webContents.send(DB_EDIT_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
       // await getTransactions();
-      await getAccounts();
+      await getAccount(transaction.accountId);
     } catch (e) {
       win?.webContents.send(DB_EDIT_TRANSACTION_ACK, {
         status: EVENT_ERROR,
@@ -262,7 +262,6 @@ const setupDbEvents = async () => {
       await TransactionRepository.deleteTransaction(transactionId);
       win?.webContents.send(DB_DELETE_TRANSACTION_ACK, { status: EVENT_SUCCESS });
       // await getTransactions();
-      await getAccounts();
     } catch (e) {
       win?.webContents.send(DB_DELETE_TRANSACTION_ACK, {
         status: EVENT_ERROR,
@@ -407,6 +406,11 @@ const setupDbEvents = async () => {
 const getAccounts = async () => {
   const accounts = await AccountRepository.getAccounts();
   win?.webContents.send(DB_GET_ACCOUNTS_ACK, accounts);
+};
+
+const getAccount = async (id: number) => {
+  const account = await AccountRepository.getAccountById(id);
+  win?.webContents.send(DB_GET_ACCOUNT_ACK, account);
 };
 
 const getAssets = async () => {
