@@ -1,17 +1,18 @@
-import { eachWeekOfInterval, endOfWeek, getWeek, isAfter, isBefore, isEqual, isWithinInterval } from 'date-fns';
+import {
+  eachWeekOfInterval,
+  endOfWeek,
+  getWeek,
+} from 'date-fns';
 
-import { Account, Asset } from '@database/entities';
+import { Account, Asset, AssetBalanceStatement, BalanceStatement } from '@database/entities';
 
 import {
   calculateBalanceDifference,
   ChartPeriodType,
   generatePlaceholdersChartPeriod,
+  getSelectedBalanceStatementValue,
 } from './balance.utils';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
-
-export const isWithinWeek = (week: Date, dateCompare: Date | undefined) => {
-  return isWithinInterval(dateCompare as Date, { start: week, end: endOfWeek(week, { weekStartsOn: 1})});
-};
 
 export const getNetWorthTrends = (
   accounts: Account[],
@@ -35,47 +36,43 @@ export const getNetWorthTrends = (
       ({ balanceGroup }) =>
         balanceGroupFilter === balanceGroup || balanceGroupFilter === BalanceGroupEnum.NET_WORTH
     );
-  const weeksDates = eachWeekOfInterval({
-    start: dateFrom,
-    end: dateTo,
-  }, { weekStartsOn: 1 });
+  const weeksDates = eachWeekOfInterval(
+    {
+      start: dateFrom,
+      end: dateTo,
+    },
+    { weekStartsOn: 1 }
+  );
 
   const netWorthBalances = weeksDates.reduce((acc: ChartPeriodType[], week, index) => {
     const accountBalanceWeek = accountsNoClosed.reduce((count, account) => {
-      if (account.balanceStatements?.[account.balanceStatements.length - 1].autoCalculate) {
-        const accountTotalBalanceForWeekInterval = account?.transactions
-          ? account?.transactions?.reduce((total, transaction) => {
-              if (isWithinWeek(week, transaction.date)) {
-                return total + transaction.amount;
-              }
+      const balanceStatementValue = getSelectedBalanceStatementValue(
+        account.balanceStatements as BalanceStatement[],
+        week,
+        endOfWeek(week, { weekStartsOn: 1 })
+      );
+      const balance = balanceStatementValue
+        ? balanceStatementValue
+        : acc[index - 1]?.balance
+        ? acc[index - 1].balance
+        : 0;
 
-              return total;
-            }, 0)
-          : 0;
-
-        return count + accountTotalBalanceForWeekInterval;
-      }
-
-      if (account.balanceStatements?.[account.balanceStatements.length - 1]?.value && isBefore(account.balanceStatements?.[account.balanceStatements.length - 1]?.updatedAt, week)) {
-        return (
-          count +
-          (account.balanceStatements?.[account.balanceStatements.length - 1]?.value as number)
-        );
-      }
-
-      return count;
+      return count + balance;
     }, 0);
 
     const assetBalanceWeek = assetsNoSold.reduce((count, asset) => {
-      if (
-        isWithinWeek(week, asset.balanceStatements?.[asset.balanceStatements.length - 1].updatedAt)
-      ) {
-        return (
-          count + (asset.balanceStatements?.[asset.balanceStatements.length - 1].value as number)
-        );
-      }
+      const balanceStatementValue = getSelectedBalanceStatementValue(
+        asset.balanceStatements as AssetBalanceStatement[],
+        week,
+        endOfWeek(week, { weekStartsOn: 1 })
+      );
+      const balance = balanceStatementValue
+        ? balanceStatementValue
+        : acc[index - 1]?.balance
+        ? acc[index - 1].balance
+        : 0;
 
-      return count;
+      return count + balance;
     }, 0);
 
     const balance = accountBalanceWeek + assetBalanceWeek;
