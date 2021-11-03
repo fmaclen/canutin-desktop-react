@@ -53,11 +53,11 @@ export const getNetWorthTrends = (
       );
       const balance = balanceStatementValue
         ? balanceStatementValue
-        : acc[index - 1]?.balance
-        ? acc[index - 1].balance
+        : acc[index - 1]?.accountBalanceWeek
+        ? acc[index - 1].accountBalanceWeek
         : 0;
 
-      return count + balance;
+      return count + (balance as number);
     }, 0);
 
     const assetBalanceWeek = assetsNoSold.reduce((count, asset) => {
@@ -68,11 +68,11 @@ export const getNetWorthTrends = (
       );
       const balance = balanceStatementValue
         ? balanceStatementValue
-        : acc[index - 1]?.balance
-        ? acc[index - 1].balance
+        : acc[index - 1]?.assetBalanceWeek
+        ? acc[index - 1].assetBalanceWeek
         : 0;
 
-      return count + balance;
+      return count + (balance as number);
     }, 0);
 
     const balance = accountBalanceWeek + assetBalanceWeek;
@@ -86,6 +86,8 @@ export const getNetWorthTrends = (
         label: getWeek(week).toString(),
         difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
         id: index,
+        accountBalanceWeek,
+        assetBalanceWeek,
       },
     ];
   }, []);

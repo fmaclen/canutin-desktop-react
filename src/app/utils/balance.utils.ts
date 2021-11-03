@@ -296,6 +296,8 @@ export type ChartPeriodType = {
   week?: number;
   dateWeek?: Date;
   difference?: number;
+  accountBalanceWeek?: number;
+  assetBalanceWeek?: number;
 };
 
 export const calculateBalanceDifference = (originalBalance: number, newBalance: number) => {
