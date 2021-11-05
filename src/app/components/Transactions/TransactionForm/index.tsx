@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useContext } from 'react';
+import React, { useMemo, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { useHistory } from 'react-router-dom';
@@ -7,11 +7,7 @@ import styled from 'styled-components';
 import { CATEGORY_GROUPED_OPTIONS } from '@appConstants/categories';
 import { yearsList, monthList, dayList, getCurrentDateInformation } from '@appConstants/dates';
 import { dateInUTC } from '@app/utils/date.utils';
-import {
-  DB_EDIT_TRANSACTION_ACK,
-  DB_NEW_TRANSACTION_ACK,
-} from '@constants/events';
-import { Account } from '@database/entities';
+import { DB_EDIT_TRANSACTION_ACK, DB_NEW_TRANSACTION_ACK } from '@constants/events';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import TransactionIpc from '@app/data/transaction.ipc';
 import { StatusEnum } from '@app/constants/misc';
@@ -59,7 +55,11 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
   const { setStatusMessage } = useContext(StatusBarContext);
   const { accountsIndex } = useContext(EntitiesContext);
   const accountOptions = useMemo(
-    () => accountsIndex?.accounts?.map(account => ({ label: account.name, value: account.id.toString() })),
+    () =>
+      accountsIndex?.accounts?.map(account => ({
+        label: account.name,
+        value: account.id.toString(),
+      })),
     [accountsIndex?.lastUpdate]
   );
   const { handleSubmit, control, register, watch, formState } = useForm({
