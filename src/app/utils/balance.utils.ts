@@ -321,10 +321,15 @@ export const getTransactionBalanceByWeeks = (
     end: new Date(),
   }, { weekStartsOn: 1});
   return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
+    // FIXME: To accurately calculate the balance we need to sum the previous transactions
+    // outside of the current selected date range.
+    const startingBalance = 0;
     // Get transactions from -weeks ago to current week and calculate balance
-    const balance = getTransactionsBalance(
+    const periodBalance = getTransactionsBalance(
       getSelectedTransactions(transactions, weekDate, endOfWeek(weekDate, { weekStartsOn: 1 }))
     );
+    const previousBalance = index === 0 ? startingBalance : acc[index - 1].balance;
+    const balance = previousBalance + periodBalance;
     return [
       ...acc,
       {
@@ -332,7 +337,7 @@ export const getTransactionBalanceByWeeks = (
         balance,
         dateWeek: weekDate,
         label: getWeek(weekDate).toString(),
-        difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
+        difference: index === 0 ? 0 : calculateBalanceDifference(balance, previousBalance),
         id: index,
       },
     ];

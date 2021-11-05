@@ -1,16 +1,18 @@
-import {
-  eachWeekOfInterval,
-  endOfWeek,
-  getWeek,
-} from 'date-fns';
+import { eachWeekOfInterval, getWeek, isEqual } from 'date-fns';
 
-import { Account, Asset, AssetBalanceStatement, BalanceStatement } from '@database/entities';
+import {
+  Account,
+  Asset,
+  BalanceStatement,
+  Transaction,
+} from '@database/entities';
 
 import {
   calculateBalanceDifference,
   ChartPeriodType,
   generatePlaceholdersChartPeriod,
-  getSelectedBalanceStatementValue,
+  getBalancesByWeeks,
+  getTransactionBalanceByWeeks,
 } from './balance.utils';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
@@ -44,55 +46,42 @@ export const getNetWorthTrends = (
     { weekStartsOn: 1 }
   );
 
-  const netWorthBalances = weeksDates.reduce((acc: ChartPeriodType[], week, index) => {
-    const accountBalanceWeek = accountsNoClosed.reduce((count, account) => {
-      const balanceStatementValue = getSelectedBalanceStatementValue(
-        account.balanceStatements as BalanceStatement[],
-        week,
-        endOfWeek(week, { weekStartsOn: 1 })
-      );
-      const balance = balanceStatementValue
-        ? balanceStatementValue
-        : acc[index - 1]?.accountBalanceWeek
-        ? acc[index - 1].accountBalanceWeek
-        : 0;
+  const accountChartBalances = accountsNoClosed.map(account => {
+    return account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate ===
+      false
+      ? getBalancesByWeeks(account.balanceStatements as BalanceStatement[], 52)
+      : getTransactionBalanceByWeeks(account.transactions as Transaction[], 52);
+  });
 
-      return count + (balance as number);
-    }, 0);
+  const assetChartBalances = assetsNoSold.map(asset => {
+    return asset.balanceStatements && asset.balanceStatements.length > 0
+      ? getBalancesByWeeks(asset.balanceStatements, 52)
+      : [];
+  });
 
-    const assetBalanceWeek = assetsNoSold.reduce((count, asset) => {
-      const balanceStatementValue = getSelectedBalanceStatementValue(
-        asset.balanceStatements as AssetBalanceStatement[],
-        week,
-        endOfWeek(week, { weekStartsOn: 1 })
-      );
-      const balance = balanceStatementValue
-        ? balanceStatementValue
-        : acc[index - 1]?.assetBalanceWeek
-        ? acc[index - 1].assetBalanceWeek
-        : 0;
+  const chartBalances = [...assetChartBalances, ...accountChartBalances];
 
-      return count + (balance as number);
-    }, 0);
-
-    const balance = accountBalanceWeek + assetBalanceWeek;
-
-    return [
-      ...acc,
-      {
-        balance,
+  const newWorthBalances = weeksDates.map((week, index) => {
+    const weekChartBalances = chartBalances
+      .reduce(
+        (acc, chartBalance) => [
+          ...acc,
+          ...chartBalance.filter(balance => isEqual(balance.dateWeek || new Date(), week)),
+        ],
+        []
+      )
+      .reduce((accWeekChartBalances, weekChartBalances) => ({ ...accWeekChartBalances, balance: accWeekChartBalances.balance + weekChartBalances.balance }), {
+        balance: 0,
         week: getWeek(week),
         dateWeek: week,
         label: getWeek(week).toString(),
-        difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
         id: index,
-        accountBalanceWeek,
-        assetBalanceWeek,
-      },
-    ];
-  }, []);
+      });
 
-  return netWorthBalances;
+    return weekChartBalances;
+  }).reduce((accDiff: ChartPeriodType[], diff, index) => [...accDiff, { ...diff, difference: index === 0 ? 0 : calculateBalanceDifference(diff.balance, accDiff[index - 1].balance) }], []);
+
+  return newWorthBalances;
 };
 
 export const generateTrendsChartData = (chartData: ChartPeriodType[], numberOfWeeks: number) => {
