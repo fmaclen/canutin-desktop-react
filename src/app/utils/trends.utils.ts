@@ -1,11 +1,6 @@
 import { eachWeekOfInterval, getWeek, isEqual } from 'date-fns';
 
-import {
-  Account,
-  Asset,
-  BalanceStatement,
-  Transaction,
-} from '@database/entities';
+import { Account, Asset, BalanceStatement, Transaction } from '@database/entities';
 
 import {
   calculateBalanceDifference,
@@ -55,31 +50,49 @@ export const getNetWorthTrends = (
 
   const assetChartBalances = assetsNoSold.map(asset => {
     return asset.balanceStatements && asset.balanceStatements.length > 0
-      ? getBalancesByWeeks(asset.balanceStatements, 52)
+      ? getBalancesByWeeks(asset.balanceStatements, 100)
       : [];
   });
 
   const chartBalances = [...assetChartBalances, ...accountChartBalances];
 
-  const newWorthBalances = weeksDates.map((week, index) => {
-    const weekChartBalances = chartBalances
-      .reduce(
-        (acc, chartBalance) => [
-          ...acc,
-          ...chartBalance.filter(balance => isEqual(balance.dateWeek || new Date(), week)),
-        ],
-        []
-      )
-      .reduce((accWeekChartBalances, weekChartBalances) => ({ ...accWeekChartBalances, balance: accWeekChartBalances.balance + weekChartBalances.balance }), {
-        balance: 0,
-        week: getWeek(week),
-        dateWeek: week,
-        label: getWeek(week).toString(),
-        id: index,
-      });
+  const newWorthBalances = weeksDates
+    .map((week, index) => {
+      const weekChartBalances = chartBalances
+        .reduce(
+          (acc, chartBalance) => [
+            ...acc,
+            ...chartBalance.filter(balance => isEqual(balance.dateWeek || new Date(), week)),
+          ],
+          []
+        )
+        .reduce(
+          (accWeekChartBalances, weekChartBalances) => ({
+            ...accWeekChartBalances,
+            balance: accWeekChartBalances.balance + weekChartBalances.balance,
+          }),
+          {
+            balance: 0,
+            week: getWeek(week, { weekStartsOn: 1 }),
+            dateWeek: week,
+            label: getWeek(week, { weekStartsOn: 1 }).toString(),
+            id: index,
+          }
+        );
 
-    return weekChartBalances;
-  }).reduce((accDiff: ChartPeriodType[], diff, index) => [...accDiff, { ...diff, difference: index === 0 ? 0 : calculateBalanceDifference(diff.balance, accDiff[index - 1].balance) }], []);
+      return weekChartBalances;
+    })
+    .reduce(
+      (accDiff: ChartPeriodType[], diff, index) => [
+        ...accDiff,
+        {
+          ...diff,
+          difference:
+            index === 0 ? 0 : calculateBalanceDifference(diff.balance, accDiff[index - 1].balance),
+        },
+      ],
+      []
+    );
 
   return newWorthBalances;
 };
