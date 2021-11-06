@@ -12,7 +12,8 @@ export const formatDate = (date: Date) => {
   return format(dateToUserTimezone(), DATE_FORMAT);
 };
 
-export const getNumberOfWeeks = (from: Date, to: Date) => differenceInCalendarWeeks(to, from);
+export const getNumberOfWeeks = (from: Date, to: Date) =>
+  differenceInCalendarWeeks(to, from, { weekStartsOn: 1 });
 
 export const createdAtDate = (unixTimestamp?: number) =>
   unixTimestamp ? fromUnixTime(unixTimestamp) : new Date();
