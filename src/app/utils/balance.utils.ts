@@ -411,7 +411,7 @@ export const generatePlaceholdersChartPeriod = (
     );
 
     return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
-      const label = getWeek(weekDate).toLocaleString('en-US', {
+      const label = getWeek(weekDate, { weekStartsOn: 1 }).toLocaleString('en-US', {
         minimumIntegerDigits: 2,
       }); // From "01" to "52"
 
@@ -421,7 +421,7 @@ export const generatePlaceholdersChartPeriod = (
           week: getWeek(weekDate, { weekStartsOn: 1 }),
           balance: 0,
           dateWeek: weekDate,
-          label: getWeek(weekDate, { weekStartsOn: 1 }).toString(),
+          label: label,
           difference: 0,
           id: index + weeksOffset,
         },
