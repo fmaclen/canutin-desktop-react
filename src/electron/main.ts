@@ -10,7 +10,7 @@ import {
   IpcMainEvent,
   nativeTheme,
   screen,
-  ipcRenderer,
+  IpcMainInvokeEvent,
 } from 'electron';
 import isDev from 'electron-is-dev';
 import * as path from 'path';
@@ -59,6 +59,7 @@ import {
   DB_EDIT_ASSET_VALUE_ACK,
   DB_EDIT_ASSET_DETAILS,
   DB_EDIT_ASSET_DETAILS_ACK,
+  APP_INFO,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -164,10 +165,7 @@ const setupEvents = async () => {
       otherCsvPayload: { canutinFile: CanutinFileType; updatedAccounts: UpdatedAccount[] }
     ) => {
       await loadFromCanutinFile(win, otherCsvPayload.canutinFile);
-      await importUpdatedAccounts(
-        win,
-        otherCsvPayload.updatedAccounts
-      );
+      await importUpdatedAccounts(win, otherCsvPayload.updatedAccounts);
     }
   );
 
@@ -410,6 +408,12 @@ const setupDbEvents = async () => {
           win.close();
       }
     }
+  });
+
+  ipcMain.handle(APP_INFO, async (_: IpcMainInvokeEvent) => {
+    return {
+      version: app.getVersion(),
+    };
   });
 };
 

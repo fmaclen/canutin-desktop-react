@@ -11,6 +11,7 @@ import {
   eachMonthOfInterval,
   format,
   isEqual,
+  startOfWeek,
 } from 'date-fns';
 import merge from 'deepmerge';
 
@@ -330,7 +331,11 @@ export const getTransactionBalanceByWeeks = (
     const startingBalance = 0;
     // Get transactions from -weeks ago to current week and calculate balance
     const periodBalance = getTransactionsBalance(
-      getSelectedTransactions(transactions, weekDate, endOfWeek(weekDate, { weekStartsOn: 1 }))
+      getSelectedTransactions(
+        transactions,
+        startOfWeek(weekDate, { weekStartsOn: 1 }),
+        endOfWeek(weekDate, { weekStartsOn: 1 })
+      )
     );
     const previousBalance = index === 0 ? startingBalance : acc[index - 1].balance;
     const balance = previousBalance + periodBalance;
@@ -366,7 +371,7 @@ export const getBalancesByWeeks = (
     // Get transactions from -weeks ago to current week and calculate balance
     const balanceStatementValue = getSelectedBalanceStatementValue(
       balanceStatements,
-      weekDate,
+      startOfWeek(weekDate, { weekStartsOn: 1 }),
       endOfWeek(weekDate, { weekStartsOn: 1 })
     );
     const balance = balanceStatementValue
@@ -406,6 +411,10 @@ export const generatePlaceholdersChartPeriod = (
     );
 
     return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
+      const label = getWeek(weekDate).toLocaleString('en-US', {
+        minimumIntegerDigits: 2,
+      }); // From "01" to "52"
+
       return [
         ...acc,
         {
@@ -435,12 +444,17 @@ export const generatePlaceholdersChartMonthPeriod = (
     });
 
     return monthsDates.reduce((acc: ChartPeriodType[], monthDate, index) => {
+      const label =
+        getWeek(monthDate) === 1
+          ? `${format(monthDate, 'MMM')} '${format(monthDate, 'yy')}`
+          : format(monthDate, 'MMM'); // From "Jan '21" to "Dec"
+
       return [
         ...acc,
         {
           month: monthDate,
           balance: 0,
-          label: format(monthDate, 'MMM'),
+          label: label,
           expenses: 0,
           income: 0,
           surplus: 0,
@@ -449,4 +463,8 @@ export const generatePlaceholdersChartMonthPeriod = (
       ];
     }, []);
   }
+};
+
+export const proportionBetween = (num1: number, num2: number) => {
+  return Math.round((!(num1 === 0) && !(num2 === 0) ? (num1 * 100) / num2 : 0) * 1e2) / 1e2;
 };
