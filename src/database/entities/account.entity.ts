@@ -22,6 +22,9 @@ export class Account extends Base {
   closed: boolean;
 
   @Column()
+  autoCalculate: boolean;
+
+  @Column()
   balanceGroup: BalanceGroupEnum;
 
   @OneToMany(() => BalanceStatement, balanceStatement => balanceStatement.account)
@@ -37,6 +40,7 @@ export class Account extends Base {
   constructor(
     name: string,
     closed: boolean,
+    autoCalculate: boolean,
     accountType: AccountType,
     officialName?: string,
     institution?: string,
@@ -48,6 +52,7 @@ export class Account extends Base {
     this.officialName = officialName;
     this.institution = institution;
     this.closed = closed;
+    this.autoCalculate = autoCalculate;
     this.balanceGroup = getBalanceGroupByAccountType(accountType?.name);
     this.accountType = accountType;
     this.transactions = transactions;

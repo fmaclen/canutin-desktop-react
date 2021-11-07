@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { Account, BalanceStatement, Transaction } from '@database/entities';
 
@@ -24,7 +24,7 @@ const AccountOverviewInformation = ({
   numberOfWeeks,
 }: AccountOverviewInformationProps) => {
   const accountChartBalances =
-    account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate === false
+    account.autoCalculate === false
       ? getBalancesByWeeks(account.balanceStatements as BalanceStatement[], 52)
       : getTransactionBalanceByWeeks(transactions, 52);
 

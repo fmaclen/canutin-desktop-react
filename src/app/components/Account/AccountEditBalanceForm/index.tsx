@@ -34,8 +34,7 @@ const AccountEditBalanceForm = ({ account }: AccountEditBalanceFormProps) => {
       balance: account.balanceStatements?.[account.balanceStatements?.length - 1].value
         ? account.balanceStatements?.[account.balanceStatements?.length - 1].value
         : 0,
-      autoCalculate:
-        account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate,
+      autoCalculate: account.autoCalculate,
       closed: account.closed,
     },
   });

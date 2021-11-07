@@ -117,12 +117,12 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
     }
 
     if (selectedAccount && accountsIndex?.accounts && selectedAccount !== NEW_ACCOUNT_VALUE) {
-      const account = accountsIndex?.accounts.find(account => account.id === Number.parseInt(selectedAccount));
+      const account = accountsIndex?.accounts.find(
+        account => account.id === Number.parseInt(selectedAccount)
+      );
       setValue(
         'account.autoCalculate',
-        account?.balanceStatements
-          ? account.balanceStatements[account.balanceStatements.length - 1].autoCalculate
-          : false,
+        account?.balanceStatements ? account.autoCalculate : false,
         { shouldValidate: true }
       );
       setValue(
@@ -145,7 +145,11 @@ const OtherCSVForm = ({ data, metadata }: OtherCSVFormProps) => {
     [metadata]
   );
   const accountOptions = useMemo(
-    () => accountsIndex?.accounts?.map(account => ({ label: account.name, value: account.id.toString() })),
+    () =>
+      accountsIndex?.accounts?.map(account => ({
+        label: account.name,
+        value: account.id.toString(),
+      })),
     [accountsIndex?.lastUpdate]
   );
   const newAccountGroupedOptions = accountOptions

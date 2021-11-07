@@ -4,12 +4,11 @@ export type NewAccountType = {
   officialName?: string;
   institution?: string;
   balance?: number;
-  autoCalculate: boolean | string;
+  autoCalculate: boolean;
 };
 
 export type AccountEditBalanceSubmitType = {
   accountId: number;
-  autoCalculate: boolean;
   balance: number;
   closed: boolean;
 };

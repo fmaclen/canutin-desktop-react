@@ -42,10 +42,9 @@ export const getNetWorthTrends = (
   );
 
   const accountChartBalances = accountsNoClosed.map(account => {
-    return account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate ===
-      false
-      ? getBalancesByWeeks(account.balanceStatements as BalanceStatement[], 52)
-      : getTransactionBalanceByWeeks(account.transactions as Transaction[], 52);
+    return account.autoCalculate
+      ? getTransactionBalanceByWeeks(account.transactions as Transaction[], 52)
+      : getBalancesByWeeks(account.balanceStatements as BalanceStatement[], 52);
   });
 
   const assetChartBalances = assetsNoSold.map(asset => {
