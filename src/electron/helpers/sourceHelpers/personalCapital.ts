@@ -53,7 +53,7 @@ export const personalCapitalCsvToJson = (personalCapitalCsv: PersonalCapitalCsvE
           balanceGroup: BalanceGroupEnum.CASH,
           accountType: 'checking',
           transactions: [transaction],
-          autoCalculate: true,
+          autoCalculated: true,
         });
       }
 

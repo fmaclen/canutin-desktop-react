@@ -21,7 +21,7 @@ export class AccountRepository {
       new Account(
         account.name,
         false,
-        account.autoCalculate,
+        account.autoCalculated,
         accountType,
         account.officialName,
         account.institution
@@ -90,9 +90,9 @@ export class AccountRepository {
       return AccountRepository.createAccount(account);
     }
 
-    const existingAccountAutoCalculate = accountDb.autoCalculate;
+    const existingAccountAutoCalculate = accountDb.autoCalculated;
 
-    if (account.autoCalculate && existingAccountAutoCalculate) {
+    if (account.autoCalculated && existingAccountAutoCalculate) {
       await BalanceStatementRepository.createBalanceStatement({
         value: account.balance,
         account: accountDb,
@@ -101,7 +101,7 @@ export class AccountRepository {
       return accountDb;
     }
 
-    if (account.autoCalculate && !existingAccountAutoCalculate) {
+    if (account.autoCalculated && !existingAccountAutoCalculate) {
       await BalanceStatementRepository.createBalanceStatement({
         value: account.balance,
         account: accountDb,
@@ -110,7 +110,7 @@ export class AccountRepository {
       return accountDb;
     }
 
-    if (!account.autoCalculate) {
+    if (!account.autoCalculated) {
       await BalanceStatementRepository.createBalanceStatement({
         value: account.balance,
         account: accountDb,

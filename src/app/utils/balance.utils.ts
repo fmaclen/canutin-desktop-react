@@ -100,7 +100,7 @@ export const getBalanceForAccountsByBalanceGroup = (accounts: Account[]) => {
 
 export const generateAccountBalanceInfo = (account: Account) => ({
   ...account,
-  amount: account.autoCalculate
+  amount: account.autoCalculated
     ? account.transactions?.reduce((sum, transaction) => transaction.amount + sum, 0)
     : account.balanceStatements?.[account.balanceStatements?.length - 1].value,
   type: 'Account',

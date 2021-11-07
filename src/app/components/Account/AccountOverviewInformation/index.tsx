@@ -24,7 +24,7 @@ const AccountOverviewInformation = ({
   numberOfWeeks,
 }: AccountOverviewInformationProps) => {
   const accountChartBalances =
-    account.autoCalculate === false
+    account.autoCalculated === false
       ? getBalancesByWeeks(account.balanceStatements as BalanceStatement[], 52)
       : getTransactionBalanceByWeeks(transactions, 52);
 

@@ -22,7 +22,7 @@ export class Account extends Base {
   closed: boolean;
 
   @Column()
-  autoCalculate: boolean;
+  autoCalculated: boolean;
 
   @Column()
   balanceGroup: BalanceGroupEnum;
@@ -40,7 +40,7 @@ export class Account extends Base {
   constructor(
     name: string,
     closed: boolean,
-    autoCalculate: boolean,
+    autoCalculated: boolean,
     accountType: AccountType,
     officialName?: string,
     institution?: string,
@@ -52,7 +52,7 @@ export class Account extends Base {
     this.officialName = officialName;
     this.institution = institution;
     this.closed = closed;
-    this.autoCalculate = autoCalculate;
+    this.autoCalculated = autoCalculated;
     this.balanceGroup = getBalanceGroupByAccountType(accountType?.name);
     this.accountType = accountType;
     this.transactions = transactions;

@@ -46,24 +46,24 @@ describe('Add account by Hand tests', () => {
 
     // Required fields
     const nameInput = screen.getByLabelText('Name');
-    const autoCalculateInput = screen.getByLabelText('Auto-calculate from transactions');
+    const autoCalculatedInput = screen.getByLabelText('Auto-calculate from transactions');
 
     const continueButton = screen.getByRole('button', { name: /Continue/i });
     expect(continueButton).toBeDisabled();
 
     userEvent.type(nameInput, 'Test account');
-    userEvent.click(autoCalculateInput);
+    userEvent.click(autoCalculatedInput);
     await waitFor(() => {
       expect(nameInput).toHaveValue('Test account');
-      expect(autoCalculateInput).toBeChecked();
+      expect(autoCalculatedInput).toBeChecked();
       expect(continueButton).not.toBeDisabled();
     });
 
-    userEvent.click(autoCalculateInput);
+    userEvent.click(autoCalculatedInput);
     await waitFor(() => {
       expect(continueButton).toBeDisabled();
     });
-    userEvent.click(autoCalculateInput);
+    userEvent.click(autoCalculatedInput);
     await waitFor(() => {
       expect(continueButton).not.toBeDisabled();
     });
@@ -72,7 +72,7 @@ describe('Add account by Hand tests', () => {
     await waitFor(() => {
       expect(spySendIpcRenderer).toBeCalledWith(DB_NEW_ACCOUNT, {
         accountType: 'checking',
-        autoCalculate: true,
+        autoCalculated: true,
         balance: null,
         institution: '',
         name: 'Test account',
@@ -114,7 +114,7 @@ describe('Add account by Hand tests', () => {
     await waitFor(() => {
       expect(spySendIpcRenderer).toBeCalledWith(DB_NEW_ACCOUNT, {
         accountType: 'paypal',
-        autoCalculate: false,
+        autoCalculated: false,
         balance: '123',
         institution: 'Test Institution',
         name: 'Test Account',

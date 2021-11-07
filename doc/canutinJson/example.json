@@ -4,7 +4,7 @@
       "name": "Alice's Checking",
       "balanceGroup": "cash",
       "accountType": "checking",
-      "autoCalculate": false,
+      "autoCalculated": false,
       "balance": 5450.75,
       "transactions": [
         {
@@ -34,7 +34,7 @@
       "name": "Alices's Emergency Fund",
       "balanceGroup": "cash",
       "accountType": "savings",
-      "autoCalculate": true,
+      "autoCalculated": true,
       "balance": 999999,
       "transactions": [
         {
@@ -51,7 +51,7 @@
       "balanceGroup": "debt",
       "accountType": "credit card",
       "balance": 1782.32,
-      "autoCalculate": false,
+      "autoCalculated": false,
       "transactions": [
         {
           "description": "Trader Joes",
@@ -80,20 +80,20 @@
       "name": "Bob's Stocks",
       "balanceGroup": "investment",
       "accountType": "brokerage",
-      "autoCalculate": true,
+      "autoCalculated": true,
       "balance": 9999999
     },
     {
       "name": "Alice's Roth IRA",
       "balanceGroup": "investment",
       "accountType": "roth",
-      "autoCalculate": false,
+      "autoCalculated": false,
       "balance": 16500
     },
     {
       "name": "Initech 401k Plan",
       "balanceGroup": "investment",
-      "autoCalculate": false,
+      "autoCalculated": false,
       "accountType": "401k",
       "balance": 0
     }

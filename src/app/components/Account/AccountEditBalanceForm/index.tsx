@@ -34,14 +34,14 @@ const AccountEditBalanceForm = ({ account }: AccountEditBalanceFormProps) => {
       balance: account.balanceStatements?.[account.balanceStatements?.length - 1].value
         ? account.balanceStatements?.[account.balanceStatements?.length - 1].value
         : 0,
-      autoCalculate: account.autoCalculate,
+      autoCalculated: account.autoCalculated,
       closed: account.closed,
     },
   });
 
   const balance = watch('balance');
   const closed = watch('closed');
-  const autoCalculate = watch('autoCalculate');
+  const autoCalculated = watch('autoCalculated');
 
   useEffect(() => {
     ipcRenderer.on(DB_EDIT_ACCOUNT_BALANCE_ACK, (_: IpcRendererEvent, { status, message }) => {
@@ -71,20 +71,20 @@ const AccountEditBalanceForm = ({ account }: AccountEditBalanceFormProps) => {
           <ToggleInputField>
             <InputCurrency
               value={balance && Number(balance)}
-              rules={{ validate: v => autoCalculate || v !== '' }}
+              rules={{ validate: v => autoCalculated || v !== '' }}
               name="balance"
-              disabled={autoCalculate}
+              disabled={autoCalculated}
               control={control}
             />
             <InlineCheckbox
-              name="autoCalculate"
-              id="autoCalculate"
+              name="autoCalculated"
+              id="autoCalculated"
               label="Auto-calculate from transactions"
               register={register}
             />
           </ToggleInputField>
         </Field>
-        {!autoCalculate && (
+        {!autoCalculated && (
           <FieldNotice
             title="Balance history"
             description={

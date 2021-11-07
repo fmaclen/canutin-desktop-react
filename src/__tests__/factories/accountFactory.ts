@@ -41,7 +41,7 @@ export const accountBuilder = build('Account', {
     updatedAt: fake(f => f.date.past()),
     balanceGroup: fake(f => f.random.number(3)),
     closed: bool(),
-    autoCalculate: bool(),
+    autoCalculated: bool(),
   },
   postBuild: account => {
     const accountType = accountTypeBuilder();
