@@ -9,8 +9,8 @@ export type NewAccountType = {
 
 export type AccountEditBalanceSubmitType = {
   accountId: number;
-  balance: number;
   autoCalculated: boolean;
+  balance: number;
   closed: boolean;
 };
 
