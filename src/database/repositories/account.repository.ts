@@ -28,10 +28,11 @@ export class AccountRepository {
       )
     );
 
-    await BalanceStatementRepository.createBalanceStatement({
-      value: account.balance,
-      account: accountSaved,
-    });
+    !account.autoCalculated &&
+      (await BalanceStatementRepository.createBalanceStatement({
+        value: account.balance,
+        account: accountSaved,
+      }));
 
     return accountSaved;
   }
@@ -80,46 +81,24 @@ export class AccountRepository {
   }
 
   static async getOrCreateAccount(account: NewAccountType): Promise<Account> {
-    const accountDb = await getRepository<Account>(Account)
+    const existingAccount = await getRepository<Account>(Account)
       .createQueryBuilder('account')
       .leftJoinAndSelect('account.balanceStatements', 'balanceStatements')
       .where('account.name like :name', { name: `%${account.name}%` })
       .getOne();
 
-    if (!accountDb) {
+    if (!existingAccount) {
       return AccountRepository.createAccount(account);
-    }
-
-    const existingAccountAutoCalculate = accountDb.autoCalculated;
-
-    if (account.autoCalculated && existingAccountAutoCalculate) {
-      await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance,
-        account: accountDb,
-      });
-
-      return accountDb;
-    }
-
-    if (account.autoCalculated && !existingAccountAutoCalculate) {
-      await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance,
-        account: accountDb,
-      });
-
-      return accountDb;
     }
 
     if (!account.autoCalculated) {
       await BalanceStatementRepository.createBalanceStatement({
         value: account.balance,
-        account: accountDb,
+        account: existingAccount,
       });
-
-      return accountDb;
     }
 
-    return accountDb;
+    return existingAccount;
   }
 
   static async editBalance(accountBalance: AccountEditBalanceSubmitType): Promise<Account> {
@@ -169,14 +148,19 @@ export class AccountRepository {
       relations: ['transactions', 'balanceStatements'],
     });
 
-    account?.transactions &&
-      account.transactions.length > 0 &&
-      (await TransactionRepository.deleteTransactions(account.transactions.map(({ id }) => id)));
+    if (account) {
+      // Delete associated transactions
+      account.transactions &&
+        account.transactions.length > 0 &&
+        (await TransactionRepository.deleteTransactions(account.transactions.map(({ id }) => id)));
 
-    account?.balanceStatements &&
-      (await BalanceStatementRepository.deleteBalanceStatements(
-        account.balanceStatements.map(({ id }) => id)
-      ));
+      // Delete associated balance statements
+      !account.autoCalculated &&
+        account.balanceStatements &&
+        (await BalanceStatementRepository.deleteBalanceStatements(
+          account.balanceStatements.map(({ id }) => id)
+        ));
+    }
 
     await getRepository<Account>(Account).delete(accountId);
   }
