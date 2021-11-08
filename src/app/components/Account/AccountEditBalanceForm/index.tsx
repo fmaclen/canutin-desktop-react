@@ -11,6 +11,7 @@ import { DB_EDIT_ACCOUNT_BALANCE_ACK } from '@constants/events';
 import { StatusEnum } from '@app/constants/misc';
 import { AccountEditBalanceSubmitType } from '@appTypes/account.type';
 import { routesPaths } from '@app/routes';
+import { generateAccountBalanceInfo } from '@app/utils/balance.utils';
 
 import Form from '@components/common/Form/Form';
 import Fieldset from '@components/common/Form/Fieldset';
@@ -27,13 +28,12 @@ interface AccountEditBalanceFormProps {
 }
 
 const AccountEditBalanceForm = ({ account }: AccountEditBalanceFormProps) => {
+  const { amount } = generateAccountBalanceInfo(account);
   const { push } = useHistory();
   const { setStatusMessage } = useContext(StatusBarContext);
   const { handleSubmit, control, register, watch } = useForm({
     defaultValues: {
-      balance: account.balanceStatements?.[account.balanceStatements?.length - 1].value
-        ? account.balanceStatements?.[account.balanceStatements?.length - 1].value
-        : 0,
+      balance: amount,
       autoCalculated: account.autoCalculated,
       closed: account.closed,
     },
