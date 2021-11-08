@@ -124,6 +124,7 @@ export class AccountRepository {
 
   static async editBalance(accountBalance: AccountEditBalanceSubmitType): Promise<Account> {
     await getRepository<Account>(Account).update(accountBalance.accountId, {
+      autoCalculated: accountBalance.autoCalculated,
       closed: accountBalance.closed,
     });
 
@@ -133,10 +134,11 @@ export class AccountRepository {
       },
     });
 
-    await BalanceStatementRepository.createBalanceStatement({
-      value: accountBalance.balance,
-      account: updatedAccount as Account,
-    });
+    !accountBalance.autoCalculated &&
+      (await BalanceStatementRepository.createBalanceStatement({
+        value: accountBalance.balance,
+        account: updatedAccount as Account,
+      }));
 
     return updatedAccount as Account;
   }
