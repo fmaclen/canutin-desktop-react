@@ -148,19 +148,17 @@ export class AccountRepository {
       relations: ['transactions', 'balanceStatements'],
     });
 
-    if (account) {
-      // Delete associated transactions
-      account.transactions &&
-        account.transactions.length > 0 &&
-        (await TransactionRepository.deleteTransactions(account.transactions.map(({ id }) => id)));
+    // Delete associated transactions
+    account?.transactions &&
+      account.transactions.length > 0 &&
+      (await TransactionRepository.deleteTransactions(account.transactions.map(({ id }) => id)));
 
-      // Delete associated balance statements
-      !account.autoCalculated &&
-        account.balanceStatements &&
-        (await BalanceStatementRepository.deleteBalanceStatements(
-          account.balanceStatements.map(({ id }) => id)
-        ));
-    }
+    // Delete associated balance statements
+    !account?.autoCalculated &&
+      account?.balanceStatements &&
+      (await BalanceStatementRepository.deleteBalanceStatements(
+        account.balanceStatements.map(({ id }) => id)
+      ));
 
     await getRepository<Account>(Account).delete(accountId);
   }
