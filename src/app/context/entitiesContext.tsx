@@ -22,14 +22,17 @@ interface EntitiesContextValue {
   accountsIndex: AccountsIndex | null;
 }
 
+const defaultAssetsIndex = { assets: [], lastUpdate: new Date() };
+const defaultAccountsIndex = { accounts: [], lastUpdate: new Date() };
+
 export const EntitiesContext = createContext<EntitiesContextValue>({
-  assetsIndex: { assets: [], lastUpdate: new Date() },
-  accountsIndex: { accounts: [], lastUpdate: new Date() },
+  assetsIndex: defaultAssetsIndex,
+  accountsIndex: defaultAccountsIndex,
 });
 
 export const EntitiesProvider = ({ children }: PropsWithChildren<Record<string, unknown>>) => {
-  const [assetsIndex, setAssetsIndex] = useState<AssetsIndex | null>(null);
-  const [accountsIndex, setAccountsIndex] = useState<AccountsIndex | null>(null);
+  const [assetsIndex, setAssetsIndex] = useState<AssetsIndex>(defaultAssetsIndex);
+  const [accountsIndex, setAccountsIndex] = useState<AccountsIndex>(defaultAccountsIndex);
   const { filePath } = useContext(AppContext);
 
   useEffect(() => {
