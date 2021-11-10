@@ -30,7 +30,7 @@ export class AccountRepository {
 
     !account.autoCalculated &&
       (await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance,
+        value: account.balance ? account.balance : 0,
         account: accountSaved,
       }));
 
@@ -93,7 +93,7 @@ export class AccountRepository {
 
     if (!account.autoCalculated) {
       await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance,
+        value: account.balance ? account.balance : 0,
         account: existingAccount,
       });
     }

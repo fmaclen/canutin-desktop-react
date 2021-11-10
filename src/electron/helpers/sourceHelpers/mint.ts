@@ -42,7 +42,7 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
       countTransactions++;
 
       if (accountIndex > -1) {
-        acc.accounts[accountIndex].transactions.push(transaction);
+        acc.accounts[accountIndex].transactions?.push(transaction);
       } else {
         countAccounts++;
         if (!mintEntry['Account Name']) {

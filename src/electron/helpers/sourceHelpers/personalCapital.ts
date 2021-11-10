@@ -41,7 +41,7 @@ export const personalCapitalCsvToJson = (personalCapitalCsv: PersonalCapitalCsvE
       countTransactions++;
 
       if (accountIndex > -1) {
-        acc.accounts[accountIndex].transactions.push(transaction);
+        acc.accounts[accountIndex].transactions?.push(transaction);
       } else {
         countAccounts++;
         if (!personalCapEntry.Account) {

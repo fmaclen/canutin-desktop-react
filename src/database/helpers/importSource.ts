@@ -12,6 +12,7 @@ import { LOADING_CSV } from '@constants/events';
 import { CANUTIN_FILE_DATE_FORMAT } from '@constants';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AssetTypeEnum } from '@enums/assetType.enum';
+import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
 
 export const importFromCanutinFile = async (
   canutinFile: CanutinFileType,
@@ -20,40 +21,40 @@ export const importFromCanutinFile = async (
   try {
     const countAccounts = canutinFile.accounts?.length;
 
-    canutinFile.accounts?.forEach(async accountInfo => {
-      const account = await AccountRepository.getOrCreateAccount(accountInfo).then(res => {
+    canutinFile.accounts?.forEach(async canutinFileAccount => {
+      const account = await AccountRepository.getOrCreateAccount(canutinFileAccount).then(res => {
         win?.webContents.send(LOADING_CSV, { total: countAccounts });
         return res;
       });
 
       // Process transactions
-      if (accountInfo.transactions) {
+      if (canutinFileAccount.transactions) {
         const transactions = await Promise.all(
-          accountInfo.transactions.map(async transactionInfo => {
+          canutinFileAccount.transactions.map(async canutinFileTransaction => {
             const transactionDate = parse(
-              transactionInfo.date,
+              canutinFileTransaction.date,
               CANUTIN_FILE_DATE_FORMAT,
               new Date()
             );
             const budget =
-              transactionInfo.budget &&
+              canutinFileTransaction.budget &&
               new Budget(
-                transactionInfo.budget.name,
-                transactionInfo.budget.targetAmount,
-                transactionInfo.budget.type,
-                parse(transactionInfo.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
+                canutinFileTransaction.budget.name,
+                canutinFileTransaction.budget.targetAmount,
+                canutinFileTransaction.budget.type,
+                parse(canutinFileTransaction.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
               );
             const category = await CategoryRepository.getOrCreateSubCategory(
-              transactionInfo.category
+              canutinFileTransaction.category
             );
             return new Transaction(
-              transactionInfo.description,
+              canutinFileTransaction.description,
               dateInUTC(transactionDate),
-              transactionInfo.amount,
-              transactionInfo.excludeFromTotals,
+              canutinFileTransaction.amount,
+              canutinFileTransaction.excludeFromTotals,
               account,
               category,
-              createdAtDate(transactionInfo.createdAt),
+              createdAtDate(canutinFileTransaction.createdAt),
               budget
             );
           })
@@ -61,6 +62,16 @@ export const importFromCanutinFile = async (
 
         await TransactionRepository.createTransactions(transactions);
       }
+
+      // Process balanceStatements
+      canutinFileAccount.balanceStatements?.forEach(async canutinFileBalanceStatement => {
+        console.log('creating:', canutinFileBalanceStatement);
+        await BalanceStatementRepository.createBalanceStatement({
+          createdAt: createdAtDate(canutinFileBalanceStatement.createdAt),
+          value: canutinFileBalanceStatement.value,
+          account: account,
+        });
+      });
 
       return account;
     });

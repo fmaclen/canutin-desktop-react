@@ -17,6 +17,11 @@ export interface CanutinFileTransactionType {
   budget?: CanutinFileBudgetType;
 }
 
+export interface CanutinFileBalanceStatementType {
+  createdAt: number;
+  value: number;
+}
+
 export interface CanutinFileAccountType {
   name: string;
   autoCalculated: boolean;
@@ -25,7 +30,8 @@ export interface CanutinFileAccountType {
   institution?: string;
   balanceGroup: BalanceGroupEnum;
   accountType: string;
-  transactions: CanutinFileTransactionType[];
+  transactions?: CanutinFileTransactionType[];
+  balanceStatements?: CanutinFileBalanceStatementType[];
 }
 
 export interface CanutinFileAssetType {

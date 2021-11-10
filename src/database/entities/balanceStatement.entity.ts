@@ -11,9 +11,10 @@ export class BalanceStatement extends Base {
   @JoinColumn()
   account: Account;
 
-  constructor(account: Account, value?: number) {
+  constructor(account: Account, createdAt: Date, value?: number) {
     super();
     this.value = value;
     this.account = account;
+    this.createdAt = createdAt;
   }
 }

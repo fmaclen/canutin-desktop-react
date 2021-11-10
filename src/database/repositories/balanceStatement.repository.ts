@@ -8,7 +8,11 @@ export class BalanceStatementRepository {
     balanceStatement: NewBalanceStatementType
   ): Promise<BalanceStatement> {
     return await getRepository<BalanceStatement>(BalanceStatement).save(
-      new BalanceStatement(balanceStatement.account, balanceStatement.value)
+      new BalanceStatement(
+        balanceStatement.account,
+        balanceStatement.createdAt ? balanceStatement.createdAt : new Date(),
+        balanceStatement.value
+      )
     );
   }
 
