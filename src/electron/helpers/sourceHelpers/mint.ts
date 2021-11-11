@@ -55,6 +55,7 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
           accountType: 'checking',
           transactions: [transaction],
           autoCalculated: true,
+          closed: false,
         });
       }
 

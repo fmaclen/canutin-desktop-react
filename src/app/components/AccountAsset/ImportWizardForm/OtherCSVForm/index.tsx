@@ -52,6 +52,7 @@ export interface OtherCSVFormProps {
 export interface OtherCSVFormSubmit {
   account?: {
     autoCalculated: boolean;
+    closed: boolean;
     balance: BalanceGroupEnum;
     importAccount: string;
     accountType: string;

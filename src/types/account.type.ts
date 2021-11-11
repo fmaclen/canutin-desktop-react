@@ -5,6 +5,7 @@ export type NewAccountType = {
   institution?: string;
   balance?: number;
   autoCalculated: boolean;
+  closed: boolean;
 };
 
 export type AccountEditBalanceSubmitType = {

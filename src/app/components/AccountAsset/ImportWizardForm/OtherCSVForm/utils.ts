@@ -69,6 +69,7 @@ export const getTransactionsForAccountColumn = (
       balanceGroup: getBalanceGroupByAccountType(accounts[accountColumnName]),
       accountType: accounts[accountColumnName],
       autoCalculated: true,
+      closed: false,
       transactions,
     };
 
@@ -170,13 +171,13 @@ export const formToCantuinJsonFile = (
         ({ id }) => id === Number(formData?.account?.importAccount)
       );
     }
-    let { name, accountType, autoCalculated, balance, institution } = formData.account;
+    let { name, accountType, autoCalculated, institution, closed } = formData.account;
 
     if (canutinAccount) {
       name = canutinAccount.name;
       accountType = canutinAccount.accountType.name;
-      balance = formData.account.balance;
       autoCalculated = formData.account.autoCalculated;
+      closed = formData.account.closed;
       if (canutinAccount.institution) {
         institution = canutinAccount.institution;
       }
@@ -199,7 +200,7 @@ export const formToCantuinJsonFile = (
           accountType,
           institution,
           autoCalculated,
-          balance,
+          closed,
           transactions,
         },
       ],

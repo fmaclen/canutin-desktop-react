@@ -20,7 +20,7 @@ export class AccountRepository {
     const accountSaved = await getRepository<Account>(Account).save(
       new Account(
         account.name,
-        false,
+        account.closed,
         account.autoCalculated,
         accountType,
         account.officialName,

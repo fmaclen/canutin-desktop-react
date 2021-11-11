@@ -54,6 +54,7 @@ export const personalCapitalCsvToJson = (personalCapitalCsv: PersonalCapitalCsvE
           accountType: 'checking',
           transactions: [transaction],
           autoCalculated: true,
+          closed: false,
         });
       }
 
