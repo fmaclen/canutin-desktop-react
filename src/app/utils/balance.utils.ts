@@ -27,12 +27,12 @@ import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 
 export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
-  const assetsNoSold = assets.filter(
+  const assetsNotSold = assets.filter(
     ({ balanceStatements }) =>
       balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
   );
 
-  return assetsNoSold.reduce(
+  return assetsNotSold.reduce(
     (listOfBalancesByGroup, asset) => {
       let balanceData = listOfBalancesByGroup?.[asset.balanceGroup]?.[asset.assetType.name];
 
@@ -63,9 +63,9 @@ export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
 };
 
 export const getBalanceForAccountsByBalanceGroup = (accounts: Account[]) => {
-  const accountsNoClosed = accounts.filter(({ closed }) => !closed);
+  const accountsNotClosed = accounts.filter(({ closed }) => !closed);
 
-  return accountsNoClosed.reduce(
+  return accountsNotClosed.reduce(
     (listOfBalancesByGroup, account) => {
       let balanceData = listOfBalancesByGroup?.[account.balanceGroup]?.[account.accountType.name];
 

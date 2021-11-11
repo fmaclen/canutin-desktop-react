@@ -18,7 +18,7 @@ export const getNetWorthTrends = (
   dateTo: Date,
   balanceGroupFilter: BalanceGroupEnum = BalanceGroupEnum.NET_WORTH
 ) => {
-  const assetsNoSold = assets
+  const assetsNotSold = assets
     .filter(
       ({ balanceStatements }) =>
         balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
@@ -27,7 +27,7 @@ export const getNetWorthTrends = (
       ({ balanceGroup }) =>
         balanceGroupFilter === balanceGroup || balanceGroupFilter === BalanceGroupEnum.NET_WORTH
     );
-  const accountsNoClosed = accounts
+  const accountsNotClosed = accounts
     .filter(({ closed }) => !closed)
     .filter(
       ({ balanceGroup }) =>
@@ -41,13 +41,13 @@ export const getNetWorthTrends = (
     { weekStartsOn: 1 }
   );
 
-  const accountChartBalances = accountsNoClosed.map(account => {
+  const accountChartBalances = accountsNotClosed.map(account => {
     return account.autoCalculated
       ? getTransactionBalanceByWeeks(account.transactions as Transaction[], 52)
       : getBalancesByWeeks(account.balanceStatements as AccountBalanceStatement[], 52);
   });
 
-  const assetChartBalances = assetsNoSold.map(asset => {
+  const assetChartBalances = assetsNotSold.map(asset => {
     return asset.balanceStatements && asset.balanceStatements.length > 0
       ? getBalancesByWeeks(asset.balanceStatements, 100)
       : [];
