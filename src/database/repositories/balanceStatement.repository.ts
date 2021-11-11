@@ -1,14 +1,14 @@
 import { getRepository } from 'typeorm';
 
-import { BalanceStatement } from '../entities';
-import { NewBalanceStatementType } from '../../types/balanceStatement.type';
+import { AccountBalanceStatement } from '../entities';
+import { NewBalanceStatementType } from '../../types/accountBalanceStatement.type';
 
 export class BalanceStatementRepository {
   static async createBalanceStatement(
     balanceStatement: NewBalanceStatementType
-  ): Promise<BalanceStatement> {
-    return await getRepository<BalanceStatement>(BalanceStatement).save(
-      new BalanceStatement(
+  ): Promise<AccountBalanceStatement> {
+    return await getRepository<AccountBalanceStatement>(AccountBalanceStatement).save(
+      new AccountBalanceStatement(
         balanceStatement.account,
         balanceStatement.createdAt ? balanceStatement.createdAt : new Date(),
         balanceStatement.value
@@ -16,8 +16,8 @@ export class BalanceStatementRepository {
     );
   }
 
-  static async getBalanceStatements(): Promise<BalanceStatement[]> {
-    return await getRepository<BalanceStatement>(BalanceStatement).find({
+  static async getBalanceStatements(): Promise<AccountBalanceStatement[]> {
+    return await getRepository<AccountBalanceStatement>(AccountBalanceStatement).find({
       relations: ['account'],
       order: {
         createdAt: 'DESC',
@@ -26,6 +26,8 @@ export class BalanceStatementRepository {
   }
 
   static async deleteBalanceStatements(balanceStatementsIds: number[]) {
-    await getRepository<BalanceStatement>(BalanceStatement).delete(balanceStatementsIds);
+    await getRepository<AccountBalanceStatement>(AccountBalanceStatement).delete(
+      balanceStatementsIds
+    );
   }
 }

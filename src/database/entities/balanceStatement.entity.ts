@@ -3,7 +3,7 @@ import { Base } from './base.entity';
 import { Account } from './account.entity';
 
 @Entity({ name: 'account_balance_statement' })
-export class BalanceStatement extends Base {
+export class AccountBalanceStatement extends Base {
   @Column({ nullable: true })
   value?: number;
 

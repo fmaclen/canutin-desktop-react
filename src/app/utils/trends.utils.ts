@@ -1,6 +1,6 @@
 import { eachWeekOfInterval, getWeek, isEqual } from 'date-fns';
 
-import { Account, Asset, BalanceStatement, Transaction } from '@database/entities';
+import { Account, Asset, AccountBalanceStatement, Transaction } from '@database/entities';
 
 import {
   calculateBalanceDifference,
@@ -44,7 +44,7 @@ export const getNetWorthTrends = (
   const accountChartBalances = accountsNoClosed.map(account => {
     return account.autoCalculated
       ? getTransactionBalanceByWeeks(account.transactions as Transaction[], 52)
-      : getBalancesByWeeks(account.balanceStatements as BalanceStatement[], 52);
+      : getBalancesByWeeks(account.balanceStatements as AccountBalanceStatement[], 52);
   });
 
   const assetChartBalances = assetsNoSold.map(asset => {

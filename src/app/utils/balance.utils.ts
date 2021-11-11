@@ -19,7 +19,7 @@ import {
   Asset,
   Account,
   Transaction,
-  BalanceStatement,
+  AccountBalanceStatement,
   AssetBalanceStatement,
 } from '@database/entities';
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
@@ -275,7 +275,7 @@ export const getTransactionsBalance = (transactions: Transaction[]) => {
 };
 
 export const getSelectedBalanceStatementValue = (
-  balanceStatements: (BalanceStatement | AssetBalanceStatement)[],
+  balanceStatements: (AccountBalanceStatement | AssetBalanceStatement)[],
   from: Date,
   to: Date
 ) => {
@@ -354,7 +354,7 @@ export const getTransactionBalanceByWeeks = (
 };
 
 export const getBalancesByWeeks = (
-  balanceStatements: BalanceStatement[] | AssetBalanceStatement[],
+  balanceStatements: AccountBalanceStatement[] | AssetBalanceStatement[],
   weeks: number
 ): ChartPeriodType[] => {
   const weeksDates = eachWeekOfInterval(

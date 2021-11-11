@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Account, BalanceStatement, Transaction } from '@database/entities';
+import { Account, AccountBalanceStatement, Transaction } from '@database/entities';
 
 import Section from '@app/components/common/Section';
 import Chart from '@app/components/common/Chart';
@@ -25,7 +25,7 @@ const AccountOverviewInformation = ({
 }: AccountOverviewInformationProps) => {
   const accountChartBalances = account.autoCalculated
     ? getTransactionBalanceByWeeks(transactions, 52)
-    : getBalancesByWeeks(account.balanceStatements as BalanceStatement[], 52);
+    : getBalancesByWeeks(account.balanceStatements as AccountBalanceStatement[], 52);
 
   return (
     <>
