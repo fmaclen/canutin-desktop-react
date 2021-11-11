@@ -12,7 +12,7 @@ import { LOADING_CSV } from '@constants/events';
 import { CANUTIN_FILE_DATE_FORMAT } from '@constants';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AssetTypeEnum } from '@enums/assetType.enum';
-import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
+import { BalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 
 export const importFromCanutinFile = async (
   canutinFile: CanutinFileType,

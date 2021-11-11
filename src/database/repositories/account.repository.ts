@@ -1,6 +1,6 @@
 import { getRepository, getConnection } from 'typeorm';
 
-import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
+import { BalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 import { AccountTypeRepository } from '@database/repositories/accountType.repository';
 
 import { Account } from '../entities';
