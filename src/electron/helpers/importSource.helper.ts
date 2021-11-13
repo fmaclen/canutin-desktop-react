@@ -65,7 +65,7 @@ export const analyzeCanutinFile = async (filePath: string, win: BrowserWindow | 
       }
     );
 
-    // Validate assets from CanutinFile
+    // Validate assets in CanutinFile
     const hasAssets = canutinFile?.assets?.length > 0;
     const hasAssetsRequiredProps = canutinFile?.assets?.every((asset: CanutinFileAssetType) => {
       const { name, balanceGroup, assetType, sold } = asset;

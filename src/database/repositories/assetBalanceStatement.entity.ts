@@ -10,10 +10,10 @@ export class AssetBalanceStatementRepository {
     return await getRepository<AssetBalanceStatement>(AssetBalanceStatement).save(
       new AssetBalanceStatement(
         balanceStatement.asset,
+        balanceStatement.createdAt,
         balanceStatement.value,
         balanceStatement.cost,
-        balanceStatement.quantity,
-        balanceStatement.sold
+        balanceStatement.quantity
       )
     );
   }

@@ -38,8 +38,8 @@ export interface CanutinFileAssetBalanceStatementType {
 // FIXME: there is a lot of duplication with `NewAssetType`
 export interface CanutinFileAssetType {
   name: string;
-  type: string;
   balanceGroup: BalanceGroupEnum;
+  assetType: string;
   sold: boolean;
   symbol?: string;
   balanceStatements?: CanutinFileAssetBalanceStatementType[];

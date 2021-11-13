@@ -10,6 +10,9 @@ import {
 } from '../../types/asset.type';
 import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
 import { AssetTypeEnum } from '@enums/assetType.enum';
+import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
+import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutin';
+import { createdAtDate } from '@app/utils/date.utils';
 
 export class AssetRepository {
   static async createAsset(asset: NewAssetType): Promise<Asset> {
@@ -18,16 +21,26 @@ export class AssetRepository {
     });
 
     const savedAsset = await getRepository<Asset>(Asset).save(
-      new Asset(asset.name, assetType, asset.symbol)
+      new Asset(asset.name, assetType, asset.sold, asset.symbol)
     );
 
-    await AssetBalanceStatementRepository.createBalanceStatement({
-      asset: savedAsset,
-      sold: false,
-      value: asset.value,
-      cost: asset.cost,
-      quantity: asset.quantity,
-    });
+    // FIXME: duplicate of editValue()
+    asset.balanceStatements?.forEach(
+      async (
+        balanceStatement: NewAssetBalanceStatementType | CanutinFileAssetBalanceStatementType
+      ) => {
+        await AssetBalanceStatementRepository.createBalanceStatement({
+          asset: savedAsset,
+          value: balanceStatement.value ? balanceStatement.value : 0,
+          cost: balanceStatement.cost,
+          quantity: balanceStatement.quantity,
+          createdAt:
+            typeof balanceStatement.createdAt === 'number'
+              ? createdAtDate(balanceStatement.createdAt)
+              : balanceStatement.createdAt,
+        });
+      }
+    );
 
     return savedAsset;
   }
@@ -68,14 +81,16 @@ export class AssetRepository {
       },
     });
 
-    asset &&
-      (await AssetBalanceStatementRepository.createBalanceStatement({
-        value: assetValue.value,
-        asset,
-        sold: assetValue.sold,
-        quantity: assetValue.quantity,
-        cost: assetValue.cost,
-      }));
+    // FIXME: duplicate of createAsset()
+    asset?.balanceStatements?.forEach(async (balanceStatement: NewAssetBalanceStatementType) => {
+      await AssetBalanceStatementRepository.createBalanceStatement({
+        asset: asset,
+        value: balanceStatement.value ? balanceStatement.value : 0,
+        cost: balanceStatement.cost,
+        quantity: balanceStatement.quantity,
+        createdAt: balanceStatement.createdAt,
+      });
+    });
 
     return asset as Asset;
   }

@@ -19,10 +19,7 @@ export const getNetWorthTrends = (
   balanceGroupFilter: BalanceGroupEnum = BalanceGroupEnum.NET_WORTH
 ) => {
   const assetsNotSold = assets
-    .filter(
-      ({ balanceStatements }) =>
-        balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
-    )
+    .filter(assets => !assets.sold)
     .filter(
       ({ balanceGroup }) =>
         balanceGroupFilter === balanceGroup || balanceGroupFilter === BalanceGroupEnum.NET_WORTH

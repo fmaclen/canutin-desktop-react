@@ -27,10 +27,7 @@ import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 
 export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
-  const assetsNotSold = assets.filter(
-    ({ balanceStatements }) =>
-      balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
-  );
+  const assetsNotSold = assets.filter(asset => !asset.sold);
 
   return assetsNotSold.reduce(
     (listOfBalancesByGroup, asset) => {

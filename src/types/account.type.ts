@@ -7,11 +7,10 @@ export type NewAccountType = {
   name: string;
   balanceGroup: BalanceGroupEnum;
   accountType: string;
-  officialName?: string;
-  institution?: string;
-  // balance?: number;
   autoCalculated: boolean;
   closed: boolean;
+  officialName?: string;
+  institution?: string;
   balanceStatements?: NewBalanceStatementType[] | CanutinFileAccountBalanceStatementType[];
 };
 
