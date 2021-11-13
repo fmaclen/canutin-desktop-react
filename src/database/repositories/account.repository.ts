@@ -10,6 +10,7 @@ import {
   AccountEditDetailsSubmitType,
 } from '../../types/account.type';
 import { TransactionRepository } from './transaction.repository';
+import { createdAtDate } from '@app/utils/date.utils';
 
 export class AccountRepository {
   static async createAccount(account: NewAccountType): Promise<Account> {
@@ -28,11 +29,22 @@ export class AccountRepository {
       )
     );
 
-    !account.autoCalculated &&
-      (await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance ? account.balance : 0,
+    // FIXME: this logic is duplicated for `getOrCreateAccount()`
+    if (!account.autoCalculated && account.balanceStatements) {
+      account.balanceStatements.forEach(async (balanceStatement: any) => {
+        await BalanceStatementRepository.createBalanceStatement({
+          createdAt: createdAtDate(balanceStatement.createdAt),
+          value: balanceStatement.value ? balanceStatement.value : 0,
+          account: accountSaved,
+        });
+      });
+    } else if (!account.autoCalculated) {
+      await BalanceStatementRepository.createBalanceStatement({
+        createdAt: new Date(),
+        value: 0,
         account: accountSaved,
-      }));
+      });
+    }
 
     return accountSaved;
   }
@@ -91,9 +103,19 @@ export class AccountRepository {
       return AccountRepository.createAccount(account);
     }
 
-    if (!account.autoCalculated) {
+    // FIXME: this logic is duplicated for `createAccount()`
+    if (!account.autoCalculated && account.balanceStatements) {
+      account.balanceStatements.forEach(async (balanceStatement: any) => {
+        await BalanceStatementRepository.createBalanceStatement({
+          createdAt: createdAtDate(balanceStatement.createdAt),
+          value: balanceStatement.value ? balanceStatement.value : 0,
+          account: existingAccount,
+        });
+      });
+    } else if (!account.autoCalculated) {
       await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance ? account.balance : 0,
+        createdAt: new Date(),
+        value: 0,
         account: existingAccount,
       });
     }
@@ -113,8 +135,10 @@ export class AccountRepository {
       },
     });
 
+    // FIXME: this logic is duplicated for `createAccount() and getOrCreateAccount()`
     !accountBalance.autoCalculated &&
       (await BalanceStatementRepository.createBalanceStatement({
+        createdAt: new Date(),
         value: accountBalance.balance,
         account: updatedAccount as Account,
       }));

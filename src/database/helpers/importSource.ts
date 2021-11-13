@@ -12,7 +12,6 @@ import { LOADING_CSV } from '@constants/events';
 import { CANUTIN_FILE_DATE_FORMAT } from '@constants';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AssetTypeEnum } from '@enums/assetType.enum';
-import { BalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 
 export const importFromCanutinFile = async (
   canutinFile: CanutinFileType,
@@ -22,6 +21,7 @@ export const importFromCanutinFile = async (
     const countAccounts = canutinFile.accounts?.length;
 
     canutinFile.accounts?.forEach(async canutinFileAccount => {
+      // Find or create account
       const account = await AccountRepository.getOrCreateAccount(canutinFileAccount).then(res => {
         win?.webContents.send(LOADING_CSV, { total: countAccounts });
         return res;
@@ -36,6 +36,7 @@ export const importFromCanutinFile = async (
               CANUTIN_FILE_DATE_FORMAT,
               new Date()
             );
+            // FIXME: remove budget
             const budget =
               canutinFileTransaction.budget &&
               new Budget(
@@ -55,23 +56,13 @@ export const importFromCanutinFile = async (
               account,
               category,
               createdAtDate(canutinFileTransaction.createdAt),
-              budget
+              budget // FIXME: remove budget
             );
           })
         );
 
         await TransactionRepository.createTransactions(transactions);
       }
-
-      // Process balanceStatements
-      canutinFileAccount.balanceStatements?.forEach(async canutinFileBalanceStatement => {
-        console.log('creating:', canutinFileBalanceStatement);
-        await BalanceStatementRepository.createBalanceStatement({
-          createdAt: createdAtDate(canutinFileBalanceStatement.createdAt),
-          value: canutinFileBalanceStatement.value,
-          account: account,
-        });
-      });
 
       return account;
     });

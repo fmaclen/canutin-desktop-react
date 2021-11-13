@@ -1,7 +1,7 @@
 import { Account } from '@database/entities/account.entity';
 
 export type NewBalanceStatementType = {
-  createdAt?: Date;
+  createdAt: Date;
   value: number;
   account: Account;
 };

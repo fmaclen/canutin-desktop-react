@@ -1,5 +1,6 @@
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
+// FIXME: remove this interface
 export interface CanutinFileBudgetType {
   name: string;
   targetAmount: number;
@@ -14,21 +15,16 @@ export interface CanutinFileTransactionType {
   excludeFromTotals: boolean;
   category: string;
   createdAt?: number;
-  budget?: CanutinFileBudgetType;
+  budget?: CanutinFileBudgetType; // FIXME: remove property
 }
 
+// FIXME: there is duplication with `NewBalanceStatementType`
 export interface CanutinFileAccountBalanceStatementType {
   createdAt: number;
   value: number;
 }
 
-export interface CanutinFileAssetBalanceStatementType {
-  createdAt: number;
-  quantity?: number;
-  cost?: number;
-  value?: number;
-}
-
+// FIXME: there is duplication with `NewAccountType`
 export interface CanutinFileAccountType {
   name: string;
   balanceGroup: BalanceGroupEnum;
@@ -41,6 +37,14 @@ export interface CanutinFileAccountType {
   balanceStatements?: CanutinFileAccountBalanceStatementType[];
 }
 
+export interface CanutinFileAssetBalanceStatementType {
+  createdAt: number;
+  quantity?: number;
+  cost?: number;
+  value?: number;
+}
+
+// FIXME: there is a lot of duplication with `NewAssetType`
 export interface CanutinFileAssetType {
   name: string;
   type: string;

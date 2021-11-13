@@ -44,13 +44,27 @@ export const analyzeCanutinFile = async (filePath: string, win: BrowserWindow | 
   const file = readFileSync(filePath, 'utf8');
   try {
     const canutinFile = JSON.parse(file);
-    const hasCanutinFileAccounts = canutinFile?.accounts?.length > 0;
-    const countAssets = canutinFile?.assets?.length;
-    const hasAllAccountsAutoCalculatedField = canutinFile?.accounts?.every(
-      (account: CanutinFileAccountType) => account.autoCalculated !== undefined
+
+    // Validate accounts from CanutinFile
+    const hasAccounts = canutinFile?.accounts?.length > 0;
+    const hasAccountsRequiredProps = canutinFile?.accounts?.every(
+      (account: CanutinFileAccountType) => {
+        const { name, balanceGroup, accountType, autoCalculated, closed } = account;
+        return (
+          typeof name === 'string' &&
+          typeof balanceGroup === 'string' &&
+          typeof accountType === 'string' &&
+          typeof autoCalculated === 'boolean' &&
+          typeof closed === 'boolean'
+        );
+      }
     );
 
-    if ((hasCanutinFileAccounts && hasAllAccountsAutoCalculatedField) || countAssets) {
+    // Validate assets from CanutinFile
+    // FIXME
+    const countAssets = canutinFile?.assets?.length;
+
+    if ((hasAccounts && hasAccountsRequiredProps) || countAssets) {
       const countAccounts = canutinFile?.accounts?.length;
       const countTransactions = canutinFile?.accounts?.reduce(
         (countTransactions: number, account: { transactions: CanutinFileTransactionType[] }) => {
