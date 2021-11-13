@@ -8,7 +8,7 @@ import {
   NewAccountType,
   AccountEditBalanceSubmitType,
   AccountEditDetailsSubmitType,
-} from '../../types/account.type';
+} from '@appTypes/account.type';
 import { TransactionRepository } from './transaction.repository';
 import { createdAtDate } from '@app/utils/date.utils';
 

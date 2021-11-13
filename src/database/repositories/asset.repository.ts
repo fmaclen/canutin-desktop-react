@@ -7,7 +7,7 @@ import {
   AssetEditDetailsSubmitType,
   AssetEditValueSubmitType,
   NewAssetType,
-} from '../../types/asset.type';
+} from '@appTypes/asset.type';
 import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
 import { AssetTypeEnum } from '@enums/assetType.enum';
 import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';

@@ -20,8 +20,8 @@ import { assetTypesWithSymbol, assetTypesValues } from '@constants/assetTypes';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
 
-import { NewAssetType } from '../../../../types/asset.type';
-import { NewAccountType } from '../../../../types/account.type';
+import { NewAssetType } from '@appTypes/asset.type';
+import { NewAccountType } from '@appTypes/account.type';
 import { toggableInputContainer } from './styles';
 
 const ToggableInputContainer = styled.div`

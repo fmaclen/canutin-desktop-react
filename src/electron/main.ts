@@ -96,8 +96,8 @@ import {
   AssetEditDetailsSubmitType,
   AssetEditValueSubmitType,
   NewAssetType,
-} from '../types/asset.type';
-import { NewAccountType } from '../types/account.type';
+} from '@appTypes/asset.type';
+import { NewAccountType } from '@appTypes/account.type';
 
 let win: BrowserWindow | null = null;
 

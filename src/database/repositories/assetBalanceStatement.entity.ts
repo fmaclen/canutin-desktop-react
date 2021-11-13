@@ -1,7 +1,7 @@
 import { getRepository } from 'typeorm';
 
 import { AssetBalanceStatement } from '../entities';
-import { NewAssetBalanceStatementType } from '../../types/assetBalanceStatement.type';
+import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
 
 export class AssetBalanceStatementRepository {
   static async createBalanceStatement(
