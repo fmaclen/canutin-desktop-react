@@ -1,6 +1,6 @@
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
-import { NewBalanceStatementType } from './accountBalanceStatement.type';
-import { CanutinFileAccountBalanceStatementType } from './canutin';
+import { NewBalanceStatementType } from '@appTypes/accountBalanceStatement.type';
+import { CanutinFileAccountBalanceStatementType } from '@appTypes/canutinFile.type';
 
 // FIXME: consider extending `NewAccountType` from `Account` and ommitting the un-necessary values.
 export type NewAccountType = {

@@ -2,7 +2,11 @@ import { parse, isEqual, getUnixTime } from 'date-fns';
 
 import { Account } from '@database/entities';
 import { getBalanceGroupByAccountType } from '@database/helpers';
-import { CanutinFileType, CanutinFileTransactionType, UpdatedAccount } from '@appTypes/canutin';
+import {
+  CanutinFileType,
+  CanutinFileTransactionType,
+  UpdatedAccount,
+} from '@appTypes/canutinFile.type';
 
 import { SupportedDateFormatType } from './otherCsvConstants';
 import { OtherCSVFormSubmit } from './index';

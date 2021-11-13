@@ -12,10 +12,10 @@ import {
   UpdatedAccount,
   CanutinFileAccountType,
   CanutinFileAssetType,
-} from '@appTypes/canutin';
+} from '@appTypes/canutinFile.type';
 import { ParseResult } from '@appTypes/parseCsv';
+import { CanutinFileTransactionType } from '@appTypes/canutinFile.type';
 import { importFromCanutinFile, updateAccounts } from '@database/helpers/importSource';
-import { CanutinFileTransactionType } from '@appTypes/canutin';
 
 import { mintCsvToJson, MintCsvEntryType } from './sourceHelpers/mint';
 import {

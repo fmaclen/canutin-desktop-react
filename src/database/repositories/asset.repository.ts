@@ -11,7 +11,7 @@ import {
 import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
 import { AssetTypeEnum } from '@enums/assetType.enum';
 import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
-import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutin';
+import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutinFile.type';
 import { createdAtDate } from '@app/utils/date.utils';
 
 export class AssetRepository {

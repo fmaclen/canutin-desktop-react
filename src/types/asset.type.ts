@@ -1,7 +1,7 @@
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { AssetTypeEnum } from '../enums/assetType.enum';
 import { NewAssetBalanceStatementType } from './assetBalanceStatement.type';
-import { CanutinFileAssetBalanceStatementType } from './canutin';
+import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutinFile.type';
 
 export type NewAssetType = {
   name: string;

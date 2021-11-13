@@ -5,7 +5,11 @@ import { Transaction } from '@database/entities/transaction.entity';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { CategoryRepository } from '@database/repositories/category.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
-import { CanutinFileTransactionType, CanutinFileType, UpdatedAccount } from '@appTypes/canutin';
+import {
+  CanutinFileTransactionType,
+  CanutinFileType,
+  UpdatedAccount,
+} from '@appTypes/canutinFile.type';
 import { LOADING_CSV } from '@constants/events';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AssetTypeEnum } from '@enums/assetType.enum';

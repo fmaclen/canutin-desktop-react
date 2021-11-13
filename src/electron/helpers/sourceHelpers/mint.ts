@@ -1,6 +1,6 @@
 import { getUnixTime, parse } from 'date-fns';
 
-import { CanutinFileType } from '@appTypes/canutin';
+import { CanutinFileType } from '@appTypes/canutinFile.type';
 import mapCategories from '@database/helpers/importResources/mapCategories';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
