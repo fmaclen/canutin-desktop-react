@@ -7,7 +7,12 @@ import {
   LOAD_FROM_CANUTIN_FILE_ACK,
   LOAD_FROM_OTHER_CSV_ACK,
 } from '@constants/events';
-import { CanutinFileType, UpdatedAccount, CanutinFileAccountType } from '@appTypes/canutin';
+import {
+  CanutinFileType,
+  UpdatedAccount,
+  CanutinFileAccountType,
+  CanutinFileAssetType,
+} from '@appTypes/canutin';
 import { ParseResult } from '@appTypes/parseCsv';
 import { importFromCanutinFile, updateAccounts } from '@database/helpers/importSource';
 import { CanutinFileTransactionType } from '@appTypes/canutin';
@@ -61,11 +66,20 @@ export const analyzeCanutinFile = async (filePath: string, win: BrowserWindow | 
     );
 
     // Validate assets from CanutinFile
-    // FIXME
-    const countAssets = canutinFile?.assets?.length;
+    const hasAssets = canutinFile?.assets?.length > 0;
+    const hasAssetsRequiredProps = canutinFile?.assets?.every((asset: CanutinFileAssetType) => {
+      const { name, balanceGroup, assetType, sold } = asset;
+      return (
+        typeof name === 'string' &&
+        typeof balanceGroup === 'string' &&
+        typeof assetType === 'string' &&
+        typeof sold === 'boolean'
+      );
+    });
 
-    if ((hasAccounts && hasAccountsRequiredProps) || countAssets) {
+    if ((hasAccounts && hasAccountsRequiredProps) || (hasAssets && hasAssetsRequiredProps)) {
       const countAccounts = canutinFile?.accounts?.length;
+      const countAssets = canutinFile?.assets?.length;
       const countTransactions = canutinFile?.accounts?.reduce(
         (countTransactions: number, account: { transactions: CanutinFileTransactionType[] }) => {
           if (account?.transactions) {
@@ -87,8 +101,7 @@ export const analyzeCanutinFile = async (filePath: string, win: BrowserWindow | 
         },
       });
     } else {
-      // Json file is not supported
-      throw Error;
+      throw Error; // Json file is not supported
     }
   } catch (error) {
     win?.webContents.send(ANALYZE_SOURCE_FILE_ACK, {

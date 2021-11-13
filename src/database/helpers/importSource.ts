@@ -1,17 +1,15 @@
-import { parse } from 'date-fns';
 import { BrowserWindow } from 'electron';
 
-import { dateInUTC, createdAtDate } from '@app/utils/date.utils';
+import { createdAtDate } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities/transaction.entity';
-import { Budget } from '@database/entities/budget.entity';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { CategoryRepository } from '@database/repositories/category.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
-import { CanutinFileType, UpdatedAccount } from '@appTypes/canutin';
+import { CanutinFileTransactionType, CanutinFileType, UpdatedAccount } from '@appTypes/canutin';
 import { LOADING_CSV } from '@constants/events';
-import { CANUTIN_FILE_DATE_FORMAT } from '@constants';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AssetTypeEnum } from '@enums/assetType.enum';
+import { Account } from '@database/entities';
 
 export const importFromCanutinFile = async (
   canutinFile: CanutinFileType,
@@ -28,51 +26,18 @@ export const importFromCanutinFile = async (
       });
 
       // Process transactions
-      if (canutinFileAccount.transactions) {
-        const transactions = await Promise.all(
-          canutinFileAccount.transactions.map(async canutinFileTransaction => {
-            const transactionDate = parse(
-              canutinFileTransaction.date,
-              CANUTIN_FILE_DATE_FORMAT,
-              new Date()
-            );
-            // FIXME: remove budget
-            const budget =
-              canutinFileTransaction.budget &&
-              new Budget(
-                canutinFileTransaction.budget.name,
-                canutinFileTransaction.budget.targetAmount,
-                canutinFileTransaction.budget.type,
-                parse(canutinFileTransaction.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
-              );
-            const category = await CategoryRepository.getOrCreateSubCategory(
-              canutinFileTransaction.category
-            );
-            return new Transaction(
-              canutinFileTransaction.description,
-              dateInUTC(transactionDate),
-              canutinFileTransaction.amount,
-              canutinFileTransaction.excludeFromTotals,
-              account,
-              category,
-              createdAtDate(canutinFileTransaction.createdAt),
-              budget // FIXME: remove budget
-            );
-          })
-        );
-
-        await TransactionRepository.createTransactions(transactions);
-      }
+      canutinFileAccount.transactions &&
+        handleCanutinFileTransactions(account, canutinFileAccount.transactions);
 
       return account;
     });
 
     canutinFile.assets &&
       (await Promise.all(
-        canutinFile.assets.map(async assetInfo =>
+        canutinFile.assets.map(async canutinFileAsset =>
           AssetRepository.getOrCreateAsset({
-            ...assetInfo,
-            assetType: assetInfo.type as AssetTypeEnum,
+            ...canutinFileAsset,
+            assetType: canutinFileAsset.assetType as AssetTypeEnum,
           })
         )
       ));
@@ -83,39 +48,36 @@ export const importFromCanutinFile = async (
   }
 };
 
+// FIXME: I don't think we need a separate function to updateAccounts
 export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
   updatedAccounts.forEach(async ({ id, transactions }) => {
     const account = await AccountRepository.getAccountById(id);
 
-    if (account !== undefined) {
-      const updatedTransactions = await Promise.all(
-        transactions?.map(async transactionInfo => {
-          const transactionDate = parse(transactionInfo.date, CANUTIN_FILE_DATE_FORMAT, new Date());
-          const budget =
-            transactionInfo.budget &&
-            new Budget(
-              transactionInfo.budget.name,
-              transactionInfo.budget.targetAmount,
-              transactionInfo.budget.type,
-              parse(transactionInfo.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
-            );
-
-          const category = await CategoryRepository.getOrCreateSubCategory(
-            transactionInfo.category
-          );
-          return new Transaction(
-            transactionInfo.description,
-            dateInUTC(transactionDate),
-            transactionInfo.amount,
-            false,
-            account,
-            category,
-            createdAtDate(transactionInfo.createdAt),
-            budget
-          );
-        })
-      );
-      (await updatedTransactions) && TransactionRepository.createTransactions(updatedTransactions);
-    }
+    account && transactions && handleCanutinFileTransactions(account, transactions);
   });
+};
+
+export const handleCanutinFileTransactions = async (
+  account: Account,
+  canutinFileTransactions: CanutinFileTransactionType[]
+) => {
+  const transactions = await Promise.all(
+    canutinFileTransactions.map(async canutinFileTransaction => {
+      const category = await CategoryRepository.getOrCreateSubCategory(
+        canutinFileTransaction.category
+      );
+
+      return new Transaction(
+        canutinFileTransaction.description,
+        createdAtDate(canutinFileTransaction.date),
+        canutinFileTransaction.amount,
+        canutinFileTransaction.excludeFromTotals,
+        account,
+        category,
+        createdAtDate(canutinFileTransaction.createdAt)
+      );
+    })
+  );
+
+  await TransactionRepository.createTransactions(transactions);
 };

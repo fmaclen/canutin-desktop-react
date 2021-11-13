@@ -1,21 +1,12 @@
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
-// FIXME: remove this interface
-export interface CanutinFileBudgetType {
-  name: string;
-  targetAmount: number;
-  type: string;
-  date: string;
-}
-
 export interface CanutinFileTransactionType {
   description: string;
-  date: string;
+  date: number;
   amount: number;
   excludeFromTotals: boolean;
   category: string;
   createdAt?: number;
-  budget?: CanutinFileBudgetType; // FIXME: remove property
 }
 
 // FIXME: there is duplication with `NewBalanceStatementType`
