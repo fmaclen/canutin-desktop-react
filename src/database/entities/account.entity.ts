@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { Base } from './base.entity';
 import { BalanceGroupEnum } from '../../enums/balanceGroup.enum';
-import { AccountBalanceStatement } from './balanceStatement.entity';
+import { AccountBalanceStatement } from './accountBalanceStatement.entity';
 import { Transaction } from './transaction.entity';
 import { AccountType } from './accountType.entity';
 import { getBalanceGroupByAccountType } from '../helpers';

@@ -9,7 +9,7 @@ export interface CanutinFileTransactionType {
   createdAt?: number;
 }
 
-// FIXME: there is duplication with `NewBalanceStatementType`
+// FIXME: there is duplication with `NewAccountBalanceStatementType`
 export interface CanutinFileAccountBalanceStatementType {
   createdAt: number;
   value: number;

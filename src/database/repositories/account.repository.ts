@@ -10,7 +10,7 @@ import {
   AccountEditDetailsSubmitType,
 } from '@appTypes/account.type';
 import { TransactionRepository } from './transaction.repository';
-import { createdAtDate } from '@app/utils/date.utils';
+import { handleAccountBalanceStatements } from '@database/helpers/balanceStatement';
 
 export class AccountRepository {
   static async createAccount(account: NewAccountType): Promise<Account> {
@@ -18,7 +18,7 @@ export class AccountRepository {
       name: account.accountType.toLowerCase(),
     });
 
-    const accountSaved = await getRepository<Account>(Account).save(
+    const existingAccount = await getRepository<Account>(Account).save(
       new Account(
         account.name,
         account.closed,
@@ -29,24 +29,9 @@ export class AccountRepository {
       )
     );
 
-    // FIXME: this logic is duplicated for `getOrCreateAccount()`
-    if (!account.autoCalculated && account.balanceStatements) {
-      account.balanceStatements.forEach(async (balanceStatement: any) => {
-        await BalanceStatementRepository.createBalanceStatement({
-          createdAt: createdAtDate(balanceStatement.createdAt),
-          value: balanceStatement.value ? balanceStatement.value : 0,
-          account: accountSaved,
-        });
-      });
-    } else if (!account.autoCalculated) {
-      await BalanceStatementRepository.createBalanceStatement({
-        createdAt: new Date(),
-        value: 0,
-        account: accountSaved,
-      });
-    }
+    await handleAccountBalanceStatements(existingAccount, account);
 
-    return accountSaved;
+    return existingAccount;
   }
 
   static async createAccounts(accounts: Account[]): Promise<Account[]> {
@@ -103,22 +88,7 @@ export class AccountRepository {
       return AccountRepository.createAccount(account);
     }
 
-    // FIXME: this logic is duplicated for `createAccount()`
-    if (!account.autoCalculated && account.balanceStatements) {
-      account.balanceStatements.forEach(async (balanceStatement: any) => {
-        await BalanceStatementRepository.createBalanceStatement({
-          createdAt: createdAtDate(balanceStatement.createdAt),
-          value: balanceStatement.value ? balanceStatement.value : 0,
-          account: existingAccount,
-        });
-      });
-    } else if (!account.autoCalculated) {
-      await BalanceStatementRepository.createBalanceStatement({
-        createdAt: new Date(),
-        value: 0,
-        account: existingAccount,
-      });
-    }
+    await handleAccountBalanceStatements(existingAccount, account);
 
     return existingAccount;
   }
@@ -129,21 +99,20 @@ export class AccountRepository {
       closed: accountBalance.closed,
     });
 
-    const updatedAccount = await getRepository<Account>(Account).findOne({
+    const existingAccount = await getRepository<Account>(Account).findOne({
       where: {
         id: accountBalance.accountId,
       },
     });
 
-    // FIXME: this logic is duplicated for `createAccount() and getOrCreateAccount()`
     !accountBalance.autoCalculated &&
       (await BalanceStatementRepository.createBalanceStatement({
         createdAt: new Date(),
         value: accountBalance.balance,
-        account: updatedAccount as Account,
+        account: existingAccount as Account,
       }));
 
-    return updatedAccount as Account;
+    return existingAccount as Account;
   }
 
   static async editDetails(accountDetails: AccountEditDetailsSubmitType): Promise<Account> {

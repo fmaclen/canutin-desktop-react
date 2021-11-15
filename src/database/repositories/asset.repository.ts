@@ -11,8 +11,7 @@ import {
 import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
 import { AssetTypeEnum } from '@enums/assetType.enum';
 import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
-import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutinFile.type';
-import { createdAtDate } from '@app/utils/date.utils';
+import { handleAssetBalanceStatements } from '@database/helpers/balanceStatement';
 
 export class AssetRepository {
   static async createAsset(asset: NewAssetType): Promise<Asset> {
@@ -20,29 +19,13 @@ export class AssetRepository {
       name: asset.assetType,
     });
 
-    const savedAsset = await getRepository<Asset>(Asset).save(
+    const existingAsset = await getRepository<Asset>(Asset).save(
       new Asset(asset.name, assetType, asset.sold, asset.symbol)
     );
 
-    // FIXME: duplicate of editValue()
-    asset.balanceStatements?.forEach(
-      async (
-        balanceStatement: NewAssetBalanceStatementType | CanutinFileAssetBalanceStatementType
-      ) => {
-        await AssetBalanceStatementRepository.createBalanceStatement({
-          asset: savedAsset,
-          value: balanceStatement.value ? balanceStatement.value : 0,
-          cost: balanceStatement.cost,
-          quantity: balanceStatement.quantity,
-          createdAt:
-            typeof balanceStatement.createdAt === 'number'
-              ? createdAtDate(balanceStatement.createdAt)
-              : balanceStatement.createdAt,
-        });
-      }
-    );
+    await handleAssetBalanceStatements(existingAsset, asset);
 
-    return savedAsset;
+    return existingAsset;
   }
 
   static async getAssets(): Promise<Asset[]> {
@@ -81,7 +64,6 @@ export class AssetRepository {
       },
     });
 
-    // FIXME: duplicate of createAsset()
     asset?.balanceStatements?.forEach(async (balanceStatement: NewAssetBalanceStatementType) => {
       await AssetBalanceStatementRepository.createBalanceStatement({
         asset: asset,
@@ -116,16 +98,18 @@ export class AssetRepository {
   }
 
   static async getOrCreateAsset(asset: NewAssetType): Promise<Asset> {
-    const assetDb = await getRepository<Asset>(Asset)
+    const existingAsset = await getRepository<Asset>(Asset)
       .createQueryBuilder('assets')
       .leftJoinAndSelect('assets.balanceStatements', 'balanceStatements')
       .where('assets.name like :name', { name: `%${asset.name}%` })
       .getOne();
 
-    if (!assetDb) {
+    if (!existingAsset) {
       return AssetRepository.createAsset(asset);
     }
 
-    return assetDb;
+    await handleAssetBalanceStatements(existingAsset, asset);
+
+    return existingAsset;
   }
 }

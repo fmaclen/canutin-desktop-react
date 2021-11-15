@@ -1,8 +1,9 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { Base } from './base.entity';
 import { Account } from './account.entity';
 
-@Entity({ name: 'account_balance_statement' })
+@Entity()
+@Unique('UQ_COLUMNS', ['account', 'createdAt'])
 export class AccountBalanceStatement extends Base {
   @Column({ nullable: true })
   value?: number;

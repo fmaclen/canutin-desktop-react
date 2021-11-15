@@ -1,11 +1,11 @@
 import { getRepository } from 'typeorm';
 
 import { AccountBalanceStatement } from '../entities';
-import { NewBalanceStatementType } from '@appTypes/accountBalanceStatement.type';
+import { NewAccountBalanceStatementType } from '@appTypes/accountBalanceStatement.type';
 
 export class BalanceStatementRepository {
   static async createBalanceStatement(
-    balanceStatement: NewBalanceStatementType
+    balanceStatement: NewAccountBalanceStatementType
   ): Promise<AccountBalanceStatement> {
     return await getRepository<AccountBalanceStatement>(AccountBalanceStatement).save(
       new AccountBalanceStatement(

@@ -1,5 +1,5 @@
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
-import { NewBalanceStatementType } from '@appTypes/accountBalanceStatement.type';
+import { NewAccountBalanceStatementType } from '@appTypes/accountBalanceStatement.type';
 import { CanutinFileAccountBalanceStatementType } from '@appTypes/canutinFile.type';
 
 // FIXME: consider extending `NewAccountType` from `Account` and ommitting the un-necessary values.
@@ -11,7 +11,7 @@ export type NewAccountType = {
   closed: boolean;
   officialName?: string;
   institution?: string;
-  balanceStatements?: NewBalanceStatementType[] | CanutinFileAccountBalanceStatementType[];
+  balanceStatements?: NewAccountBalanceStatementType[] | CanutinFileAccountBalanceStatementType[];
 };
 
 export type AccountEditBalanceSubmitType = {

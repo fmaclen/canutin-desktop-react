@@ -1,8 +1,9 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { Base } from './base.entity';
 import { Asset } from './asset.entity';
 
 @Entity()
+@Unique('UQ_COLUMNS', ['asset', 'createdAt'])
 export class AssetBalanceStatement extends Base {
   @Column({ default: 0 })
   value: number;
