@@ -1,5 +1,5 @@
 import { createdAtDate } from '@app/utils/date.utils';
-import { BalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
+import { AccountBalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 import { Account, Asset } from '@database/entities';
 import { NewAccountType } from '@appTypes/account.type';
 import { NewAssetType } from '@appTypes/asset.type';
@@ -21,7 +21,7 @@ export const handleAccountBalanceStatements = async (
       async (
         balanceStatement: NewAccountBalanceStatementType | CanutinFileAccountBalanceStatementType
       ) => {
-        await BalanceStatementRepository.createBalanceStatement({
+        await AccountBalanceStatementRepository.createBalanceStatement({
           createdAt: createdAtDate(balanceStatement.createdAt),
           value: balanceStatement.value ? balanceStatement.value : 0,
           account: existingAccount,
@@ -30,7 +30,7 @@ export const handleAccountBalanceStatements = async (
     );
   } else if (!newAccount.autoCalculated && !newAccount.closed) {
     // Generate n accountBalanceStatement when no balanceStatements are provided
-    await BalanceStatementRepository.createBalanceStatement({
+    await AccountBalanceStatementRepository.createBalanceStatement({
       createdAt: new Date(),
       value: 0,
       account: existingAccount,

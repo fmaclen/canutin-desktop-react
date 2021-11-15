@@ -86,7 +86,7 @@ import {
   calculateWindowHeight,
 } from './helpers/window.helpers';
 import { AssetRepository } from '@database/repositories/asset.repository';
-import { BalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
+import { AccountBalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
 import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
@@ -214,7 +214,7 @@ const setupDbEvents = async () => {
   });
 
   ipcMain.on(DB_GET_BALANCE_STATEMENTS, async (_: IpcMainEvent) => {
-    const balanceStatements = await BalanceStatementRepository.getBalanceStatements();
+    const balanceStatements = await AccountBalanceStatementRepository.getBalanceStatements();
     win?.webContents.send(DB_GET_BALANCE_STATEMENTS_ACK, balanceStatements);
   });
 

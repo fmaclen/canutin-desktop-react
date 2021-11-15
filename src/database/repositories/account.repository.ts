@@ -1,6 +1,6 @@
 import { getRepository, getConnection } from 'typeorm';
 
-import { BalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
+import { AccountBalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 import { AccountTypeRepository } from '@database/repositories/accountType.repository';
 
 import { Account } from '../entities';
@@ -106,7 +106,7 @@ export class AccountRepository {
     });
 
     !accountBalance.autoCalculated &&
-      (await BalanceStatementRepository.createBalanceStatement({
+      (await AccountBalanceStatementRepository.createBalanceStatement({
         createdAt: new Date(),
         value: accountBalance.balance,
         account: existingAccount as Account,
@@ -149,7 +149,7 @@ export class AccountRepository {
     // Delete associated balance statements
     !account?.autoCalculated &&
       account?.balanceStatements &&
-      (await BalanceStatementRepository.deleteBalanceStatements(
+      (await AccountBalanceStatementRepository.deleteBalanceStatements(
         account.balanceStatements.map(({ id }) => id)
       ));
 

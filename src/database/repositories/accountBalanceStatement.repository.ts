@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { AccountBalanceStatement } from '../entities';
 import { NewAccountBalanceStatementType } from '@appTypes/accountBalanceStatement.type';
 
-export class BalanceStatementRepository {
+export class AccountBalanceStatementRepository {
   static async createBalanceStatement(
     balanceStatement: NewAccountBalanceStatementType
   ): Promise<AccountBalanceStatement> {
