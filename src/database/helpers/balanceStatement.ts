@@ -16,7 +16,7 @@ export const handleAccountBalanceStatements = async (
   newAccount: NewAccountType
 ) => {
   if (!newAccount.autoCalculated && newAccount.balanceStatements) {
-    // Generate an accountBalanceStatement for each balanceStatement
+    // Generate an accountBalanceStatement for each provided balanceStatement
     newAccount.balanceStatements.forEach(
       async (
         balanceStatement: NewAccountBalanceStatementType | CanutinFileAccountBalanceStatementType
@@ -29,7 +29,7 @@ export const handleAccountBalanceStatements = async (
       }
     );
   } else if (!newAccount.autoCalculated && !newAccount.closed) {
-    // Generate n accountBalanceStatement when no balanceStatements are provided
+    // Generate an accountBalanceStatement when no balanceStatements are provided
     await AccountBalanceStatementRepository.createBalanceStatement({
       createdAt: new Date(),
       value: 0,
@@ -43,7 +43,7 @@ export const handleAssetBalanceStatements = async (
   newAsset: NewAssetType
 ) => {
   if (!newAsset.sold && newAsset.balanceStatements) {
-    // Generate an assetBalanceStatement for each balanceStatement
+    // Generate an assetBalanceStatement for each provided balanceStatement
     newAsset.balanceStatements.forEach(
       async (
         balanceStatement: NewAssetBalanceStatementType | CanutinFileAssetBalanceStatementType
