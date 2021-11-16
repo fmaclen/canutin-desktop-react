@@ -61,7 +61,7 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
   });
 };
 
-export const handleCanutinFileTransactions = async (
+const handleCanutinFileTransactions = async (
   account: Account,
   canutinFileTransactions: CanutinFileTransactionType[]
 ) => {
