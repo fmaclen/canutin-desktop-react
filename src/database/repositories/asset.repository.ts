@@ -25,7 +25,7 @@ export class AssetRepository {
 
     await handleAssetBalanceStatements(existingAsset, asset);
 
-    return existingAsset;
+    return (await getRepository<Asset>(Asset).findOne(existingAsset.id)) as Asset;
   }
 
   static async getAssets(): Promise<Asset[]> {
@@ -64,17 +64,15 @@ export class AssetRepository {
       },
     });
 
-    asset?.balanceStatements?.forEach(async (balanceStatement: NewAssetBalanceStatementType) => {
-      await AssetBalanceStatementRepository.createBalanceStatement({
-        asset: asset,
-        value: balanceStatement.value ? balanceStatement.value : 0,
-        cost: balanceStatement.cost,
-        quantity: balanceStatement.quantity,
-        createdAt: balanceStatement.createdAt,
-      });
+    await AssetBalanceStatementRepository.createBalanceStatement({
+      asset: asset!,
+      createdAt: new Date(),
+      quantity: assetValue.quantity,
+      cost: assetValue.cost,
+      value: assetValue.value ? assetValue.value : 0,
     });
 
-    return asset as Asset;
+    return (await getRepository<Asset>(Asset).findOne(asset!.id)) as Asset;
   }
 
   static async editDetails(assetValue: AssetEditDetailsSubmitType): Promise<Asset> {
@@ -110,6 +108,6 @@ export class AssetRepository {
 
     await handleAssetBalanceStatements(existingAsset, asset);
 
-    return existingAsset;
+    return (await getRepository<Asset>(Asset).findOne(existingAsset.id)) as Asset;
   }
 }

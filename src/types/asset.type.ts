@@ -27,3 +27,5 @@ export type AssetEditDetailsSubmitType = {
   symbol?: string;
   assetId: number;
 };
+
+export type AddNewAssetType = AssetEditDetailsSubmitType & AssetEditValueSubmitType;

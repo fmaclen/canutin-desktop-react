@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { getUnixTime } from 'date-fns';
 import { useForm } from 'react-hook-form';
 
 import Form from '@components/common/Form/Form';
@@ -20,9 +21,11 @@ import { assetTypesWithSymbol, assetTypesValues } from '@constants/assetTypes';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
 
-import { NewAssetType } from '@appTypes/asset.type';
+import { AddNewAssetType } from '@appTypes/asset.type';
 import { NewAccountType } from '@appTypes/account.type';
 import { toggableInputContainer } from './styles';
+import { AssetTypeEnum } from '@enums/assetType.enum';
+import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutinFile.type';
 
 const ToggableInputContainer = styled.div`
   ${toggableInputContainer}
@@ -49,7 +52,22 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     control: controlAccountField,
   } = useForm({ mode: 'onChange' });
 
-  const onSubmitAsset = async (asset: NewAssetType) => {
+  const onSubmitAsset = async (newAsset: AddNewAssetType) => {
+    const asset = {
+      name: newAsset.name,
+      balanceGroup: newAsset.balanceGroup,
+      assetType: newAsset.assetType as AssetTypeEnum,
+      sold: newAsset.sold ? newAsset.sold : false,
+      symbol: newAsset.symbol,
+      balanceStatements: [
+        {
+          createdAt: getUnixTime(new Date()),
+          quantity: newAsset.quantity,
+          cost: newAsset.cost,
+          value: newAsset.value,
+        } as CanutinFileAssetBalanceStatementType,
+      ],
+    };
     AssetIpc.createAsset(asset);
   };
 
