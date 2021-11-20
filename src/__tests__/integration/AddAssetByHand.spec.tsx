@@ -71,9 +71,17 @@ describe('Add asset by Hand tests', () => {
     userEvent.click(continueButton);
     await waitFor(() => {
       expect(spySendIpcRenderer).toHaveBeenLastCalledWith(DB_NEW_ASSET, {
-        assetType: 'vehicle',
         name: 'Test asset',
-        value: '200',
+        assetType: 'vehicle',
+        sold: false,
+        balanceStatements: [
+          {
+            createdAt: expect.any(Number),
+            quantity: undefined,
+            cost: undefined,
+            value: '200',
+          },
+        ],
       });
     });
   });
@@ -114,12 +122,18 @@ describe('Add asset by Hand tests', () => {
     userEvent.click(continueButton);
     await waitFor(() => {
       expect(spySendIpcRenderer).toHaveBeenLastCalledWith(DB_NEW_ASSET, {
-        assetType: 'cryptocurrency',
         name: 'Test Cryptocurrency',
-        value: '400',
-        quantity: '2',
-        cost: '200',
+        assetType: 'cryptocurrency',
         symbol: 'USD',
+        sold: false,
+        balanceStatements: [
+          {
+            createdAt: expect.any(Number),
+            quantity: '2',
+            cost: '200',
+            value: '400',
+          },
+        ],
       });
     });
   });
