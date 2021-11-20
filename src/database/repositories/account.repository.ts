@@ -31,7 +31,7 @@ export class AccountRepository {
 
     await handleAccountBalanceStatements(existingAccount, account);
 
-    return existingAccount;
+    return (await getRepository<Account>(Account).findOne(existingAccount.id)) as Account;
   }
 
   static async createAccounts(accounts: Account[]): Promise<Account[]> {
@@ -90,7 +90,7 @@ export class AccountRepository {
 
     await handleAccountBalanceStatements(existingAccount, account);
 
-    return existingAccount;
+    return (await getRepository<Account>(Account).findOne(existingAccount.id)) as Account;
   }
 
   static async editBalance(accountBalance: AccountEditBalanceSubmitType): Promise<Account> {
@@ -112,12 +112,12 @@ export class AccountRepository {
         account: existingAccount as Account,
       }));
 
-    return existingAccount as Account;
+    return (await getRepository<Account>(Account).findOne(existingAccount!.id)) as Account;
   }
 
   static async editDetails(accountDetails: AccountEditDetailsSubmitType): Promise<Account> {
     const accountType = await AccountTypeRepository.createOrGetAccountType({
-      name: accountDetails.accountTypeName.toLowerCase(),
+      name: accountDetails.accountType.toLowerCase(),
     });
     await getRepository<Account>(Account).update(accountDetails.accountId, {
       name: accountDetails.name,

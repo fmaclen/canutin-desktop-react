@@ -10,7 +10,6 @@ import {
 } from '@appTypes/asset.type';
 import { AssetBalanceStatementRepository } from './assetBalanceStatement.entity';
 import { AssetTypeEnum } from '@enums/assetType.enum';
-import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
 import { handleAssetBalanceStatements } from '@database/helpers/balanceStatement';
 
 export class AssetRepository {
@@ -65,7 +64,7 @@ export class AssetRepository {
     });
 
     await AssetBalanceStatementRepository.createBalanceStatement({
-      asset: asset!,
+      asset: asset as Asset,
       createdAt: new Date(),
       quantity: assetValue.quantity,
       cost: assetValue.cost,

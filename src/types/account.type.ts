@@ -23,8 +23,11 @@ export type AccountEditBalanceSubmitType = {
 
 export type AccountEditDetailsSubmitType = {
   accountId: number;
-  accountTypeName: string;
+  accountType: string;
   balanceGroup: number;
   name: string;
+  officialName?: string;
   institution?: string;
 };
+
+export type AddNewAccountType = AccountEditBalanceSubmitType & AccountEditDetailsSubmitType;

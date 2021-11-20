@@ -123,6 +123,7 @@ describe('Add asset by Hand tests', () => {
     await waitFor(() => {
       expect(spySendIpcRenderer).toHaveBeenLastCalledWith(DB_NEW_ASSET, {
         name: 'Test Cryptocurrency',
+        balanceGroup: undefined,
         assetType: 'cryptocurrency',
         symbol: 'USD',
         sold: false,

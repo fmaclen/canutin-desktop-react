@@ -22,7 +22,7 @@ import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
 
 import { AddNewAssetType } from '@appTypes/asset.type';
-import { NewAccountType } from '@appTypes/account.type';
+import { AddNewAccountType } from '@appTypes/account.type';
 import { toggableInputContainer } from './styles';
 import { AssetTypeEnum } from '@enums/assetType.enum';
 import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutinFile.type';
@@ -71,7 +71,22 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     AssetIpc.createAsset(asset);
   };
 
-  const onSubmitAccount = async (account: NewAccountType) => {
+  const onSubmitAccount = async (newAccount: AddNewAccountType) => {
+    const account = {
+      name: newAccount.name,
+      balanceGroup: newAccount.balanceGroup,
+      accountType: newAccount.accountType,
+      autoCalculated: newAccount.autoCalculated,
+      closed: newAccount.closed ? newAccount.closed : false,
+      institution: newAccount.institution,
+      officialName: newAccount.officialName,
+      balanceStatements: [
+        {
+          createdAt: getUnixTime(new Date()),
+          value: newAccount.balance,
+        },
+      ],
+    };
     AccountIpc.createAccount(account);
   };
 
