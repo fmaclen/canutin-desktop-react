@@ -25,7 +25,6 @@ import { AddNewAssetType } from '@appTypes/asset.type';
 import { AddNewAccountType } from '@appTypes/account.type';
 import { toggableInputContainer } from './styles';
 import { AssetTypeEnum } from '@enums/assetType.enum';
-import { CanutinFileAssetBalanceStatementType } from '@appTypes/canutinFile.type';
 
 const ToggableInputContainer = styled.div`
   ${toggableInputContainer}
@@ -65,7 +64,7 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
           quantity: newAsset.quantity,
           cost: newAsset.cost,
           value: newAsset.value,
-        } as CanutinFileAssetBalanceStatementType,
+        },
       ],
     };
     AssetIpc.createAsset(asset);
