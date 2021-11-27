@@ -3,7 +3,6 @@ import { BrowserWindow } from 'electron';
 
 import { dateInUTC, createdAtDate } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities/transaction.entity';
-import { Budget } from '@database/entities/budget.entity';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { CategoryRepository } from '@database/repositories/category.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
@@ -35,14 +34,6 @@ export const importFromCanutinFile = async (
               CANUTIN_FILE_DATE_FORMAT,
               new Date()
             );
-            const budget =
-              transactionInfo.budget &&
-              new Budget(
-                transactionInfo.budget.name,
-                transactionInfo.budget.targetAmount,
-                transactionInfo.budget.type,
-                parse(transactionInfo.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
-              );
             const category = await CategoryRepository.getOrCreateSubCategory(
               transactionInfo.category
             );
@@ -54,7 +45,6 @@ export const importFromCanutinFile = async (
               account,
               category,
               createdAtDate(transactionInfo.createdAt),
-              budget
             );
           })
         );
@@ -89,14 +79,6 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
       const updatedTransactions = await Promise.all(
         transactions?.map(async transactionInfo => {
           const transactionDate = parse(transactionInfo.date, CANUTIN_FILE_DATE_FORMAT, new Date());
-          const budget =
-            transactionInfo.budget &&
-            new Budget(
-              transactionInfo.budget.name,
-              transactionInfo.budget.targetAmount,
-              transactionInfo.budget.type,
-              parse(transactionInfo.budget.date, CANUTIN_FILE_DATE_FORMAT, new Date())
-            );
 
           const category = await CategoryRepository.getOrCreateSubCategory(
             transactionInfo.category
@@ -109,7 +91,6 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
             account,
             category,
             createdAtDate(transactionInfo.createdAt),
-            budget
           );
         })
       );
