@@ -2,7 +2,7 @@ import { CategoryRepository } from '../repositories/category.repository';
 
 import categoryList from './categories';
 
-const seedCategories = async () => {
+const seedCategories = async (callback: () => void) => {
   categoryList.categories.forEach(async ({ subcategories, name }) => {
     const rootCategory = await CategoryRepository.createRootCategory(name);
 
@@ -14,7 +14,11 @@ const seedCategories = async () => {
       // Add Root Category as subcategory
       await CategoryRepository.addSubCategories(name, rootCategory);
     }
-  });
+  }, );
+
+  setTimeout(() => {
+    callback()
+  }, 1000)
 };
 
 export default seedCategories;

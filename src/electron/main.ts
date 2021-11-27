@@ -90,6 +90,7 @@ import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import seedSettings from '@database/seed/seedSettings';
+import seedBudget from '@database/seed/seedBudget';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
   AssetEditDetailsSubmitType,
@@ -109,7 +110,9 @@ const setupEvents = async () => {
 
       if (filePath) await connectAndSaveDB(win, filePath);
       await seedSettings();
-      await seedCategories();
+      await seedCategories(async () => {
+        await seedBudget();
+      });
       await seedAssetTypes();
       await seedAccountTypes();
       win.webContents.send(NEW_DATABASE);
