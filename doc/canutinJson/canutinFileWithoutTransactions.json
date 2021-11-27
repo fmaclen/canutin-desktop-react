@@ -5,7 +5,7 @@
       "balanceGroup": "debt",
       "accountType": "credit card",
       "balance": 2500,
-      "autoCalculate": true
+      "autoCalculated": true
     }
   ]
 }
