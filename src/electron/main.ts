@@ -92,6 +92,7 @@ import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import seedDemoData from '@database/seed/seedDemoData';
+import seedSettings from '@database/seed/seedSettings';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
   AssetEditDetailsSubmitType,
@@ -110,6 +111,7 @@ const setupEvents = async () => {
       });
 
       if (filePath) await connectAndSaveDB(win, filePath);
+      await seedSettings();
       await seedCategories();
       await seedAssetTypes();
       await seedAccountTypes();
