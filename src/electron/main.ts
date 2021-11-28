@@ -43,8 +43,6 @@ import {
   DB_EDIT_ACCOUNT_BALANCE_ACK,
   DB_EDIT_ACCOUNT_DETAILS,
   DB_EDIT_ACCOUNT_DETAILS_ACK,
-  DB_GET_ACCOUNT,
-  DB_GET_ACCOUNT_ACK,
   FILTER_TRANSACTIONS,
   WINDOW_CONTROL,
   DB_DELETE_ACCOUNT,
@@ -230,7 +228,7 @@ const setupDbEvents = async () => {
     try {
       const newTransaction = await TransactionRepository.createTransaction(transaction);
       win?.webContents.send(DB_NEW_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
-      await getAccount(transaction.accountId);
+      await getAccounts();
     } catch (e) {
       if (e instanceof QueryFailedError) {
         win?.webContents.send(DB_NEW_TRANSACTION_ACK, {
@@ -250,7 +248,7 @@ const setupDbEvents = async () => {
     try {
       const newTransaction = await TransactionRepository.editTransaction(transaction);
       win?.webContents.send(DB_EDIT_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
-      await getAccount(transaction.accountId);
+      await getAccounts();
     } catch (e) {
       win?.webContents.send(DB_EDIT_TRANSACTION_ACK, {
         status: EVENT_ERROR,
@@ -265,7 +263,7 @@ const setupDbEvents = async () => {
       try {
         await TransactionRepository.deleteTransaction(transactionId);
         win?.webContents.send(DB_DELETE_TRANSACTION_ACK, { status: EVENT_SUCCESS });
-        await getAccount(accountId);
+        await getAccounts();
       } catch (e) {
         win?.webContents.send(DB_DELETE_TRANSACTION_ACK, {
           status: EVENT_ERROR,
@@ -320,18 +318,6 @@ const setupDbEvents = async () => {
       await getAccounts();
     } catch (e) {
       win?.webContents.send(DB_DELETE_ACCOUNT_ACK, {
-        status: EVENT_ERROR,
-        message: 'An error occurred, please try again',
-      });
-    }
-  });
-
-  ipcMain.on(DB_GET_ACCOUNT, async (_: IpcMainEvent, accountId: number) => {
-    try {
-      const account = await AccountRepository.getAccountById(accountId);
-      win?.webContents.send(DB_GET_ACCOUNT_ACK, { account, status: EVENT_SUCCESS });
-    } catch (e) {
-      win?.webContents.send(DB_GET_ACCOUNT_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
@@ -417,11 +403,6 @@ const setupDbEvents = async () => {
 const getAccounts = async () => {
   const accounts = await AccountRepository.getAccounts();
   win?.webContents.send(DB_GET_ACCOUNTS_ACK, accounts);
-};
-
-const getAccount = async (id: number) => {
-  const account = await AccountRepository.getAccountById(id);
-  win?.webContents.send(DB_GET_ACCOUNT_ACK, account);
 };
 
 const getAssets = async () => {

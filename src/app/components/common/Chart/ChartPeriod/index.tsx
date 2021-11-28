@@ -1,19 +1,53 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { proportionBetween } from '@app/utils/balance.utils';
+import NumberFormat from '@components/common/NumberFormat';
 
 import { ThemeProvider } from 'styled-components';
 import {
-  BarNegative,
-  BarPositive,
-  Period,
-  PeriodBalance,
-  PeriodBarPlaceholder,
-  PeriodBalanceLabel,
-  PeriodBar,
-  PeriodLabel,
-  PeriodDivider,
+  period,
+  periodBalance,
+  periodBar,
+  bar,
+  barPositive,
+  barNegative,
+  periodBarPlaceholder,
+  periodLabel,
+  periodDivider,
+  periodBalanceLabel,
 } from './styles';
+
+const Period = styled.div`
+  ${period}
+`;
+const PeriodBalance = styled.div`
+  ${periodBalance}
+`;
+const PeriodBar = styled.div`
+  ${periodBar}
+`;
+const PeriodBalanceLabel = styled(NumberFormat)`
+  ${periodBalanceLabel}
+`;
+const Bar = styled.div`
+  ${bar}
+`;
+const BarPositive = styled(Bar)`
+  ${barPositive}
+`;
+const BarNegative = styled(Bar)`
+  ${barNegative}
+`;
+const PeriodBarPlaceholder = styled.div`
+  ${periodBarPlaceholder}
+`;
+const PeriodLabel = styled.time`
+  ${periodLabel}
+`;
+const PeriodDivider = styled.hr`
+  ${periodDivider}
+`;
 
 interface ChartPeriodProps {
   id: number;
@@ -56,7 +90,7 @@ const ChartPeriod = ({
               <PeriodBar>
                 {!isCompact && (
                   <PeriodBalanceLabel
-                    isVisible={
+                    visibility={
                       isCurrentPeriod ||
                       (peakPositiveBalance !== 0 && peakPositiveBalance === balance)
                     }
@@ -77,7 +111,7 @@ const ChartPeriod = ({
                 <BarNegative height={proportionBetween(balance, peakNegativeBalance)} />
                 {!isCompact && (
                   <PeriodBalanceLabel
-                    isVisible={isCurrentPeriod || peakNegativeBalance === balance}
+                    visibility={isCurrentPeriod || peakNegativeBalance === balance}
                     value={Math.floor(balance)}
                     displayType="text"
                   />
