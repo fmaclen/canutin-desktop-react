@@ -3,6 +3,8 @@ import { BudgetTypeEnum } from '@enums/budgetType.enum';
 import { BudgetRepository } from '../repositories/budget.repository';
 
 const seedBudget = async () => {
+    await BudgetRepository.createBudget('Income', 0, BudgetTypeEnum.INCOME, []);
+
     const entertainmentCategory = await CategoryRepository.getOrCreateSubCategory('Entertainment & recreation');
     const museumsCategory = await CategoryRepository.getOrCreateSubCategory('Museums');
     await BudgetRepository.createBudget('Wants', 0, BudgetTypeEnum.EXPANSE, [entertainmentCategory, museumsCategory]);

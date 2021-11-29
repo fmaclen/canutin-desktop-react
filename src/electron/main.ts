@@ -56,6 +56,11 @@ import {
   DB_EDIT_ASSET_DETAILS,
   DB_EDIT_ASSET_DETAILS_ACK,
   APP_INFO,
+  DB_GET_BUDGETS,
+  DB_GET_BUDGETS_ACK,
+  DB_GET_SETTINGS,
+  DB_GET_SETTINGS_ACK,
+  DB_EDIT_BUDGET_GROUPS
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -98,6 +103,9 @@ import {
   NewAssetType,
 } from '../types/asset.type';
 import { NewAccountType } from '../types/account.type';
+import { BudgetRepository } from '@database/repositories/budget.repository';
+import { SettingsRepository } from '@database/repositories/settings.repository';
+import { EditBudgetSubmit } from '@app/components/Budget/EditBudgetGroups';
 
 let win: BrowserWindow | null = null;
 
@@ -227,6 +235,18 @@ const setupDbEvents = async () => {
 
   ipcMain.on(DB_GET_ASSETS, async (_: IpcMainEvent) => {
     await getAssets();
+  });
+
+  ipcMain.on(DB_GET_BUDGETS, async (_: IpcMainEvent) => {
+    await getBudgets();
+  });
+
+  ipcMain.on(DB_EDIT_BUDGET_GROUPS, async (_: IpcMainEvent, editBudgets: EditBudgetSubmit) => {
+    await editBudgetGroups(editBudgets);
+  });
+
+  ipcMain.on(DB_GET_SETTINGS, async (_: IpcMainEvent) => {
+    await getSettings();
   });
 
   ipcMain.on(DB_NEW_TRANSACTION, async (_: IpcMainEvent, transaction: NewTransactionType) => {
@@ -414,6 +434,22 @@ const getAssets = async () => {
   const assets = await AssetRepository.getAssets();
   win?.webContents.send(DB_GET_ASSETS_ACK, assets);
 };
+
+const getBudgets = async () => {
+  const budgets = await BudgetRepository.getBudgets();
+  win?.webContents.send(DB_GET_BUDGETS_ACK, budgets);
+}
+
+const getSettings = async () => {
+  const settings = await SettingsRepository.getSettings();
+  win?.webContents.send(DB_GET_SETTINGS_ACK, settings);
+}
+
+const editBudgetGroups = async (editBudgets: EditBudgetSubmit) => {
+  const newBudgets = await BudgetRepository.editBudgets(editBudgets);
+  await getSettings();
+  win?.webContents.send(DB_GET_BUDGETS_ACK, newBudgets);
+}
 
 const createWindow = async () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;

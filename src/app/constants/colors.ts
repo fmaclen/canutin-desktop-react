@@ -25,6 +25,7 @@ export const grey60 = '#666';
 export const grey70 = '#4C4C4C';
 export const grey80 = '#333333';
 export const grey90 = '#191919';
+export const blackOpacity05 = 'rgba(0, 0, 0, .05)';
 export const blackOpacity10 = 'rgba(0, 0, 0, .1)';
 export const blackOpacity15 = 'rgba(0, 0, 0, .15)';
 export const blackOpacity25 = 'rgba(0, 0, 0, .25)';

@@ -12,4 +12,10 @@ export class SettingsRepository {
       )
     );
   }
+
+  static async getSettings(): Promise<Settings> {
+    return await getRepository<Settings>(Settings).findOne({
+      order: { id: 'DESC' }
+  }) as Settings; // Return the last one
+  }
 }

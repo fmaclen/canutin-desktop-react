@@ -10,6 +10,9 @@ export const DB_NEW_ACCOUNT_ACK = 'dbNewAccountAck';
 export const DB_GET_ACCOUNTS = 'dbGetAccounts';
 export const DB_GET_ACCOUNTS_ACK = 'dbGetAccountsAck';
 
+export const DB_GET_BUDGETS = 'dbGetBudgets';
+export const DB_GET_BUDGETS_ACK = 'dbGetBudgetsAck';
+
 export const DB_GET_ASSETS = 'dbGetAssets';
 export const DB_GET_ASSETS_ACK = 'dbGetAssetsAck';
 
@@ -45,6 +48,11 @@ export const DB_EDIT_ACCOUNT_DETAILS_ACK = 'dbEditAccountDetailsAck';
 
 export const DB_DELETE_ACCOUNT = 'dbDeleteAccount';
 export const DB_DELETE_ACCOUNT_ACK = 'dbDeleteAccountAck';
+
+export const DB_GET_SETTINGS = 'dbGetSettings';
+export const DB_GET_SETTINGS_ACK = 'dbGetSettingsAck';
+
+export const DB_EDIT_BUDGET_GROUPS = 'dbEditBudgetGroups';
 
 // Import Wizard
 export const IMPORT_SOURCE_FILE = 'importSourceFile';
