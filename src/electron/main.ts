@@ -89,6 +89,7 @@ import { TransactionRepository } from '@database/repositories/transaction.reposi
 import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
+import seedDemoData from '@database/seed/seedDemoData';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
   AssetEditDetailsSubmitType,
@@ -100,7 +101,7 @@ import { NewAccountType } from '@appTypes/account.type';
 let win: BrowserWindow | null = null;
 
 const setupEvents = async () => {
-  ipcMain.on(OPEN_CREATE_VAULT, async () => {
+  ipcMain.on(OPEN_CREATE_VAULT, async (_: IpcMainEvent, seedDemo?: boolean) => {
     if (win) {
       const { filePath } = await dialog.showSaveDialog(win, {
         filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
@@ -110,6 +111,8 @@ const setupEvents = async () => {
       await seedCategories();
       await seedAssetTypes();
       await seedAccountTypes();
+
+      seedDemo && (await seedDemoData());
       win.webContents.send(NEW_DATABASE);
     }
   });
