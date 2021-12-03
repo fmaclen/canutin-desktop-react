@@ -14,6 +14,7 @@ import { ReactComponent as Sheet } from '@assets/icons/Sheet.svg';
 import { ReactComponent as Keyboard } from '@assets/icons/Keyboard.svg';
 import { ReactComponent as Bot } from '@assets/icons/Bot.svg';
 import { ReactComponent as Lightning } from '@assets/icons/Lightning.svg';
+import { ReactComponent as PaperAccount } from '@assets/icons/PaperAccount.svg';
 import { DB_SEED_VAULT, DB_SEED_VAULT_ACK } from '@constants/events';
 import { EVENT_SUCCESS } from '@constants/eventStatus';
 import { StatusBarContext } from '@app/context/statusBarContext';
@@ -49,6 +50,16 @@ const AddAccountOrAsset = () => {
   return (
     <ScrollView title="Add accounts or assets" wizard={true}>
       <SectionRow>
+        {isDbEmpty && (
+          <Section title="Seed vault">
+            <PrimaryCard
+              icon={<PaperAccount />}
+              title="Demo"
+              subTitle="Explore Canutin with automatically generated example data"
+              onClick={seedVault}
+            />
+          </Section>
+        )}
         <Section title="Add new">
           <PrimaryCardRow>
             <PrimaryCard
@@ -65,16 +76,6 @@ const AddAccountOrAsset = () => {
             />
           </PrimaryCardRow>
         </Section>
-        {isDbEmpty && (
-          <Section title="Demo">
-            <PrimaryCard
-              icon={<Keyboard />}
-              title="Seed "
-              subTitle="Explore Canutin with automatically generated demo data"
-              onClick={seedVault}
-            />
-          </Section>
-        )}
         <Section title="Coming soon">
           <PrimaryCardRow>
             <PrimaryCard
