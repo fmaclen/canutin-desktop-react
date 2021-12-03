@@ -103,7 +103,7 @@ import { NewAccountType } from '@appTypes/account.type';
 let win: BrowserWindow | null = null;
 
 const setupEvents = async () => {
-  ipcMain.on(OPEN_CREATE_VAULT, async (_: IpcMainEvent) => {
+  ipcMain.on(OPEN_CREATE_VAULT, async () => {
     if (win) {
       const { filePath } = await dialog.showSaveDialog(win, {
         filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
@@ -381,7 +381,7 @@ const setupDbEvents = async () => {
     }
   );
 
-  ipcMain.on(DB_SEED_VAULT, async (_: IpcMainEvent) => {
+  ipcMain.on(DB_SEED_VAULT, async () => {
     await seedDemoData();
     await getAccounts();
     await getAssets();
