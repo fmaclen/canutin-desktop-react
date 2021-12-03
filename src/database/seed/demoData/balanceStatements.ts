@@ -5,63 +5,63 @@ import { getUnixTime, subMonths } from 'date-fns';
 export const accountAutoLoanBalanceStatements = [
   {
     createdAt: getUnixTime(new Date()),
-    value: -34000,
+    value: -21250,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 1)),
-    value: -34500,
+    value: -23500,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 2)),
-    value: -35000,
+    value: -24000,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 3)),
-    value: -35500,
+    value: -25500,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 4)),
-    value: -36000,
+    value: -27000,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 5)),
-    value: -36500,
+    value: -29500,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 6)),
-    value: -37000,
+    value: -30000,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 7)),
-    value: -37500,
+    value: -32500,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 8)),
-    value: -38000,
+    value: -33000,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 8)),
-    value: -38500,
+    value: -34500,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 9)),
-    value: -39000,
+    value: -36000,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 10)),
-    value: -39500,
+    value: -37500,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 11)),
-    value: -40000,
+    value: -48000,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 12)),
-    value: -40500,
+    value: -39500,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 13)),
-    value: -41000,
+    value: -40000,
   },
   {
     createdAt: getUnixTime(subMonths(new Date(), 12)),

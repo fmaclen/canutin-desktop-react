@@ -173,7 +173,7 @@ const seedDemoData = async () => {
 
   // Asset: Vehicle
   await AssetRepository.createAsset({
-    name: '2021 Toyota RAV4',
+    name: `${new Date().getFullYear()} Toyota RAV4`,
     balanceGroup: BalanceGroupEnum.OTHER_ASSETS,
     assetType: AssetTypeEnum.VEHICLE,
     sold: false,
