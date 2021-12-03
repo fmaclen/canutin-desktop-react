@@ -55,8 +55,9 @@ import {
   DB_EDIT_ASSET_VALUE_ACK,
   DB_EDIT_ASSET_DETAILS,
   DB_EDIT_ASSET_DETAILS_ACK,
-  APP_INFO,
   DB_SEED_VAULT,
+  DB_SEED_VAULT_ACK,
+  APP_INFO,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -382,7 +383,10 @@ const setupDbEvents = async () => {
   );
 
   ipcMain.on(DB_SEED_VAULT, async (_: IpcMainEvent) => {
-    const isDataSeeded = await seedDemoData();
+    await seedDemoData();
+    await getAccounts();
+    await getAssets();
+    win?.webContents.send(DB_SEED_VAULT_ACK, { status: EVENT_SUCCESS });
   });
 
   ipcMain.on(WINDOW_CONTROL, async (e, action: WindowControlEnum) => {

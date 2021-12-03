@@ -79,7 +79,7 @@ const seedDemoData = async () => {
 
   // Account: Auto-loan
   await AccountRepository.createAccount({
-    name: 'Toyota Auto Credit',
+    name: 'Toyota Auto Loan',
     balanceGroup: BalanceGroupEnum.DEBT,
     accountType: 'auto',
     autoCalculated: false,
