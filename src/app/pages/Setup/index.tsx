@@ -12,17 +12,13 @@ import PrimaryCardRow from '@components/common/PrimaryCardRow';
 
 import { ReactComponent as Vault } from '@assets/icons/Vault.svg';
 import { ReactComponent as Browse } from '@assets/icons/Browse.svg';
-import { ReactComponent as Keyboard } from '@assets/icons/Keyboard.svg';
-import { LOAD_FROM_CANUTIN_FILE, OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '@constants/events';
+import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '@constants/events';
 import { DATABASE_DOES_NOT_EXIST, DATABASE_NOT_VALID } from '@constants';
 import { DatabaseDoesNotExistsMessage } from '@constants/messages';
 import { StatusEnum } from '@app/constants/misc';
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
 import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
-
-import { CanutinFileType } from '@appTypes/canutinFile.type';
-import demoData from '../../../database/seed/demoData.json';
 
 const noVaultBreadcrumbs = [{ breadcrumb: 'Canutin setup', path: '/' }];
 
@@ -78,13 +74,6 @@ const Setup = () => {
     ipcRenderer.send(OPEN_CREATE_VAULT);
   };
 
-  const onOpenCreateAndSeedVault = () => {
-    ipcRenderer.send(OPEN_CREATE_VAULT, { seedDemo: true });
-
-    // console.log(demoData);
-    // ipcRenderer.send(LOAD_FROM_CANUTIN_FILE, demoData);
-  };
-
   const onOpenExistingVault = () => {
     ipcRenderer.send(OPEN_EXISTING_VAULT);
   };
@@ -107,14 +96,6 @@ const Setup = () => {
               onClick={onOpenExistingVault}
             />
           </PrimaryCardRow>
-        </Section>
-        <Section title="Demo">
-          <PrimaryCard
-            icon={<Keyboard />}
-            title="Seed "
-            subTitle="Explore Canutin with automatically generated demo data"
-            onClick={onOpenCreateAndSeedVault}
-          />
         </Section>
       </SectionRow>
     </ScrollView>

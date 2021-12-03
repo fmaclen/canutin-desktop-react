@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { ipcRenderer } from 'electron';
 import { useHistory } from 'react-router-dom';
 
 import ScrollView from '@components/common/ScrollView';
@@ -8,13 +9,20 @@ import PrimaryCard from '@components/common/PrimaryCard';
 import PrimaryCardRow from '@components/common/PrimaryCardRow';
 
 import { routesPaths } from '@routes';
+import { AppContext } from '@app/context/appContext';
 import { ReactComponent as Sheet } from '@assets/icons/Sheet.svg';
 import { ReactComponent as Keyboard } from '@assets/icons/Keyboard.svg';
 import { ReactComponent as Bot } from '@assets/icons/Bot.svg';
 import { ReactComponent as Lightning } from '@assets/icons/Lightning.svg';
+import { DB_SEED_VAULT } from '@constants/events';
+
+const seedVault = () => {
+  ipcRenderer.send(DB_SEED_VAULT);
+};
 
 const AddAccountOrAsset = () => {
   const { push } = useHistory();
+  const { isDbEmpty } = useContext(AppContext);
 
   return (
     <ScrollView title="Add accounts or assets" wizard={true}>
@@ -35,6 +43,16 @@ const AddAccountOrAsset = () => {
             />
           </PrimaryCardRow>
         </Section>
+        {isDbEmpty && (
+          <Section title="Demo">
+            <PrimaryCard
+              icon={<Keyboard />}
+              title="Seed "
+              subTitle="Explore Canutin with automatically generated demo data"
+              onClick={seedVault}
+            />
+          </Section>
+        )}
         <Section title="Coming soon">
           <PrimaryCardRow>
             <PrimaryCard

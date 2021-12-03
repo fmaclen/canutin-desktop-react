@@ -56,6 +56,7 @@ import {
   DB_EDIT_ASSET_DETAILS,
   DB_EDIT_ASSET_DETAILS_ACK,
   APP_INFO,
+  DB_SEED_VAULT,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -112,7 +113,6 @@ const setupEvents = async () => {
       await seedAssetTypes();
       await seedAccountTypes();
 
-      seedDemo && (await seedDemoData());
       win.webContents.send(NEW_DATABASE);
     }
   });
@@ -380,6 +380,10 @@ const setupDbEvents = async () => {
       }
     }
   );
+
+  ipcMain.on(DB_SEED_VAULT, async (_: IpcMainEvent) => {
+    const isDataSeeded = await seedDemoData();
+  });
 
   ipcMain.on(WINDOW_CONTROL, async (e, action: WindowControlEnum) => {
     if (win) {

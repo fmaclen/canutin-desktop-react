@@ -1,5 +1,6 @@
 import { AccountRepository } from '@database/repositories/account.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
+import { AssetRepository } from '@database/repositories/asset.repository';
 import { AssetTypeEnum } from '@enums/assetType.enum';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
@@ -8,7 +9,6 @@ import {
   accountSavingsMonthlyTransactions,
   accountCreditCardMonthlyTransactions,
 } from './demoData/transactions';
-
 import {
   account401kbalanceStatements,
   accountAutoLoanBalanceStatements,
@@ -21,7 +21,6 @@ import {
   assetPokemonCardBalanceStatements,
   assetVehicleBalanceStatements,
 } from './demoData/balanceStatements';
-import { AssetRepository } from '@database/repositories/asset.repository';
 
 const seedDemoData = async () => {
   // Account: Checking
@@ -180,6 +179,8 @@ const seedDemoData = async () => {
     sold: false,
     balanceStatements: assetVehicleBalanceStatements,
   });
+
+  return true;
 };
 
 export default seedDemoData;
