@@ -83,10 +83,10 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     }
   }, [symbol]);
 
-  const autoCalculate = watchAccountField('autoCalculate');
+  const autoCalculated = watchAccountField('autoCalculated');
   const accountName = watchAccountField('name');
   const balance = watchAccountField('balance');
-  const submitAccountEnabled = shouldDisplay && !!accountName && (autoCalculate || !!balance);
+  const submitAccountEnabled = shouldDisplay && !!accountName && (autoCalculated || !!balance);
 
   const formSubmit = shouldDisplayAccount
     ? handleAccountSubmit(onSubmitAccount)
@@ -149,12 +149,12 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
               <InputCurrency
                 name="balance"
                 control={controlAccountField}
-                disabled={autoCalculate}
-                rules={{ validate: v => autoCalculate || v !== '' }}
+                disabled={autoCalculated}
+                rules={{ validate: v => autoCalculated || v !== '' }}
               />
               <InlineCheckbox
-                name="autoCalculate"
-                id="autoCalculate"
+                name="autoCalculated"
+                id="autoCalculated"
                 label="Auto-calculate from transactions"
                 register={registerAccountField}
               />

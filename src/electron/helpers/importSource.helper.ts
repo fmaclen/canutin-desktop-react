@@ -47,7 +47,7 @@ export const analyzeCanutinFile = async (filePath: string, win: BrowserWindow | 
     const hasCanutinFileAccounts = canutinFile?.accounts?.length > 0;
     const countAssets = canutinFile?.assets?.length;
     const hasAllAccountsAutoCalculatedField = canutinFile?.accounts?.every(
-      (account: CanutinFileAccountType) => account.autoCalculate !== undefined
+      (account: CanutinFileAccountType) => account.autoCalculated !== undefined
     );
 
     if ((hasCanutinFileAccounts && hasAllAccountsAutoCalculatedField) || countAssets) {
@@ -191,7 +191,7 @@ export const loadFromCanutinFile = async (
 
 export const importUpdatedAccounts = async (
   win: BrowserWindow | null,
-  updatedAccounts?: UpdatedAccount[],
+  updatedAccounts?: UpdatedAccount[]
 ) => {
   try {
     if (updatedAccounts) {

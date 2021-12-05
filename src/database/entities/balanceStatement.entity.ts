@@ -7,17 +7,13 @@ export class BalanceStatement extends Base {
   @Column({ nullable: true })
   value?: number;
 
-  @Column({ default: false })
-  autoCalculate: boolean;
-
   @ManyToOne(() => Account, account => account.balanceStatements, { eager: false })
   @JoinColumn()
   account: Account;
 
-  constructor(autoCalculate: boolean, account: Account, value?: number) {
+  constructor(account: Account, value?: number) {
     super();
     this.value = value;
-    this.autoCalculate = autoCalculate;
     this.account = account;
   }
 }

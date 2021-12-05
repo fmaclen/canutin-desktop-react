@@ -1,5 +1,5 @@
 import { getRepository, getConnection, Between, UpdateResult } from 'typeorm';
-import { subDays } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 
@@ -63,9 +63,8 @@ export class TransactionRepository {
   }
 
   static async getFilterTransactions(filter: FilterTransactionInterface): Promise<Transaction[]> {
-    // The query seems to only return the expected results if the dates are offset by -1
-    const dateFrom = subDays(dateInUTC(filter.dateFrom), 1);
-    const dateTo = subDays(dateInUTC(filter.dateTo), 1);
+    const dateFrom = startOfDay(dateInUTC(filter.dateFrom));
+    const dateTo = endOfDay(dateInUTC(filter.dateTo));
 
     return await getRepository<Transaction>(Transaction).find({
       relations: ['account', 'category'],

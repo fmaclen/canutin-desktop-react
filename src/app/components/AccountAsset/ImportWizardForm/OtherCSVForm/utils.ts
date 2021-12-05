@@ -68,7 +68,7 @@ export const getTransactionsForAccountColumn = (
       name: accountName,
       balanceGroup: getBalanceGroupByAccountType(accounts[accountColumnName]),
       accountType: accounts[accountColumnName],
-      autoCalculate: true,
+      autoCalculated: true,
       transactions,
     };
 
@@ -170,13 +170,13 @@ export const formToCantuinJsonFile = (
         ({ id }) => id === Number(formData?.account?.importAccount)
       );
     }
-    let { name, accountType, autoCalculate, balance, institution } = formData.account;
+    let { name, accountType, autoCalculated, balance, institution } = formData.account;
 
     if (canutinAccount) {
       name = canutinAccount.name;
       accountType = canutinAccount.accountType.name;
       balance = formData.account.balance;
-      autoCalculate = formData.account.autoCalculate;
+      autoCalculated = formData.account.autoCalculated;
       if (canutinAccount.institution) {
         institution = canutinAccount.institution;
       }
@@ -198,7 +198,7 @@ export const formToCantuinJsonFile = (
           balanceGroup: getBalanceGroupByAccountType(accountType),
           accountType,
           institution,
-          autoCalculate,
+          autoCalculated,
           balance,
           transactions,
         },
