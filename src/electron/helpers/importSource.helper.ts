@@ -201,15 +201,9 @@ export const loadFromCanutinFile = async (
 ) => {
   const isSuccess = await importFromCanutinFile(canutinFile, win);
 
-  if (isSuccess) {
-    win?.webContents.send(LOAD_DATA_ACK, {
-      status: StatusEnum.POSITIVE,
-    });
-  } else {
-    win?.webContents.send(LOAD_DATA_ACK, {
-      status: StatusEnum.NEGATIVE,
-    });
-  }
+  win?.webContents.send(LOAD_DATA_ACK, {
+    status: isSuccess ? StatusEnum.POSITIVE : StatusEnum.NEGATIVE,
+  });
 };
 
 export const importUpdatedAccounts = async (
