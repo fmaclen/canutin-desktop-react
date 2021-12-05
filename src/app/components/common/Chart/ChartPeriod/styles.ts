@@ -61,7 +61,7 @@ export const periodBar = css`
   min-height: 28px;
 `;
 
-export const periodBalanceLabel = css<{ visibility: boolean }>`
+export const periodBalanceLabel = css`
   ${monospaceRegular};
   display: inline-flex;
   align-items: center;
@@ -73,7 +73,7 @@ export const periodBalanceLabel = css<{ visibility: boolean }>`
   color: ${props =>
     props.theme.balance > 0 ? greenPlain : props.theme.balance < 0 ? redPlain : grey50};
   margin: ${props => (props.theme.balance >= 0 ? 'auto 0 0 0' : '0 0 auto 0')};
-  opacity: ${props => (props.theme.isActive ? 1 : props.visibility ? 1 : 0)};
+  opacity: ${props => (props.theme.isActive ? 1 : props.theme.isBalanceLabelVisible ? 1 : 0)};
 `;
 
 export const bar = css<{ height: number }>`
