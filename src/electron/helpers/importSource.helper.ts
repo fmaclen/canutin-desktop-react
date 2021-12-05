@@ -2,11 +2,7 @@ import { readFileSync } from 'fs';
 import { BrowserWindow } from 'electron';
 
 import { enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
-import {
-  ANALYZE_SOURCE_FILE_ACK,
-  LOAD_FROM_CANUTIN_FILE_ACK,
-  LOAD_FROM_OTHER_CSV_ACK,
-} from '@constants/events';
+import { ANALYZE_SOURCE_FILE_ACK, LOAD_DATA_ACK } from '@constants/events';
 import {
   CanutinFileType,
   UpdatedAccount,
@@ -206,11 +202,11 @@ export const loadFromCanutinFile = async (
   const isSuccess = await importFromCanutinFile(canutinFile, win);
 
   if (isSuccess) {
-    win?.webContents.send(LOAD_FROM_CANUTIN_FILE_ACK, {
+    win?.webContents.send(LOAD_DATA_ACK, {
       status: StatusEnum.POSITIVE,
     });
   } else {
-    win?.webContents.send(LOAD_FROM_CANUTIN_FILE_ACK, {
+    win?.webContents.send(LOAD_DATA_ACK, {
       status: StatusEnum.NEGATIVE,
     });
   }
@@ -224,11 +220,11 @@ export const importUpdatedAccounts = async (
     if (updatedAccounts) {
       await updateAccounts(updatedAccounts);
     }
-    win?.webContents.send(LOAD_FROM_OTHER_CSV_ACK, {
+    win?.webContents.send(LOAD_DATA_ACK, {
       status: StatusEnum.POSITIVE,
     });
   } catch (error) {
-    win?.webContents.send(LOAD_FROM_OTHER_CSV_ACK, {
+    win?.webContents.send(LOAD_DATA_ACK, {
       status: StatusEnum.NEGATIVE,
     });
   }
