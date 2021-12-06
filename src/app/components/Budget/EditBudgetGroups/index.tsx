@@ -29,6 +29,19 @@ export type EditBudgetSubmit = {
   group: { [id: string]: { targetAmount: number; name?: string } };
 };
 
+const AUTO_BUDGET_GROUPS = [
+  {
+    id: '-1',
+    name: 'Needs',
+    targetAmount: -3750,
+  },
+  {
+    id: '-2',
+    name: 'Wants',
+    targetAmount: -2250,
+  },
+];
+
 const EditBudgetGroups = ({
   date,
   expenseBudgets,
@@ -58,6 +71,20 @@ const EditBudgetGroups = ({
   const isAutoBudget = autoBudget === 'Enable';
 
   useEffect(() => {
+    if (isAutoBudget) {
+      setValue(
+        'group',
+        AUTO_BUDGET_GROUPS.reduce(
+          (acc, { id, name, targetAmount }) => ({ ...acc, [id]: { name, targetAmount } }),
+          {}
+        )
+      );
+
+      setValue('targetIncome', 7800);
+    }
+  }, [isAutoBudget]);
+
+  useEffect(() => {
     setValue(
       'group',
       expenseBudgets.reduce(
@@ -74,8 +101,11 @@ const EditBudgetGroups = ({
   }, [JSON.stringify(expenseBudgets)]);
 
   useEffect(() => {
-    const totalTargetsExpenses = Object.keys(group).reduce((acc, key) => acc + Number(group[key].targetAmount), 0);
-    setValue('targetSavings',  Number(targetIncomeForm) + totalTargetsExpenses);
+    const totalTargetsExpenses = Object.keys(group).reduce(
+      (acc, key) => acc + Number(group[key].targetAmount),
+      0
+    );
+    setValue('targetSavings', Number(targetIncomeForm) + totalTargetsExpenses);
   }, [targetIncomeForm, JSON.stringify(group)]);
 
   useEffect(() => {
@@ -85,7 +115,6 @@ const EditBudgetGroups = ({
   const submitIsDisabled = !formState.isDirty;
 
   const onSubmit = (editBudgetSubmit: EditBudgetSubmit) => {
-    console.log(editBudgetSubmit);
     BudgetIpc.editBudgetGroups(editBudgetSubmit);
   };
 
@@ -120,23 +149,25 @@ const EditBudgetGroups = ({
             allowNegative={false}
           />
         </Fieldset>
-        {expenseBudgets.map(({ id, name }) => (
-          <Fieldset key={id}>
-            <InputTextField
-              name={`group.${id}.name`}
-              disabled={isAutoBudget}
-              label="Group"
-              register={register}
-            />
-            <InputCurrencyField
-              label={`${name} target`}
-              name={`group.${id}.targetAmount`}
-              control={control}
-              onlyNegative
-              disabled={isAutoBudget}
-            />
-          </Fieldset>
-        ))}
+        {(isAutoBudget ? ((AUTO_BUDGET_GROUPS as unknown) as Budget[]) : expenseBudgets).map(
+          ({ id, name }) => (
+            <Fieldset key={id}>
+              <InputTextField
+                name={`group.${id}.name`}
+                disabled={isAutoBudget}
+                label="Group"
+                register={register}
+              />
+              <InputCurrencyField
+                label={`${name} target`}
+                name={`group.${id}.targetAmount`}
+                control={control}
+                onlyNegative
+                disabled={isAutoBudget}
+              />
+            </Fieldset>
+          )
+        )}
         <Fieldset>
           <InputTextField name="savings" disabled={true} label="Group" value="Savings" />
           <InputCurrencyField

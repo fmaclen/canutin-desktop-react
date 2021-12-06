@@ -9,19 +9,18 @@ import EditBudgetGroups from '@app/components/Budget/EditBudgetGroups';
 
 const EditBudget = () => {
   const {
-    budgetFilterOption,
     expenseBudgets,
     targetIncome,
     targetSavings,
     isLoading,
-  } = useBudgetInfo();
+  } = useBudgetInfo(true);
 
   const [editBudgetSections, setEditBudgetSections] = useState([
     {
       label: 'Budgets groups',
       component: !isLoading && expenseBudgets?.length !== 0 ? (
         <EditBudgetGroups
-          date={budgetFilterOption?.value?.dateFrom}
+          date={new Date()}
           expenseBudgets={expenseBudgets as Budget[]}
           targetIncome={targetIncome}
           targetSavings={targetSavings}
@@ -35,13 +34,12 @@ const EditBudget = () => {
   ]);
 
   useEffect(() => {
-    console.log(expenseBudgets);
     setEditBudgetSections([
       {
         label: 'Budgets groups',
         component: !isLoading && expenseBudgets?.length !== 0 ? (
           <EditBudgetGroups
-            date={budgetFilterOption?.value?.dateFrom}
+            date={new Date()}
             expenseBudgets={expenseBudgets as Budget[]}
             targetIncome={targetIncome}
             targetSavings={targetSavings}
@@ -58,9 +56,9 @@ const EditBudget = () => {
   return (
     <ScrollView
       title="Edit budget"
-      subTitle={format(budgetFilterOption?.value?.dateFrom, 'MMMM yyyy')}
+      subTitle={format(new Date(), 'MMMM yyyy')}
       sections={editBudgetSections}
-    ></ScrollView>
+    />
   );
 };
 

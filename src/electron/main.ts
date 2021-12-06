@@ -446,9 +446,9 @@ const getSettings = async () => {
 }
 
 const editBudgetGroups = async (editBudgets: EditBudgetSubmit) => {
-  const newBudgets = await BudgetRepository.editBudgets(editBudgets);
+  await BudgetRepository.editBudgets(editBudgets);
   await getSettings();
-  win?.webContents.send(DB_GET_BUDGETS_ACK, newBudgets);
+  await getBudgets();
 }
 
 const createWindow = async () => {

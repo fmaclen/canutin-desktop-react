@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToMany, JoinTable, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 
 import { BudgetTypeEnum } from '@enums/budgetType.enum';
 
@@ -16,15 +16,13 @@ export class Budget extends Base {
   @Column()
   type: BudgetTypeEnum;
 
-  @ManyToMany(() => TransactionSubCategory)
+  @ManyToMany(() => TransactionSubCategory, { cascade: true })
   @JoinTable()
   categories: TransactionSubCategory[]
 
-  @DeleteDateColumn()
-  deletedAt?: Date;
-
-  constructor(name: string, targetAmount: number, type: BudgetTypeEnum, categories: TransactionSubCategory[]) {
+  constructor(name: string, targetAmount: number, type: BudgetTypeEnum, categories: TransactionSubCategory[], createdAt: Date) {
     super();
+    this.createdAt = createdAt;
     this.name = name;
     this.targetAmount = targetAmount;
     this.type = type;
