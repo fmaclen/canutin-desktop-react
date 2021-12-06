@@ -1,10 +1,5 @@
 import { getRepository, In } from 'typeorm';
-import {
-  isAfter,
-  isSameMonth,
-  startOfMonth,
-  isEqual,
-} from 'date-fns';
+import { isAfter, isSameMonth, startOfMonth, isEqual } from 'date-fns';
 
 import { BudgetTypeEnum } from '@enums/budgetType.enum';
 import { EditBudgetSubmit } from '@app/components/Budget/EditBudgetGroups';
@@ -38,6 +33,10 @@ export class BudgetRepository {
 
   static async updateBudget(id: number, targetAmount: number, name?: string) {
     await getRepository<Budget>(Budget).update({ id }, { targetAmount, name });
+  }
+
+  static async deleteBudget(id: number) {
+    await getRepository<Budget>(Budget).delete(id);
   }
 
   static async editBudgets(editBudgets: EditBudgetSubmit): Promise<void> {
@@ -85,7 +84,11 @@ export class BudgetRepository {
           { targetAmount: editBudgets.targetIncome }
         );
 
-        const newBudgets = existedBudgets.filter(budget => !budgetsToBeUpdated.includes(budget));
+        const newBudgets = existedBudgets.filter(
+          budget =>
+            !budgetsToBeUpdated.includes(budget) &&
+            !editBudgets.removeGroupIds.includes(Number(budget.id))
+        );
         await Promise.allSettled(
           budgetsToBeUpdated.map(({ id, targetAmount, name }) => {
             return this.updateBudget(Number(id), targetAmount, name);
@@ -96,6 +99,8 @@ export class BudgetRepository {
             this.createBudget(name as string, targetAmount, BudgetTypeEnum.EXPANSE, [])
           )
         );
+        // Delete budgets
+        await Promise.allSettled(editBudgets.removeGroupIds.map(id => this.deleteBudget(id)));
       }
     } else {
       // Create new entries
@@ -116,6 +121,8 @@ export class BudgetRepository {
             this.createBudget(name as string, targetAmount, BudgetTypeEnum.EXPANSE, [])
           )
         );
+        // Delete budgets
+        await Promise.allSettled(editBudgets.removeGroupIds.map(id => this.deleteBudget(id)));
       }
     }
   }
