@@ -5,7 +5,7 @@ import { Budget } from './budget.entity';
 import { TransactionSubCategory } from './transactionSubCategory.entity';
 
 @Entity()
-@Unique('UQ_COLUMNS', ['account', 'date', 'description', 'amount'])
+@Unique('UQ_COLUMNS', ['account', 'date', 'description', 'amount', 'createdAt'])
 export class Transaction extends Base {
   @Column()
   description: string;
@@ -52,7 +52,7 @@ export class Transaction extends Base {
     account: Account,
     category: TransactionSubCategory,
     pending: boolean,
-    budget?: Budget,
+    createdAt: Date,
     linkId?: string
   ) {
     super();
@@ -63,7 +63,7 @@ export class Transaction extends Base {
     this.account = account;
     this.category = category;
     this.pending = pending;
-    this.budget = budget;
     this.linkId = linkId;
+    this.createdAt = createdAt;
   }
 }

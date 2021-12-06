@@ -26,6 +26,7 @@ export interface NavItemProps {
   disabled?: boolean;
   primary?: boolean;
   status?: ReactNode;
+  dataTestId?: string;
 }
 
 const NavItem = ({
@@ -33,6 +34,7 @@ const NavItem = ({
   text,
   toggled,
   to,
+  dataTestId,
   disabled = false,
   primary = false,
   status = false,
@@ -52,7 +54,12 @@ const NavItem = ({
         to === '#sync' && linkAccount && setLinkAccount({ ...linkAccount, isSyncing: true })
       }
     >
-      <Icon isSyncing={to === '#sync' && linkAccount ? linkAccount.isSyncing : false}>{icon}</Icon>
+      <Icon
+        isSyncing={to === '#sync' && linkAccount ? linkAccount.isSyncing : false}
+        data-testid={dataTestId}
+      >
+        {icon}
+      </Icon>
       <Text toggled={toggled}>{text}</Text>
       {status && <Status>{status}</Status>}
     </Container>

@@ -5,12 +5,12 @@ import {
   subWeeks,
   getWeek,
   endOfWeek,
-  max,
+  min,
   sub,
   eachMonthOfInterval,
-  getMonth,
   format,
   isEqual,
+  startOfWeek,
 } from 'date-fns';
 import merge from 'deepmerge';
 
@@ -18,7 +18,7 @@ import {
   Asset,
   Account,
   Transaction,
-  BalanceStatement,
+  AccountBalanceStatement,
   AssetBalanceStatement,
 } from '@database/entities';
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
@@ -26,12 +26,9 @@ import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 
 export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
-  const assetsNoSold = assets.filter(
-    ({ balanceStatements }) =>
-      balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
-  );
+  const assetsNotSold = assets.filter(asset => !asset.sold);
 
-  return assetsNoSold.reduce(
+  return assetsNotSold.reduce(
     (listOfBalancesByGroup, asset) => {
       let balanceData = listOfBalancesByGroup?.[asset.balanceGroup]?.[asset.assetType.name];
 
@@ -62,9 +59,9 @@ export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
 };
 
 export const getBalanceForAccountsByBalanceGroup = (accounts: Account[]) => {
-  const accountsNoClosed = accounts.filter(({ closed }) => !closed);
+  const accountsNotClosed = accounts.filter(({ closed }) => !closed);
 
-  return accountsNoClosed.reduce(
+  return accountsNotClosed.reduce(
     (listOfBalancesByGroup, account) => {
       let balanceData = listOfBalancesByGroup?.[account.balanceGroup]?.[account.accountType.name];
 
@@ -99,7 +96,7 @@ export const getBalanceForAccountsByBalanceGroup = (accounts: Account[]) => {
 
 export const generateAccountBalanceInfo = (account: Account) => ({
   ...account,
-  amount: account.balanceStatements?.[account.balanceStatements?.length - 1].autoCalculate
+  amount: account.autoCalculated
     ? account.transactions?.reduce((sum, transaction) => transaction.amount + sum, 0)
     : account.balanceStatements?.[account.balanceStatements?.length - 1].value,
   type: 'Account',
@@ -177,7 +174,9 @@ export const getTotalBalanceByGroup = (assets: Asset[], accounts: Account[]) => 
 
 export const getSelectedTransactions = (transactions: Transaction[], from: Date, to: Date) => {
   return transactions.filter(
-    transaction => (isBefore(from, transaction.date) || isEqual(from, transaction.date)) && isAfter(to, transaction.date)
+    transaction =>
+      (isBefore(from, transaction.date) || isEqual(from, transaction.date)) &&
+      isAfter(to, transaction.date)
   );
 };
 
@@ -191,8 +190,7 @@ export type TransactionsTrailingCashflowType = {
 
 export const getTransactionsTrailingCashflow = (transactions: Transaction[]) => {
   const transactionsNotExcludedFromTotals = transactions.filter(
-    transaction =>
-      !transaction.excludeFromTotals
+    transaction => !transaction.excludeFromTotals
   );
 
   if (transactionsNotExcludedFromTotals.length === 0) {
@@ -285,7 +283,7 @@ export const getTransactionsBalance = (transactions: Transaction[]) => {
 };
 
 export const getSelectedBalanceStatementValue = (
-  balanceStatements: (BalanceStatement | AssetBalanceStatement)[],
+  balanceStatements: (AccountBalanceStatement | AssetBalanceStatement)[],
   from: Date,
   to: Date
 ) => {
@@ -308,6 +306,8 @@ export type ChartPeriodType = {
   week?: number;
   dateWeek?: Date;
   difference?: number;
+  accountBalanceWeek?: number;
+  assetBalanceWeek?: number;
 };
 
 export const calculateBalanceDifference = (originalBalance: number, newBalance: number) => {
@@ -326,23 +326,35 @@ export const getTransactionBalanceByWeeks = (
     return [];
   }
 
-  const weeksDates = eachWeekOfInterval({
-    start: max([transactions[0].date, subWeeks(new Date(), weeks)]),
-    end: new Date(),
-  });
+  const weeksDates = eachWeekOfInterval(
+    {
+      start: min([transactions[0].date, subWeeks(new Date(), weeks)]),
+      end: new Date(),
+    },
+    { weekStartsOn: 1 }
+  );
   return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
+    // FIXME: To accurately calculate the balance we need to sum the previous transactions
+    // outside of the current selected date range.
+    const startingBalance = 0;
     // Get transactions from -weeks ago to current week and calculate balance
-    const balance = getTransactionsBalance(
-      getSelectedTransactions(transactions, weekDate, endOfWeek(weekDate, { weekStartsOn: 1 }))
+    const periodBalance = getTransactionsBalance(
+      getSelectedTransactions(
+        transactions,
+        startOfWeek(weekDate, { weekStartsOn: 1 }),
+        endOfWeek(weekDate, { weekStartsOn: 1 })
+      )
     );
+    const previousBalance = index === 0 ? startingBalance : acc[index - 1].balance;
+    const balance = previousBalance + periodBalance;
     return [
       ...acc,
       {
-        week: getWeek(weekDate),
+        week: getWeek(weekDate, { weekStartsOn: 1 }),
         balance,
         dateWeek: weekDate,
-        label: getWeek(weekDate).toString(),
-        difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
+        label: getWeek(weekDate, { weekStartsOn: 1 }).toString(),
+        difference: index === 0 ? 0 : calculateBalanceDifference(balance, previousBalance),
         id: index,
       },
     ];
@@ -350,12 +362,12 @@ export const getTransactionBalanceByWeeks = (
 };
 
 export const getBalancesByWeeks = (
-  balanceStatements: BalanceStatement[] | AssetBalanceStatement[],
+  balanceStatements: AccountBalanceStatement[] | AssetBalanceStatement[],
   weeks: number
 ): ChartPeriodType[] => {
   const weeksDates = eachWeekOfInterval(
     {
-      start: max([balanceStatements[0].createdAt, subWeeks(new Date(), weeks)]),
+      start: min([balanceStatements[0].createdAt, subWeeks(new Date(), weeks)]),
       end: new Date(),
     },
     {
@@ -367,7 +379,7 @@ export const getBalancesByWeeks = (
     // Get transactions from -weeks ago to current week and calculate balance
     const balanceStatementValue = getSelectedBalanceStatementValue(
       balanceStatements,
-      weekDate,
+      startOfWeek(weekDate, { weekStartsOn: 1 }),
       endOfWeek(weekDate, { weekStartsOn: 1 })
     );
     const balance = balanceStatementValue
@@ -379,10 +391,10 @@ export const getBalancesByWeeks = (
     return [
       ...acc,
       {
-        week: getWeek(weekDate),
+        week: getWeek(weekDate, { weekStartsOn: 1 }),
         balance,
         dateWeek: weekDate,
-        label: getWeek(weekDate).toString(),
+        label: getWeek(weekDate, { weekStartsOn: 1 }).toString(),
         difference: index === 0 ? 0 : calculateBalanceDifference(balance, acc[index - 1].balance),
         id: index,
       },
@@ -398,19 +410,26 @@ export const generatePlaceholdersChartPeriod = (
   if (weeks === weeksOffset) {
     return [];
   } else {
-    const weeksDates = eachWeekOfInterval({
-      start: sub(from, { weeks: weeks - weeksOffset + 1 }),
-      end: sub(from, { weeks: 1 }),
-    });
+    const weeksDates = eachWeekOfInterval(
+      {
+        start: sub(from, { weeks: weeks - weeksOffset + 1 }),
+        end: sub(from, { weeks: 1 }),
+      },
+      { weekStartsOn: 1 }
+    );
 
     return weeksDates.reduce((acc: ChartPeriodType[], weekDate, index) => {
+      const label = getWeek(weekDate, { weekStartsOn: 1 }).toLocaleString('en-US', {
+        minimumIntegerDigits: 2,
+      }); // From "01" to "52"
+
       return [
         ...acc,
         {
-          week: getWeek(weekDate),
+          week: getWeek(weekDate, { weekStartsOn: 1 }),
           balance: 0,
           dateWeek: weekDate,
-          label: getWeek(weekDate).toString(),
+          label: label,
           difference: 0,
           id: index + weeksOffset,
         },
@@ -433,12 +452,17 @@ export const generatePlaceholdersChartMonthPeriod = (
     });
 
     return monthsDates.reduce((acc: ChartPeriodType[], monthDate, index) => {
+      const label =
+        getWeek(monthDate) === 1
+          ? `${format(monthDate, 'MMM')} '${format(monthDate, 'yy')}`
+          : format(monthDate, 'MMM'); // From "Jan '21" to "Dec"
+
       return [
         ...acc,
         {
           month: monthDate,
           balance: 0,
-          label: format(monthDate, 'MMM'),
+          label: label,
           expenses: 0,
           income: 0,
           surplus: 0,
@@ -447,4 +471,8 @@ export const generatePlaceholdersChartMonthPeriod = (
       ];
     }, []);
   }
+};
+
+export const proportionBetween = (num1: number, num2: number) => {
+  return Math.round((!(num1 === 0) && !(num2 === 0) ? (num1 * 100) / num2 : 0) * 1e2) / 1e2;
 };

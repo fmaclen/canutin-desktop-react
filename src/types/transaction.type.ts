@@ -16,4 +16,5 @@ export type NewTransactionType = {
   budget?: Budget;
   id?: number;
   linkId?: string;
+  createdAt?: number;
 };

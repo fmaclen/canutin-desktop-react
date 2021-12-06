@@ -1,4 +1,4 @@
-import { format, differenceInCalendarWeeks } from 'date-fns';
+import { format, differenceInCalendarWeeks, fromUnixTime } from 'date-fns';
 
 export const dateInUTC = (date: Date) => {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0));
@@ -13,4 +13,14 @@ export const formatDate = (date: Date) => {
 };
 
 export const getNumberOfWeeks = (from: Date, to: Date) =>
-  differenceInCalendarWeeks(to, from);
+  differenceInCalendarWeeks(to, from, { weekStartsOn: 1 });
+
+export const createdAtDate = (createdAt?: number | Date) => {
+  if (!createdAt) {
+    return new Date();
+  } else if (typeof createdAt === 'number') {
+    return fromUnixTime(createdAt);
+  } else {
+    return createdAt;
+  }
+};

@@ -29,8 +29,6 @@ export const DB_EDIT_ASSET_DETAILS_ACK = 'dbEditAssetDetailsAck';
 export const DB_GET_BALANCE_STATEMENTS = 'dbGetStatements';
 export const DB_GET_BALANCE_STATEMENTS_ACK = 'dbGetStatementsAck';
 
-export const DB_GET_TRANSACTIONS = 'dbGetTransactions';
-export const DB_GET_TRANSACTIONS_ACK = 'dbGetTransactionsAck';
 export const DB_DELETE_LINKED_TRANSACTION = 'dbDeleteLinkedTransaction';
 
 export const DB_NEW_TRANSACTION = 'dbNewTransaction';
@@ -45,14 +43,14 @@ export const DB_DELETE_TRANSACTION_ACK = 'dbDeleteTransactionAck';
 export const DB_EDIT_ACCOUNT_BALANCE = 'dbEditAccountBalance';
 export const DB_EDIT_ACCOUNT_BALANCE_ACK = 'dbEditAccountBalanceAck';
 
-export const DB_GET_ACCOUNT = 'dbGetAccount';
-export const DB_GET_ACCOUNT_ACK = 'dbGetAccountAck';
-
 export const DB_EDIT_ACCOUNT_DETAILS = 'dbEditAccountDetails';
 export const DB_EDIT_ACCOUNT_DETAILS_ACK = 'dbEditAccountDetailsAck';
 
 export const DB_DELETE_ACCOUNT = 'dbDeleteAccount';
 export const DB_DELETE_ACCOUNT_ACK = 'dbDeleteAccountAck';
+
+export const DB_SEED_VAULT = 'dbSeedVault';
+export const DB_SEED_VAULT_ACK = 'dbSeedVaultAck';
 
 // Import Wizard
 export const IMPORT_SOURCE_FILE = 'importSourceFile';
@@ -69,5 +67,6 @@ export const LOADING_CSV = 'loadingCsv';
 export const FILTER_TRANSACTIONS = 'filterTransactions';
 export const FILTER_TRANSACTIONS_ACK = 'filterTransactionsAck';
 
-// Window
+// App
 export const WINDOW_CONTROL = 'windowControl';
+export const APP_INFO = 'appInfo';

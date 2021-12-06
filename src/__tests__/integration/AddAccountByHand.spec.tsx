@@ -26,7 +26,7 @@ describe('Add account by Hand tests', () => {
       </AppCtxProvider>
     );
 
-    const addAccountsOrAssetsButton = screen.getByText('Add or update data').closest('a');
+    const addAccountsOrAssetsButton = screen.getByTestId('sidebar-add-or-update-data');
 
     if (addAccountsOrAssetsButton) {
       userEvent.click(addAccountsOrAssetsButton);
@@ -38,32 +38,32 @@ describe('Add account by Hand tests', () => {
   });
 
   test('Create new account only with required fields', async () => {
-    const addAccountsOrAssetsButton = screen.getByText('Add or update data').closest('a');
+    const addAccountsOrAssetsButton = screen.getByTestId('sidebar-add-or-update-data');
     expect(screen.getByRole('form')).toHaveFormValues({});
-    expect(addAccountsOrAssetsButton).toHaveAttribute('href', '/account/addAccountOrAsset');
+    expect(addAccountsOrAssetsButton).toHaveAttribute('href', '/addAccountOrAsset');
 
     await selectEvent.select(screen.getByLabelText('Account type'), 'Checking');
 
     // Required fields
     const nameInput = screen.getByLabelText('Name');
-    const autoCalculateInput = screen.getByLabelText('Auto-calculate from transactions');
+    const autoCalculatedInput = screen.getByLabelText('Auto-calculate from transactions');
 
-    const continueButton = screen.getByRole('button', { name: /Continue/i });
+    const continueButton = <screen className="getBy"></screen>Role('button', { name: /Continue/i });
     expect(continueButton).toBeDisabled();
 
     userEvent.type(nameInput, 'Test account');
-    userEvent.click(autoCalculateInput);
+    userEvent.click(autoCalculatedInput);
     await waitFor(() => {
       expect(nameInput).toHaveValue('Test account');
-      expect(autoCalculateInput).toBeChecked();
+      expect(autoCalculatedInput).toBeChecked();
       expect(continueButton).not.toBeDisabled();
     });
 
-    userEvent.click(autoCalculateInput);
+    userEvent.click(autoCalculatedInput);
     await waitFor(() => {
       expect(continueButton).toBeDisabled();
     });
-    userEvent.click(autoCalculateInput);
+    userEvent.click(autoCalculatedInput);
     await waitFor(() => {
       expect(continueButton).not.toBeDisabled();
     });
@@ -71,20 +71,22 @@ describe('Add account by Hand tests', () => {
     userEvent.click(continueButton);
     await waitFor(() => {
       expect(spySendIpcRenderer).toBeCalledWith(DB_NEW_ACCOUNT, {
-        accountType: 'checking',
-        autoCalculate: true,
-        balance: null,
-        institution: '',
         name: 'Test account',
+        balanceGroup: undefined,
+        accountType: 'checking',
+        autoCalculated: true,
+        closed: false,
         officialName: '',
+        institution: '',
+        balanceStatements: [{ createdAt: expect.any(Number), value: null }],
       });
     });
   });
 
   test('Create new account with optional fields', async () => {
-    const addAccountsOrAssetsButton = screen.getByText('Add or update data').closest('a');
+    const addAccountsOrAssetsButton = screen.getByTestId('sidebar-add-or-update-data');
     expect(screen.getByRole('form')).toHaveFormValues({});
-    expect(addAccountsOrAssetsButton).toHaveAttribute('href', '/account/addAccountOrAsset');
+    expect(addAccountsOrAssetsButton).toHaveAttribute('href', '/addAccountOrAsset');
 
     await selectEvent.select(screen.getByLabelText('Account type'), 'PayPal');
     const nameInput = screen.getByLabelText('Name');
@@ -113,12 +115,14 @@ describe('Add account by Hand tests', () => {
     userEvent.click(continueButton);
     await waitFor(() => {
       expect(spySendIpcRenderer).toBeCalledWith(DB_NEW_ACCOUNT, {
-        accountType: 'paypal',
-        autoCalculate: false,
-        balance: '123',
-        institution: 'Test Institution',
         name: 'Test Account',
+        balanceGroup: undefined,
+        accountType: 'paypal',
+        autoCalculated: false,
+        closed: false,
         officialName: 'Test Official Name',
+        institution: 'Test Institution',
+        balanceStatements: [{ createdAt: expect.any(Number), value: '123' }],
       });
     });
   });
