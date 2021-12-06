@@ -6,7 +6,6 @@ import {
   getWeek,
   endOfWeek,
   min,
-  max,
   sub,
   eachMonthOfInterval,
   format,

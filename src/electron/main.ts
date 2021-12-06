@@ -55,6 +55,8 @@ import {
   DB_EDIT_ASSET_VALUE_ACK,
   DB_EDIT_ASSET_DETAILS,
   DB_EDIT_ASSET_DETAILS_ACK,
+  DB_SEED_VAULT,
+  DB_SEED_VAULT_ACK,
   APP_INFO,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
@@ -89,6 +91,7 @@ import { TransactionRepository } from '@database/repositories/transaction.reposi
 import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
+import seedDemoData from '@database/seed/seedDemoData';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
   AssetEditDetailsSubmitType,
@@ -377,6 +380,13 @@ const setupDbEvents = async () => {
       }
     }
   );
+
+  ipcMain.on(DB_SEED_VAULT, async () => {
+    await seedDemoData();
+    await getAccounts();
+    await getAssets();
+    win?.webContents.send(DB_SEED_VAULT_ACK, { status: EVENT_SUCCESS });
+  });
 
   ipcMain.on(WINDOW_CONTROL, async (e, action: WindowControlEnum) => {
     if (win) {
