@@ -55,16 +55,18 @@ import {
   DB_EDIT_ASSET_VALUE_ACK,
   DB_EDIT_ASSET_DETAILS,
   DB_EDIT_ASSET_DETAILS_ACK,
+  DB_SEED_VAULT,
+  DB_SEED_VAULT_ACK,
   APP_INFO,
   DB_GET_BUDGETS,
   DB_GET_BUDGETS_ACK,
   DB_GET_SETTINGS,
   DB_GET_SETTINGS_ACK,
-  DB_EDIT_BUDGET_GROUPS
+  DB_EDIT_BUDGET_GROUPS,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
-import { CanutinFileType, UpdatedAccount } from '@appTypes/canutin';
+import { CanutinFileType, UpdatedAccount } from '@appTypes/canutinFile.type';
 import { enumExtensionFiles, enumImportTitleOptions, WindowControlEnum } from '@appConstants/misc';
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 import { AccountEditBalanceSubmitType, AccountEditDetailsSubmitType } from '@appTypes/account.type';
@@ -89,13 +91,14 @@ import {
   calculateWindowHeight,
 } from './helpers/window.helpers';
 import { AssetRepository } from '@database/repositories/asset.repository';
-import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
+import { AccountBalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
 import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import seedSettings from '@database/seed/seedSettings';
 import seedBudget from '@database/seed/seedBudget';
+import seedDemoData from '@database/seed/seedDemoData';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
   AssetEditDetailsSubmitType,
@@ -225,7 +228,7 @@ const setupDbEvents = async () => {
   });
 
   ipcMain.on(DB_GET_BALANCE_STATEMENTS, async (_: IpcMainEvent) => {
-    const balanceStatements = await BalanceStatementRepository.getBalanceStatements();
+    const balanceStatements = await AccountBalanceStatementRepository.getBalanceStatements();
     win?.webContents.send(DB_GET_BALANCE_STATEMENTS_ACK, balanceStatements);
   });
 
@@ -403,6 +406,13 @@ const setupDbEvents = async () => {
     }
   );
 
+  ipcMain.on(DB_SEED_VAULT, async () => {
+    await seedDemoData();
+    await getAccounts();
+    await getAssets();
+    win?.webContents.send(DB_SEED_VAULT_ACK, { status: EVENT_SUCCESS });
+  });
+
   ipcMain.on(WINDOW_CONTROL, async (e, action: WindowControlEnum) => {
     if (win) {
       switch (action) {
@@ -438,18 +448,18 @@ const getAssets = async () => {
 const getBudgets = async () => {
   const budgets = await BudgetRepository.getBudgets();
   win?.webContents.send(DB_GET_BUDGETS_ACK, budgets);
-}
+};
 
 const getSettings = async () => {
   const settings = await SettingsRepository.getSettings();
   win?.webContents.send(DB_GET_SETTINGS_ACK, settings);
-}
+};
 
 const editBudgetGroups = async (editBudgets: EditBudgetSubmit) => {
   await BudgetRepository.editBudgets(editBudgets);
   await getSettings();
   await getBudgets();
-}
+};
 
 const createWindow = async () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;

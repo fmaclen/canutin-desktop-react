@@ -54,6 +54,9 @@ export const DB_GET_SETTINGS_ACK = 'dbGetSettingsAck';
 
 export const DB_EDIT_BUDGET_GROUPS = 'dbEditBudgetGroups';
 
+export const DB_SEED_VAULT = 'dbSeedVault';
+export const DB_SEED_VAULT_ACK = 'dbSeedVaultAck';
+
 // Import Wizard
 export const IMPORT_SOURCE_FILE = 'importSourceFile';
 export const IMPORT_SOURCE_FILE_ACK = 'importSourceFileAck';

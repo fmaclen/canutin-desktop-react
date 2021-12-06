@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { getUnixTime } from 'date-fns';
 import { useForm } from 'react-hook-form';
 
 import Form from '@components/common/Form/Form';
@@ -20,9 +21,10 @@ import { assetTypesWithSymbol, assetTypesValues } from '@constants/assetTypes';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
 
-import { NewAssetType } from '../../../../types/asset.type';
-import { NewAccountType } from '../../../../types/account.type';
+import { AddNewAssetType } from '@appTypes/asset.type';
+import { AddNewAccountType } from '@appTypes/account.type';
 import { toggableInputContainer } from './styles';
+import { AssetTypeEnum } from '@enums/assetType.enum';
 
 const ToggableInputContainer = styled.div`
   ${toggableInputContainer}
@@ -49,11 +51,41 @@ const AddAccountAssetForm = ({ onRadioButtonChange }: AddAccountAssetFormProps) 
     control: controlAccountField,
   } = useForm({ mode: 'onChange' });
 
-  const onSubmitAsset = async (asset: NewAssetType) => {
+  const onSubmitAsset = async (newAsset: AddNewAssetType) => {
+    const asset = {
+      name: newAsset.name,
+      balanceGroup: newAsset.balanceGroup,
+      assetType: newAsset.assetType as AssetTypeEnum,
+      sold: newAsset.sold ? newAsset.sold : false,
+      symbol: newAsset.symbol,
+      balanceStatements: [
+        {
+          createdAt: getUnixTime(new Date()),
+          quantity: newAsset.quantity,
+          cost: newAsset.cost,
+          value: newAsset.value,
+        },
+      ],
+    };
     AssetIpc.createAsset(asset);
   };
 
-  const onSubmitAccount = async (account: NewAccountType) => {
+  const onSubmitAccount = async (newAccount: AddNewAccountType) => {
+    const account = {
+      name: newAccount.name,
+      balanceGroup: newAccount.balanceGroup,
+      accountType: newAccount.accountType,
+      autoCalculated: newAccount.autoCalculated,
+      closed: newAccount.closed ? newAccount.closed : false,
+      institution: newAccount.institution,
+      officialName: newAccount.officialName,
+      balanceStatements: [
+        {
+          createdAt: getUnixTime(new Date()),
+          value: newAccount.balance,
+        },
+      ],
+    };
     AccountIpc.createAccount(account);
   };
 

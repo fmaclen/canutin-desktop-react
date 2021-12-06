@@ -71,12 +71,14 @@ describe('Add account by Hand tests', () => {
     userEvent.click(continueButton);
     await waitFor(() => {
       expect(spySendIpcRenderer).toBeCalledWith(DB_NEW_ACCOUNT, {
+        name: 'Test account',
+        balanceGroup: undefined,
         accountType: 'checking',
         autoCalculated: true,
-        balance: null,
-        institution: '',
-        name: 'Test account',
+        closed: false,
         officialName: '',
+        institution: '',
+        balanceStatements: [{ createdAt: expect.any(Number), value: null }],
       });
     });
   });
@@ -113,12 +115,14 @@ describe('Add account by Hand tests', () => {
     userEvent.click(continueButton);
     await waitFor(() => {
       expect(spySendIpcRenderer).toBeCalledWith(DB_NEW_ACCOUNT, {
+        name: 'Test Account',
+        balanceGroup: undefined,
         accountType: 'paypal',
         autoCalculated: false,
-        balance: '123',
-        institution: 'Test Institution',
-        name: 'Test Account',
+        closed: false,
         officialName: 'Test Official Name',
+        institution: 'Test Institution',
+        balanceStatements: [{ createdAt: expect.any(Number), value: '123' }],
       });
     });
   });

@@ -1,6 +1,6 @@
 import { getRepository, getConnection } from 'typeorm';
 
-import { BalanceStatementRepository } from '@database/repositories/balanceStatement.repository';
+import { AccountBalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 import { AccountTypeRepository } from '@database/repositories/accountType.repository';
 
 import { Account } from '../entities';
@@ -8,8 +8,9 @@ import {
   NewAccountType,
   AccountEditBalanceSubmitType,
   AccountEditDetailsSubmitType,
-} from '../../types/account.type';
+} from '@appTypes/account.type';
 import { TransactionRepository } from './transaction.repository';
+import { handleAccountBalanceStatements } from '@database/helpers/balanceStatement';
 
 export class AccountRepository {
   static async createAccount(account: NewAccountType): Promise<Account> {
@@ -17,10 +18,10 @@ export class AccountRepository {
       name: account.accountType.toLowerCase(),
     });
 
-    const accountSaved = await getRepository<Account>(Account).save(
+    const existingAccount = await getRepository<Account>(Account).save(
       new Account(
         account.name,
-        false,
+        account.closed,
         account.autoCalculated,
         accountType,
         account.officialName,
@@ -28,13 +29,9 @@ export class AccountRepository {
       )
     );
 
-    !account.autoCalculated &&
-      (await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance,
-        account: accountSaved,
-      }));
+    await handleAccountBalanceStatements(existingAccount, account);
 
-    return accountSaved;
+    return (await getRepository<Account>(Account).findOne(existingAccount.id)) as Account;
   }
 
   static async createAccounts(accounts: Account[]): Promise<Account[]> {
@@ -91,14 +88,9 @@ export class AccountRepository {
       return AccountRepository.createAccount(account);
     }
 
-    if (!account.autoCalculated) {
-      await BalanceStatementRepository.createBalanceStatement({
-        value: account.balance,
-        account: existingAccount,
-      });
-    }
+    await handleAccountBalanceStatements(existingAccount, account);
 
-    return existingAccount;
+    return (await getRepository<Account>(Account).findOne(existingAccount.id)) as Account;
   }
 
   static async editBalance(accountBalance: AccountEditBalanceSubmitType): Promise<Account> {
@@ -107,24 +99,25 @@ export class AccountRepository {
       closed: accountBalance.closed,
     });
 
-    const updatedAccount = await getRepository<Account>(Account).findOne({
+    const existingAccount = await getRepository<Account>(Account).findOne({
       where: {
         id: accountBalance.accountId,
       },
     });
 
     !accountBalance.autoCalculated &&
-      (await BalanceStatementRepository.createBalanceStatement({
+      (await AccountBalanceStatementRepository.createBalanceStatement({
+        createdAt: new Date(),
         value: accountBalance.balance,
-        account: updatedAccount as Account,
+        account: existingAccount as Account,
       }));
 
-    return updatedAccount as Account;
+    return (await getRepository<Account>(Account).findOne(existingAccount!.id)) as Account;
   }
 
   static async editDetails(accountDetails: AccountEditDetailsSubmitType): Promise<Account> {
     const accountType = await AccountTypeRepository.createOrGetAccountType({
-      name: accountDetails.accountTypeName.toLowerCase(),
+      name: accountDetails.accountType.toLowerCase(),
     });
     await getRepository<Account>(Account).update(accountDetails.accountId, {
       name: accountDetails.name,
@@ -156,7 +149,7 @@ export class AccountRepository {
     // Delete associated balance statements
     !account?.autoCalculated &&
       account?.balanceStatements &&
-      (await BalanceStatementRepository.deleteBalanceStatements(
+      (await AccountBalanceStatementRepository.deleteBalanceStatements(
         account.balanceStatements.map(({ id }) => id)
       ));
 
