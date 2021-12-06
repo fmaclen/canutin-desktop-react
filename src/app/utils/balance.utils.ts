@@ -6,7 +6,6 @@ import {
   getWeek,
   endOfWeek,
   min,
-  max,
   sub,
   eachMonthOfInterval,
   format,
@@ -19,7 +18,7 @@ import {
   Asset,
   Account,
   Transaction,
-  BalanceStatement,
+  AccountBalanceStatement,
   AssetBalanceStatement,
 } from '@database/entities';
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
@@ -27,12 +26,9 @@ import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 
 export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
-  const assetsNoSold = assets.filter(
-    ({ balanceStatements }) =>
-      balanceStatements && !balanceStatements?.[balanceStatements.length - 1].sold
-  );
+  const assetsNotSold = assets.filter(asset => !asset.sold);
 
-  return assetsNoSold.reduce(
+  return assetsNotSold.reduce(
     (listOfBalancesByGroup, asset) => {
       let balanceData = listOfBalancesByGroup?.[asset.balanceGroup]?.[asset.assetType.name];
 
@@ -63,9 +59,9 @@ export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
 };
 
 export const getBalanceForAccountsByBalanceGroup = (accounts: Account[]) => {
-  const accountsNoClosed = accounts.filter(({ closed }) => !closed);
+  const accountsNotClosed = accounts.filter(({ closed }) => !closed);
 
-  return accountsNoClosed.reduce(
+  return accountsNotClosed.reduce(
     (listOfBalancesByGroup, account) => {
       let balanceData = listOfBalancesByGroup?.[account.balanceGroup]?.[account.accountType.name];
 
@@ -275,7 +271,7 @@ export const getTransactionsBalance = (transactions: Transaction[]) => {
 };
 
 export const getSelectedBalanceStatementValue = (
-  balanceStatements: (BalanceStatement | AssetBalanceStatement)[],
+  balanceStatements: (AccountBalanceStatement | AssetBalanceStatement)[],
   from: Date,
   to: Date
 ) => {
@@ -354,7 +350,7 @@ export const getTransactionBalanceByWeeks = (
 };
 
 export const getBalancesByWeeks = (
-  balanceStatements: BalanceStatement[] | AssetBalanceStatement[],
+  balanceStatements: AccountBalanceStatement[] | AssetBalanceStatement[],
   weeks: number
 ): ChartPeriodType[] => {
   const weeksDates = eachWeekOfInterval(
