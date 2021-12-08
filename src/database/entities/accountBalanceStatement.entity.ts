@@ -1,9 +1,10 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { Base } from './base.entity';
 import { Account } from './account.entity';
 
-@Entity({ name: 'account_balance_statement' })
-export class BalanceStatement extends Base {
+@Entity()
+@Unique('UQ_COLUMNS', ['account', 'createdAt'])
+export class AccountBalanceStatement extends Base {
   @Column({ nullable: true })
   value?: number;
 
@@ -11,9 +12,10 @@ export class BalanceStatement extends Base {
   @JoinColumn()
   account: Account;
 
-  constructor(account: Account, value?: number) {
+  constructor(account: Account, createdAt: Date, value?: number) {
     super();
     this.value = value;
     this.account = account;
+    this.createdAt = createdAt;
   }
 }

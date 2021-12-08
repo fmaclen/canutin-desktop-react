@@ -18,7 +18,7 @@ import {
   LOAD_FROM_OTHER_CSV_ACK,
 } from '@constants/events';
 import { sourceExtensionFile, enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
-import { CanutinFileType } from '@appTypes/canutin';
+import { CanutinFileType } from '@appTypes/canutinFile.type';
 import { ParseMeta } from '@appTypes/parseCsv';
 
 import OtherCSVForm from './OtherCSVForm';

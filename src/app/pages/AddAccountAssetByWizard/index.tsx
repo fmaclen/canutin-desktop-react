@@ -41,6 +41,7 @@ const AddAccountAssetByWizard = () => {
       history.push(routesPaths.balance);
     });
 
+    // FIXME: no longer need to track percentages
     ipcRenderer.on(LOADING_CSV, (_: IpcRendererEvent, { total }) => {
       setLoadingPercentage(prevPercentage =>
         prevPercentage ? 100 / total + prevPercentage : 100 / total
