@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import styled from 'styled-components';
+import { useHistory } from 'react-router';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
 
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { Budget } from '@database/entities';
@@ -20,8 +22,13 @@ import Button from '@app/components/common/Button';
 import InputCurrency from '@app/components/common/Form/InputCurrency';
 import Field from '@app/components/common/Form/Field';
 
-import { buttonFieldContainer, buttonFieldset } from './styles';
 import InputText from '@app/components/common/Form/InputText';
+import { DB_EDIT_BUDGET_GROUPS_ACK } from '@constants/events';
+import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
+import { StatusBarContext } from '@app/context/statusBarContext';
+import { StatusEnum } from '@app/constants/misc';
+
+import { buttonFieldContainer, buttonFieldset } from './styles';
 
 const ButtonFieldContainer = styled.div`
   ${buttonFieldContainer}
@@ -65,6 +72,8 @@ const EditBudgetGroups = ({
   targetIncome,
   targetSavings,
 }: EditBudgetGroupsProps) => {
+  const history = useHistory();
+  const { setStatusMessage } = useContext(StatusBarContext);
   const [addExpenseGroups, setAddExpenseGroups] = useState<
     { name: string; targetAmount: number }[]
   >([]);
@@ -91,6 +100,23 @@ const EditBudgetGroups = ({
   });
   const { autoBudget, group, targetIncome: targetIncomeForm, expense, targetSavings: savings } = watch();
   const isAutoBudget = autoBudget === 'Enable';
+
+  useEffect(() => {
+    ipcRenderer.on(DB_EDIT_BUDGET_GROUPS_ACK, (_: IpcRendererEvent, { status, message }) => {
+      if (status === EVENT_SUCCESS) {
+        setStatusMessage({
+          message: 'Last budget edited successfully',
+          sentiment: StatusEnum.POSITIVE,
+          isLoading: false,
+        });
+        history.goBack();
+      }
+
+      if (status === EVENT_ERROR) {
+        setStatusMessage({ message, sentiment: StatusEnum.NEGATIVE, isLoading: false });
+      }
+    });
+  }, [])
 
   useEffect(() => {
     if (isAutoBudget) {

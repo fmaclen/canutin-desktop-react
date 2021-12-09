@@ -63,6 +63,7 @@ import {
   DB_GET_SETTINGS,
   DB_GET_SETTINGS_ACK,
   DB_EDIT_BUDGET_GROUPS,
+  DB_EDIT_BUDGET_GROUPS_ACK,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -245,7 +246,15 @@ const setupDbEvents = async () => {
   });
 
   ipcMain.on(DB_EDIT_BUDGET_GROUPS, async (_: IpcMainEvent, editBudgets: EditBudgetSubmit) => {
-    await editBudgetGroups(editBudgets);
+    try {
+      await editBudgetGroups(editBudgets);
+      win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, { status: EVENT_SUCCESS });
+    } catch (e) {
+      win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, {
+        status: EVENT_ERROR,
+        message: 'An error occurred, please try again',
+      });
+    }
   });
 
   ipcMain.on(DB_GET_SETTINGS, async (_: IpcMainEvent) => {
