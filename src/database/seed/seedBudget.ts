@@ -7,11 +7,11 @@ const seedBudget = async () => {
 
     const entertainmentCategory = await CategoryRepository.getOrCreateSubCategory('Entertainment & recreation');
     const museumsCategory = await CategoryRepository.getOrCreateSubCategory('Museums');
-    await BudgetRepository.createBudget('Wants', -2250, BudgetTypeEnum.EXPANSE, [entertainmentCategory, museumsCategory]);
+    await BudgetRepository.createBudget('Wants', -2250, BudgetTypeEnum.EXPENSE, [entertainmentCategory, museumsCategory]);
 
     const musicCategory = await CategoryRepository.getOrCreateSubCategory('Music');
     const nightlifeCategory = await CategoryRepository.getOrCreateSubCategory('Nightlife');
-    await BudgetRepository.createBudget('Needs', -3750, BudgetTypeEnum.EXPANSE, [musicCategory, nightlifeCategory]);
+    await BudgetRepository.createBudget('Needs', -3750, BudgetTypeEnum.EXPENSE, [musicCategory, nightlifeCategory]);
 };
 
 export default seedBudget;

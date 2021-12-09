@@ -50,7 +50,7 @@ const useBudgetInfo = (lastMonth?: boolean) => {
   const expenseBudgets = lastMonthExpenseBudgets
     ? budgetsIndex?.budgets.filter(
         ({ type, createdAt }) =>
-          type === BudgetTypeEnum.EXPANSE &&
+          type === BudgetTypeEnum.EXPENSE &&
           isWithinInterval(createdAt, intervalExpenseFilter) &&
           (isBefore(createdAt, dateFrom) || isSameMonth(createdAt, dateFrom))
       )

@@ -96,7 +96,7 @@ export class BudgetRepository {
         );
         await Promise.allSettled(
           newBudgets.map(({ name, targetAmount }) =>
-            this.createBudget(name as string, targetAmount, BudgetTypeEnum.EXPANSE, [])
+            this.createBudget(name as string, targetAmount, BudgetTypeEnum.EXPENSE, [])
           )
         );
         // Delete budgets
@@ -118,7 +118,7 @@ export class BudgetRepository {
         );
         await Promise.allSettled(
           existedBudgets.map(({ name, targetAmount }) =>
-            this.createBudget(name as string, targetAmount, BudgetTypeEnum.EXPANSE, [])
+            this.createBudget(name as string, targetAmount, BudgetTypeEnum.EXPENSE, [])
           )
         );
         // Delete budgets
