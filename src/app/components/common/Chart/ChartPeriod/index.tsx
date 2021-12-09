@@ -78,10 +78,21 @@ const ChartPeriod = ({
 }: ChartPeriodProps) => {
   const isBalancePositive = balance >= 0;
   const isCompact = periodLength > 12;
+  const isBalanceLabelVisible = isBalancePositive
+    ? isCurrentPeriod || (peakPositiveBalance !== 0 && peakPositiveBalance === balance)
+    : isCurrentPeriod || peakNegativeBalance === balance;
 
   return (
     <ThemeProvider
-      theme={{ isActive, isCurrentPeriod, isStartOfYear, periodLength, label, balance }}
+      theme={{
+        isActive,
+        isCurrentPeriod,
+        isStartOfYear,
+        periodLength,
+        label,
+        balance,
+        isBalanceLabelVisible,
+      }}
     >
       <Period onMouseEnter={() => handleMouseEnter(id)}>
         <PeriodBalance proportion={balanceProportion}>
@@ -89,14 +100,7 @@ const ChartPeriod = ({
             <>
               <PeriodBar>
                 {!isCompact && (
-                  <PeriodBalanceLabel
-                    visibility={
-                      isCurrentPeriod ||
-                      (peakPositiveBalance !== 0 && peakPositiveBalance === balance)
-                    }
-                    value={Math.floor(balance)}
-                    displayType="text"
-                  />
+                  <PeriodBalanceLabel value={Math.floor(balance)} displayType="text" />
                 )}
                 <BarPositive height={proportionBetween(balance, peakPositiveBalance)} />
               </PeriodBar>
@@ -110,11 +114,7 @@ const ChartPeriod = ({
               <PeriodBar>
                 <BarNegative height={proportionBetween(balance, peakNegativeBalance)} />
                 {!isCompact && (
-                  <PeriodBalanceLabel
-                    visibility={isCurrentPeriod || peakNegativeBalance === balance}
-                    value={Math.floor(balance)}
-                    displayType="text"
-                  />
+                  <PeriodBalanceLabel value={Math.floor(balance)} displayType="text" />
                 )}
               </PeriodBar>
             </>
