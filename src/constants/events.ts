@@ -55,6 +55,9 @@ export const DB_GET_SETTINGS_ACK = 'dbGetSettingsAck';
 export const DB_EDIT_BUDGET_GROUPS = 'dbEditBudgetGroups';
 export const DB_EDIT_BUDGET_GROUPS_ACK = 'dbEditBudgetGroupsAck';
 
+export const DB_EDIT_BUDGET_CATEGORY = 'dbEditBudgetCategory';
+export const DB_EDIT_BUDGET_CATEGORY_ACK = 'dbEditBudgetCategoryAck';
+
 export const DB_SEED_VAULT = 'dbSeedVault';
 export const DB_SEED_VAULT_ACK = 'dbSeedVaultAck';
 

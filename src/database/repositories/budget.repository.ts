@@ -8,6 +8,8 @@ import { Settings } from '@database/entities';
 import { Budget, TransactionSubCategory } from '../entities';
 import seedBudget from '@database/seed/seedBudget';
 import { dateInUTC } from '@app/utils/date.utils';
+import { EditBudgetCategorySubmit } from '@app/components/Budget/TransactionCategoriesForm';
+import { CategoryRepository } from './category.repository';
 
 export class BudgetRepository {
   static async createBudget(
@@ -28,6 +30,14 @@ export class BudgetRepository {
         createdAt: 'DESC',
         id: 'DESC',
       },
+    });
+  }
+
+  static async getBudgetById(id: number): Promise<Budget | undefined> {
+    return await getRepository<Budget>(Budget).findOne({
+      where: {
+        id
+      }
     });
   }
 
@@ -132,5 +142,15 @@ export class BudgetRepository {
           this.createBudget(name, targetAmount, BudgetTypeEnum.EXPENSE, [])
         )
       ));
+  }
+
+  static async editBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
+    const budget = await this.getBudgetById(budgetCategory.budgetId) as Budget;
+    const category = await CategoryRepository.getOrCreateSubCategory(budgetCategory.category);
+    await getRepository<Budget>(Budget)
+    .createQueryBuilder()
+    .relation(Budget, "categories")
+    .of(budget)
+    .add(category);
   }
 }

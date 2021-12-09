@@ -6,6 +6,7 @@ import { Budget } from '@database/entities';
 
 import ScrollView from '@app/components/common/ScrollView';
 import EditBudgetGroups from '@app/components/Budget/EditBudgetGroups';
+import TransactionCategories from '@app/components/Budget/TransactionCategories';
 
 const EditBudget = () => {
   const {
@@ -29,7 +30,7 @@ const EditBudget = () => {
     },
     {
       label: 'Transaction categories',
-      component: <div />,
+      component: <TransactionCategories expenseBudgets={expenseBudgets} />,
     },
   ]);
 
@@ -48,7 +49,7 @@ const EditBudget = () => {
       },
       {
         label: 'Transaction categories',
-        component: <div />,
+        component: <TransactionCategories expenseBudgets={expenseBudgets} />,
       },
     ]);
   }, [JSON.stringify(expenseBudgets), isLoading]);
