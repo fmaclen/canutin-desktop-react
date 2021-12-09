@@ -18,7 +18,7 @@ export interface InputTextProps {
   name: string;
   value?: string;
   type?: string;
-  register?: () => RefReturn;
+  register?: ({ required }: { required?: boolean }) => RefReturn;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -38,7 +38,7 @@ const InputText = ({
 }: InputTextProps) => (
   <InputElement
     name={name}
-    ref={setRef ? setRef : register ? register() : null}
+    ref={setRef ? setRef : register ? register({ required }) : null}
     type={type}
     id={name}
     value={value}

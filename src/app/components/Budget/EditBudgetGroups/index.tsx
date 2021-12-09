@@ -43,7 +43,7 @@ export type EditBudgetSubmit = {
   targetIncome: number;
   group: { [id: string]: { targetAmount: number; name?: string } };
   removeGroupIds: number[];
-  addExpenseGroups?: { name: string, targetAmount: number }[];
+  addExpenseGroups?: { name: string; targetAmount: number }[];
 };
 
 const AUTO_BUDGET_GROUPS = [
@@ -65,7 +65,9 @@ const EditBudgetGroups = ({
   targetIncome,
   targetSavings,
 }: EditBudgetGroupsProps) => {
-  const [addExpenseGroups, setAddExpenseGroups] = useState<{ name: string, targetAmount: number }[]>([]);
+  const [addExpenseGroups, setAddExpenseGroups] = useState<
+    { name: string; targetAmount: number }[]
+  >([]);
   const [removeGroupIds, setRemoveGroupIds] = useState<number[]>([]);
   const { settingsIndex } = useContext(EntitiesContext);
   const { handleSubmit, register, watch, formState, control, setValue } = useForm({
@@ -84,10 +86,10 @@ const EditBudgetGroups = ({
         }),
         {}
       ) as { [id: string]: { targetAmount: number; name?: string } },
-      expense: []
+      expense: [],
     },
   });
-  const { autoBudget, group, targetIncome: targetIncomeForm, expense } = watch();
+  const { autoBudget, group, targetIncome: targetIncomeForm, expense, targetSavings: savings } = watch();
   const isAutoBudget = autoBudget === 'Enable';
 
   useEffect(() => {
@@ -122,18 +124,25 @@ const EditBudgetGroups = ({
   }, [JSON.stringify(expenseBudgets)]);
 
   useEffect(() => {
-    const totalTargetsExpenses = group
-      ? Object.keys(group).reduce((acc, key) => acc + Number(group[key].targetAmount), 0)
+    let totalTargetsExpenses = group
+      ? Object.keys(group).reduce(
+          (acc, key) => (group[key].targetAmount ? acc + Number(group[key].targetAmount) : acc),
+          0
+        )
       : 0;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    totalTargetsExpenses += expense ? Object.keys(expense).reduce((acc, key) => expense?.[key]?.targetAmount ? acc + Number(expense[key].targetAmount) : acc, 0) : 0;
     setValue('targetSavings', Number(targetIncomeForm) + totalTargetsExpenses);
-  }, [targetIncomeForm, JSON.stringify(group), isAutoBudget]);
+  }, [targetIncomeForm, JSON.stringify(group), isAutoBudget, JSON.stringify(expense)]);
 
   useEffect(() => {
     setValue('targetSavings', targetSavings);
   }, [targetSavings]);
 
-  const submitIsDisabled = !formState.isDirty;
-
+  
+  const submitIsDisabled = savings < 0 || !formState.isValid;
+  
   const onSubmit = (editBudgetSubmit: EditBudgetSubmit) => {
     BudgetIpc.editBudgetGroups({ ...editBudgetSubmit, removeGroupIds, addExpenseGroups: expense });
   };
@@ -171,6 +180,8 @@ const EditBudgetGroups = ({
             control={control}
             disabled={isAutoBudget}
             allowNegative={false}
+            rules={{ required: true }}
+            required
           />
         </Fieldset>
         {(isAutoBudget ? ((AUTO_BUDGET_GROUPS as unknown) as Budget[]) : expenseBudgets).map(
@@ -183,6 +194,7 @@ const EditBudgetGroups = ({
                       name={`group.${id}.name`}
                       disabled={isAutoBudget}
                       register={register}
+                      required
                     />
                     <Button
                       onClick={() => {
@@ -200,6 +212,7 @@ const EditBudgetGroups = ({
                     control={control}
                     onlyNegative
                     disabled={isAutoBudget}
+                    rules={{ required: true }}
                   />
                 </Field>
               </Fieldset>
@@ -215,14 +228,15 @@ const EditBudgetGroups = ({
                     disabled={isAutoBudget}
                     register={register}
                     placeholder="My budget"
+                    required
                   />
                   <Button
                     onClick={() => {
                       setAddExpenseGroups(prev => {
                         const newPrev = [...prev];
-                        newPrev.splice(index, 1)
+                        newPrev.splice(index, 1);
                         return newPrev;
-                      })
+                      });
                     }}
                     disabled={isAutoBudget}
                   >
@@ -235,6 +249,7 @@ const EditBudgetGroups = ({
                   name={`expense.${index}.targetAmount`}
                   control={control}
                   onlyNegative
+                  rules={{ required: true }}
                   disabled={isAutoBudget}
                 />
               </Field>
@@ -244,9 +259,12 @@ const EditBudgetGroups = ({
           <Fieldset>
             <Field name="addGroup" label="Expense group">
               <ButtonFieldset>
-                <Button onClick={() => {
-                  setAddExpenseGroups(prev => [...prev, { name: '', targetAmount: 0 }])
-                }} disabled={isAutoBudget}>
+                <Button
+                  onClick={() => {
+                    setAddExpenseGroups(prev => [...prev, { name: '', targetAmount: 0 }]);
+                  }}
+                  disabled={isAutoBudget}
+                >
                   Add new
                 </Button>
               </ButtonFieldset>
