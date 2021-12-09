@@ -27,56 +27,6 @@ export const container = css`
   flex-direction: column;
 `;
 
-export const filterContainer = css`
-  display: grid;
-  grid-gap: 8px;
-  padding: 16px;
-`;
-
-export const amountCell = css<{ value: number; excludeFromTotals: boolean }>`
-  ${monospaceRegular}
-
-  color: ${grey90};
-  font-size: 11px;
-  letter-spacing: 0.05em;
-
-  ${({ value }) =>
-    value > 0 &&
-    css`
-      color: ${greenPlain};
-    `}
-
-  ${({ excludeFromTotals }) =>
-    excludeFromTotals &&
-    css`
-      color: ${grey30};
-      border-bottom: 1px dashed ${grey10};
-      cursor: help;
-    `}
-`;
-
-export const dateCell = css`
-  ${monospaceRegular};
-  color: ${grey80};
-  font-size: 11px;
-  text-transform: uppercase;
-  white-space: nowrap;
-`;
-
-export const cellField = css`
-  color: ${grey80};
-  font-size: 12px;
-`;
-
-export const linkCellField = css`
-  color: ${grey80};
-  font-size: 12px;
-  text-decoration: none;
-
-  &:hover {
-    color: ${bluePlain};
-  }
-`;
 
 export const tableHeaderRow = css`
   background-color: ${whitePlain};
@@ -104,13 +54,6 @@ export const tableHeaderItem = css<{ isSorted: boolean }>`
 
   &:first-of-type {
     padding-left: 12px;
-  }
-
-  &:last-of-type {
-    > div {
-      justify-content: flex-end;
-    }
-    padding-right: 12px;
   }
 
   ${({ isSorted }) =>
@@ -158,11 +101,6 @@ export const rowItem = css`
 
   &:first-of-type {
     padding-left: 12px;
-  }
-
-  &:last-of-type {
-    text-align: right;
-    padding-right: 12px;
   }
 `;
 

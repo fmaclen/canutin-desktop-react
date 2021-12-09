@@ -39,7 +39,7 @@ const BudgetBar = ({
   amount,
   targetAmount
 }: BudgetBarProps) => {
-  const percentage = targetAmount === 0 ? amount : Math.floor((amount / targetAmount) * 100);
+  const percentage = Math.abs(targetAmount === 0 ? amount : Math.floor((amount / targetAmount) * 100));
 
   const getStatus = () => {
     // TODO: Double check with @fmaclen
