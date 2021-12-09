@@ -2,6 +2,7 @@ import Section from '@app/components/common/Section';
 
 import { Budget } from '@database/entities';
 
+import CategoriesBudgetGroupTable from '../CategoriesBudgetGroupTable';
 import TransactionCategoriesForm from '../TransactionCategoriesForm';
 
 interface TransactionCategoriesProps {
@@ -14,7 +15,9 @@ const TransactionCategories = ({ expenseBudgets }: TransactionCategoriesProps) =
       <Section title="Transaction categories">
         <TransactionCategoriesForm expenseBudgets={expenseBudgets} />
       </Section>
-      <Section title="Categories by budget group"></Section>
+      <Section title="Categories by budget group">
+        <CategoriesBudgetGroupTable expenseBudgets={expenseBudgets} />
+      </Section>
     </>
   );
 };
