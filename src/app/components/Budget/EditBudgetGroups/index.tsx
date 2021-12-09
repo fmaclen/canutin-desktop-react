@@ -21,6 +21,7 @@ import BudgetIpc from '@app/data/budget.ipc';
 import Button from '@app/components/common/Button';
 import InputCurrency from '@app/components/common/Form/InputCurrency';
 import Field from '@app/components/common/Form/Field';
+import PercentageField from '@app/components/common/Form/PercentageField';
 
 import InputText from '@app/components/common/Form/InputText';
 import { DB_EDIT_BUDGET_GROUPS_ACK } from '@constants/events';
@@ -28,7 +29,7 @@ import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';
 
-import { buttonFieldContainer, buttonFieldset } from './styles';
+import { buttonFieldContainer, buttonFieldset, percentageFieldContainer } from './styles';
 
 const ButtonFieldContainer = styled.div`
   ${buttonFieldContainer}
@@ -36,6 +37,10 @@ const ButtonFieldContainer = styled.div`
 
 const ButtonFieldset = styled.div`
   ${buttonFieldset}
+`;
+
+const PercentageFieldContainer = styled.div`
+  ${percentageFieldContainer}
 `;
 
 interface EditBudgetGroupsProps {
@@ -98,7 +103,13 @@ const EditBudgetGroups = ({
       expense: [],
     },
   });
-  const { autoBudget, group, targetIncome: targetIncomeForm, expense, targetSavings: savings } = watch();
+  const {
+    autoBudget,
+    group,
+    targetIncome: targetIncomeForm,
+    expense,
+    targetSavings: savings,
+  } = watch();
   const isAutoBudget = autoBudget === 'Enable';
 
   useEffect(() => {
@@ -116,7 +127,7 @@ const EditBudgetGroups = ({
         setStatusMessage({ message, sentiment: StatusEnum.NEGATIVE, isLoading: false });
       }
     });
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (isAutoBudget) {
@@ -156,9 +167,15 @@ const EditBudgetGroups = ({
           0
         )
       : 0;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    totalTargetsExpenses += expense ? Object.keys(expense).reduce((acc, key) => expense?.[key]?.targetAmount ? acc + Number(expense[key].targetAmount) : acc, 0) : 0;
+    totalTargetsExpenses += expense
+      ? Object.keys(expense).reduce(
+          (acc, key) =>
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            expense?.[key]?.targetAmount ? acc + Number(expense[key].targetAmount) : acc,
+          0
+        )
+      : 0;
     setValue('targetSavings', Number(targetIncomeForm) + totalTargetsExpenses);
   }, [targetIncomeForm, JSON.stringify(group), isAutoBudget, JSON.stringify(expense)]);
 
@@ -166,9 +183,8 @@ const EditBudgetGroups = ({
     setValue('targetSavings', targetSavings);
   }, [targetSavings]);
 
-  
   const submitIsDisabled = savings < 0 || !formState.isValid;
-  
+
   const onSubmit = (editBudgetSubmit: EditBudgetSubmit) => {
     BudgetIpc.editBudgetGroups({ ...editBudgetSubmit, removeGroupIds, addExpenseGroups: expense });
   };
@@ -176,6 +192,12 @@ const EditBudgetGroups = ({
   const onRemove = (id: number) => {
     setRemoveGroupIds(prev => [...prev, id]);
   };
+
+  const getPercentage = (targetAmount: number) => {
+    return Math.abs(Math.floor(targetAmount * 100 / targetIncomeForm))
+  }
+
+  const savingsPercentage = getPercentage(savings);
 
   return (
     <Section title="Budget groups">
@@ -200,15 +222,19 @@ const EditBudgetGroups = ({
           )}
         </Fieldset>
         <Fieldset>
-          <InputCurrencyField
-            label="Target income"
-            name="targetIncome"
-            control={control}
-            disabled={isAutoBudget}
-            allowNegative={false}
-            rules={{ required: true }}
-            required
-          />
+          <Field label="Target income" name="targetIncome">
+            <PercentageFieldContainer>
+              <InputCurrency
+                name="targetIncome"
+                control={control}
+                disabled={isAutoBudget}
+                allowNegative={false}
+                rules={{ required: true }}
+                required
+              />
+              <PercentageField percentage={100} />
+            </PercentageFieldContainer>
+          </Field>
         </Fieldset>
         {(isAutoBudget ? ((AUTO_BUDGET_GROUPS as unknown) as Budget[]) : expenseBudgets).map(
           ({ id, name }) =>
@@ -233,13 +259,16 @@ const EditBudgetGroups = ({
                   </ButtonFieldContainer>
                 </Field>
                 <Field label={`${name} target`} name="group">
-                  <InputCurrency
-                    name={`group.${id}.targetAmount`}
-                    control={control}
-                    onlyNegative
-                    disabled={isAutoBudget}
-                    rules={{ required: true }}
-                  />
+                  <PercentageFieldContainer>
+                    <InputCurrency
+                      name={`group.${id}.targetAmount`}
+                      control={control}
+                      onlyNegative
+                      disabled={isAutoBudget}
+                      rules={{ required: true }}
+                    />
+                    {group?.[id].targetAmount && <PercentageField error={savings < 0} percentage={getPercentage(group?.[id].targetAmount)} />}
+                  </PercentageFieldContainer>
                 </Field>
               </Fieldset>
             ) : null
@@ -271,13 +300,16 @@ const EditBudgetGroups = ({
                 </ButtonFieldContainer>
               </Field>
               <Field label="Target" name="expense">
-                <InputCurrency
-                  name={`expense.${index}.targetAmount`}
-                  control={control}
-                  onlyNegative
-                  rules={{ required: true }}
-                  disabled={isAutoBudget}
-                />
+                <PercentageFieldContainer>
+                  <InputCurrency
+                    name={`expense.${index}.targetAmount`}
+                    control={control}
+                    onlyNegative
+                    rules={{ required: true }}
+                    disabled={isAutoBudget}
+                  />
+                  <PercentageField percentage={100} />
+                </PercentageFieldContainer>
               </Field>
             </Fieldset>
           ))}
@@ -299,12 +331,16 @@ const EditBudgetGroups = ({
         )}
         <Fieldset>
           <InputTextField name="savings" disabled={true} label="Group" value="Savings" />
-          <InputCurrencyField
-            label="Savings target"
-            name="targetSavings"
-            control={control}
-            disabled={true}
-          />
+          <Field label="Savings target" name="targetSavings">
+            <PercentageFieldContainer>
+              <InputCurrency
+                name="targetSavings"
+                control={control}
+                disabled={true}
+              />
+              <PercentageField percentage={savings < 0 ? 0 : savingsPercentage} error={savings < 0} />
+            </PercentageFieldContainer>
+          </Field>
         </Fieldset>
         <FormFooter>
           <SubmitButton disabled={submitIsDisabled}>Save</SubmitButton>

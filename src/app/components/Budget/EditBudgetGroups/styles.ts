@@ -12,3 +12,10 @@ export const buttonFieldset = css`
   height: 36px;
   grid-gap: 8px;
 `
+
+export const percentageFieldContainer = css`
+  display: grid;
+  grid-template-columns: 9fr minmax(30px, 1fr);
+  height: 36px;
+  grid-gap: 8px;
+`
