@@ -106,7 +106,7 @@ const useBudgetInfo = (lastMonth?: boolean) => {
   const targetSavings = targetIncome ? targetIncome - expensesBudgetsTargets : 0;
   const savings = income - expenseBudgetsAmount;
 
-  const targetExpenses = targetIncome ? targetIncome - targetSavings : 0;
+  const targetExpenses = targetIncome - targetSavings;
   const expenses = transactions.reduce((acc, { amount }) => {
     if (amount < 0) {
       return acc + amount;

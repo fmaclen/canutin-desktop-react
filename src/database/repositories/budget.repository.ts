@@ -125,5 +125,12 @@ export class BudgetRepository {
         await Promise.allSettled(editBudgets.removeGroupIds.map(id => this.deleteBudget(id)));
       }
     }
+    // Add new expense budgets
+    editBudgets.addExpenseGroups &&
+      (await Promise.allSettled(
+        editBudgets.addExpenseGroups.map(({ name, targetAmount }) =>
+          this.createBudget(name, targetAmount, BudgetTypeEnum.EXPENSE, [])
+        )
+      ));
   }
 }

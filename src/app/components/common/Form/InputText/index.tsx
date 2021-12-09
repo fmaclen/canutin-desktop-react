@@ -18,11 +18,12 @@ export interface InputTextProps {
   name: string;
   value?: string;
   type?: string;
-  register?: ({ required }: { required?: boolean }) => RefReturn;
+  register?: () => RefReturn;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
   setRef?: any;
+  placeholder?: string;
 }
 
 const InputText = ({
@@ -33,16 +34,18 @@ const InputText = ({
   required = false,
   disabled = false,
   setRef = null,
+  placeholder,
 }: InputTextProps) => (
   <InputElement
     name={name}
-    ref={setRef ? setRef : register ? register({ required }) : null}
+    ref={setRef ? setRef : register ? register() : null}
     type={type}
     id={name}
     value={value}
     disabled={disabled}
     readOnly={disabled}
     step={type === 'number' ? 'any' : undefined}
+    placeholder={placeholder}
   />
 );
 

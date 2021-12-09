@@ -44,7 +44,7 @@ const Budget = () => {
               targetSavings={targetSavings}
               filter={budgetFilterOption}
             />
-            {expenseBudgets && (
+            {expenseBudgets && expenseBudgets.length > 0 && (
               <ExpenseGroupsSection expenseBudgets={expenseBudgets} transactions={transactions} />
             )}
           </>

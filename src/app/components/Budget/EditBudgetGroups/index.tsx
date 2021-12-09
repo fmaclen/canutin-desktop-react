@@ -17,16 +17,18 @@ import InputTextField from '@app/components/common/Form/InputTextField';
 import InputCurrencyField from '@app/components/common/Form/InputCurrencyField';
 import BudgetIpc from '@app/data/budget.ipc';
 import Button from '@app/components/common/Button';
-import ToggleInputField from '@app/components/common/Form/ToggleInputField';
-import InlineCheckbox from '@app/components/common/Form/Checkbox';
 import InputCurrency from '@app/components/common/Form/InputCurrency';
 import Field from '@app/components/common/Form/Field';
 
-import { buttonFieldContainer } from './styles';
+import { buttonFieldContainer, buttonFieldset } from './styles';
 import InputText from '@app/components/common/Form/InputText';
 
 const ButtonFieldContainer = styled.div`
   ${buttonFieldContainer}
+`;
+
+const ButtonFieldset = styled.div`
+  ${buttonFieldset}
 `;
 
 interface EditBudgetGroupsProps {
@@ -41,6 +43,7 @@ export type EditBudgetSubmit = {
   targetIncome: number;
   group: { [id: string]: { targetAmount: number; name?: string } };
   removeGroupIds: number[];
+  addExpenseGroups?: { name: string, targetAmount: number }[];
 };
 
 const AUTO_BUDGET_GROUPS = [
@@ -62,6 +65,7 @@ const EditBudgetGroups = ({
   targetIncome,
   targetSavings,
 }: EditBudgetGroupsProps) => {
+  const [addExpenseGroups, setAddExpenseGroups] = useState<{ name: string, targetAmount: number }[]>([]);
   const [removeGroupIds, setRemoveGroupIds] = useState<number[]>([]);
   const { settingsIndex } = useContext(EntitiesContext);
   const { handleSubmit, register, watch, formState, control, setValue } = useForm({
@@ -80,9 +84,10 @@ const EditBudgetGroups = ({
         }),
         {}
       ) as { [id: string]: { targetAmount: number; name?: string } },
+      expense: []
     },
   });
-  const { autoBudget, group, targetIncome: targetIncomeForm } = watch();
+  const { autoBudget, group, targetIncome: targetIncomeForm, expense } = watch();
   const isAutoBudget = autoBudget === 'Enable';
 
   useEffect(() => {
@@ -100,6 +105,7 @@ const EditBudgetGroups = ({
   }, [isAutoBudget]);
 
   useEffect(() => {
+    setAddExpenseGroups([]);
     setValue(
       'group',
       expenseBudgets.reduce(
@@ -129,7 +135,7 @@ const EditBudgetGroups = ({
   const submitIsDisabled = !formState.isDirty;
 
   const onSubmit = (editBudgetSubmit: EditBudgetSubmit) => {
-    BudgetIpc.editBudgetGroups({ ...editBudgetSubmit, removeGroupIds });
+    BudgetIpc.editBudgetGroups({ ...editBudgetSubmit, removeGroupIds, addExpenseGroups: expense });
   };
 
   const onRemove = (id: number) => {
@@ -198,6 +204,54 @@ const EditBudgetGroups = ({
                 </Field>
               </Fieldset>
             ) : null
+        )}
+        {!isAutoBudget &&
+          addExpenseGroups.map((_, index) => (
+            <Fieldset key={index}>
+              <Field name="expense" label="Expense group">
+                <ButtonFieldContainer>
+                  <InputText
+                    name={`expense.${index}.name`}
+                    disabled={isAutoBudget}
+                    register={register}
+                    placeholder="My budget"
+                  />
+                  <Button
+                    onClick={() => {
+                      setAddExpenseGroups(prev => {
+                        const newPrev = [...prev];
+                        newPrev.splice(index, 1)
+                        return newPrev;
+                      })
+                    }}
+                    disabled={isAutoBudget}
+                  >
+                    Remove
+                  </Button>
+                </ButtonFieldContainer>
+              </Field>
+              <Field label="Target" name="expense">
+                <InputCurrency
+                  name={`expense.${index}.targetAmount`}
+                  control={control}
+                  onlyNegative
+                  disabled={isAutoBudget}
+                />
+              </Field>
+            </Fieldset>
+          ))}
+        {!isAutoBudget && (
+          <Fieldset>
+            <Field name="addGroup" label="Expense group">
+              <ButtonFieldset>
+                <Button onClick={() => {
+                  setAddExpenseGroups(prev => [...prev, { name: '', targetAmount: 0 }])
+                }} disabled={isAutoBudget}>
+                  Add new
+                </Button>
+              </ButtonFieldset>
+            </Field>
+          </Fieldset>
         )}
         <Fieldset>
           <InputTextField name="savings" disabled={true} label="Group" value="Savings" />
