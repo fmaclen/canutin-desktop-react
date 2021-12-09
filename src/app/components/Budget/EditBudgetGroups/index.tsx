@@ -109,7 +109,7 @@ const EditBudgetGroups = ({
           sentiment: StatusEnum.POSITIVE,
           isLoading: false,
         });
-        history.goBack();
+        history.push('/budget');
       }
 
       if (status === EVENT_ERROR) {

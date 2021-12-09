@@ -265,10 +265,17 @@ const setupDbEvents = async () => {
       await editBudgetCategory(editBudgetCategorySubmit);
       win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
     } catch (e) {
-      win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
-        status: EVENT_ERROR,
-        message: 'An error occurred, please try again',
-      });
+      if (e instanceof QueryFailedError) {
+        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+          status: EVENT_ERROR,
+          message: 'This category is already assigned to the budget',
+        });
+      } else {
+        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+          status: EVENT_ERROR,
+          message: 'An error occurred, please try again',
+        });
+      }
     }
   });
 
