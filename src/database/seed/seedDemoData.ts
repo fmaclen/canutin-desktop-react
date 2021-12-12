@@ -37,7 +37,7 @@ import {
   assetVehicleBalanceStatements,
 } from './demoData/balanceStatements';
 
-const seedDemoData = async () => {
+export const seedDemoData = async () => {
   // Account: Checking
   const accountChecking = await AccountRepository.createAccount(accountCheckingDetails);
 
