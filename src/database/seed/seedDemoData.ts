@@ -1,9 +1,24 @@
 import { AccountRepository } from '@database/repositories/account.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
 import { AssetRepository } from '@database/repositories/asset.repository';
-import { AssetTypeEnum } from '@enums/assetType.enum';
-import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 
+import {
+  accountCheckingDetails,
+  accountSavingsDetails,
+  accountCreditCardDetails,
+  accountAutoLoanDetails,
+  accountRothIraDetails,
+  account401kDetails,
+  accountWalletDetails,
+} from './demoData/accounts';
+import {
+  assetSecurityTeslaDetails,
+  assetSecurityGamestopDetails,
+  assetCryptoBitcoinDetails,
+  assetCryptoEthereumDetails,
+  assetCollectibleDetails,
+  assetVehicleDetails,
+} from './demoData/assets';
 import {
   accountCheckingMonthlyTransactions,
   accountSavingsMonthlyTransactions,
@@ -24,15 +39,7 @@ import {
 
 const seedDemoData = async () => {
   // Account: Checking
-  const accountChecking = await AccountRepository.createAccount({
-    name: "Alice's Checking",
-    balanceGroup: BalanceGroupEnum.CASH,
-    accountType: 'checking',
-    autoCalculated: true,
-    closed: false,
-    officialName: 'Ransack High-Yield Checking',
-    institution: 'Ransack Bank',
-  });
+  const accountChecking = await AccountRepository.createAccount(accountCheckingDetails);
 
   // Account: Checking (Transactions)
   for (let i = 0; i < 23; i++) {
@@ -42,15 +49,7 @@ const seedDemoData = async () => {
   }
 
   // Account: Savings
-  const accountSavings = await AccountRepository.createAccount({
-    name: 'Emergency Fund',
-    balanceGroup: BalanceGroupEnum.CASH,
-    accountType: 'savings',
-    autoCalculated: true,
-    closed: false,
-    officialName: 'Ransack Savings Plus',
-    institution: 'Ransack Bank',
-  });
+  const accountSavings = await AccountRepository.createAccount(accountSavingsDetails);
 
   // Account: Savings (Transactions)
   for (let i = 0; i < 23; i++) {
@@ -60,15 +59,7 @@ const seedDemoData = async () => {
   }
 
   // Account: Credit card
-  const accountCreditCard = await AccountRepository.createAccount({
-    name: "Bob's Juggernaut Visa",
-    balanceGroup: BalanceGroupEnum.DEBT,
-    accountType: 'credit card',
-    autoCalculated: true,
-    closed: false,
-    officialName: 'Juggernaut Cash Back Rewards',
-    institution: 'Juggernaut Bank',
-  });
+  const accountCreditCard = await AccountRepository.createAccount(accountCreditCardDetails);
 
   // Account: Credit card (Transactions)
   for (let i = 0; i < 23; i++) {
@@ -79,104 +70,61 @@ const seedDemoData = async () => {
 
   // Account: Auto-loan
   await AccountRepository.createAccount({
-    name: 'Toyota Auto Loan',
-    balanceGroup: BalanceGroupEnum.DEBT,
-    accountType: 'auto',
-    autoCalculated: false,
-    closed: false,
-    institution: 'Toyota Financial Services',
+    ...accountAutoLoanDetails,
     balanceStatements: accountAutoLoanBalanceStatements,
   });
 
   // Account: Roth IRA
   await AccountRepository.createAccount({
-    name: "Alice's Roth IRA",
-    balanceGroup: BalanceGroupEnum.INVESTMENTS,
-    accountType: 'roth',
-    autoCalculated: false,
-    closed: false,
-    officialName: 'Loot Wealth Roth IRA',
-    institution: 'Loot Financial',
+    ...accountRothIraDetails,
     balanceStatements: accountRothIraBalanceStatements,
   });
 
   // Account: 401K
   await AccountRepository.createAccount({
-    name: "Bob's 401k",
-    balanceGroup: BalanceGroupEnum.INVESTMENTS,
-    accountType: '401k',
-    autoCalculated: false,
-    closed: false,
-    officialName: 'Loot Wealth 401k',
-    institution: 'Loot Financial',
+    ...account401kDetails,
     balanceStatements: account401kbalanceStatements,
   });
 
   // Account: Wallet
   await AccountRepository.createAccount({
-    name: 'Wallet',
-    balanceGroup: BalanceGroupEnum.CASH,
-    accountType: 'cash',
-    autoCalculated: false,
-    closed: false,
+    ...accountWalletDetails,
     balanceStatements: accountWalletBalanceStatements,
   });
 
   // Asset: Security (Tesla)
   await AssetRepository.createAsset({
-    name: 'Tesla',
-    balanceGroup: BalanceGroupEnum.INVESTMENTS,
-    assetType: AssetTypeEnum.SECURITY,
-    sold: false,
-    symbol: 'TSLA',
+    ...assetSecurityTeslaDetails,
     balanceStatements: assetTeslaBalanceStatements,
   });
 
   // Asset: Security (Gamestop)
   await AssetRepository.createAsset({
-    name: 'GameStop',
-    balanceGroup: BalanceGroupEnum.INVESTMENTS,
-    assetType: AssetTypeEnum.SECURITY,
-    sold: false,
-    symbol: 'GME',
+    ...assetSecurityGamestopDetails,
     balanceStatements: assetGamestopBalanceStatements,
   });
 
   // Asset: Crypto (Bitcoin)
   await AssetRepository.createAsset({
-    name: 'Bitcoin',
-    balanceGroup: BalanceGroupEnum.INVESTMENTS,
-    assetType: AssetTypeEnum.CRYPTOCURRENCY,
-    sold: false,
-    symbol: 'BTC',
+    ...assetCryptoBitcoinDetails,
     balanceStatements: assetBitcoinBalanceStatements,
   });
 
   // Asset: Crypto (Ethereum)
   await AssetRepository.createAsset({
-    name: 'Ethereum',
-    balanceGroup: BalanceGroupEnum.INVESTMENTS,
-    assetType: AssetTypeEnum.CRYPTOCURRENCY,
-    sold: false,
-    symbol: 'ETH',
+    ...assetCryptoEthereumDetails,
     balanceStatements: assetEthereumBalanceStatements,
   });
 
   // Asset: Collectible
   await AssetRepository.createAsset({
-    name: 'Pokemon Card Collection',
-    balanceGroup: BalanceGroupEnum.OTHER_ASSETS,
-    assetType: AssetTypeEnum.COLLECTIBLE,
-    sold: false,
+    ...assetCollectibleDetails,
     balanceStatements: assetPokemonCardBalanceStatements,
   });
 
   // Asset: Vehicle
   await AssetRepository.createAsset({
-    name: `${new Date().getFullYear()} Toyota RAV4`,
-    balanceGroup: BalanceGroupEnum.OTHER_ASSETS,
-    assetType: AssetTypeEnum.VEHICLE,
-    sold: false,
+    ...assetVehicleDetails,
     balanceStatements: assetVehicleBalanceStatements,
   });
 
