@@ -91,7 +91,7 @@ import { TransactionRepository } from '@database/repositories/transaction.reposi
 import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
-import { seedDemoData } from '@database/seed/seedDemoData';
+import seedDemoData from '@database/seed/seedDemoData';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
   AssetEditDetailsSubmitType,

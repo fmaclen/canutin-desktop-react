@@ -20,9 +20,9 @@ import {
   assetVehicleDetails,
 } from './demoData/assets';
 import {
-  accountCheckingMonthlyTransactions,
-  accountSavingsMonthlyTransactions,
-  accountCreditCardMonthlyTransactions,
+  accountCheckingTransactionSet,
+  accountSavingsTransactionSet,
+  accountCreditCardTransactionSet,
 } from './demoData/transactions';
 import {
   account401kbalanceStatements,
@@ -33,40 +33,37 @@ import {
   assetGamestopBalanceStatements,
   assetBitcoinBalanceStatements,
   assetEthereumBalanceStatements,
-  assetPokemonCardBalanceStatements,
+  assetCollectibleBalanceStatements,
   assetVehicleBalanceStatements,
 } from './demoData/balanceStatements';
 
-export const seedDemoData = async () => {
+const seedDemoData = async () => {
   // Account: Checking
   const accountChecking = await AccountRepository.createAccount(accountCheckingDetails);
-
-  // Account: Checking (Transactions)
-  for (let i = 0; i < 23; i++) {
-    accountCheckingMonthlyTransactions(accountChecking.id, i).forEach(async transaction => {
-      await TransactionRepository.createTransaction(transaction);
+  accountCheckingTransactionSet().forEach(async transaction => {
+    await TransactionRepository.createTransaction({
+      ...transaction,
+      accountId: accountChecking.id,
     });
-  }
+  });
 
   // Account: Savings
   const accountSavings = await AccountRepository.createAccount(accountSavingsDetails);
-
-  // Account: Savings (Transactions)
-  for (let i = 0; i < 23; i++) {
-    accountSavingsMonthlyTransactions(accountSavings.id, i).forEach(async transaction => {
-      await TransactionRepository.createTransaction(transaction);
+  accountSavingsTransactionSet().forEach(async transaction => {
+    await TransactionRepository.createTransaction({
+      ...transaction,
+      accountId: accountSavings.id,
     });
-  }
+  });
 
   // Account: Credit card
   const accountCreditCard = await AccountRepository.createAccount(accountCreditCardDetails);
-
-  // Account: Credit card (Transactions)
-  for (let i = 0; i < 23; i++) {
-    accountCreditCardMonthlyTransactions(accountCreditCard.id, i).forEach(async transaction => {
-      await TransactionRepository.createTransaction(transaction);
+  accountCreditCardTransactionSet().forEach(async transaction => {
+    await TransactionRepository.createTransaction({
+      ...transaction,
+      accountId: accountCreditCard.id,
     });
-  }
+  });
 
   // Account: Auto-loan
   await AccountRepository.createAccount({
@@ -119,7 +116,7 @@ export const seedDemoData = async () => {
   // Asset: Collectible
   await AssetRepository.createAsset({
     ...assetCollectibleDetails,
-    balanceStatements: assetPokemonCardBalanceStatements,
+    balanceStatements: assetCollectibleBalanceStatements,
   });
 
   // Asset: Vehicle

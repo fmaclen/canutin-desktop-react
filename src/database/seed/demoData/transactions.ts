@@ -1,9 +1,10 @@
 import { addDays, startOfMonth, subMonths } from 'date-fns';
 
-export const accountCheckingMonthlyTransactions = (accountId: number, i: number) => {
-  return [
+const MONTHS_IN_SET = 24;
+
+export const accountCheckingTransactionSet = () => {
+  const transactionSet = (i: number) => [
     {
-      accountId: accountId,
       description: 'Westside Apartments',
       amount: -2250,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 1),
@@ -11,7 +12,6 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Initech HR * Payroll',
       amount: 2800,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 5),
@@ -19,7 +19,6 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Transfer to Ransack Savings',
       amount: -250,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
@@ -27,7 +26,6 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Juggernaut Visa Payment',
       amount: i % 2 === 0 ? -1750 : -1500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
@@ -35,7 +33,6 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Initech HR * Payroll',
       amount: 2800,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 20),
@@ -43,7 +40,6 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Transfer to Loot Financial',
       amount: -500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 24),
@@ -51,7 +47,6 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Transfer to MegaCoin Exchange',
       amount: i % 3 === 0 ? 0 : -500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
@@ -59,7 +54,6 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Toyota - TFS Payment',
       amount: -500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
@@ -67,12 +61,18 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       excludeFromTotals: false,
     },
   ];
+
+  let transactions = transactionSet(0);
+  for (let i = 1; i < MONTHS_IN_SET; i++) {
+    transactions = transactions.concat(transactionSet(i));
+  }
+
+  return transactions;
 };
 
-export const accountSavingsMonthlyTransactions = (accountId: number, i: number) => {
-  return [
+export const accountSavingsTransactionSet = () => {
+  const transactionSet = (i: number) => [
     {
-      accountId: accountId,
       description: 'Transfer from Ransack Checking',
       amount: 250,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
@@ -80,12 +80,18 @@ export const accountSavingsMonthlyTransactions = (accountId: number, i: number) 
       excludeFromTotals: false,
     },
   ];
+
+  let transactions = transactionSet(0);
+  for (let i = 1; i < MONTHS_IN_SET; i++) {
+    transactions = transactions.concat(transactionSet(i));
+  }
+
+  return transactions;
 };
 
-export const accountCreditCardMonthlyTransactions = (accountId: number, i: number) => {
-  return [
+export const accountCreditCardTransactionSet = () => {
+  const transactionSet = (i: number) => [
     {
-      accountId: accountId,
       description: 'Evergreen Market',
       amount: -175.75,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 1),
@@ -93,7 +99,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Evergreen Market',
       amount: -135.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
@@ -101,7 +106,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Evergreen Market',
       amount: -189.25,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 15),
@@ -109,7 +113,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Evergreen Market',
       amount: -105.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 23),
@@ -117,7 +120,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Chorizo King',
       amount: -22.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 3),
@@ -125,7 +127,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Por Que No Los Tacos?',
       amount: -19.25,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
@@ -133,7 +134,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Mainely Lobster',
       amount: -43.97,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 10),
@@ -141,7 +141,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: "Maria's Artisanal Gelato",
       amount: -12.67,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 11),
@@ -149,7 +148,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Sunset Cafe',
       amount: -17.81,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 14),
@@ -157,7 +155,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Stellar Burger',
       amount: -16.23,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 20),
@@ -165,7 +162,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: "Roy's Steakhouse",
       amount: -55.78,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 25),
@@ -173,7 +169,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Stellar Burger',
       amount: -19.23,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
@@ -181,7 +176,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'NetTV Max',
       amount: -14.99,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 2),
@@ -189,7 +183,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Store.com',
       amount: -25.9,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 12),
@@ -197,7 +190,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Store.com',
       amount: -24.21,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 18),
@@ -205,7 +197,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: true,
     },
     {
-      accountId: accountId,
       description: 'Store.com (Refund)',
       amount: -24.21,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
@@ -213,7 +204,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: true,
     },
     {
-      accountId: accountId,
       description: 'Florida Man (Gas & Convinience Store)',
       amount: -25.67,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
@@ -221,7 +211,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Florida Man (Gas & Convinience Store)',
       amount: -40.01,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 24),
@@ -229,7 +218,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Patriot Insurance',
       amount: -135.67,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 2),
@@ -237,7 +225,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Horizon Wireless',
       amount: -90.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 15),
@@ -245,7 +232,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: i % 2 === 0 ? 'Hølm Home' : 'The Hardware Center',
       amount: i % 2 === 0 ? -215.43 : -95.89,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 16),
@@ -253,7 +239,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: i % 5 === 0 ? 'ShortCircut Computers' : 'alphaStream',
       amount: i % 5 === 0 ? -649.99 : -4.99,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 26),
@@ -261,7 +246,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'PurpleShield Health',
       amount: -254.84,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 3),
@@ -269,7 +253,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description:
         i % 3 === 0 ? 'Horizon Wireless (Promotional Rebate)' : 'Juggernaut Cash Back Redemption',
       amount: i % 3 === 0 ? 445 : 25.33,
@@ -278,7 +261,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Ransack Bank Payment Received — Thank You',
       amount: i % 2 === 0 ? 1750 : 1500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 8),
@@ -286,7 +268,6 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Juggernaut Visa Interest',
       amount: -56.89,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 8),
@@ -294,4 +275,11 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       excludeFromTotals: false,
     },
   ];
+
+  let transactions = transactionSet(0);
+  for (let i = 1; i < MONTHS_IN_SET; i++) {
+    transactions = transactions.concat(transactionSet(i));
+  }
+
+  return transactions;
 };
