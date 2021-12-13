@@ -43,8 +43,14 @@ const handleSeedBalanceStatements = (
     | CanutinFileAccountBalanceStatementType[]
     | CanutinFileAssetBalanceStatementType[]
 ) =>
+  // The order of the `balanceStatements` in `accountsIndex`/`assetsIndex` is
+  // important but the balances in `seedDemoData.ts` are expressed in the opposite
+  // order so this function reverses them so we can use them in the tests.
   balanceStatements.reverse().map(balanceStatement => ({
     ...balanceStatement,
+
+    // The `createdAt` timestamps in `seedDemoData.ts` are expressed in Unix
+    // timestamps and we need to parse them as Date objects.
     createdAt: fromUnixTime(balanceStatement.createdAt),
   }));
 
