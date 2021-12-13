@@ -36,6 +36,9 @@ test("Sidebar link can't be clicked if no accounts or assets are present", async
 
   const bigPictureSidebarLink = screen.getByTestId('sidebar-big-picture');
   expect(bigPictureSidebarLink).toHaveAttribute('disabled');
+
+  userEvent.click(bigPictureSidebarLink);
+  expect(bigPictureSidebarLink).not.toHaveAttribute('active', '1');
 });
 
 test('Big picture page displays the correct data', async () => {
@@ -68,14 +71,30 @@ test('Big picture page displays the correct data', async () => {
   expect(bigPictureSidebarLink).toHaveAttribute('active', '1');
 
   // Summary section
-  const cardNetWorth = screen.getByTestId('card-net-worth');
-  const cardCash = screen.getByTestId('card-cash');
-  const cardInvestments = screen.getByTestId('card-investments');
-  const cardDebt = screen.getByTestId('card-debt');
-  const cardOtherAssets = screen.getByTestId('card-other-assets');
+  const cardNetWorth = screen.getByTestId('summary-net-worth');
+  const cardCash = screen.getByTestId('summary-cash');
+  const cardInvestments = screen.getByTestId('summary-investments');
+  const cardDebt = screen.getByTestId('summary-debt');
+  const cardOtherAssets = screen.getByTestId('summary-other-assets');
   expect(cardNetWorth).toHaveTextContent('$185,013');
   expect(cardCash).toHaveTextContent('$10,700');
   expect(cardInvestments).toHaveTextContent('$142,831');
   expect(cardDebt).toHaveTextContent('-$21,518');
   expect(cardOtherAssets).toHaveTextContent('$53,000');
+
+  // Cashflow section
+  const chartPeriods = screen.getAllByTestId('chart-period');
+  expect(chartPeriods.length).toBe(12);
+  expect(chartPeriods[0]).toHaveTextContent('$316');
+  expect(chartPeriods[1]).toHaveTextContent('-$448');
+  expect(chartPeriods[2]).toHaveTextContent('$1,236');
+  expect(chartPeriods[3]).toHaveTextContent('$197');
+  expect(chartPeriods[4]).toHaveTextContent('$316');
+  expect(chartPeriods[5]).toHaveTextContent('$1,116');
+  expect(chartPeriods[6]).toHaveTextContent('-$329');
+  expect(chartPeriods[7]).toHaveTextContent('$197');
+  expect(chartPeriods[8]).toHaveTextContent('$1,236');
+  expect(chartPeriods[9]).toHaveTextContent('$197');
+  expect(chartPeriods[10]).toHaveTextContent('$316');
+  expect(chartPeriods[11]).toHaveTextContent('-$374');
 });

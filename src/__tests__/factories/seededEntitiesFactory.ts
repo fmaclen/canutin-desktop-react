@@ -36,7 +36,16 @@ import { fromUnixTime } from 'date-fns';
 import {
   CanutinFileAccountBalanceStatementType,
   CanutinFileAssetBalanceStatementType,
+  CanutinFileTransactionType,
 } from '@appTypes/canutinFile.type';
+import { dateInUTC } from '@app/utils/date.utils';
+
+// FIXME: Should be `transactions: CanutinFileTransactionType[]`
+const handleTransactionsSet = (transactions: any[]) =>
+  transactions.map(transaction => ({
+    ...transaction,
+    date: dateInUTC(transaction.date),
+  }));
 
 const handleSeedBalanceStatements = (
   balanceStatements:
@@ -57,17 +66,17 @@ const handleSeedBalanceStatements = (
 export const seedAccounts = [
   {
     ...accountCheckingDetails,
-    transactions: accountCheckingTransactionSet(),
+    transactions: handleTransactionsSet(accountCheckingTransactionSet()),
     balanceStatements: [],
   },
   {
     ...accountSavingsDetails,
-    transactions: accountSavingsTransactionSet(),
+    transactions: handleTransactionsSet(accountSavingsTransactionSet()),
     balanceStatements: [],
   },
   {
     ...accountCreditCardDetails,
-    transactions: accountCreditCardTransactionSet(),
+    transactions: handleTransactionsSet(accountCreditCardTransactionSet()),
     balanceStatements: [],
   },
   {
