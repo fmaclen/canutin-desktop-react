@@ -47,6 +47,7 @@ const SideBar = () => {
             toggled={toggled}
             to={routesPaths.bigpicture}
             disabled={isDbEmpty}
+            dataTestId="sidebar-big-picture"
           />
 
           <NavItem
