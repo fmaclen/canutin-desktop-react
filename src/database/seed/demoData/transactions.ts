@@ -233,7 +233,7 @@ export const accountCreditCardTransactionSet = () => {
     },
     {
       description: i % 2 === 0 ? 'Hølm Home' : 'The Hardware Center',
-      amount: i % 2 === 0 ? -215.43 : -95.89,
+      amount: i % 7 === 0 ? -215.43 : -95.89,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 16),
       categoryName: i % 2 === 0 ? 'Furnishings' : 'Home maintenance',
       excludeFromTotals: false,
@@ -255,7 +255,7 @@ export const accountCreditCardTransactionSet = () => {
     {
       description:
         i % 3 === 0 ? 'Horizon Wireless (Promotional Rebate)' : 'Juggernaut Cash Back Redemption',
-      amount: i % 3 === 0 ? 445 : 25.33,
+      amount: i % 9 === 0 ? 445 : 25.33,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
       categoryName: i % 3 === 0 ? 'Mobile phone' : 'Financial & banking',
       excludeFromTotals: false,
