@@ -22,41 +22,36 @@ interface BigPictureSummaryProps {
 }
 
 const BigPictureSummary = ({ totalBalance }: BigPictureSummaryProps) => (
-  <Section title="Summary">
+  <Section title="Summary" dataTestId="big-picture-summary">
     <Container>
       <Card
         label={balanceGroupLabels[BalanceGroupEnum.NET_WORTH]}
         appearance={balanceGroupApperances[BalanceGroupEnum.NET_WORTH]}
         value={totalBalance?.[BalanceGroupEnum.NET_WORTH] || 0}
-        dataTestId="summary-net-worth"
         isCurrency
       />
       <Card
         label={balanceGroupLabels[BalanceGroupEnum.CASH]}
         appearance={balanceGroupApperances[BalanceGroupEnum.CASH]}
         value={totalBalance?.[BalanceGroupEnum.CASH] || 0}
-        dataTestId="summary-cash"
         isCurrency
       />
       <Card
         label={balanceGroupLabels[BalanceGroupEnum.INVESTMENTS]}
         appearance={balanceGroupApperances[BalanceGroupEnum.INVESTMENTS]}
         value={totalBalance?.[BalanceGroupEnum.INVESTMENTS] || 0}
-        dataTestId="summary-investments"
         isCurrency
       />
       <Card
         label={balanceGroupLabels[BalanceGroupEnum.DEBT]}
         appearance={balanceGroupApperances[BalanceGroupEnum.DEBT]}
         value={totalBalance?.[BalanceGroupEnum.DEBT] || 0}
-        dataTestId="summary-debt"
         isCurrency
       />
       <Card
         label={balanceGroupLabels[BalanceGroupEnum.OTHER_ASSETS]}
         appearance={balanceGroupApperances[BalanceGroupEnum.OTHER_ASSETS]}
         value={totalBalance?.[BalanceGroupEnum.OTHER_ASSETS] || 0}
-        dataTestId="summary-other-assets"
         isCurrency
       />
     </Container>
