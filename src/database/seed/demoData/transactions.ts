@@ -232,7 +232,7 @@ export const accountCreditCardTransactionSet = () => {
       excludeFromTotals: false,
     },
     {
-      description: i % 2 === 0 ? 'Hølm Home' : 'The Hardware Center',
+      description: i % 7 === 0 ? 'Hølm Home' : 'The Hardware Center',
       amount: i % 7 === 0 ? -215.43 : -95.89,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 16),
       categoryName: i % 2 === 0 ? 'Furnishings' : 'Home maintenance',
@@ -253,16 +253,30 @@ export const accountCreditCardTransactionSet = () => {
       excludeFromTotals: false,
     },
     {
+      description: i % 7 === 0 ? 'Narby Warker' : "Stefano's Pizza by the Slice",
+      amount: i % 7 === 0 ? -150 : -7.78,
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 13),
+      categoryName: i % 7 === 0 ? 'Eyecare' : 'Fast food',
+      excludeFromTotals: false,
+    },
+    {
+      description: i % 9 === 0 ? '9-5 Office Supplies' : 'Flix Movie Rentals',
+      amount: i % 9 === 0 ? -98.23 : -4.99,
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 13),
+      categoryName: i % 9 === 0 ? 'Office maintenance' : 'Movies & dvds',
+      excludeFromTotals: false,
+    },
+    {
       description:
-        i % 3 === 0 ? 'Horizon Wireless (Promotional Rebate)' : 'Juggernaut Cash Back Redemption',
-      amount: i % 9 === 0 ? 445 : 25.33,
+        i % 11 === 0 ? 'Horizon Wireless (Promotional Rebate)' : 'Juggernaut Cash Back Redemption',
+      amount: i % 11 === 0 ? 445 : 25.33,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
-      categoryName: i % 3 === 0 ? 'Mobile phone' : 'Financial & banking',
+      categoryName: i % 11 === 0 ? 'Mobile phone' : 'Financial & banking',
       excludeFromTotals: false,
     },
     {
       description: 'Ransack Bank Payment Received — Thank You',
-      amount: i % 2 === 0 ? 1750 : 1500,
+      amount: i % 3 === 0 ? 1755 : i % 6 === 0 ? 2355 : i % 9 === 0 ? 1945 : 1675,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 8),
       categoryName: 'Payment',
       excludeFromTotals: false,

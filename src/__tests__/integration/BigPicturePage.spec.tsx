@@ -153,31 +153,31 @@ describe('Big picture tests', () => {
     // Summary section
     const bigPictureSummary = screen.getByTestId('big-picture-summary');
     expect(bigPictureSummary).toHaveTextContent('Net worth');
-    expect(bigPictureSummary).toHaveTextContent('$183,871');
+    expect(bigPictureSummary).toHaveTextContent('$184,556');
     expect(bigPictureSummary).toHaveTextContent('Cash');
     expect(bigPictureSummary).toHaveTextContent('$10,700');
     expect(bigPictureSummary).toHaveTextContent('Investments');
     expect(bigPictureSummary).toHaveTextContent('$142,831');
     expect(bigPictureSummary).toHaveTextContent('Debt');
-    expect(bigPictureSummary).toHaveTextContent('-$22,660');
+    expect(bigPictureSummary).toHaveTextContent('-$21,975');
     expect(bigPictureSummary).toHaveTextContent('Other assets');
     expect(bigPictureSummary).toHaveTextContent('$53,000');
 
     // Cashflow section
     const bigPictureCashflowChartPeriods = screen.getAllByTestId('chart-period');
     expect(bigPictureCashflowChartPeriods.length).toBe(12);
-    expect(bigPictureCashflowChartPeriods[0]).toHaveTextContent('$316');
-    expect(bigPictureCashflowChartPeriods[1]).toHaveTextContent('-$329');
-    expect(bigPictureCashflowChartPeriods[2]).toHaveTextContent('$1,236');
-    expect(bigPictureCashflowChartPeriods[3]).toHaveTextContent('$316');
-    expect(bigPictureCashflowChartPeriods[4]).toHaveTextContent('$197');
-    expect(bigPictureCashflowChartPeriods[5]).toHaveTextContent('$816');
-    expect(bigPictureCashflowChartPeriods[6]).toHaveTextContent('-$329');
-    expect(bigPictureCashflowChartPeriods[7]).toHaveTextContent('$316');
-    expect(bigPictureCashflowChartPeriods[8]).toHaveTextContent('$816');
-    expect(bigPictureCashflowChartPeriods[9]).toHaveTextContent('$316');
-    expect(bigPictureCashflowChartPeriods[10]).toHaveTextContent('$316');
-    expect(bigPictureCashflowChartPeriods[11]).toHaveTextContent('-$374');
+    expect(bigPictureCashflowChartPeriods[0]).toHaveTextContent('$898');
+    expect(bigPictureCashflowChartPeriods[1]).toHaveTextContent('$103');
+    expect(bigPictureCashflowChartPeriods[2]).toHaveTextContent('$446');
+    expect(bigPictureCashflowChartPeriods[3]).toHaveTextContent('$228');
+    expect(bigPictureCashflowChartPeriods[4]).toHaveTextContent('$217');
+    expect(bigPictureCashflowChartPeriods[5]).toHaveTextContent('$808');
+    expect(bigPictureCashflowChartPeriods[6]).toHaveTextContent('-$167');
+    expect(bigPictureCashflowChartPeriods[7]).toHaveTextContent('$228');
+    expect(bigPictureCashflowChartPeriods[8]).toHaveTextContent('$1,058');
+    expect(bigPictureCashflowChartPeriods[9]).toHaveTextContent('$228');
+    expect(bigPictureCashflowChartPeriods[10]).toHaveTextContent('$478');
+    expect(bigPictureCashflowChartPeriods[11]).toHaveTextContent('$228');
     expect(bigPictureCashflowChartPeriods.map(period => period.textContent)).toEqual(
       expect.arrayContaining(bigPictureCashflowChartPeriodMonths)
     );
@@ -186,15 +186,15 @@ describe('Big picture tests', () => {
 
     const bigPictureCashflowIncome = screen.getByTestId('chart-summary-income');
     expect(bigPictureCashflowIncome).toHaveTextContent('Income');
-    expect(bigPictureCashflowIncome).toHaveTextContent('$4,800');
+    expect(bigPictureCashflowIncome).toHaveTextContent('$8,050');
 
     const bigPictureCashflowExpenses = screen.getByTestId('chart-summary-expenses');
     expect(bigPictureCashflowExpenses).toHaveTextContent('Expenses');
-    expect(bigPictureCashflowExpenses).toHaveTextContent('-$5,173.6');
+    expect(bigPictureCashflowExpenses).toHaveTextContent('-$7,821.56');
 
     const bigPictureCashflowSurplus = screen.getByTestId('chart-summary-surplus');
     expect(bigPictureCashflowSurplus).toHaveTextContent('Surplus');
-    expect(bigPictureCashflowSurplus).toHaveTextContent('-$373.60');
+    expect(bigPictureCashflowSurplus).toHaveTextContent('$228.44');
 
     // TODO: hover on a different period and assert new `chart-summary` values
     // TODO: assert that only active and peak periods display a balance
@@ -216,19 +216,19 @@ describe('Big picture tests', () => {
     const bigPictureTrailingCashflowSurplus = screen.getByTestId(
       'big-picture-trailing-cashflow-surplus'
     );
-    expect(bigPictureTrailingCashflowIncome).toHaveTextContent('$7,500.33');
-    expect(bigPictureTrailingCashflowExpenses).toHaveTextContent('-$7,124.62');
-    expect(bigPictureTrailingCashflowSurplus).toHaveTextContent('$375.71');
-    expect(bigPictureTrailingCashflowIncome).not.toHaveTextContent('$7,535.30');
-    expect(bigPictureTrailingCashflowExpenses).not.toHaveTextContent('-$7,134.58');
-    expect(bigPictureTrailingCashflowSurplus).not.toHaveTextContent('$400.72');
+    expect(bigPictureTrailingCashflowIncome).toHaveTextContent('$7,577.00');
+    expect(bigPictureTrailingCashflowExpenses).toHaveTextContent('-$7,137.39');
+    expect(bigPictureTrailingCashflowSurplus).toHaveTextContent('$439.60');
+    expect(bigPictureTrailingCashflowIncome).not.toHaveTextContent('$7,611.97');
+    expect(bigPictureTrailingCashflowExpenses).not.toHaveTextContent('-$7,166.98');
+    expect(bigPictureTrailingCashflowSurplus).not.toHaveTextContent('$444.99');
 
     userEvent.click(screen.getByText('Last 12 months'));
-    expect(bigPictureTrailingCashflowIncome).not.toHaveTextContent('$7,500.33');
-    expect(bigPictureTrailingCashflowExpenses).not.toHaveTextContent('-$7,124.62');
-    expect(bigPictureTrailingCashflowSurplus).not.toHaveTextContent('$375.71');
-    expect(bigPictureTrailingCashflowIncome).toHaveTextContent('$7,535.30');
-    expect(bigPictureTrailingCashflowExpenses).toHaveTextContent('-$7,134.58');
-    expect(bigPictureTrailingCashflowSurplus).toHaveTextContent('$400.72');
+    expect(bigPictureTrailingCashflowIncome).not.toHaveTextContent('$7,577.00');
+    expect(bigPictureTrailingCashflowExpenses).not.toHaveTextContent('-$7,137.39');
+    expect(bigPictureTrailingCashflowSurplus).not.toHaveTextContent('$439.60');
+    expect(bigPictureTrailingCashflowIncome).toHaveTextContent('$7,611.97');
+    expect(bigPictureTrailingCashflowExpenses).toHaveTextContent('-$7,166.98');
+    expect(bigPictureTrailingCashflowSurplus).toHaveTextContent('$444.99');
   });
 });
