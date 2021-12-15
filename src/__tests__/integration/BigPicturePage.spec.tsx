@@ -181,8 +181,9 @@ describe('Big picture tests', () => {
     expect(bigPictureCashflowChartPeriods.map(period => period.textContent)).toEqual(
       expect.arrayContaining(bigPictureCashflowChartPeriodMonths)
     );
-
-    // expect(bigPictureCashflowChartPeriods[11]).toHaveAttribute('isActive', 1); // FIXME: This should be truthy
+    expect(screen.getByText('$898')).not.toBeVisible();
+    expect(screen.getByText('-$167')).toBeVisible();
+    expect(screen.getByText('$1,058')).toBeVisible();
 
     const bigPictureCashflowIncome = screen.getByTestId('chart-summary-income');
     expect(bigPictureCashflowIncome).toHaveTextContent('Income');
@@ -196,8 +197,17 @@ describe('Big picture tests', () => {
     expect(bigPictureCashflowSurplus).toHaveTextContent('Surplus');
     expect(bigPictureCashflowSurplus).toHaveTextContent('$228.44');
 
-    // TODO: hover on a different period and assert new `chart-summary` values
-    // TODO: assert that only active and peak periods display a balance
+    userEvent.hover(bigPictureCashflowChartPeriods[0]);
+    expect(screen.getByText('$898')).toBeVisible();
+
+    userEvent.hover(bigPictureCashflowChartPeriods[6]);
+    expect(screen.getByText('$898')).not.toBeVisible();
+    expect(bigPictureCashflowIncome).toHaveTextContent('Income');
+    expect(bigPictureCashflowIncome).toHaveTextContent('$7,550.33');
+    expect(bigPictureCashflowExpenses).toHaveTextContent('Expenses');
+    expect(bigPictureCashflowExpenses).toHaveTextContent('-$7,716.56');
+    expect(bigPictureCashflowSurplus).toHaveTextContent('Surplus');
+    expect(bigPictureCashflowSurplus).toHaveTextContent('-$166.23');
 
     // Trailing cashflow section
     const bigPictureTrailingCashflow = screen.getByTestId('big-picture-trailing-cashflow');
