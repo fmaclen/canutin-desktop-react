@@ -45,7 +45,7 @@ const TrailingCashflow = ({ trailingCashflow }: TrailingCashflowInterface) => {
     <Section
       title="Trailing cashflow"
       scope={balanceSheetSegments}
-      dataTestId={'big-picture-trailing-cashflow'}
+      dataTestId="big-picture-trailing-cashflow"
     >
       <Card
         label="Income per month"

@@ -7,7 +7,7 @@ export const accountCheckingTransactionSet = () => {
     {
       description: 'Westside Apartments',
       amount: -2250,
-      date: addDays(startOfMonth(subMonths(new Date(), i)), 1),
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 0),
       categoryName: 'Rent',
       excludeFromTotals: false,
     },
