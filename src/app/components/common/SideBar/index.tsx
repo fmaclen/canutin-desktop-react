@@ -56,6 +56,7 @@ const SideBar = () => {
             toggled={toggled}
             to={routesPaths.balance}
             disabled={isDbEmpty}
+            dataTestId="sidebar-balance-sheet"
           />
 
           <NavItem
