@@ -116,7 +116,8 @@ describe('Balance sheet tests', () => {
 
     initAppWithContexts();
 
-    // "Balance sheet" is the default view so we click on "The big picture" to assert the sidebar behavior
+    // "Balance sheet" is the default view so we click on "The big picture"
+    // to assert the sidebar behavior.
     userEvent.click(screen.getByTestId('sidebar-big-picture'));
     const balanceSheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
     expect(balanceSheetSidebarLink).toHaveAttribute('toggled', '1');
@@ -125,74 +126,6 @@ describe('Balance sheet tests', () => {
 
     userEvent.click(balanceSheetSidebarLink);
     expect(balanceSheetSidebarLink).toHaveAttribute('active', '1');
-
-    // let balanceGroupCash = screen.getByTestId('balance-group-cash');
-    // expect(balanceGroupCash).toHaveTextContent('Cash');
-    // expect(balanceGroupCash).toHaveTextContent('$10,700');
-    // expect(balanceGroupCash).toHaveTextContent(/Savings/i);
-    // expect(balanceGroupCash).toHaveTextContent('Emergency Fund');
-    // expect(balanceGroupCash).toHaveTextContent('$6,000');
-    // expect(balanceGroupCash).toHaveTextContent(/Checking/i);
-    // expect(balanceGroupCash).toHaveTextContent("Alice's Checking");
-    // expect(balanceGroupCash).toHaveTextContent('$3,400');
-    // expect(balanceGroupCash).toHaveTextContent(/Wallet/i);
-    // expect(balanceGroupCash).toHaveTextContent('$1,300');
-    // expect(balanceGroupCash).toHaveTextContent('Account');
-    // expect(balanceGroupCash).not.toHaveTextContent('Asset');
-    // expect(balanceGroupCash).not.toHaveTextContent('No balances are available in this group.');
-
-    // let balanceGroupDebt = screen.getByTestId('balance-group-debt');
-    // expect(balanceGroupDebt).toHaveTextContent('Debt');
-    // expect(balanceGroupDebt).toHaveTextContent('-$21,974');
-    // expect(balanceGroupDebt).toHaveTextContent(/Credit card/i);
-    // expect(balanceGroupDebt).toHaveTextContent("Bob's Juggernaut Visa");
-    // expect(balanceGroupDebt).toHaveTextContent('-$724');
-    // expect(balanceGroupDebt).toHaveTextContent(/Auto/i);
-    // expect(balanceGroupDebt).toHaveTextContent('Toyota Auto Loan');
-    // expect(balanceGroupDebt).toHaveTextContent('-$21,250');
-    // expect(balanceGroupDebt).toHaveTextContent('Account');
-    // expect(balanceGroupDebt).not.toHaveTextContent('Asset');
-    // expect(balanceGroupDebt).not.toHaveTextContent('No balances are available in this group.');
-
-    // let balanceGroupInvestments = screen.getByTestId('balance-group-investments');
-    // expect(balanceGroupInvestments).toHaveTextContent('Investments');
-    // expect(balanceGroupInvestments).toHaveTextContent('$142,831');
-    // expect(balanceGroupInvestments).toHaveTextContent(/Cryptocurrency/i);
-    // expect(balanceGroupInvestments).toHaveTextContent('Bitcoin');
-    // expect(balanceGroupInvestments).toHaveTextContent('$69,420');
-    // expect(balanceGroupInvestments).toHaveTextContent('Ethereum');
-    // expect(balanceGroupInvestments).toHaveTextContent('$17,500');
-    // expect(balanceGroupInvestments).toHaveTextContent(/Security/i);
-    // expect(balanceGroupInvestments).toHaveTextContent('Tesla');
-    // expect(balanceGroupInvestments).toHaveTextContent('$30,000');
-    // expect(balanceGroupInvestments).toHaveTextContent('GameStop');
-    // expect(balanceGroupInvestments).toHaveTextContent('$3,125');
-    // expect(balanceGroupInvestments).toHaveTextContent(/Roth/i);
-    // expect(balanceGroupInvestments).toHaveTextContent("Alice's Roth IRA");
-    // expect(balanceGroupInvestments).toHaveTextContent('$18,536');
-    // expect(balanceGroupInvestments).toHaveTextContent(/401k/i);
-    // expect(balanceGroupInvestments).toHaveTextContent("Bob's 401k");
-    // expect(balanceGroupInvestments).toHaveTextContent('$4,251');
-    // expect(balanceGroupInvestments).toHaveTextContent('Account');
-    // expect(balanceGroupInvestments).toHaveTextContent('Asset');
-    // expect(balanceGroupInvestments).not.toHaveTextContent(
-    //   'No balances are available in this group.'
-    // );
-
-    // let balanceGroupOtherAssets = screen.getByTestId('balance-group-other-assets');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('Other assets');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('$53,000');
-    // expect(balanceGroupOtherAssets).toHaveTextContent(/Vehicle/i);
-    // expect(balanceGroupOtherAssets).toHaveTextContent('2021 Toyota RAV4');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('$38,500');
-    // expect(balanceGroupOtherAssets).toHaveTextContent(/Collectible/i);
-    // expect(balanceGroupOtherAssets).toHaveTextContent('Pokemon Card Collection');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('$14,500');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('Asset');
-    // expect(balanceGroupOtherAssets).not.toHaveTextContent('Account');
-    // expect(balanceGroupOtherAssets).not.toHaveTextContent(
-    //   'No balances are available in this group.'
-    // );
 
     const scrollViewBalanceSheetAll = screen.getByTestId('scrollview-balance-sheet');
     expect(scrollViewBalanceSheetAll).toMatchSnapshot();
@@ -204,67 +137,6 @@ describe('Balance sheet tests', () => {
     userEvent.click(screen.getByText(/Assets 6/i));
     const scrollViewBalanceSheetAssets = screen.getByTestId('scrollview-balance-sheet');
     expect(scrollViewBalanceSheetAssets).toMatchSnapshot();
-
-    // balanceGroupInvestments = screen.getByTestId('balance-group-investments');
-    // balanceGroupCash = screen.getByTestId('balance-group-cash');
-    // balanceGroupDebt = screen.getByTestId('balance-group-debt');
-    // balanceGroupOtherAssets = screen.getByTestId('balance-group-other-assets');
-    // expect(balanceGroupCash).toHaveTextContent('Cash');
-    // expect(balanceGroupCash).toHaveTextContent('$10,700');
-    // expect(balanceGroupCash).toHaveTextContent('Account');
-    // expect(balanceGroupCash).not.toHaveTextContent('Asset');
-    // expect(balanceGroupCash).not.toHaveTextContent('No balances are available in this group.');
-    // expect(balanceGroupDebt).toHaveTextContent('Debt');
-    // expect(balanceGroupDebt).toHaveTextContent('-$21,974');
-    // expect(balanceGroupDebt).toHaveTextContent('Account');
-    // expect(balanceGroupDebt).not.toHaveTextContent('Asset');
-    // expect(balanceGroupDebt).not.toHaveTextContent('No balances are available in this group.');
-    // expect(balanceGroupInvestments).toHaveTextContent('Investments');
-    // expect(balanceGroupInvestments).toHaveTextContent('$22,786');
-    // expect(balanceGroupInvestments).not.toHaveTextContent('Asset');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('Other assets');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('$0');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('No balances are available in this group.');
-    // expect(balanceGroupOtherAssets).not.toHaveTextContent('$53,000');
-    // expect(balanceGroupOtherAssets).not.toHaveTextContent('Account');
-
-    // const segmentedControlAssets = screen.getByText(/Assets 6/i);
-    // expect(segmentedControlAssets).toBeVisible();
-
-    // userEvent.click(segmentedControlAssets);
-    // balanceGroupInvestments = screen.getByTestId('balance-group-investments');
-    // balanceGroupCash = screen.getByTestId('balance-group-cash');
-    // balanceGroupDebt = screen.getByTestId('balance-group-debt');
-    // balanceGroupOtherAssets = screen.getByTestId('balance-group-other-assets');
-    // expect(balanceGroupCash).toHaveTextContent('Cash');
-    // expect(balanceGroupCash).toHaveTextContent('$0');
-    // expect(balanceGroupCash).toHaveTextContent('No balances are available in this group.');
-    // expect(balanceGroupCash).not.toHaveTextContent('$10,700');
-    // expect(balanceGroupCash).not.toHaveTextContent('Account');
-    // expect(balanceGroupCash).not.toHaveTextContent('Asset');
-    // expect(balanceGroupDebt).toHaveTextContent('Debt');
-    // expect(balanceGroupDebt).toHaveTextContent('$0');
-    // expect(balanceGroupDebt).toHaveTextContent('No balances are available in this group.');
-    // expect(balanceGroupDebt).not.toHaveTextContent('-$21,974');
-    // expect(balanceGroupDebt).not.toHaveTextContent('Account');
-    // expect(balanceGroupDebt).not.toHaveTextContent('Asset');
-    // expect(balanceGroupInvestments).toHaveTextContent('Investments');
-    // expect(balanceGroupInvestments).toHaveTextContent('$120,045');
-    // expect(balanceGroupInvestments).toHaveTextContent('Asset');
-    // expect(balanceGroupInvestments).not.toHaveTextContent('Account');
-    // expect(balanceGroupInvestments).not.toHaveTextContent(
-    //   'No balances are available in this group.'
-    // );
-    // expect(balanceGroupOtherAssets).toHaveTextContent('Other assets');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('$53,000');
-    // expect(balanceGroupOtherAssets).toHaveTextContent('Asset');
-    // expect(balanceGroupOtherAssets).not.toHaveTextContent('Account');
-    // expect(balanceGroupOtherAssets).not.toHaveTextContent(
-    //   'No balances are available in this group.'
-    // );
-
-    // const segmentedControlAll = screen.getByText(/All/i);
-    // expect(segmentedControlAll).toBeVisible();
 
     userEvent.click(screen.getByText(/All/i));
     expect(screen.getByText("Alice's Checking")).toBeVisible();
