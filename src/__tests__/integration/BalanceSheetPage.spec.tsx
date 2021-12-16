@@ -37,11 +37,11 @@ describe('Balance sheet tests', () => {
 
     initAppWithContexts();
 
-    const balancesheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
-    expect(balancesheetSidebarLink).toHaveAttribute('disabled');
+    const balanceSheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
+    expect(balanceSheetSidebarLink).toHaveAttribute('disabled');
 
-    userEvent.click(balancesheetSidebarLink);
-    expect(balancesheetSidebarLink).not.toHaveAttribute('active', '1');
+    userEvent.click(balanceSheetSidebarLink);
+    expect(balanceSheetSidebarLink).not.toHaveAttribute('active', '1');
   });
 
   test('Balance sheet page displays an empty view when no enough data is available', async () => {
@@ -63,11 +63,11 @@ describe('Balance sheet tests', () => {
 
     initAppWithContexts();
 
-    const balancesheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
-    expect(balancesheetSidebarLink).not.toHaveAttribute('disabled');
+    const balanceSheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
+    expect(balanceSheetSidebarLink).not.toHaveAttribute('disabled');
 
-    userEvent.click(balancesheetSidebarLink);
-    expect(balancesheetSidebarLink).toHaveAttribute('active', '1');
+    userEvent.click(balanceSheetSidebarLink);
+    expect(balanceSheetSidebarLink).toHaveAttribute('active', '1');
 
     const balanceGroupCash = screen.getByTestId('balance-group-cash');
     expect(balanceGroupCash).toHaveTextContent('Cash');
@@ -117,13 +117,13 @@ describe('Balance sheet tests', () => {
 
     // "Balance sheet" is the default view so we click on "The big picture" to assert the sidebar behavior
     userEvent.click(screen.getByTestId('sidebar-big-picture'));
-    const balancesheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
-    expect(balancesheetSidebarLink).toHaveAttribute('toggled', '1');
-    expect(balancesheetSidebarLink).toHaveAttribute('active', '0');
-    expect(balancesheetSidebarLink).not.toHaveAttribute('disabled');
+    const balanceSheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
+    expect(balanceSheetSidebarLink).toHaveAttribute('toggled', '1');
+    expect(balanceSheetSidebarLink).toHaveAttribute('active', '0');
+    expect(balanceSheetSidebarLink).not.toHaveAttribute('disabled');
 
-    userEvent.click(balancesheetSidebarLink);
-    expect(balancesheetSidebarLink).toHaveAttribute('active', '1');
+    userEvent.click(balanceSheetSidebarLink);
+    expect(balanceSheetSidebarLink).toHaveAttribute('active', '1');
 
     let balanceGroupCash = screen.getByTestId('balance-group-cash');
     expect(balanceGroupCash).toHaveTextContent('Cash');
