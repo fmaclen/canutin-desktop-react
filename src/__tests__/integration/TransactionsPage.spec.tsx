@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { mocked } from 'ts-jest/utils';
 import userEvent from '@testing-library/user-event';
+import { endOfDay, startOfDay } from 'date-fns';
 
 // Fixes `ReferenceError: regeneratorRuntime is not defined` error on `useAsyncDebounce`.
 // REF: https://github.com/tannerlinsley/react-table/issues/2071
@@ -86,11 +87,12 @@ describe('Transactions tests', () => {
   });
 
   test('Transactions page displays the correct data', async () => {
-    // Seed transactions and filter them by "Last 3 months"
     const seedTransactionsThisMonth = accountCheckingTransactionSet()
       .filter(transaction => {
-        const date = transaction.date;
-        return date >= filters[2].dateFrom && date <= filters[2].dateTo;
+        // Mimic the logic in `TransactionRepository.getFilterTransactions()`
+        const dateFrom = startOfDay(dateInUTC(filters[0].dateFrom));
+        const dateTo = endOfDay(dateInUTC(filters[0].dateTo));
+        return transaction.date >= dateFrom && transaction.date <= dateTo;
       })
       .map(transaction => ({
         ...transaction,
@@ -129,12 +131,12 @@ describe('Transactions tests', () => {
 
     const cardTransactions = screen.getByTestId('card-transactions');
     expect(cardTransactions).toHaveTextContent('Transactions');
-    expect(cardTransactions).toHaveTextContent('24');
+    expect(cardTransactions).toHaveTextContent('8');
 
     const cardNetBalance = screen.getByTestId('card-net-balance');
     expect(cardNetBalance).toHaveTextContent('Net balance');
-    expect(cardNetBalance).toHaveTextContent('$300');
-    expect(cardNetBalance).not.toHaveTextContent('-$300');
+    expect(cardNetBalance).toHaveTextContent('$350');
+    expect(cardNetBalance).not.toHaveTextContent('-$350');
 
     // TODO
     // - assert number of rows generated

@@ -56,7 +56,7 @@ export const accountCheckingTransactionSet = () => {
     {
       description: 'Toyota - TFS Payment',
       amount: -500,
-      date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
       categoryName: 'Auto payment',
       excludeFromTotals: false,
     },
@@ -171,7 +171,7 @@ export const accountCreditCardTransactionSet = () => {
     {
       description: 'Stellar Burger',
       amount: -19.23,
-      date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
     },
@@ -199,7 +199,7 @@ export const accountCreditCardTransactionSet = () => {
     {
       description: 'Store.com (Refund)',
       amount: -24.21,
-      date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
       categoryName: 'Shops',
       excludeFromTotals: true,
     },
