@@ -73,6 +73,7 @@ const SideBar = () => {
             toggled={toggled}
             to={routesPaths.transactions}
             disabled={isDbEmpty}
+            dataTestId="sidebar-transactions"
           />
 
           <NavItem
