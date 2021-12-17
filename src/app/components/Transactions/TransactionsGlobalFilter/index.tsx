@@ -24,7 +24,6 @@ const TransactionsGlobalFilter = ({
   const [value, setValue] = useState(globalFilter);
   const onChange = useAsyncDebounce(value => {
     setGlobalFilter(value || undefined);
-    console.log('the value is:', value);
   }, 200);
 
   useEffect(() => {
