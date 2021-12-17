@@ -2,35 +2,39 @@ import { screen } from '@testing-library/react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { mocked } from 'ts-jest/utils';
 import userEvent from '@testing-library/user-event';
+import { endOfMonth, startOfMonth } from 'date-fns';
 
 // Fixes `ReferenceError: regeneratorRuntime is not defined` error on `useAsyncDebounce`.
 // REF: https://github.com/tannerlinsley/react-table/issues/2071
 import 'regenerator-runtime/runtime';
 
-import { DB_GET_ACCOUNTS_ACK, DB_GET_ASSETS_ACK, FILTER_TRANSACTIONS_ACK } from '@constants/events';
+import { dateInUTC } from '@app/utils/date.utils';
+import { DB_GET_ACCOUNTS_ACK, FILTER_TRANSACTIONS_ACK } from '@constants/events';
 import { DATABASE_CONNECTED } from '@constants';
 import { AppCtxProvider } from '@app/context/appContext';
 import { EntitiesProvider } from '@app/context/entitiesContext';
 import { render } from '@tests/utils';
 import App from '@components/App';
 
-import { seedAccounts, seedAssets } from '@tests/factories/seededEntitiesFactory';
 import { accountCheckingDetails } from '@database/seed/demoData/accounts';
 import { TransactionsProvider } from '@app/context/transactionsContext';
+import { accountCheckingTransactionSet } from '@database/seed/demoData/transactions';
 
 const initAppWithContexts = () => {
   render(
     <AppCtxProvider>
-      <TransactionsProvider>
-        <EntitiesProvider>
+      <EntitiesProvider>
+        <TransactionsProvider>
           <App />
-        </EntitiesProvider>
-      </TransactionsProvider>
+        </TransactionsProvider>
+      </EntitiesProvider>
     </AppCtxProvider>
   );
 };
 
 describe('Transactions tests', () => {
+  const minimumAccount = [{ ...accountCheckingDetails, transactions: [] }];
+
   test("Sidebar link can't be clicked if no accounts or assets are present", async () => {
     mocked(ipcRenderer).on.mockImplementation((event, callback) => {
       if (event === DATABASE_CONNECTED) {
@@ -43,7 +47,6 @@ describe('Transactions tests', () => {
     });
 
     initAppWithContexts();
-
     const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
     expect(transactionsSidebarLink).toHaveAttribute('disabled');
 
@@ -52,8 +55,6 @@ describe('Transactions tests', () => {
   });
 
   test('Transactions page displays an empty view when no enough data is available', async () => {
-    const minimumAccount = [{ ...accountCheckingDetails, transactions: [] }];
-
     mocked(ipcRenderer).on.mockImplementation((event, callback) => {
       if (event === DATABASE_CONNECTED) {
         callback((event as unknown) as IpcRendererEvent, {
@@ -66,15 +67,15 @@ describe('Transactions tests', () => {
       }
 
       if (event === FILTER_TRANSACTIONS_ACK) {
-        callback((event as unknown) as IpcRendererEvent, { transactions: [], status: null });
+        callback((event as unknown) as IpcRendererEvent, { transactions: [] });
       }
 
       return ipcRenderer;
     });
 
     initAppWithContexts();
-
     const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
+    expect(transactionsSidebarLink).toHaveAttribute('active', '0');
     expect(transactionsSidebarLink).not.toHaveAttribute('disabled');
 
     userEvent.click(transactionsSidebarLink);
@@ -82,49 +83,46 @@ describe('Transactions tests', () => {
 
     const scrollViewTransactions = screen.getByTestId('scrollview-transactions');
     expect(scrollViewTransactions).toMatchSnapshot();
-
-    // expect(screen.getByText('Add transaction')).toBeVisible();
-    // expect(screen.getByText('Import')).toBeVisible();
-    // expect(screen.getByText('Last 3 months')).toBeVisible();
-    // expect(screen.getByText('Browse transactions')).toBeVisible();
-    // expect(screen.getByText('No transactions were found')).toBeVisible();
-
-    // const cardTransactions = screen.getByTestId('card-transactions');
-    // expect(cardTransactions).toHaveTextContent('Transactions');
-    // expect(cardTransactions).toHaveTextContent('$0');
-
-    // const cardNetBalance = screen.getByTestId('card-net-balance');
-    // expect(cardNetBalance).toHaveTextContent('Net balance');
-    // expect(cardNetBalance).toHaveTextContent('$0');
   });
 
-  // test('Transactions page displays the correct data', async () => {
-  //   mocked(ipcRenderer).on.mockImplementation((event, callback) => {
-  //     if (event === DATABASE_CONNECTED) {
-  //       callback((event as unknown) as IpcRendererEvent, {
-  //         filePath: 'testFilePath',
-  //       });
-  //     }
+  test('Transactions page displays the correct data', async () => {
+    mocked(ipcRenderer).on.mockImplementation((event, callback) => {
+      if (event === DATABASE_CONNECTED) {
+        callback((event as unknown) as IpcRendererEvent, {
+          filePath: 'testFilePath',
+        });
+      }
 
-  //     if (event === DB_GET_ACCOUNTS_ACK) {
-  //       callback((event as unknown) as IpcRendererEvent, seedAccounts);
-  //     }
+      if (event === DB_GET_ACCOUNTS_ACK) {
+        callback((event as unknown) as IpcRendererEvent, minimumAccount);
+      }
 
-  //     if (event === DB_GET_ASSETS_ACK) {
-  //       callback((event as unknown) as IpcRendererEvent, seedAssets);
-  //     }
+      const today = dateInUTC(new Date());
+      const dateFrom = startOfMonth(dateInUTC(today));
+      const dateTo = endOfMonth(dateInUTC(today));
+      const seedTransactionsThisMonth = accountCheckingTransactionSet()
+        .filter(transaction => {
+          const date = transaction.date;
+          return date >= dateFrom && date <= dateTo;
+        })
+        .map(transaction => ({
+          ...transaction,
+          account: { ...accountCheckingDetails },
+          category: { name: transaction.categoryName },
+        }));
 
-  //     return ipcRenderer;
-  //   });
+      if (event === FILTER_TRANSACTIONS_ACK) {
+        callback((event as unknown) as IpcRendererEvent, {
+          transactions: seedTransactionsThisMonth,
+        });
+      }
 
-  //   initAppWithContexts();
+      return ipcRenderer;
+    });
 
-  //   const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
-  //   expect(transactionsSidebarLink).toHaveAttribute('toggled', '1');
-  //   expect(transactionsSidebarLink).toHaveAttribute('active', '0');
-  //   expect(transactionsSidebarLink).not.toHaveAttribute('disabled');
-
-  //   userEvent.click(transactionsSidebarLink);
-  //   expect(transactionsSidebarLink).toHaveAttribute('active', '1');
-  // });
+    initAppWithContexts();
+    const cardTransactions = screen.getByTestId('card-transactions');
+    expect(cardTransactions).toHaveTextContent('Transactions');
+    expect(cardTransactions).toHaveTextContent('8');
+  });
 });
