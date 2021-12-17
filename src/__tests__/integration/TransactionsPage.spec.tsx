@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { mocked } from 'ts-jest/utils';
 import userEvent from '@testing-library/user-event';
-import { endOfMonth, startOfMonth } from 'date-fns';
 
 // Fixes `ReferenceError: regeneratorRuntime is not defined` error on `useAsyncDebounce`.
 // REF: https://github.com/tannerlinsley/react-table/issues/2071
@@ -19,6 +18,7 @@ import App from '@components/App';
 import { accountCheckingDetails } from '@database/seed/demoData/accounts';
 import { TransactionsProvider } from '@app/context/transactionsContext';
 import { accountCheckingTransactionSet } from '@database/seed/demoData/transactions';
+import { filters } from '@app/constants/filters';
 
 const initAppWithContexts = () => {
   render(
@@ -86,6 +86,18 @@ describe('Transactions tests', () => {
   });
 
   test('Transactions page displays the correct data', async () => {
+    // Seed transactions and filter them by "Last 3 months"
+    const seedTransactionsThisMonth = accountCheckingTransactionSet()
+      .filter(transaction => {
+        const date = transaction.date;
+        return date >= filters[2].dateFrom && date <= filters[2].dateTo;
+      })
+      .map(transaction => ({
+        ...transaction,
+        account: { ...accountCheckingDetails },
+        category: { name: transaction.categoryName },
+      }));
+
     mocked(ipcRenderer).on.mockImplementation((event, callback) => {
       if (event === DATABASE_CONNECTED) {
         callback((event as unknown) as IpcRendererEvent, {
@@ -97,20 +109,6 @@ describe('Transactions tests', () => {
         callback((event as unknown) as IpcRendererEvent, minimumAccount);
       }
 
-      const today = dateInUTC(new Date());
-      const dateFrom = startOfMonth(dateInUTC(today));
-      const dateTo = endOfMonth(dateInUTC(today));
-      const seedTransactionsThisMonth = accountCheckingTransactionSet()
-        .filter(transaction => {
-          const date = transaction.date;
-          return date >= dateFrom && date <= dateTo;
-        })
-        .map(transaction => ({
-          ...transaction,
-          account: { ...accountCheckingDetails },
-          category: { name: transaction.categoryName },
-        }));
-
       if (event === FILTER_TRANSACTIONS_ACK) {
         callback((event as unknown) as IpcRendererEvent, {
           transactions: seedTransactionsThisMonth,
@@ -121,8 +119,32 @@ describe('Transactions tests', () => {
     });
 
     initAppWithContexts();
+    userEvent.click(screen.getByTestId('sidebar-big-picture')); // Resets path back to the default
+    const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
+    expect(transactionsSidebarLink).toHaveAttribute('active', '0');
+    expect(transactionsSidebarLink).not.toHaveAttribute('disabled');
+
+    userEvent.click(transactionsSidebarLink);
+    expect(transactionsSidebarLink).toHaveAttribute('active', '1');
+
     const cardTransactions = screen.getByTestId('card-transactions');
     expect(cardTransactions).toHaveTextContent('Transactions');
-    expect(cardTransactions).toHaveTextContent('8');
+    expect(cardTransactions).toHaveTextContent('24');
+
+    const cardNetBalance = screen.getByTestId('card-net-balance');
+    expect(cardNetBalance).toHaveTextContent('Net balance');
+    expect(cardNetBalance).toHaveTextContent('$300');
+    expect(cardNetBalance).not.toHaveTextContent('-$300');
+
+    // TODO
+    // - assert number of rows generated
+    // - assert the first transaction values
+    // - assert the last transaction values
+    // - assert sorting works
+    // - assert credit/debit segmented control works
+    // - assert typing in the search bar filters transactions
+    // - assert switching date filters function is called (?)
   });
+
+  // - Add test for "add transaction" flow
 });
