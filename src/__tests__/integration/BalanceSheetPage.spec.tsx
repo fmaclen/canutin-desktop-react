@@ -36,8 +36,8 @@ describe('Balance sheet tests', () => {
     });
 
     initAppWithContexts();
-
     const balanceSheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
+    expect(balanceSheetSidebarLink).toHaveAttribute('active', '0');
     expect(balanceSheetSidebarLink).toHaveAttribute('disabled');
 
     userEvent.click(balanceSheetSidebarLink);
@@ -62,8 +62,9 @@ describe('Balance sheet tests', () => {
     });
 
     initAppWithContexts();
-
+    userEvent.click(screen.getByTestId('sidebar-big-picture')); // Resets path back to the default
     const balanceSheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
+    expect(balanceSheetSidebarLink).toHaveAttribute('active', '0');
     expect(balanceSheetSidebarLink).not.toHaveAttribute('disabled');
 
     userEvent.click(balanceSheetSidebarLink);
@@ -115,12 +116,8 @@ describe('Balance sheet tests', () => {
     });
 
     initAppWithContexts();
-
-    // "Balance sheet" is the default view so we click on "The big picture"
-    // to assert the sidebar behavior.
-    userEvent.click(screen.getByTestId('sidebar-big-picture'));
+    userEvent.click(screen.getByTestId('sidebar-big-picture')); // Resets path back to the default
     const balanceSheetSidebarLink = screen.getByTestId('sidebar-balance-sheet');
-    expect(balanceSheetSidebarLink).toHaveAttribute('toggled', '1');
     expect(balanceSheetSidebarLink).toHaveAttribute('active', '0');
     expect(balanceSheetSidebarLink).not.toHaveAttribute('disabled');
 
