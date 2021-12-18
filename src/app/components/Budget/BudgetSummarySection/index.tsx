@@ -6,6 +6,7 @@ import { SelectFieldValue } from '@app/components/common/Form/Select';
 
 import { summaryDate } from './styles';
 import BudgetBar from '../BudgetBar';
+import EmptyCard from '@app/components/common/EmptyCard';
 
 const SummaryDate = styled.h2`
   ${summaryDate}
@@ -34,9 +35,16 @@ const BudgetSummarySection = ({
 
   return (
     <Section title="Summary" scope={summaryDate}>
-      <BudgetBar amount={income} targetAmount={targetIncome} title="Income" />
-      <BudgetBar amount={expenses} targetAmount={targetExpenses} title="Expenses" />
-      <BudgetBar amount={savings} targetAmount={targetSavings} title="Savings" />
+      {targetIncome > 0 && (
+        <>
+          <BudgetBar amount={income} targetAmount={targetIncome} title="Income" />
+          <BudgetBar amount={expenses} targetAmount={targetExpenses} title="Expenses" />
+          <BudgetBar amount={savings} targetAmount={targetSavings} title="Savings" />
+        </>
+      )}
+      {targetIncome <= 0 && (
+        <EmptyCard message="Not enough transactions were found for the chosen period to accurately calculate the budgets." />
+      )}
     </Section>
   );
 };

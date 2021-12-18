@@ -1,26 +1,27 @@
-import { useContext, useEffect, useState } from 'react';
-import {
-  isAfter,
-  isBefore,
-  isSameDay,
-  isSameMonth,
-  isWithinInterval,
-  startOfMonth,
-} from 'date-fns';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { TransactionsContext } from '@app/context/transactionsContext';
 import TransactionIpc from '@app/data/transaction.ipc';
+import {
+  getTransactionsTrailingCashflow,
+  getTransactionTrailingCashflowAverage,
+} from '@app/utils/balance.utils';
+import { dateInUTC } from '@app/utils/date.utils';
 import { FILTER_TRANSACTIONS_ACK } from '@constants/events';
 import { Budget, Transaction } from '@database/entities';
 import { BudgetTypeEnum } from '@enums/budgetType.enum';
-import { dateInUTC } from '@app/utils/date.utils';
+import { isAfter, isBefore, isSameMonth, isWithinInterval, startOfMonth } from 'date-fns';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { useContext, useEffect, useState } from 'react';
 
 const useBudgetInfo = (lastMonth?: boolean) => {
   const [isLoading, setIsLoading] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { budgetFilterOption } = useContext(TransactionsContext);
-  const { budgetsIndex } = useContext(EntitiesContext);
+  const { budgetsIndex, settingsIndex, accountsIndex } = useContext(EntitiesContext);
+  const autoBudget = settingsIndex?.settings.budgetAuto;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const totalTransactions = accountsIndex && accountsIndex.accounts.map(account => account.transactions!).flat().sort((a, b) => b.date.getTime() - a.date.getTime());
   const dateFrom = lastMonth
     ? dateInUTC(startOfMonth(new Date()))
     : dateInUTC(budgetFilterOption?.value?.dateFrom);
@@ -91,10 +92,10 @@ const useBudgetInfo = (lastMonth?: boolean) => {
       }, 0)
     : 0;
 
-  const targetIncome = budgetsIndex?.budgets
-    ? (budgetsIndex?.budgets.filter(({ type }) => type === BudgetTypeEnum.INCOME)[0] as Budget)
-        ?.targetAmount
-    : 0;
+  const incomePerMonth = totalTransactions ? getTransactionTrailingCashflowAverage(
+    getTransactionsTrailingCashflow(totalTransactions as Transaction[]),
+    TrailingCashflowSegmentsEnum.LAST_6_MONTHS
+  )[0] : 0;
 
   const income = transactions.reduce((acc, { amount }) => {
     if (amount > 0) {
@@ -102,6 +103,16 @@ const useBudgetInfo = (lastMonth?: boolean) => {
     }
     return acc;
   }, 0);
+
+  const targetIncome =
+    autoBudget && incomePerMonth > 0
+      ? incomePerMonth
+      : autoBudget
+      ? income
+      : budgetsIndex?.budgets
+      ? (budgetsIndex?.budgets.filter(({ type }) => type === BudgetTypeEnum.INCOME)[0] as Budget)
+          ?.targetAmount
+      : 0;
 
   const targetSavings = targetIncome ? targetIncome - expensesBudgetsTargets : 0;
   const savings = income - expenseBudgetsAmount;
