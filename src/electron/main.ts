@@ -288,6 +288,7 @@ const setupDbEvents = async () => {
       const newTransaction = await TransactionRepository.createTransaction(transaction);
       win?.webContents.send(DB_NEW_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
       await getAccounts();
+      await getBudgets();
     } catch (e) {
       if (e instanceof QueryFailedError) {
         win?.webContents.send(DB_NEW_TRANSACTION_ACK, {
@@ -308,6 +309,7 @@ const setupDbEvents = async () => {
       const newTransaction = await TransactionRepository.editTransaction(transaction);
       win?.webContents.send(DB_EDIT_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
       await getAccounts();
+      await getBudgets();
     } catch (e) {
       win?.webContents.send(DB_EDIT_TRANSACTION_ACK, {
         status: EVENT_ERROR,
@@ -323,6 +325,7 @@ const setupDbEvents = async () => {
         await TransactionRepository.deleteTransaction(transactionId);
         win?.webContents.send(DB_DELETE_TRANSACTION_ACK, { status: EVENT_SUCCESS });
         await getAccounts();
+        await getBudgets();
       } catch (e) {
         win?.webContents.send(DB_DELETE_TRANSACTION_ACK, {
           status: EVENT_ERROR,
@@ -342,6 +345,7 @@ const setupDbEvents = async () => {
           status: EVENT_SUCCESS,
         });
         await getAccounts();
+        await getBudgets();
       } catch (e) {
         win?.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
           status: EVENT_ERROR,
@@ -361,6 +365,7 @@ const setupDbEvents = async () => {
           status: EVENT_SUCCESS,
         });
         await getAccounts();
+        await getBudgets();
       } catch (e) {
         win?.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
           status: EVENT_ERROR,
@@ -375,6 +380,7 @@ const setupDbEvents = async () => {
       await AccountRepository.deleteAccount(accountId);
       win?.webContents.send(DB_DELETE_ACCOUNT_ACK, { status: EVENT_SUCCESS });
       await getAccounts();
+      await getBudgets();
     } catch (e) {
       win?.webContents.send(DB_DELETE_ACCOUNT_ACK, {
         status: EVENT_ERROR,
@@ -441,6 +447,7 @@ const setupDbEvents = async () => {
     await seedDemoData();
     await getAccounts();
     await getAssets();
+    await getBudgets();
     win?.webContents.send(DB_SEED_VAULT_ACK, { status: EVENT_SUCCESS });
   });
 

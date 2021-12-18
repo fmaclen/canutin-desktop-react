@@ -267,7 +267,7 @@ const EditBudgetGroups = ({
                       disabled={isAutoBudget}
                       rules={{ required: true }}
                     />
-                    {group?.[id].targetAmount && <PercentageField error={savings < 0} percentage={getPercentage(group?.[id].targetAmount)} />}
+                    {group?.[id]?.targetAmount && <PercentageField error={savings < 0} percentage={getPercentage(group?.[id].targetAmount)} />}
                   </PercentageFieldContainer>
                 </Field>
               </Fieldset>
