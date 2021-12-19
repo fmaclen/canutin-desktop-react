@@ -7,7 +7,7 @@ import selectEvent from 'react-select-event';
 import App from '@components/App';
 import { AppCtxProvider } from '@app/context/appContext';
 import { DATABASE_CONNECTED } from '@constants';
-import { DB_GET_ACCOUNTS_ACK, DB_GET_ACCOUNTS, DB_NEW_ASSET } from '@constants/events';
+import { DB_GET_ACCOUNTS_ACK, DB_NEW_ASSET } from '@constants/events';
 import { accountBuilder } from '@tests/factories/accountFactory';
 
 import { render } from '@tests/utils';

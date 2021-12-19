@@ -65,7 +65,7 @@ import {
   DB_EDIT_BUDGET_GROUPS,
   DB_EDIT_BUDGET_GROUPS_ACK,
   DB_EDIT_BUDGET_CATEGORY,
-  DB_EDIT_BUDGET_CATEGORY_ACK
+  DB_EDIT_BUDGET_CATEGORY_ACK,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
@@ -260,24 +260,27 @@ const setupDbEvents = async () => {
     }
   });
 
-  ipcMain.on(DB_EDIT_BUDGET_CATEGORY, async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmit) => {
-    try {
-      await editBudgetCategory(editBudgetCategorySubmit);
-      win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
-    } catch (e) {
-      if (e instanceof QueryFailedError) {
-        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
-          status: EVENT_ERROR,
-          message: 'This category is already assigned to the budget',
-        });
-      } else {
-        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
-          status: EVENT_ERROR,
-          message: 'An error occurred, please try again',
-        });
+  ipcMain.on(
+    DB_EDIT_BUDGET_CATEGORY,
+    async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmit) => {
+      try {
+        await editBudgetCategory(editBudgetCategorySubmit);
+        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
+      } catch (e) {
+        if (e instanceof QueryFailedError) {
+          win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+            status: EVENT_ERROR,
+            message: 'This category is already assigned to the budget',
+          });
+        } else {
+          win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+            status: EVENT_ERROR,
+            message: 'An error occurred, please try again',
+          });
+        }
       }
     }
-  });
+  );
 
   ipcMain.on(DB_GET_SETTINGS, async (_: IpcMainEvent) => {
     await getSettings();
@@ -502,7 +505,7 @@ const editBudgetGroups = async (editBudgets: EditBudgetSubmit) => {
 const editBudgetCategory = async (editBudgetCategory: EditBudgetCategorySubmit) => {
   await BudgetRepository.editBudgetCategory(editBudgetCategory);
   await getBudgets();
-}
+};
 
 const createWindow = async () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;

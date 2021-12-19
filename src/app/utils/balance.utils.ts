@@ -11,6 +11,7 @@ import {
   format,
   isEqual,
   startOfWeek,
+  endOfMonth,
 } from 'date-fns';
 import merge from 'deepmerge';
 
@@ -24,6 +25,7 @@ import {
 import { BalanceData, AccountAssetBalance } from '@components/BalanceSheet/BalancesByGroup';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
+import { dateInUTC } from './date.utils';
 
 export const getBalanceForAssetByBalanceGroup = (assets: Asset[]) => {
   const assetsNotSold = assets.filter(asset => !asset.sold);
@@ -193,8 +195,8 @@ export const getTransactionsTrailingCashflow = (transactions: Transaction[]) => 
   return monthDates.reduce((acc: TransactionsTrailingCashflowType[], monthDate, index) => {
     const monthlyTransactions = getSelectedTransactions(
       transactionsNotExcludedFromTotals,
-      monthDate,
-      monthDates[index + 1] ? monthDates[index + 1] : new Date()
+      dateInUTC(monthDate),
+      monthDates[index + 1] ? dateInUTC(monthDates[index + 1]) : dateInUTC(endOfMonth(new Date()))
     );
     const income = monthlyTransactions.reduce(
       (acc, transaction) => (transaction.amount > 0 ? transaction.amount + acc : acc),

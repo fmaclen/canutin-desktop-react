@@ -10,7 +10,6 @@ import {
   CanutinFileType,
   UpdatedAccount,
 } from '@appTypes/canutinFile.type';
-import { LOADING_CSV } from '@constants/events';
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AssetTypeEnum } from '@enums/assetType.enum';
 import { Account } from '@database/entities';
@@ -20,20 +19,15 @@ export const importFromCanutinFile = async (
   win: BrowserWindow | null
 ) => {
   try {
-    const countAccounts = canutinFile.accounts?.length;
-
     canutinFile.accounts?.forEach(async canutinFileAccount => {
       // Find or create account
       const account = await AccountRepository.getOrCreateAccount(canutinFileAccount).then(res => {
-        win?.webContents.send(LOADING_CSV, { total: countAccounts });
         return res;
       });
 
       // Process transactions
       canutinFileAccount.transactions &&
         handleCanutinFileTransactions(account, canutinFileAccount.transactions);
-
-      return account;
     });
 
     canutinFile.assets &&
