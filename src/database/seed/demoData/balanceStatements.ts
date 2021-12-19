@@ -364,7 +364,7 @@ export const assetEthereumBalanceStatements = [
   },
 ];
 
-export const assetPokemonCardBalanceStatements = [
+export const assetCollectibleBalanceStatements = [
   {
     createdAt: getUnixTime(subMonths(new Date(), 6)),
     value: 14500,

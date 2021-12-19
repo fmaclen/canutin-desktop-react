@@ -1,297 +1,299 @@
 import { addDays, startOfMonth, subMonths } from 'date-fns';
 
-export const accountCheckingMonthlyTransactions = (accountId: number, i: number) => {
-  return [
+const MONTHS_IN_SET = 24;
+
+export const accountCheckingTransactionSet = () => {
+  const transactionSet = (i: number) => [
     {
-      accountId: accountId,
       description: 'Westside Apartments',
-      balance: -2250,
-      date: addDays(startOfMonth(subMonths(new Date(), i)), 1),
+      amount: -2250,
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 0),
       categoryName: 'Rent',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Initech HR * Payroll',
-      balance: 2800,
+      amount: 2800,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 5),
       categoryName: 'Payroll & benefits',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Transfer to Ransack Savings',
-      balance: -250,
+      amount: -250,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
       categoryName: 'Transfer',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Juggernaut Visa Payment',
-      balance: i % 2 === 0 ? -1750 : -1500,
+      amount: i % 2 === 0 ? -1750 : -1500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
       categoryName: 'Payments',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Initech HR * Payroll',
-      balance: 2800,
+      amount: 2800,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 20),
       categoryName: 'Payroll & benefits',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Transfer to Loot Financial',
-      balance: -500,
+      amount: -500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 24),
       categoryName: 'Transfer',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Transfer to MegaCoin Exchange',
-      balance: i % 3 === 0 ? 0 : -500,
+      amount: i % 3 === 0 ? 0 : -500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
       categoryName: 'Transfer',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Toyota - TFS Payment',
-      balance: -500,
+      amount: -500,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
       categoryName: 'Auto payment',
       excludeFromTotals: false,
     },
   ];
+
+  let transactions = transactionSet(0);
+  for (let i = 1; i < MONTHS_IN_SET; i++) {
+    transactions = transactions.concat(transactionSet(i));
+  }
+
+  return transactions;
 };
 
-export const accountSavingsMonthlyTransactions = (accountId: number, i: number) => {
-  return [
+export const accountSavingsTransactionSet = () => {
+  const transactionSet = (i: number) => [
     {
-      accountId: accountId,
       description: 'Transfer from Ransack Checking',
-      balance: 250,
+      amount: 250,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
       categoryName: 'Transfer',
       excludeFromTotals: false,
     },
   ];
+
+  let transactions = transactionSet(0);
+  for (let i = 1; i < MONTHS_IN_SET; i++) {
+    transactions = transactions.concat(transactionSet(i));
+  }
+
+  return transactions;
 };
 
-export const accountCreditCardMonthlyTransactions = (accountId: number, i: number) => {
-  return [
+export const accountCreditCardTransactionSet = () => {
+  const transactionSet = (i: number) => [
     {
-      accountId: accountId,
       description: 'Evergreen Market',
-      balance: -175.75,
+      amount: -175.75,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 1),
       categoryName: 'Groceries',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Evergreen Market',
-      balance: -135.5,
+      amount: -135.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
       categoryName: 'Groceries',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Evergreen Market',
-      balance: -189.25,
+      amount: -189.25,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 15),
       categoryName: 'Groceries',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Evergreen Market',
-      balance: -105.5,
+      amount: -105.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 23),
       categoryName: 'Groceries',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Chorizo King',
-      balance: -22.5,
+      amount: -22.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 3),
       categoryName: 'Food & drink',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Por Que No Los Tacos?',
-      balance: -19.25,
+      amount: -19.25,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
       categoryName: 'Food & drink',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Mainely Lobster',
-      balance: -43.97,
+      amount: -43.97,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 10),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: "Maria's Artisanal Gelato",
-      balance: -12.67,
+      amount: -12.67,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 11),
       categoryName: 'Food & drink',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Sunset Cafe',
-      balance: -17.81,
+      amount: -17.81,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 14),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Stellar Burger',
-      balance: -16.23,
+      amount: -16.23,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 20),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: "Roy's Steakhouse",
-      balance: -55.78,
+      amount: -55.78,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 25),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Stellar Burger',
-      balance: -19.23,
+      amount: -19.23,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'NetTV Max',
-      balance: -14.99,
+      amount: -14.99,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 2),
       categoryName: 'Subscriptions',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Store.com',
-      balance: -25.9,
+      amount: -25.9,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 12),
       categoryName: 'Shops',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Store.com',
-      balance: -24.21,
+      amount: -24.21,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 18),
       categoryName: 'Shops',
       excludeFromTotals: true,
     },
     {
-      accountId: accountId,
       description: 'Store.com (Refund)',
-      balance: -24.21,
+      amount: -24.21,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
       categoryName: 'Shops',
       excludeFromTotals: true,
     },
     {
-      accountId: accountId,
       description: 'Florida Man (Gas & Convinience Store)',
-      balance: -25.67,
+      amount: -25.67,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
       categoryName: 'Gas stations',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Florida Man (Gas & Convinience Store)',
-      balance: -40.01,
+      amount: -40.01,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 24),
       categoryName: 'Gas stations',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Patriot Insurance',
-      balance: -135.67,
+      amount: -135.67,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 2),
       categoryName: 'Insurance',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Horizon Wireless',
-      balance: -90.5,
+      amount: -90.5,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 15),
       categoryName: 'Internet & phone',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
-      description: i % 2 === 0 ? 'Hølm Home' : 'The Hardware Center',
-      balance: i % 2 === 0 ? -215.43 : -95.89,
+      description: i % 7 === 0 ? 'Hølm Home' : 'The Hardware Center',
+      amount: i % 7 === 0 ? -215.43 : -95.89,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 16),
       categoryName: i % 2 === 0 ? 'Furnishings' : 'Home maintenance',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: i % 5 === 0 ? 'ShortCircut Computers' : 'alphaStream',
-      balance: i % 5 === 0 ? -649.99 : -4.99,
+      amount: i % 5 === 0 ? -649.99 : -4.99,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 26),
       categoryName: i % 5 === 0 ? 'Electronics' : 'Music',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'PurpleShield Health',
-      balance: -254.84,
+      amount: -254.84,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 3),
       categoryName: 'Health',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
-      description:
-        i % 3 === 0 ? 'Horizon Wireless (Promotional Rebate)' : 'Juggernaut Cash Back Redemption',
-      balance: i % 3 === 0 ? 445 : 25.33,
-      date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
-      categoryName: i % 3 === 0 ? 'Mobile phone' : 'Financial & banking',
+      description: i % 7 === 0 ? 'Narby Warker' : "Stefano's Pizza by the Slice",
+      amount: i % 7 === 0 ? -150 : -7.78,
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 13),
+      categoryName: i % 7 === 0 ? 'Eyecare' : 'Fast food',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
+      description: i % 9 === 0 ? '9-5 Office Supplies' : 'Flix Movie Rentals',
+      amount: i % 9 === 0 ? -98.23 : -4.99,
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 13),
+      categoryName: i % 9 === 0 ? 'Office maintenance' : 'Movies & dvds',
+      excludeFromTotals: false,
+    },
+    {
+      description:
+        i % 11 === 0 ? 'Horizon Wireless (Promotional Rebate)' : 'Juggernaut Cash Back Redemption',
+      amount: i % 11 === 0 ? 445 : 25.33,
+      date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
+      categoryName: i % 11 === 0 ? 'Mobile phone' : 'Financial & banking',
+      excludeFromTotals: false,
+    },
+    {
       description: 'Ransack Bank Payment Received — Thank You',
-      balance: i % 2 === 0 ? 1750 : 1500,
+      amount: i % 3 === 0 ? 1755 : i % 6 === 0 ? 2355 : i % 9 === 0 ? 1945 : 1675,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 8),
       categoryName: 'Payment',
       excludeFromTotals: false,
     },
     {
-      accountId: accountId,
       description: 'Juggernaut Visa Interest',
-      balance: -56.89,
+      amount: -56.89,
       date: addDays(startOfMonth(subMonths(new Date(), i)), 8),
       categoryName: 'Fees',
       excludeFromTotals: false,
     },
   ];
+
+  let transactions = transactionSet(0);
+  for (let i = 1; i < MONTHS_IN_SET; i++) {
+    transactions = transactions.concat(transactionSet(i));
+  }
+
+  return transactions;
 };

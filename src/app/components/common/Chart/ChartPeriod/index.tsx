@@ -94,7 +94,7 @@ const ChartPeriod = ({
         isBalanceLabelVisible,
       }}
     >
-      <Period onMouseEnter={() => handleMouseEnter(id)}>
+      <Period onMouseEnter={() => handleMouseEnter(id)} data-testid="chart-period">
         <PeriodBalance proportion={balanceProportion}>
           {isBalancePositive ? (
             <>
