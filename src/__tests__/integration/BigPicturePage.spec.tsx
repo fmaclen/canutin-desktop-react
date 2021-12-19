@@ -167,8 +167,8 @@ describe('Big picture tests', () => {
     const bigPictureCashflowChartPeriods = screen.getAllByTestId('chart-period');
     expect(bigPictureCashflowChartPeriods.length).toBe(12);
     expect(bigPictureCashflowChartPeriods[0]).toHaveTextContent('$898');
-    expect(bigPictureCashflowChartPeriods[1]).toHaveTextContent('$103');
-    expect(bigPictureCashflowChartPeriods[2]).toHaveTextContent('$446');
+    expect(bigPictureCashflowChartPeriods[1]).toHaveTextContent('-$417');
+    expect(bigPictureCashflowChartPeriods[2]).toHaveTextContent('$965');
     expect(bigPictureCashflowChartPeriods[3]).toHaveTextContent('$228');
     expect(bigPictureCashflowChartPeriods[4]).toHaveTextContent('$217');
     expect(bigPictureCashflowChartPeriods[5]).toHaveTextContent('$808');
@@ -181,9 +181,10 @@ describe('Big picture tests', () => {
     expect(bigPictureCashflowChartPeriods.map(period => period.textContent)).toEqual(
       expect.arrayContaining(bigPictureCashflowChartPeriodMonths)
     );
-    expect(screen.getByText('$898')).not.toBeVisible();
-    expect(screen.getByText('-$167')).toBeVisible();
     expect(screen.getByText('$1,058')).toBeVisible();
+    expect(screen.getByText('-$417')).toBeVisible();
+    expect(screen.getByText('$898')).not.toBeVisible();
+    expect(screen.getByText('-$167')).not.toBeVisible();
 
     const bigPictureCashflowIncome = screen.getByTestId('chart-summary-income');
     expect(bigPictureCashflowIncome).toHaveTextContent('Income');
