@@ -66,36 +66,43 @@ const handleSeedBalanceStatements = (
 export const seedAccounts = [
   {
     ...accountCheckingDetails,
+    accountType: { name: accountCheckingDetails.accountType },
     transactions: handleTransactionsSet(accountCheckingTransactionSet()),
     balanceStatements: [],
   },
   {
     ...accountSavingsDetails,
+    accountType: { name: accountSavingsDetails.accountType },
     transactions: handleTransactionsSet(accountSavingsTransactionSet()),
     balanceStatements: [],
   },
   {
     ...accountCreditCardDetails,
+    accountType: { name: accountCreditCardDetails.accountType },
     transactions: handleTransactionsSet(accountCreditCardTransactionSet()),
     balanceStatements: [],
   },
   {
     ...accountAutoLoanDetails,
+    accountType: { name: accountAutoLoanDetails.accountType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(accountAutoLoanBalanceStatements),
   },
   {
     ...accountRothIraDetails,
+    accountType: { name: accountRothIraDetails.accountType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(accountRothIraBalanceStatements),
   },
   {
     ...account401kDetails,
+    accountType: { name: account401kDetails.accountType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(account401kbalanceStatements),
   },
   {
     ...accountWalletDetails,
+    accountType: { name: accountWalletDetails.accountType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(accountWalletBalanceStatements),
   },
@@ -104,31 +111,37 @@ export const seedAccounts = [
 export const seedAssets = [
   {
     ...assetSecurityTeslaDetails,
+    assetType: { name: assetSecurityTeslaDetails.assetType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(assetTeslaBalanceStatements),
   },
   {
     ...assetSecurityGamestopDetails,
+    assetType: { name: assetSecurityGamestopDetails.assetType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(assetGamestopBalanceStatements),
   },
   {
     ...assetCryptoBitcoinDetails,
+    assetType: { name: assetCryptoBitcoinDetails.assetType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(assetBitcoinBalanceStatements),
   },
   {
     ...assetCryptoEthereumDetails,
+    assetType: { name: assetCryptoEthereumDetails.assetType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(assetEthereumBalanceStatements),
   },
   {
     ...assetCollectibleDetails,
+    assetType: { name: assetCollectibleDetails.assetType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(assetCollectibleBalanceStatements),
   },
   {
     ...assetVehicleDetails,
+    assetType: { name: assetVehicleDetails.assetType },
     transactions: [],
     balanceStatements: handleSeedBalanceStatements(assetVehicleBalanceStatements),
   },
