@@ -37,9 +37,9 @@ const BudgetSummarySection = ({
     <Section title="Summary" scope={summaryDate}>
       {targetIncome > 0 && (
         <>
-          <BudgetBar amount={income} targetAmount={targetIncome} title="Income" />
+          {/* <BudgetBar amount={income} targetAmount={targetIncome} title="Income" />
           <BudgetBar amount={expenses} targetAmount={targetExpenses} title="Expenses" />
-          <BudgetBar amount={savings} targetAmount={targetSavings} title="Savings" />
+          <BudgetBar amount={savings} targetAmount={targetSavings} title="Savings" /> */}
         </>
       )}
       {targetIncome <= 0 && (

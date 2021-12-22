@@ -12,9 +12,9 @@ import ButtonDivider from '@components/common/ButtonDivider';
 import ButtonSelect from '@components/common/ButtonSelect';
 
 interface TransactionsHeaderButtonsProps {
-  expenseBudgets: Budget[];
-  targetIncome: number;
-  targetSavings: number;
+  expenseBudgets?: Budget[];
+  targetIncome?: number;
+  targetSavings?: number;
 }
 
 const TransactionsHeaderButtons = ({

@@ -1,33 +1,17 @@
 import { useContext } from 'react';
 
 import { EntitiesContext } from '@app/context/entitiesContext';
-import { Budget as BudgetEntity } from '@database/entities';
-import ExpenseGroupsSection from '@app/components/Budget/ExpenseGroupsSection';
-import useBudgetInfo from '@app/hooks/useBudgetInfo';
-import useBudgetData from '@app/hooks/useAutoBudget';
+import useAutoBudget from '@app/hooks/useAutoBudget';
 
 import ScrollView from '@components/common/ScrollView';
-import BudgetSummarySection from '@components/Budget/BudgetSummarySection';
-import BudgetHeaderButtons from '@app/components/Budget/BudgetHeaderButtons';
+import Section from '@app/components/common/Section';
 import EmptyCard from '@app/components/common/EmptyCard';
-import useAutoBudget from '@app/hooks/useAutoBudget';
+import BudgetBar from '@app/components/Budget/BudgetBar';
+import BudgetHeaderButtons from '@app/components/Budget/BudgetHeaderButtons';
 
 const Budget = () => {
   const { settingsIndex } = useContext(EntitiesContext);
   const autoBudget = settingsIndex?.settings.budgetAuto;
-
-  const {
-    // isLoading,
-    // targetExpenses,
-    transactions,
-    expenseBudgets,
-    expenses,
-    // targetIncome,
-    // targetSavings,
-    savings,
-    budgetFilterOption,
-    income,
-  } = useBudgetInfo();
 
   const {
     targetIncomeTotal,
@@ -37,6 +21,7 @@ const Budget = () => {
     periodExpensesTotal,
     periodSavingsTotal,
     periodExpenseGroups,
+    periodTransactions,
     isLoading,
   } = useAutoBudget();
 
@@ -44,56 +29,44 @@ const Budget = () => {
     <>
       <ScrollView
         title="Budget"
-        headerNav={
-          <BudgetHeaderButtons
-            expenseBudgets={expenseBudgets as BudgetEntity[]}
-            targetIncome={targetIncomeTotal}
-            targetSavings={targetSavingsTotal}
-          />
-        }
+        subTitle={autoBudget ? 'Auto-budget' : 'Custom budget'}
+        headerNav={<BudgetHeaderButtons />}
       >
-        {!isLoading && targetIncomeTotal !== null && transactions.length > 0 && (
+        {!isLoading && targetIncomeTotal !== null && periodTransactions.length > 0 && (
           <>
-            <div>
-              <h3>Income</h3>
-              {periodIncomeTotal} of <strong>{targetIncomeTotal}</strong>
-            </div>
-            <div>
-              <h3>Expenses</h3>
-              {periodExpensesTotal} of <strong>{targetExpensesTotal}</strong>
-            </div>
-            <div>
-              <h3>Savings</h3>
-              {periodSavingsTotal} of <strong>{targetSavingsTotal}</strong>
-            </div>
-            <hr />
-            <div>
-              <h3>Groups</h3>
-              {periodExpenseGroups.map(periodExpenseGroup => (
-                <div>
-                  {periodExpenseGroup.name}
-                  <br />
-                  {periodExpenseGroup.periodExpenseGruopTotal} of{' '}
-                  <strong>{periodExpenseGroup.targetExpenseGroupTotal}</strong>
-                </div>
-              ))}
-            </div>
-            {/* <BudgetSummarySection
-              income={income}
-              targetIncome={targetIncome}
-              expenses={expenses}
-              targetExpenses={targetExpenses}
-              savings={savings}
-              targetSavings={targetSavings}
-              filter={budgetFilterOption}
-            />
-            {expenseBudgets && expenseBudgets.length > 0 && (
-              <ExpenseGroupsSection expenseBudgets={expenseBudgets} transactions={transactions} />
-            )} */}
+            <Section title="Summary">
+              <BudgetBar
+                periodTotal={periodIncomeTotal}
+                targetTotal={targetIncomeTotal}
+                title="Income"
+              />
+              <BudgetBar
+                periodTotal={periodExpensesTotal}
+                targetTotal={targetExpensesTotal}
+                title="Expenses"
+              />
+              <BudgetBar
+                periodTotal={periodSavingsTotal}
+                targetTotal={targetSavingsTotal}
+                title="Savings"
+              />
+              {console.log(targetSavingsTotal)}
+            </Section>
+            {periodExpenseGroups.length > 0 && (
+              <Section title="Expense groups">
+                {periodExpenseGroups.map(expenseGroup => (
+                  <BudgetBar
+                    periodTotal={expenseGroup.periodExpenseGroupTotal}
+                    targetTotal={expenseGroup.targetExpenseGroupTotal}
+                    title={expenseGroup.name}
+                  />
+                ))}
+              </Section>
+            )}
           </>
         )}
-        {!isLoading && transactions.length === 0 && (
-          <EmptyCard message="No transactions were found in the chosen time period." />
+        {!isLoading && periodTransactions.length === 0 && (
+          <EmptyCard message="No transactions were found in the current period." />
         )}
       </ScrollView>
     </>

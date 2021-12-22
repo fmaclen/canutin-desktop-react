@@ -10,7 +10,7 @@ interface ExpenseGroupsSectionProps {
 const ExpenseGroupsSection = ({ expenseBudgets, transactions }: ExpenseGroupsSectionProps) => {
   return (
     <Section title="Expense Groups">
-      {expenseBudgets.map(({ categories, targetAmount, id, name }) => {
+      {/* {expenseBudgets.map(({ categories, targetAmount, id, name }) => {
         const amount = transactions
           .filter(({ category }) => categories.some(({ id }) => id === category.id))
           .reduce((accAmount, { amount }) => {
@@ -18,7 +18,7 @@ const ExpenseGroupsSection = ({ expenseBudgets, transactions }: ExpenseGroupsSec
           }, 0);
 
         return <BudgetBar amount={amount} targetAmount={targetAmount} title={name} key={id} />;
-      })}
+      })} */}
     </Section>
   );
 };

@@ -1,5 +1,7 @@
 import { css } from 'styled-components';
 
+import { StatusEnum } from '@app/constants/misc';
+
 import {
   whitePlain,
   shadowPlate,
@@ -11,9 +13,10 @@ import {
   bluePlain,
   yellowPlain,
   greenLight,
+  redPlain,
+  redLight,
 } from '@app/constants/colors';
 import { monospaceRegular, sansSerifBold } from '@app/constants/fonts';
-import { BudgetProgressEnum } from '.';
 
 export const container = css`
   background-color: ${whitePlain};
@@ -47,7 +50,7 @@ export const progressContainer = css`
   display: flex;
 `;
 
-export const progress = css<{ status: BudgetProgressEnum; percentage: number }>`
+export const progress = css<{ status: StatusEnum; percentage: number }>`
   width: ${({ percentage }) => `${percentage}%`};
 
   position: relative;
@@ -70,23 +73,28 @@ export const progress = css<{ status: BudgetProgressEnum; percentage: number }>`
     z-index: 2;
 
     ${({ status }) => {
-      if (status === BudgetProgressEnum.POSITIVE) {
+      if (status === StatusEnum.POSITIVE) {
         return `
-      background-color: ${greenPlain}
-      `;
+          background-color: ${greenPlain}
+        `;
       }
 
-      if (status === BudgetProgressEnum.NEGATIVE) {
+      if (status === StatusEnum.WARNING) {
         return `
-
-      background-color: ${yellowPlain}
-      `;
+          background-color: ${yellowPlain}
+        `;
       }
 
-      if (status === BudgetProgressEnum.NEUTRAL) {
+      if (status === StatusEnum.NEGATIVE) {
         return `
-      background-color: ${bluePlain}
-      `;
+          background-color: ${redPlain}
+        `;
+      }
+
+      if (status === StatusEnum.NEUTRAL) {
+        return `
+          background-color: ${bluePlain}
+        `;
       }
     }}
   }
@@ -103,41 +111,52 @@ export const progress = css<{ status: BudgetProgressEnum; percentage: number }>`
     white-space: nowrap;
 
     ${({ status }) => {
-      if (status === BudgetProgressEnum.POSITIVE) {
+      if (status === StatusEnum.POSITIVE) {
         return `
-        color: ${greenPlain}
-      `;
+          color: ${greenPlain}
+        `;
       }
 
-      if (status === BudgetProgressEnum.NEGATIVE) {
+      if (status === StatusEnum.WARNING) {
         return `
-
           color: ${yellowPlain}
-      `;
+        `;
       }
 
-      if (status === BudgetProgressEnum.NEUTRAL) {
+      if (status === StatusEnum.NEGATIVE) {
+        return `
+          color: ${redPlain}
+        `;
+      }
+
+      if (status === StatusEnum.NEUTRAL) {
         return `
           color: ${bluePlain}
-      `;
+        `;
       }
     }}
   }
 
   ${({ status }) => {
-    if (status === BudgetProgressEnum.POSITIVE) {
+    if (status === StatusEnum.POSITIVE) {
       return `
         background-color: ${greenLight}
       `;
     }
 
-    if (status === BudgetProgressEnum.NEGATIVE) {
+    if (status === StatusEnum.NEGATIVE) {
+      return `
+        background-color: ${redLight}
+      `;
+    }
+
+    if (status === StatusEnum.WARNING) {
       return `
         background-color: ${yellowLight}
       `;
     }
 
-    if (status === BudgetProgressEnum.NEUTRAL) {
+    if (status === StatusEnum.NEUTRAL) {
       return `
         background-color: ${blueLight}
       `;
@@ -148,6 +167,7 @@ export const progress = css<{ status: BudgetProgressEnum; percentage: number }>`
 export const balanceContainer = css`
   grid-column-end: span 2;
   text-align: right;
+  font-size: 14px;
   padding-right: 16px;
   padding-top: 16px;
   padding-bottom: 16px;
