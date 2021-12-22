@@ -4,7 +4,7 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { TransactionsContext } from '@app/context/transactionsContext';
 import TransactionIpc from '@app/data/transaction.ipc';
-import { Budget, Transaction } from '@database/entities';
+import { Transaction } from '@database/entities';
 import { FILTER_TRANSACTIONS_ACK } from '@constants/events';
 import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 import {
@@ -70,28 +70,26 @@ const useAutoBudget = () => {
   const expenseGroupWants = periodExpenses.filter(({ category }) =>
     autoBudgetWantsCategories.includes(category.id)
   );
-  const expenseGroupEverythingElse = periodExpenses.filter(
+
+  const periodExpenseGroups = [
+    {
+      name: 'Needs',
+      periodTotal: getTotalFromTransactions(expenseGroupNeeds),
+      targetTotal: Math.round(targetIncomeTotal * 0.5 * -1),
+    },
+    {
+      name: 'Wants',
+      periodTotal: getTotalFromTransactions(expenseGroupWants),
+      targetTotal: Math.round(targetIncomeTotal * 0.3 * -1),
+    },
+  ];
+
+  const otherExenses = periodExpenses.filter(
     ({ category }) =>
       !autoBudgetNeedsCategories.includes(category.id) &&
       !autoBudgetWantsCategories.includes(category.id)
   );
-  const periodExpenseGroups = [
-    {
-      name: 'Needs',
-      periodExpenseGroupTotal: getTotalFromTransactions(expenseGroupNeeds),
-      targetExpenseGroupTotal: Math.round(targetIncomeTotal * 0.5 * -1),
-    },
-    {
-      name: 'Wants',
-      periodExpenseGroupTotal: getTotalFromTransactions(expenseGroupWants),
-      targetExpenseGroupTotal: Math.round(targetIncomeTotal * 0.3 * -1),
-    },
-    {
-      name: 'Everything else',
-      periodExpenseGroupTotal: getTotalFromTransactions(expenseGroupEverythingElse),
-      targetExpenseGroupTotal: 0,
-    },
-  ];
+  const periodOutOfBudgetTotal = getTotalFromTransactions(otherExenses);
 
   return {
     targetIncomeTotal,
@@ -102,6 +100,7 @@ const useAutoBudget = () => {
     periodSavingsTotal,
     periodExpenseGroups,
     periodTransactions,
+    periodOutOfBudgetTotal,
     isLoading,
   };
 };

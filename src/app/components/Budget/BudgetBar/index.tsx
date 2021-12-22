@@ -2,8 +2,16 @@ import styled from 'styled-components';
 
 import NumberFormat from '@app/components/common/NumberFormat';
 
-import { container, header, progress, progressContainer, balanceContainer } from './styles';
+import {
+  container,
+  header,
+  progress,
+  progressContainer,
+  progressTooltip,
+  balanceContainer,
+} from './styles';
 import { StatusEnum } from '@app/constants/misc';
+import { proportionBetween } from '@app/utils/balance.utils';
 
 const Container = styled.div`
   ${container}
@@ -17,6 +25,9 @@ const ProgressContainer = styled.div`
 const Progress = styled.div`
   ${progress}
 `;
+const ProgressTooltip = styled.p`
+  ${progressTooltip}
+`;
 const BalanceContainer = styled.div`
   ${balanceContainer}
 `;
@@ -28,12 +39,11 @@ interface BudgetBarProps {
 }
 
 const BudgetBar = ({ title, periodTotal, targetTotal }: BudgetBarProps) => {
-  const percentage = Math.abs(
-    targetTotal === 0 ? periodTotal : Math.floor((periodTotal / targetTotal) * 100)
-  );
+  const percentage = Math.round(proportionBetween(periodTotal, targetTotal));
 
-  const getStatus = () => {
+  const getBudgetStatus = () => {
     if (targetTotal > 0) {
+      // Budget bar with positive value
       if (percentage <= 20) {
         return StatusEnum.WARNING;
       } else if (percentage > 20 && percentage < 85) {
@@ -42,21 +52,20 @@ const BudgetBar = ({ title, periodTotal, targetTotal }: BudgetBarProps) => {
         return StatusEnum.POSITIVE;
       }
     } else {
+      // Budget bar with negative value
       return percentage < 100 ? StatusEnum.NEUTRAL : StatusEnum.NEGATIVE;
     }
   };
 
   return (
     <Container>
-      <Header>
-        <h2>{title}</h2>
-      </Header>
+      <Header>{title}</Header>
       <ProgressContainer>
-        <Progress percentage={percentage} status={getStatus()}>
-          <div>
+        <Progress percentage={percentage} status={getBudgetStatus()}>
+          <ProgressTooltip>
             <NumberFormat displayType={'text'} value={Math.round(periodTotal)} />
             {` (${percentage}%)`}
-          </div>
+          </ProgressTooltip>
         </Progress>
       </ProgressContainer>
       <BalanceContainer>

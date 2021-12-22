@@ -15,6 +15,7 @@ import {
   greenLight,
   redPlain,
   redLight,
+  borderGrey,
 } from '@app/constants/colors';
 import { monospaceRegular, sansSerifBold } from '@app/constants/fonts';
 
@@ -27,17 +28,13 @@ export const container = css`
 `;
 
 export const header = css`
+  ${sansSerifBold}
   align-items: center;
   display: flex;
   grid-column-end: span 2;
-  padding-right: 70px;
+  padding: 16px;
+  font-size: 13px;
   box-sizing: border-box;
-
-  h2 {
-    ${sansSerifBold}
-    font-size: 13px;
-    padding-left: 16px;
-  }
 `;
 
 export const progressContainer = css`
@@ -51,7 +48,7 @@ export const progressContainer = css`
 `;
 
 export const progress = css<{ status: StatusEnum; percentage: number }>`
-  width: ${({ percentage }) => `${percentage}%`};
+  width: ${({ percentage }) => `${percentage > 100 ? 100 : percentage}%`};
 
   position: relative;
   display: flex;
@@ -60,7 +57,6 @@ export const progress = css<{ status: StatusEnum; percentage: number }>`
   padding: 16px 0;
   height: 100%;
   box-sizing: border-box;
-  background-color: ${blueLight};
   justify-content: flex-end;
 
   ::after {
@@ -69,110 +65,69 @@ export const progress = css<{ status: StatusEnum; percentage: number }>`
     display: block;
     height: 100%;
     width: 3px;
-    background-color: ${bluePlain};
     z-index: 2;
 
     ${({ status }) => {
-      if (status === StatusEnum.POSITIVE) {
-        return `
-          background-color: ${greenPlain}
-        `;
-      }
-
-      if (status === StatusEnum.WARNING) {
-        return `
-          background-color: ${yellowPlain}
-        `;
-      }
-
-      if (status === StatusEnum.NEGATIVE) {
-        return `
-          background-color: ${redPlain}
-        `;
-      }
-
-      if (status === StatusEnum.NEUTRAL) {
-        return `
-          background-color: ${bluePlain}
-        `;
+      switch (status) {
+        case StatusEnum.POSITIVE:
+          return `background-color: ${greenPlain}`;
+        case StatusEnum.WARNING:
+          return `background-color: ${yellowPlain}`;
+        case StatusEnum.NEGATIVE:
+          return `background-color: ${redPlain}`;
+        default:
+          return `background-color: ${bluePlain}`;
       }
     }}
   }
 
-  div {
-    ${monospaceRegular}
-    position: absolute;
-    top: 50%;
-    right: 16px;
-    transform: translateY(-50%);
-    z-index: 3;
-    border-radius: 3px;
-    padding: 2px;
-    white-space: nowrap;
-
+  p {
     ${({ status }) => {
-      if (status === StatusEnum.POSITIVE) {
-        return `
-          color: ${greenPlain}
-        `;
-      }
-
-      if (status === StatusEnum.WARNING) {
-        return `
-          color: ${yellowPlain}
-        `;
-      }
-
-      if (status === StatusEnum.NEGATIVE) {
-        return `
-          color: ${redPlain}
-        `;
-      }
-
-      if (status === StatusEnum.NEUTRAL) {
-        return `
-          color: ${bluePlain}
-        `;
+      switch (status) {
+        case StatusEnum.POSITIVE:
+          return `color: ${greenPlain}`;
+        case StatusEnum.WARNING:
+          return `color: ${yellowPlain}`;
+        case StatusEnum.NEGATIVE:
+          return `color: ${redPlain}`;
+        default:
+          return `color: ${bluePlain}`;
       }
     }}
   }
 
   ${({ status }) => {
-    if (status === StatusEnum.POSITIVE) {
-      return `
-        background-color: ${greenLight}
-      `;
-    }
-
-    if (status === StatusEnum.NEGATIVE) {
-      return `
-        background-color: ${redLight}
-      `;
-    }
-
-    if (status === StatusEnum.WARNING) {
-      return `
-        background-color: ${yellowLight}
-      `;
-    }
-
-    if (status === StatusEnum.NEUTRAL) {
-      return `
-        background-color: ${blueLight}
-      `;
+    switch (status) {
+      case StatusEnum.POSITIVE:
+        return `background-color: ${greenLight}`;
+      case StatusEnum.WARNING:
+        return `background-color: ${yellowLight}`;
+      case StatusEnum.NEGATIVE:
+        return `background-color: ${redLight}`;
+      default:
+        return `background-color: ${blueLight}`;
     }
   }}
 `;
 
+export const progressTooltip = css`
+  ${monospaceRegular}
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  z-index: 3;
+  border-radius: 3px;
+  padding: 2px;
+  white-space: nowrap;
+  /* border-bottom: 1px dashed ${borderGrey};
+  cursor: help; */
+`;
+
 export const balanceContainer = css`
+  ${monospaceRegular}
   grid-column-end: span 2;
   text-align: right;
   font-size: 14px;
-  padding-right: 16px;
-  padding-top: 16px;
-  padding-bottom: 16px;
-
-  span {
-    ${monospaceRegular}
-  }
+  padding: 16px;
 `;
