@@ -88,3 +88,11 @@ export const autoBudgetWantsCategories = [
   83,
   87,
 ];
+
+export const getTotalFromTransactions = (transactions: Transaction[]) => {
+  return Math.round(
+    transactions.reduce((acc, transaction) => {
+      return acc + transaction.amount;
+    }, 0)
+  );
+};

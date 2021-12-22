@@ -1,14 +1,21 @@
+import { useContext } from 'react';
+
+import { EntitiesContext } from '@app/context/entitiesContext';
+import { Budget as BudgetEntity } from '@database/entities';
+import ExpenseGroupsSection from '@app/components/Budget/ExpenseGroupsSection';
+import useBudgetInfo from '@app/hooks/useBudgetInfo';
+import useBudgetData from '@app/hooks/useAutoBudget';
+
 import ScrollView from '@components/common/ScrollView';
 import BudgetSummarySection from '@components/Budget/BudgetSummarySection';
 import BudgetHeaderButtons from '@app/components/Budget/BudgetHeaderButtons';
 import EmptyCard from '@app/components/common/EmptyCard';
-
-import { Budget as BudgetEntity } from '@database/entities';
-import ExpenseGroupsSection from '@app/components/Budget/ExpenseGroupsSection';
-import useBudgetInfo from '@app/hooks/useBudgetInfo';
-import useBudgetData from '@app/hooks/useBudgetData';
+import useAutoBudget from '@app/hooks/useAutoBudget';
 
 const Budget = () => {
+  const { settingsIndex } = useContext(EntitiesContext);
+  const autoBudget = settingsIndex?.settings.budgetAuto;
+
   const {
     // isLoading,
     // targetExpenses,
@@ -23,15 +30,15 @@ const Budget = () => {
   } = useBudgetInfo();
 
   const {
-    targetIncomeAmount,
-    targetExpensesAmount,
-    targetSavingsAmount,
-    periodIncomeAmount,
-    periodExpensesAmount,
-    periodSavingsAmount,
+    targetIncomeTotal,
+    targetExpensesTotal,
+    targetSavingsTotal,
+    periodIncomeTotal,
+    periodExpensesTotal,
+    periodSavingsTotal,
     periodExpenseGroups,
     isLoading,
-  } = useBudgetData();
+  } = useAutoBudget();
 
   return (
     <>
@@ -40,24 +47,24 @@ const Budget = () => {
         headerNav={
           <BudgetHeaderButtons
             expenseBudgets={expenseBudgets as BudgetEntity[]}
-            targetIncome={targetIncomeAmount}
-            targetSavings={targetSavingsAmount}
+            targetIncome={targetIncomeTotal}
+            targetSavings={targetSavingsTotal}
           />
         }
       >
-        {!isLoading && targetIncomeAmount !== null && transactions.length > 0 && (
+        {!isLoading && targetIncomeTotal !== null && transactions.length > 0 && (
           <>
             <div>
               <h3>Income</h3>
-              {periodIncomeAmount} of <strong>{targetIncomeAmount}</strong>
+              {periodIncomeTotal} of <strong>{targetIncomeTotal}</strong>
             </div>
             <div>
               <h3>Expenses</h3>
-              {periodExpensesAmount} of <strong>{targetExpensesAmount}</strong>
+              {periodExpensesTotal} of <strong>{targetExpensesTotal}</strong>
             </div>
             <div>
               <h3>Savings</h3>
-              {periodSavingsAmount} of <strong>{targetSavingsAmount}</strong>
+              {periodSavingsTotal} of <strong>{targetSavingsTotal}</strong>
             </div>
             <hr />
             <div>
@@ -66,8 +73,8 @@ const Budget = () => {
                 <div>
                   {periodExpenseGroup.name}
                   <br />
-                  {periodExpenseGroup.periodExpenseGruopAmount} of{' '}
-                  <strong>{periodExpenseGroup.targetExpenseGroupAmount}</strong>
+                  {periodExpenseGroup.periodExpenseGruopTotal} of{' '}
+                  <strong>{periodExpenseGroup.targetExpenseGroupTotal}</strong>
                 </div>
               ))}
             </div>
