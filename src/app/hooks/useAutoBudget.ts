@@ -35,17 +35,20 @@ const useAutoBudget = () => {
         )[0]
       : 0
   );
-  const targetExpensesTotal = Math.round(targetIncomeTotal * 0.8);
-  const targetSavingsTotal = Math.round(targetIncomeTotal - targetExpensesTotal);
+  const targetExpensesTotal = Math.round(targetIncomeTotal * 0.8 * -1);
+  const targetSavingsTotal = Math.round(targetIncomeTotal - Math.abs(targetExpensesTotal));
 
   // Period transactions
   useEffect(() => {
     TransactionIpc.getFilterTransactions(budgetFilterOption?.value);
 
-    ipcRenderer.on(FILTER_TRANSACTIONS_ACK, (_: IpcRendererEvent, { transactions }) => {
-      setPeriodTransactions(transactions);
-      setIsLoading(false);
-    });
+    ipcRenderer.on(
+      FILTER_TRANSACTIONS_ACK,
+      (_: IpcRendererEvent, { transactions }: { transactions: Transaction[] }) => {
+        setPeriodTransactions(transactions.filter(transaction => !transaction.excludeFromTotals));
+        setIsLoading(false);
+      }
+    );
 
     return () => {
       ipcRenderer.removeAllListeners(FILTER_TRANSACTIONS_ACK);
@@ -67,16 +70,26 @@ const useAutoBudget = () => {
   const expenseGroupWants = periodExpenses.filter(({ category }) =>
     autoBudgetWantsCategories.includes(category.id)
   );
+  const expenseGroupEverythingElse = periodExpenses.filter(
+    ({ category }) =>
+      !autoBudgetNeedsCategories.includes(category.id) &&
+      !autoBudgetWantsCategories.includes(category.id)
+  );
   const periodExpenseGroups = [
     {
       name: 'Needs',
-      periodExpenseGruopTotal: getTotalFromTransactions(expenseGroupNeeds),
-      targetExpenseGroupTotal: targetIncomeTotal * 0.5,
+      periodExpenseGroupTotal: getTotalFromTransactions(expenseGroupNeeds),
+      targetExpenseGroupTotal: Math.round(targetIncomeTotal * 0.5 * -1),
     },
     {
       name: 'Wants',
-      periodExpenseGruopTotal: getTotalFromTransactions(expenseGroupWants),
-      targetExpenseGroupTotal: targetIncomeTotal * 0.3,
+      periodExpenseGroupTotal: getTotalFromTransactions(expenseGroupWants),
+      targetExpenseGroupTotal: Math.round(targetIncomeTotal * 0.3 * -1),
+    },
+    {
+      name: 'Everything else',
+      periodExpenseGroupTotal: getTotalFromTransactions(expenseGroupEverythingElse),
+      targetExpenseGroupTotal: 0,
     },
   ];
 
@@ -88,6 +101,7 @@ const useAutoBudget = () => {
     periodExpensesTotal,
     periodSavingsTotal,
     periodExpenseGroups,
+    periodTransactions,
     isLoading,
   };
 };
