@@ -6,20 +6,32 @@ import EmptyCard from '@app/components/common/EmptyCard';
 import { Budget as BudgetEntity } from '@database/entities';
 import ExpenseGroupsSection from '@app/components/Budget/ExpenseGroupsSection';
 import useBudgetInfo from '@app/hooks/useBudgetInfo';
+import useBudgetData from '@app/hooks/useBudgetData';
 
 const Budget = () => {
   const {
-    isLoading,
-    targetExpenses,
+    // isLoading,
+    // targetExpenses,
     transactions,
     expenseBudgets,
     expenses,
-    targetIncome,
-    targetSavings,
+    // targetIncome,
+    // targetSavings,
     savings,
     budgetFilterOption,
     income,
   } = useBudgetInfo();
+
+  const {
+    targetIncomeAmount,
+    targetExpensesAmount,
+    targetSavingsAmount,
+    periodIncomeAmount,
+    periodExpensesAmount,
+    periodSavingsAmount,
+    periodExpenseGroups,
+    isLoading,
+  } = useBudgetData();
 
   return (
     <>
@@ -28,14 +40,38 @@ const Budget = () => {
         headerNav={
           <BudgetHeaderButtons
             expenseBudgets={expenseBudgets as BudgetEntity[]}
-            targetIncome={targetIncome}
-            targetSavings={targetSavings}
+            targetIncome={targetIncomeAmount}
+            targetSavings={targetSavingsAmount}
           />
         }
       >
-        {!isLoading && targetIncome !== null && transactions.length > 0 && (
+        {!isLoading && targetIncomeAmount !== null && transactions.length > 0 && (
           <>
-            <BudgetSummarySection
+            <div>
+              <h3>Income</h3>
+              {periodIncomeAmount} of <strong>{targetIncomeAmount}</strong>
+            </div>
+            <div>
+              <h3>Expenses</h3>
+              {periodExpensesAmount} of <strong>{targetExpensesAmount}</strong>
+            </div>
+            <div>
+              <h3>Savings</h3>
+              {periodSavingsAmount} of <strong>{targetSavingsAmount}</strong>
+            </div>
+            <hr />
+            <div>
+              <h3>Groups</h3>
+              {periodExpenseGroups.map(periodExpenseGroup => (
+                <div>
+                  {periodExpenseGroup.name}
+                  <br />
+                  {periodExpenseGroup.periodExpenseGruopAmount} of{' '}
+                  <strong>{periodExpenseGroup.targetExpenseGroupAmount}</strong>
+                </div>
+              ))}
+            </div>
+            {/* <BudgetSummarySection
               income={income}
               targetIncome={targetIncome}
               expenses={expenses}
@@ -46,7 +82,7 @@ const Budget = () => {
             />
             {expenseBudgets && expenseBudgets.length > 0 && (
               <ExpenseGroupsSection expenseBudgets={expenseBudgets} transactions={transactions} />
-            )}
+            )} */}
           </>
         )}
         {!isLoading && transactions.length === 0 && (
