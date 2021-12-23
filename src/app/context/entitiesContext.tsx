@@ -44,7 +44,7 @@ interface EntitiesContextValue {
 const defaultAssetsIndex = { assets: [], lastUpdate: new Date() };
 const defaultAccountsIndex = { accounts: [], lastUpdate: new Date() };
 const defaultBudgetsIndex = { budgets: [], lastUpdate: new Date() };
-const defaultSettingsIndex = { settings: { budgetAuto: true } as Settings, lastUpdate: new Date() };
+const defaultSettingsIndex = { settings: { autoBudget: true } as Settings, lastUpdate: new Date() };
 
 export const EntitiesContext = createContext<EntitiesContextValue>({
   assetsIndex: defaultAssetsIndex,

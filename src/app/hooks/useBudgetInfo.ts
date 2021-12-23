@@ -19,7 +19,7 @@ const useBudgetInfo = (lastMonth?: boolean) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { budgetFilterOption } = useContext(TransactionsContext);
   const { budgetsIndex, settingsIndex, accountsIndex } = useContext(EntitiesContext);
-  const autoBudget = settingsIndex?.settings.budgetAuto;
+  const autoBudget = settingsIndex?.settings.autoBudget;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const totalTransactions = accountsIndex && accountsIndex.accounts.map(account => account.transactions!).flat().sort((a, b) => b.date.getTime() - a.date.getTime());
   const dateFrom = lastMonth

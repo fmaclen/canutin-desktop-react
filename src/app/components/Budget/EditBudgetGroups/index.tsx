@@ -87,7 +87,7 @@ const EditBudgetGroups = ({
   const { handleSubmit, register, watch, formState, control, setValue } = useForm({
     mode: 'onChange',
     defaultValues: {
-      autoBudget: settingsIndex?.settings.budgetAuto ? 'Enable' : 'Disabled',
+      autoBudget: settingsIndex?.settings.autoBudget ? 'Enable' : 'Disabled',
       targetIncome,
       targetSavings,
       group: expenseBudgets.reduce(

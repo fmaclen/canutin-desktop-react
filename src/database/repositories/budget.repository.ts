@@ -36,8 +36,8 @@ export class BudgetRepository {
   static async getBudgetById(id: number): Promise<Budget | undefined> {
     return await getRepository<Budget>(Budget).findOne({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
@@ -57,7 +57,7 @@ export class BudgetRepository {
     const budgetRepository = getRepository<Budget>(Budget);
 
     await getRepository<Settings>(Settings).update(settings?.id, {
-      budgetAuto: editBudgets.autoBudget === 'Enable',
+      autoBudget: editBudgets.autoBudget === 'Enable',
       updatedAt: dateInUTC(new Date()),
     });
 
@@ -145,12 +145,12 @@ export class BudgetRepository {
   }
 
   static async editBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
-    const budget = await this.getBudgetById(budgetCategory.budgetId) as Budget;
+    const budget = (await this.getBudgetById(budgetCategory.budgetId)) as Budget;
     const category = await CategoryRepository.getOrCreateSubCategory(budgetCategory.category);
     await getRepository<Budget>(Budget)
-    .createQueryBuilder()
-    .relation(Budget, "categories")
-    .of(budget)
-    .add(category);
+      .createQueryBuilder()
+      .relation(Budget, 'categories')
+      .of(budget)
+      .add(category);
   }
 }

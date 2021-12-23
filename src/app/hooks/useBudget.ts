@@ -34,7 +34,7 @@ const useBudget = () => {
   const { accountsIndex, settingsIndex, budgetsIndex } = useContext(EntitiesContext);
   const [periodTransactions, setPeriodTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const autoBudget = settingsIndex?.settings.budgetAuto;
+  const autoBudget = settingsIndex?.settings.autoBudget;
 
   const {
     targetIncomeAmount,

@@ -48,7 +48,7 @@ const TransactionCategoriesForm = ({ expenseBudgets }: TransactionCategoriesForm
   });
   const { category } = watch();
   const { settingsIndex } = useContext(EntitiesContext);
-  const autoBudget = settingsIndex?.settings.budgetAuto;
+  const autoBudget = settingsIndex?.settings.autoBudget;
 
   const budgetOptions = expenseBudgets?.map(({ name, id }) => ({ value: id, label: name }));
 

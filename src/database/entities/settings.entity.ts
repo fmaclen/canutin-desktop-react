@@ -4,10 +4,10 @@ import { Base } from './base.entity';
 @Entity()
 export class Settings extends Base {
   @Column()
-  budgetAuto: boolean;
+  autoBudget: boolean;
 
-  constructor(budgetAuto: boolean) {
+  constructor(autoBudget: boolean) {
     super();
-    this.budgetAuto = budgetAuto;
+    this.autoBudget = autoBudget;
   }
 }
