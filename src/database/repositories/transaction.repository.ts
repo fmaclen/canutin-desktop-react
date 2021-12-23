@@ -11,7 +11,7 @@ import { CategoryRepository } from './category.repository';
 export class TransactionRepository {
   static async createTransaction(transaction: NewTransactionType): Promise<Transaction> {
     const account = await AccountRepository.getAccountById(transaction.accountId);
-    const category = await CategoryRepository.getOrCreateSubCategory(transaction.categoryName);
+    const category = await CategoryRepository.getSubCategory(transaction.categoryName);
     const newTransaction = await getRepository<Transaction>(Transaction).save(
       new Transaction(
         transaction.description as string,
@@ -29,7 +29,7 @@ export class TransactionRepository {
 
   static async editTransaction(transaction: NewTransactionType): Promise<UpdateResult> {
     const account = await AccountRepository.getAccountById(transaction.accountId);
-    const category = await CategoryRepository.getOrCreateSubCategory(transaction.categoryName);
+    const category = await CategoryRepository.getSubCategory(transaction.categoryName);
 
     const newTransaction = await getRepository<Transaction>(Transaction).update(
       transaction.id as number,

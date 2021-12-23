@@ -146,7 +146,7 @@ export class BudgetRepository {
 
   static async editBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
     const budget = (await this.getBudgetById(budgetCategory.budgetId)) as Budget;
-    const category = await CategoryRepository.getOrCreateSubCategory(budgetCategory.category);
+    const category = await CategoryRepository.getSubCategory(budgetCategory.category);
     await getRepository<Budget>(Budget)
       .createQueryBuilder()
       .relation(Budget, 'categories')

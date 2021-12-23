@@ -39,6 +39,8 @@ import {
   DB_EDIT_TRANSACTION_ACK,
   DB_DELETE_TRANSACTION,
   DB_DELETE_TRANSACTION_ACK,
+  DB_GET_TRANSACTION_CATEGORY,
+  DB_GET_TRANSACTION_CATEGORY_ACK,
   DB_EDIT_ACCOUNT_BALANCE,
   DB_EDIT_ACCOUNT_BALANCE_ACK,
   DB_EDIT_ACCOUNT_DETAILS,
@@ -100,7 +102,6 @@ import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
 import seedAccountTypes from '@database/seed/seedAccountTypes';
 import seedSettings from '@database/seed/seedSettings';
-import seedBudget from '@database/seed/seedBudget';
 import seedDemoData from '@database/seed/seedDemoData';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
@@ -113,6 +114,7 @@ import { BudgetRepository } from '@database/repositories/budget.repository';
 import { SettingsRepository } from '@database/repositories/settings.repository';
 import { EditBudgetSubmit } from '@app/components/Budget/EditBudgetGroups';
 import { EditBudgetCategorySubmit } from '@app/components/Budget/TransactionCategoriesForm';
+import { CategoryRepository } from '@database/repositories/category.repository';
 
 let win: BrowserWindow | null = null;
 
@@ -125,9 +127,7 @@ const setupEvents = async () => {
 
       if (filePath) await connectAndSaveDB(win, filePath);
       await seedSettings();
-      await seedCategories(async () => {
-        await seedBudget();
-      });
+      await seedCategories();
       await seedAssetTypes();
       await seedAccountTypes();
       win.webContents.send(NEW_DATABASE);
@@ -337,6 +337,12 @@ const setupDbEvents = async () => {
       }
     }
   );
+
+  ipcMain.on(DB_GET_TRANSACTION_CATEGORY, async (_: IpcMainEvent, subCategoryName: string) => {
+    const subCategory = await CategoryRepository.getSubCategory(subCategoryName);
+    // const subCategory = await CategoryRepository.getSubCategoryById(subCategoryName);
+    win?.webContents.send(DB_GET_TRANSACTION_CATEGORY_ACK, subCategory);
+  });
 
   ipcMain.on(
     DB_EDIT_ACCOUNT_BALANCE,
