@@ -4,22 +4,15 @@ import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { TransactionsContext } from '@app/context/transactionsContext';
 import TransactionIpc from '@app/data/transaction.ipc';
-import { Transaction } from '@database/entities';
-import { FILTER_TRANSACTIONS_ACK } from '@constants/events';
-import { getAutoBudget, getUserBudget } from '@app/utils/budget.utils';
-
-type ExpenseGroupType = {
-  name: string;
-  targetAmount: number;
-  transactionCategoryIds: number[];
-};
-
-type BudgetType = {
-  targetIncomeAmount: number;
-  targetExpensesAmount: number;
-  targetSavingsAmount: number;
-  budgetExpenseGroups: ExpenseGroupType[];
-};
+import { Transaction, TransactionSubCategory } from '@database/entities';
+import { FILTER_TRANSACTIONS_ACK, DB_GET_TRANSACTION_CATEGORY_ACK } from '@constants/events';
+import {
+  AutoBudgetCategoriesType,
+  autoBudgetNeedsCategories,
+  autoBudgetWantsCategories,
+  getAutoBudget,
+  getUserBudget,
+} from '@app/utils/budget.utils';
 
 const getTotalFromTransactions = (transactions: Transaction[]) => {
   return Math.round(
@@ -33,17 +26,49 @@ const useBudget = () => {
   const { budgetFilterOption } = useContext(TransactionsContext);
   const { accountsIndex, settingsIndex, budgetsIndex } = useContext(EntitiesContext);
   const [periodTransactions, setPeriodTransactions] = useState<Transaction[]>([]);
+  const [autoBudgetCategories, setAutoBudgetCategories] = useState<AutoBudgetCategoriesType>();
   const [isLoading, setIsLoading] = useState(true);
   const autoBudget = settingsIndex?.settings.autoBudget;
 
-  const {
-    targetIncomeAmount,
-    targetExpensesAmount,
-    targetSavingsAmount,
-    budgetExpenseGroups,
-  }: BudgetType = autoBudget
-    ? getAutoBudget(accountsIndex!)
-    : getUserBudget(budgetsIndex!, budgetFilterOption!);
+  // Get autoBudget categories
+  useEffect(() => {
+    if (autoBudget) {
+      autoBudgetNeedsCategories.forEach(categoryName => {
+        TransactionIpc.getTransactionCategory(categoryName);
+      });
+      autoBudgetWantsCategories.forEach(categoryName => {
+        TransactionIpc.getTransactionCategory(categoryName);
+      });
+
+      const needsCategories: TransactionSubCategory[] = [];
+      const wantsCategories: TransactionSubCategory[] = [];
+
+      ipcRenderer.on(
+        DB_GET_TRANSACTION_CATEGORY_ACK,
+        (_: IpcRendererEvent, category: TransactionSubCategory) => {
+          if (needsCategories.length < autoBudgetNeedsCategories.length) {
+            needsCategories.push(category);
+          } else {
+            wantsCategories.push(category);
+          }
+        }
+      );
+
+      setAutoBudgetCategories({
+        needs: needsCategories,
+        wants: wantsCategories,
+      });
+
+      return () => {
+        ipcRenderer.removeAllListeners(DB_GET_TRANSACTION_CATEGORY_ACK);
+      };
+    }
+  }, []);
+
+  const { targetIncomeAmount, targetExpensesAmount, targetSavingsAmount, budgetExpenseGroups } =
+    autoBudget && autoBudgetCategories
+      ? getAutoBudget(accountsIndex!, autoBudgetCategories)
+      : getUserBudget(budgetsIndex!, budgetFilterOption!);
 
   // Transactions in period
   useEffect(() => {
@@ -73,7 +98,7 @@ const useBudget = () => {
   // Expenses by group
   const periodExpenseGroups = budgetExpenseGroups.map(expenseGroup => {
     const expenseGroupTransactions = periodExpenseTransactions.filter(transaction =>
-      expenseGroup.transactionCategoryIds.includes(transaction.category.id)
+      expenseGroup.categories.map(category => category.id).includes(transaction.category.id)
     );
     return {
       ...expenseGroup,
@@ -82,15 +107,11 @@ const useBudget = () => {
   });
 
   // Out of budget expenses
-  const categoriesInExpenseGroups = budgetExpenseGroups.reduce(
-    (categoriesIdAcc: number[], { transactionCategoryIds }) => [
-      ...categoriesIdAcc,
-      ...transactionCategoryIds,
-    ],
-    []
-  );
+  const categoryIdsInAllExpenseGroups = budgetExpenseGroups.reduce((acc, expenseGroup) => {
+    return [...acc, ...expenseGroup.categories.map(category => category.id)];
+  }, [] as number[]);
   const outOfBudgetTransactions = periodExpenseTransactions.filter(
-    ({ category }) => !categoriesInExpenseGroups.includes(category.id)
+    ({ category }) => !categoryIdsInAllExpenseGroups.includes(category.id)
   );
   const periodOutOfBudgetAmount = getTotalFromTransactions(outOfBudgetTransactions);
 
