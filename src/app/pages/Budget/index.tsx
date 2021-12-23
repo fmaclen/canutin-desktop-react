@@ -2,10 +2,9 @@ import { useContext } from 'react';
 import { format, getDaysInMonth, isThisMonth } from 'date-fns';
 import styled from 'styled-components';
 
-import { EntitiesContext } from '@app/context/entitiesContext';
-import { TransactionsContext } from '@app/context/transactionsContext';
-import useAutoBudget from '@app/hooks/useAutoBudget';
 import { proportionBetween } from '@app/utils/balance.utils';
+import { TransactionsContext } from '@app/context/transactionsContext';
+import useBudget from '@app/hooks/useBudget';
 
 import ScrollView from '@components/common/ScrollView';
 import Section from '@app/components/common/Section';
@@ -40,22 +39,21 @@ const BudgetThisMonthLabel = styled.span`
 `;
 
 const Budget = () => {
-  const { settingsIndex } = useContext(EntitiesContext);
   const { budgetFilterOption } = useContext(TransactionsContext);
-  const autoBudget = settingsIndex?.settings.budgetAuto;
 
   const {
-    targetIncomeTotal,
-    targetExpensesTotal,
-    targetSavingsTotal,
-    periodIncomeTotal,
-    periodExpensesTotal,
-    periodSavingsTotal,
+    targetIncomeAmount,
+    targetExpensesAmount,
+    targetSavingsAmount,
+    periodIncomeAmount,
+    periodExpensesAmount,
+    periodSavingsAmount,
+    periodOutOfBudgetAmount,
     periodExpenseGroups,
     periodTransactions,
-    periodOutOfBudgetTotal,
     isLoading,
-  } = useAutoBudget();
+    autoBudget,
+  } = useBudget();
 
   return (
     <>
@@ -65,7 +63,7 @@ const Budget = () => {
         headerNav={<BudgetHeaderButtons />}
       >
         <>
-          {!isLoading && targetIncomeTotal > 0 && periodTransactions.length > 0 && (
+          {!isLoading && targetIncomeAmount > 0 && periodTransactions.length > 0 && (
             <BudgetThisMonthContainer>
               {isThisMonth(budgetFilterOption?.value?.dateFrom) && (
                 <BudgetThisMonthTime>
@@ -82,18 +80,18 @@ const Budget = () => {
                 }
               >
                 <BudgetBar
-                  periodTotal={periodIncomeTotal}
-                  targetTotal={targetIncomeTotal}
+                  periodAmount={periodIncomeAmount}
+                  targetAmount={targetIncomeAmount}
                   title="Income"
                 />
                 <BudgetBar
-                  periodTotal={periodExpensesTotal}
-                  targetTotal={targetExpensesTotal}
+                  periodAmount={periodExpensesAmount}
+                  targetAmount={targetExpensesAmount}
                   title="Expenses"
                 />
                 <BudgetBar
-                  periodTotal={periodSavingsTotal}
-                  targetTotal={targetSavingsTotal}
+                  periodAmount={periodSavingsAmount}
+                  targetAmount={targetSavingsAmount}
                   title="Savings"
                 />
               </Section>
@@ -104,8 +102,8 @@ const Budget = () => {
                     <BudgetBar
                       key={budgetGroup.name}
                       title={budgetGroup.name}
-                      periodTotal={budgetGroup.periodTotal}
-                      targetTotal={budgetGroup.targetTotal}
+                      periodAmount={budgetGroup.periodAmount}
+                      targetAmount={budgetGroup.targetAmount}
                     />
                   ))}
                 </Section>
@@ -113,9 +111,9 @@ const Budget = () => {
             </BudgetThisMonthContainer>
           )}
 
-          {periodOutOfBudgetTotal !== 0 && (
+          {periodOutOfBudgetAmount !== 0 && (
             <Section title="Other expenses">
-              <Card label="Out of budget" value={periodOutOfBudgetTotal} isCurrency={true} />
+              <Card label="Out of budget" value={periodOutOfBudgetAmount} isCurrency={true} />
             </Section>
           )}
         </>

@@ -14,7 +14,7 @@ import { AppContext } from './appContext';
 import BudgetIpc from '@app/data/budget.ipc';
 import SettingsIpc from '@app/data/settings.ipc';
 
-interface AccountsIndex {
+export interface AccountsIndex {
   lastUpdate: Date;
   accounts: Account[];
 }
@@ -24,7 +24,7 @@ interface AssetsIndex {
   assets: Asset[];
 }
 
-interface BudgetsIndex {
+export interface BudgetsIndex {
   lastUpdate: Date;
   budgets: Budget[];
 }

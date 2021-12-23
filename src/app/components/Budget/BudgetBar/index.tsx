@@ -34,15 +34,15 @@ const BalanceContainer = styled.div`
 
 interface BudgetBarProps {
   title: string;
-  periodTotal: number;
-  targetTotal: number;
+  periodAmount: number;
+  targetAmount: number;
 }
 
-const BudgetBar = ({ title, periodTotal, targetTotal }: BudgetBarProps) => {
-  const percentage = Math.round(proportionBetween(periodTotal, targetTotal));
+const BudgetBar = ({ title, periodAmount, targetAmount }: BudgetBarProps) => {
+  const percentage = Math.round(proportionBetween(periodAmount, targetAmount));
 
   const getBudgetStatus = () => {
-    if (targetTotal > 0) {
+    if (targetAmount > 0) {
       // Budget bar with positive value
       if (percentage <= 20) {
         return StatusEnum.WARNING;
@@ -63,13 +63,13 @@ const BudgetBar = ({ title, periodTotal, targetTotal }: BudgetBarProps) => {
       <ProgressContainer>
         <Progress percentage={percentage} status={getBudgetStatus()}>
           <ProgressTooltip>
-            <NumberFormat displayType={'text'} value={Math.round(periodTotal)} />
+            <NumberFormat displayType={'text'} value={Math.round(periodAmount)} />
             {` (${percentage}%)`}
           </ProgressTooltip>
         </Progress>
       </ProgressContainer>
       <BalanceContainer>
-        <NumberFormat displayType={'text'} value={targetTotal} />
+        <NumberFormat displayType={'text'} value={targetAmount} />
       </BalanceContainer>
     </Container>
   );
