@@ -1,7 +1,6 @@
 import { isAfter, isSameMonth } from 'date-fns';
 
 import { AccountsIndex } from '@app/context/entitiesContext';
-import { BudgetsIndex } from '@app/context/entitiesContext';
 import { BudgetTypeEnum } from '@enums/budgetType.enum';
 import { SelectFieldValue } from '@app/components/common/Form/Select';
 
@@ -10,7 +9,7 @@ import {
   getTransactionsTrailingCashflow,
   getTransactionTrailingCashflowAverage,
 } from '@app/utils/balance.utils';
-import { TransactionSubCategory } from '@database/entities';
+import { Budget, TransactionSubCategory } from '@database/entities';
 
 export type AutoBudgetCategoriesType = {
   needs: TransactionSubCategory[];
@@ -107,103 +106,14 @@ export const autoBudgetWantsCategories = [
   'Entertainment & recreation',
 ];
 
-// export const autoBudgetNeedsCategories = [
-//   14,
-//   15,
-//   25,
-//   28,
-//   30,
-//   32,
-//   33,
-//   37,
-//   39,
-//   40,
-//   41,
-//   42,
-//   43,
-//   44,
-//   46,
-//   47,
-//   48,
-//   49,
-//   50,
-//   57,
-//   59,
-//   65,
-//   66,
-//   67,
-//   68,
-//   70,
-//   75,
-//   79,
-//   80,
-//   81,
-//   82,
-//   84,
-//   85,
-// ];
-// export const autoBudgetWantsCategories = [
-//   1,
-//   2,
-//   3,
-//   4,
-//   5,
-//   6,
-//   7,
-//   8,
-//   9,
-//   10,
-//   11,
-//   12,
-//   13,
-//   16,
-//   17,
-//   18,
-//   19,
-//   20,
-//   21,
-//   22,
-//   23,
-//   24,
-//   26,
-//   27,
-//   29,
-//   31,
-//   35,
-//   36,
-//   38,
-//   45,
-//   51,
-//   52,
-//   53,
-//   54,
-//   55,
-//   56,
-//   58,
-//   60,
-//   61,
-//   62,
-//   63,
-//   64,
-//   69,
-//   71,
-//   72,
-//   74,
-//   76,
-//   77,
-//   78,
-//   83,
-//   87,
-// ];
-
-export const getAutoBudget = (
+// Generates the budgets for auto-budget index
+export const getAutoBudgets = (
   accountsIndex: AccountsIndex,
   autoBudgetCategories: AutoBudgetCategoriesType
 ) => {
   const transactions =
     accountsIndex && accountsIndex.accounts.map(account => account.transactions!).flat();
 
-  // Summary
   const targetIncomeAmount = Math.round(
     transactions && transactions.sort((a, b) => b.date.getTime() - a.date.getTime())
       ? getTransactionTrailingCashflowAverage(
@@ -212,12 +122,19 @@ export const getAutoBudget = (
         )[0]
       : 0
   );
-  const targetExpensesAmount = Math.round(targetIncomeAmount * 0.8 * -1);
-  const targetSavingsAmount = Math.round(targetIncomeAmount - Math.abs(targetExpensesAmount));
 
-  // Expenses by group
-  const budgetExpenseGroups = [
+  const autoBudgets = [
     {
+      id: 1,
+      name: 'Income',
+      targetAmount: targetIncomeAmount,
+      type: BudgetTypeEnum.INCOME,
+      categories: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 2,
       name: 'Needs',
       targetAmount: Math.round(targetIncomeAmount * 0.5 * -1),
       type: BudgetTypeEnum.EXPENSE,
@@ -226,6 +143,7 @@ export const getAutoBudget = (
       updatedAt: new Date(),
     },
     {
+      id: 3,
       name: 'Wants',
       targetAmount: Math.round(targetIncomeAmount * 0.3 * -1),
       type: BudgetTypeEnum.EXPENSE,
@@ -235,28 +153,28 @@ export const getAutoBudget = (
     },
   ];
 
-  return {
-    targetIncomeAmount,
-    targetExpensesAmount,
-    targetSavingsAmount,
-    budgetExpenseGroups,
-  };
+  return autoBudgets;
 };
 
-export const getUserBudget = (budgetsIndex: BudgetsIndex, budgetFilterOption: SelectFieldValue) => {
+// Get the most recent user budget for any given period
+export const getUserBudgetForPeriod = (
+  userBudget: Budget[],
+  budgetFilterOption: SelectFieldValue
+) => {
   const dateFrom = budgetFilterOption?.value.dateFrom;
-  const latestBudgetDate = budgetsIndex?.budgets
+  const latestBudgetDate = userBudget
     .filter(
       ({ createdAt }) => isAfter(dateFrom, createdAt) || isSameMonth(dateFrom, createdAt)
     )?.[0]
     ?.createdAt.getTime();
-  const budgetsForPeriod = budgetsIndex?.budgets.filter(
-    ({ createdAt }) => createdAt.getTime() === latestBudgetDate
-  );
+
+  return userBudget.filter(({ createdAt }) => createdAt.getTime() === latestBudgetDate);
+};
+
+export const handleBudgets = (budgetsForPeriod: Budget[]) => {
   const budgetExpenseGroups =
     budgetsForPeriod && budgetsForPeriod.filter(({ type }) => type === BudgetTypeEnum.EXPENSE);
 
-  // Summary
   let targetIncomeAmount =
     budgetsForPeriod &&
     budgetsForPeriod.find(({ type }) => type === BudgetTypeEnum.INCOME)?.targetAmount;

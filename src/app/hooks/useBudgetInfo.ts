@@ -21,7 +21,12 @@ const useBudgetInfo = (lastMonth?: boolean) => {
   const { budgetsIndex, settingsIndex, accountsIndex } = useContext(EntitiesContext);
   const autoBudget = settingsIndex?.settings.autoBudget;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const totalTransactions = accountsIndex && accountsIndex.accounts.map(account => account.transactions!).flat().sort((a, b) => b.date.getTime() - a.date.getTime());
+  const totalTransactions =
+    accountsIndex &&
+    accountsIndex.accounts
+      .map(account => account.transactions!)
+      .flat()
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
   const dateFrom = lastMonth
     ? dateInUTC(startOfMonth(new Date()))
     : dateInUTC(budgetFilterOption?.value?.dateFrom);
@@ -39,7 +44,7 @@ const useBudgetInfo = (lastMonth?: boolean) => {
     };
   }, [budgetFilterOption?.value]);
 
-  const lastMonthExpenseBudgets = budgetsIndex?.budgets.filter(
+  const lastMonthExpenseBudgets = budgetsIndex?.userBudgets.filter(
     ({ createdAt }) => isAfter(dateFrom, createdAt) || isSameMonth(dateFrom, createdAt)
   )?.[0]?.createdAt;
 
@@ -49,7 +54,7 @@ const useBudgetInfo = (lastMonth?: boolean) => {
       : { end: lastMonthExpenseBudgets as Date, start: dateFrom };
 
   const expenseBudgets = lastMonthExpenseBudgets
-    ? budgetsIndex?.budgets.filter(
+    ? budgetsIndex?.userBudgets.filter(
         ({ type, createdAt }) =>
           type === BudgetTypeEnum.EXPENSE &&
           isWithinInterval(createdAt, intervalExpenseFilter) &&
@@ -92,10 +97,12 @@ const useBudgetInfo = (lastMonth?: boolean) => {
       }, 0)
     : 0;
 
-  const incomePerMonth = totalTransactions ? getTransactionTrailingCashflowAverage(
-    getTransactionsTrailingCashflow(totalTransactions as Transaction[]),
-    TrailingCashflowSegmentsEnum.LAST_6_MONTHS
-  )[0] : 0;
+  const incomePerMonth = totalTransactions
+    ? getTransactionTrailingCashflowAverage(
+        getTransactionsTrailingCashflow(totalTransactions as Transaction[]),
+        TrailingCashflowSegmentsEnum.LAST_6_MONTHS
+      )[0]
+    : 0;
 
   const income = transactions.reduce((acc, { amount }) => {
     if (amount > 0) {
@@ -109,9 +116,10 @@ const useBudgetInfo = (lastMonth?: boolean) => {
       ? incomePerMonth
       : autoBudget
       ? income
-      : budgetsIndex?.budgets
-      ? (budgetsIndex?.budgets.filter(({ type }) => type === BudgetTypeEnum.INCOME)[0] as Budget)
-          ?.targetAmount
+      : budgetsIndex?.userBudgets
+      ? (budgetsIndex?.userBudgets.filter(
+          ({ type }) => type === BudgetTypeEnum.INCOME
+        )[0] as Budget)?.targetAmount
       : 0;
 
   const targetSavings = targetIncome ? targetIncome - expensesBudgetsTargets : 0;
