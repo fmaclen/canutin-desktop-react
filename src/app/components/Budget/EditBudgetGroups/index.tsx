@@ -1,203 +1,211 @@
 import { useContext, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { format } from 'date-fns';
-import styled from 'styled-components';
-import { useHistory } from 'react-router';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { useHistory } from 'react-router';
+import { Control, RegisterOptions, useForm } from 'react-hook-form';
+import styled from 'styled-components';
 
 import { EntitiesContext } from '@app/context/entitiesContext';
-import { Budget } from '@database/entities';
-
-import Fieldset from '@app/components/common/Form/Fieldset';
-import Form from '@app/components/common/Form/Form';
-import FormFooter from '@app/components/common/Form/FormFooter';
-import RadioGroupField from '@app/components/common/Form/RadioGroupField';
-import FieldNotice from '@app/components/common/Form/FieldNotice';
-import SubmitButton from '@app/components/common/Form/SubmitButton';
-import Section from '@app/components/common/Section';
-import InputTextField from '@app/components/common/Form/InputTextField';
-import InputCurrencyField from '@app/components/common/Form/InputCurrencyField';
-import BudgetIpc from '@app/data/budget.ipc';
-import Button from '@app/components/common/Button';
-import InputCurrency from '@app/components/common/Form/InputCurrency';
-import Field from '@app/components/common/Form/Field';
-import PercentageField from '@app/components/common/Form/PercentageField';
-
-import InputText from '@app/components/common/Form/InputText';
 import { DB_EDIT_BUDGET_GROUPS_ACK } from '@constants/events';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';
+import useBudget from '@app/hooks/useBudget';
+import BudgetIpc from '@app/data/budget.ipc';
 
-import { buttonFieldContainer, buttonFieldset, percentageFieldContainer } from './styles';
-
-const ButtonFieldContainer = styled.div`
-  ${buttonFieldContainer}
-`;
-
-const ButtonFieldset = styled.div`
-  ${buttonFieldset}
-`;
+import Section from '@app/components/common/Section';
+import Form from '@app/components/common/Form/Form';
+import Fieldset from '@app/components/common/Form/Fieldset';
+import Field from '@app/components/common/Form/Field';
+import InputText from '@app/components/common/Form/InputText';
+import InputCurrency from '@app/components/common/Form/InputCurrency';
+import FormFooter from '@app/components/common/Form/FormFooter';
+import SubmitButton from '@app/components/common/Form/SubmitButton';
+import RadioGroupField from '@app/components/common/Form/RadioGroupField';
+import Button from '@app/components/common/Button';
+import PercentageField from '@app/components/common/Form/PercentageField';
+import { BudgetTypeEnum } from '@enums/budgetType.enum';
+import { proportionBetween } from '@app/utils/balance.utils';
+import { percentageFieldContainer, buttonFieldContainer, buttonFieldset } from './styles';
+import { TransactionSubCategory } from '@database/entities';
 
 const PercentageFieldContainer = styled.div`
   ${percentageFieldContainer}
 `;
+const ButtonFieldContainer = styled.div`
+  ${buttonFieldContainer}
+`;
+const ButtonFieldset = styled.div`
+  ${buttonFieldset}
+`;
 
-interface EditBudgetGroupsProps {
-  date: Date;
-  expenseBudgets: Budget[];
-  targetIncome: number;
-  targetSavings: number;
-}
-
-export type EditBudgetSubmit = {
-  autoBudget: 'Enable' | 'Disabled';
-  targetIncome: number;
-  group: { [id: string]: { targetAmount: number; name?: string } };
-  removeGroupIds: number[];
-  addExpenseGroups?: { name: string; targetAmount: number }[];
+export type EditBudgetType = {
+  autoBudgetField: 'Enabled' | 'Disabled';
+  editedBudgets?: {
+    name: string;
+    targetAmount: number;
+    type: BudgetTypeEnum;
+    categories?: TransactionSubCategory[];
+  }[];
 };
 
-const AUTO_BUDGET_GROUPS = [
-  {
-    id: '-1',
-    name: 'Needs',
-    targetAmount: -3750,
-  },
-  {
-    id: '-2',
-    name: 'Wants',
-    targetAmount: -2250,
-  },
-];
+type EditBudgetGroupSubmit = {
+  autoBudgetField: 'Enabled' | 'Disabled';
+  targetIncomeField: string;
+  expenseGroupFields: [
+    { targetAmount: number; name: string; id: number; categories?: TransactionSubCategory[] }
+  ];
+  newExpenseGroupFields: [{ targetAmount: number; name: string }];
+  autoBudgetExpenseGroupFields: [{ targetAmount: number; name: string }];
+};
 
-const EditBudgetGroups = ({
-  date,
-  expenseBudgets,
-  targetIncome,
-  targetSavings,
-}: EditBudgetGroupsProps) => {
+const EditBudgetGroups = () => {
   const history = useHistory();
   const { setStatusMessage } = useContext(StatusBarContext);
-  const [addExpenseGroups, setAddExpenseGroups] = useState<
+  const { budgetsIndex } = useContext(EntitiesContext);
+  const { targetIncomeAmount, targetSavingsAmount, budgetExpenseGroups, autoBudget } = useBudget();
+  const [removeGroupIds, setRemoveGroupIds] = useState<number[]>([]);
+  const [newExpenseGroups, setNewExpenseGroups] = useState<
     { name: string; targetAmount: number }[]
   >([]);
-  const [removeGroupIds, setRemoveGroupIds] = useState<number[]>([]);
-  const { settingsIndex } = useContext(EntitiesContext);
-  const { handleSubmit, register, watch, formState, control, setValue } = useForm({
+
+  const autoBudgetTargetIncome = budgetsIndex?.autoBudgets[0]?.targetAmount;
+  const autoBudgetExpenseGroups = budgetsIndex?.autoBudgets.filter(
+    ({ type }) => type === BudgetTypeEnum.EXPENSE
+  );
+
+  const { handleSubmit, register, watch, setValue, control, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
-      autoBudget: settingsIndex?.settings.autoBudget ? 'Enable' : 'Disabled',
-      targetIncome,
-      targetSavings,
-      group: expenseBudgets.reduce(
-        (accGroup, expandedGroup) => ({
+      autoBudgetField: autoBudget ? 'Enabled' : 'Disabled',
+      targetIncomeField: targetIncomeAmount,
+      targetSavingsField: targetSavingsAmount,
+      expenseGroupFields: budgetExpenseGroups.reduce(
+        (accGroup, expenseGroup) => ({
           ...accGroup,
-          [expandedGroup.id]: {
-            targetAmount: expandedGroup.targetAmount,
-            name: expandedGroup.name,
+          [expenseGroup.id]: {
+            id: expenseGroup.id,
+            targetAmount: expenseGroup.targetAmount,
+            name: expenseGroup.name,
+            categories: expenseGroup.categories,
+            categoriesCount: expenseGroup.categories.length,
           },
         }),
         {}
-      ) as { [id: string]: { targetAmount: number; name?: string } },
-      expense: [],
+      ) as {
+        [id: string]: {
+          id: number;
+          name?: string;
+          targetAmount: number;
+          categories?: TransactionSubCategory[];
+          categoriesCount: number;
+        };
+      },
+      newExpenseGroupFields: [] as { [id: string]: { name: string; targetAmount: number } }[],
     },
   });
+
   const {
-    autoBudget,
-    group,
-    targetIncome: targetIncomeForm,
-    expense,
-    targetSavings: savings,
+    autoBudgetField,
+    targetIncomeField,
+    targetSavingsField,
+    expenseGroupFields,
+    newExpenseGroupFields,
   } = watch();
-  const isAutoBudget = autoBudget === 'Enable';
+  const isAutoBudget = autoBudgetField === 'Enabled';
+  const submitIsDisabled =
+    targetSavingsField < 0 || !formState.isValid || (autoBudget && isAutoBudget);
+
+  const getPercentageOfTargetIncome = (fieldTargetAmount: number) => {
+    return Math.round(proportionBetween(fieldTargetAmount, targetIncomeField));
+  };
+
+  useEffect(() => {
+    let totalTargetsExpenses = expenseGroupFields
+      ? Object.keys(expenseGroupFields).reduce(
+          (acc, key) =>
+            expenseGroupFields[parseInt(key)].targetAmount
+              ? acc + Number(expenseGroupFields[parseInt(key)].targetAmount)
+              : acc,
+          0
+        )
+      : 0;
+    totalTargetsExpenses += newExpenseGroupFields
+      ? Object.keys(newExpenseGroupFields).reduce(
+          (acc, key) =>
+            newExpenseGroupFields[parseInt(key)].targetAmount
+              ? acc + Number(newExpenseGroupFields[parseInt(key)].targetAmount)
+              : acc,
+          0
+        )
+      : 0;
+    setValue('targetSavingsField', Number(targetIncomeField) + totalTargetsExpenses);
+  }, [
+    targetIncomeField,
+    isAutoBudget,
+    JSON.stringify(expenseGroupFields),
+    JSON.stringify(newExpenseGroupFields),
+  ]);
 
   useEffect(() => {
     ipcRenderer.on(DB_EDIT_BUDGET_GROUPS_ACK, (_: IpcRendererEvent, { status, message }) => {
-      if (status === EVENT_SUCCESS) {
-        setStatusMessage({
-          message: 'Last budget edited successfully',
-          sentiment: StatusEnum.POSITIVE,
-          isLoading: false,
-        });
-        history.push('/budget');
-      }
-
-      if (status === EVENT_ERROR) {
-        setStatusMessage({ message, sentiment: StatusEnum.NEGATIVE, isLoading: false });
+      switch (status) {
+        case EVENT_SUCCESS:
+          setStatusMessage({
+            message: 'Budget edited successfully',
+            sentiment: StatusEnum.POSITIVE,
+            isLoading: false,
+          });
+          history.push('/budget');
+          break;
+        case EVENT_ERROR:
+          setStatusMessage({ message, sentiment: StatusEnum.NEGATIVE, isLoading: false });
+          break;
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (isAutoBudget) {
-      setValue(
-        'group',
-        AUTO_BUDGET_GROUPS.reduce(
-          (acc, { id, name, targetAmount }) => ({ ...acc, [id]: { name, targetAmount } }),
-          {}
-        )
-      );
-
-      setValue('targetIncome', 7800);
-    }
-  }, [isAutoBudget]);
-
-  useEffect(() => {
-    setAddExpenseGroups([]);
-    setValue(
-      'group',
-      expenseBudgets.reduce(
-        (accGroup, expandedGroup) => ({
-          ...accGroup,
-          [expandedGroup.id]: {
-            targetAmount: expandedGroup.targetAmount,
-            name: expandedGroup.name,
-          },
-        }),
-        {}
-      )
-    );
-  }, [JSON.stringify(expenseBudgets)]);
-
-  useEffect(() => {
-    let totalTargetsExpenses = group
-      ? Object.keys(group).reduce(
-          (acc, key) => (group[key].targetAmount ? acc + Number(group[key].targetAmount) : acc),
-          0
-        )
-      : 0;
-    totalTargetsExpenses += expense
-      ? Object.keys(expense).reduce(
-          (acc, key) =>
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            expense?.[key]?.targetAmount ? acc + Number(expense[key].targetAmount) : acc,
-          0
-        )
-      : 0;
-    setValue('targetSavings', Number(targetIncomeForm) + totalTargetsExpenses);
-  }, [targetIncomeForm, JSON.stringify(group), isAutoBudget, JSON.stringify(expense)]);
-
-  useEffect(() => {
-    setValue('targetSavings', targetSavings);
-  }, [targetSavings]);
-
-  const submitIsDisabled = savings < 0 || !formState.isValid;
-
-  const onSubmit = (editBudgetSubmit: EditBudgetSubmit) => {
-    BudgetIpc.editBudgetGroups({ ...editBudgetSubmit, removeGroupIds, addExpenseGroups: expense });
-  };
 
   const onRemove = (id: number) => {
     setRemoveGroupIds(prev => [...prev, id]);
   };
 
-  const getPercentage = (targetAmount: number) => {
-    return Math.abs(Math.floor(targetAmount * 100 / targetIncomeForm))
-  }
+  const onSubmit = (EditBudgetType: EditBudgetGroupSubmit) => {
+    const {
+      autoBudgetField,
+      targetIncomeField,
+      expenseGroupFields,
+      newExpenseGroupFields,
+    } = EditBudgetType;
 
-  const savingsPercentage = getPercentage(savings);
+    const editedBudgets = [];
+    if (autoBudgetField === 'Disabled') {
+      editedBudgets.push({
+        name: 'Income',
+        targetAmount: parseInt(targetIncomeField),
+        type: BudgetTypeEnum.INCOME,
+      });
+
+      expenseGroupFields &&
+        expenseGroupFields.forEach(expenseGroup => {
+          editedBudgets.push({
+            name: expenseGroup.name,
+            targetAmount: expenseGroup.targetAmount,
+            type: BudgetTypeEnum.EXPENSE,
+            categories: expenseGroup.categories ? expenseGroup.categories : [],
+          });
+        });
+
+      newExpenseGroupFields &&
+        newExpenseGroupFields.forEach(expenseGroup => {
+          editedBudgets.push({
+            name: expenseGroup.name,
+            targetAmount: expenseGroup.targetAmount,
+            type: BudgetTypeEnum.EXPENSE,
+          });
+        });
+    }
+
+    BudgetIpc.editBudgetGroups({ autoBudgetField, editedBudgets });
+  };
 
   return (
     <Section title="Budget groups">
@@ -205,143 +213,247 @@ const EditBudgetGroups = ({
         <Fieldset>
           <RadioGroupField
             label="Auto-budget"
-            name="autoBudget"
+            name="autoBudgetField"
             register={register}
-            values={['Enable', 'Disabled']}
+            values={['Enabled', 'Disabled']}
           />
-          {!isAutoBudget && (
-            <FieldNotice
-              title="Custom budget"
-              description={
-                <div>{`By manually updating the following values you’ll be setting a new budget for the current month (${format(
-                  date,
-                  'MMM yyyy'
-                )}). This budget will also be used for future months until it’s updated again.`}</div>
-              }
-            />
-          )}
         </Fieldset>
-        <Fieldset>
-          <Field label="Target income" name="targetIncome">
-            <PercentageFieldContainer>
-              <InputCurrency
-                name="targetIncome"
-                control={control}
-                disabled={isAutoBudget}
-                allowNegative={false}
-                rules={{ required: true }}
-                required
-              />
-              <PercentageField percentage={100} />
-            </PercentageFieldContainer>
-          </Field>
-        </Fieldset>
-        {(isAutoBudget ? ((AUTO_BUDGET_GROUPS as unknown) as Budget[]) : expenseBudgets).map(
-          ({ id, name }) =>
-            !removeGroupIds.includes(id) ? (
-              <Fieldset key={id}>
-                <Field name="group" label="Expense group">
-                  <ButtonFieldContainer>
+
+        {!isAutoBudget && (
+          <>
+            <Fieldset>
+              <Field label="Target income" name="targetIncomeField">
+                <PercentageFieldContainer>
+                  <InputCurrency name="targetIncomeField" control={control} />
+                  <PercentageField percentage={100} />
+                </PercentageFieldContainer>
+              </Field>
+            </Fieldset>
+
+            {budgetExpenseGroups.map(expenseGroup =>
+              !removeGroupIds.includes(expenseGroup.id) ? (
+                <Fieldset key={expenseGroup.id}>
+                  <input {...register(`expenseGroupFields.${expenseGroup.id}.id`)} type="hidden" />
+                  <Field
+                    label="Expense group name"
+                    name={`expenseGroupFields.${expenseGroup.id}.name`}
+                  >
+                    <ButtonFieldContainer>
+                      <InputText
+                        name={`expenseGroupFields.${expenseGroup.id}.name`}
+                        register={register}
+                      />
+                      <Button disabled={isAutoBudget} onClick={() => onRemove(expenseGroup.id)}>
+                        Remove
+                      </Button>
+                    </ButtonFieldContainer>
+                  </Field>
+                  <Field
+                    label="Target amount"
+                    name={`expenseGroupFields.${expenseGroup.id}.targetAmount`}
+                  >
+                    <PercentageFieldContainer>
+                      <InputCurrency
+                        name={`expenseGroupFields.${expenseGroup.id}.targetAmount`}
+                        control={control}
+                        onlyNegative
+                      />
+                      <PercentageField
+                        percentage={
+                          expenseGroupFields?.[expenseGroup.id]
+                            ? Math.abs(
+                                getPercentageOfTargetIncome(
+                                  expenseGroupFields?.[expenseGroup.id].targetAmount
+                                )
+                              )
+                            : 0
+                        }
+                      />
+                    </PercentageFieldContainer>
+                  </Field>
+                  <Field
+                    label="Categories"
+                    name={`expenseGroupFields.${expenseGroup.id}.categoriesCount`}
+                  >
+                    <input
+                      {...register(`expenseGroupFields.${expenseGroup.id}.categories`)}
+                      type="hidden"
+                    />
                     <InputText
-                      name={`group.${id}.name`}
-                      disabled={isAutoBudget}
-                      register={register}
-                      required
+                      name={`expenseGroupFields.${expenseGroup.id}.categoriesCount`}
+                      value={expenseGroup.categories.length.toString()}
+                      disabled
+                      readOnly
                     />
+                  </Field>
+                </Fieldset>
+              ) : null
+            )}
+
+            {!isAutoBudget &&
+              newExpenseGroups.map((_, index) => {
+                const indexOffset = index + 100;
+                if (!removeGroupIds.includes(indexOffset)) {
+                  return (
+                    <Fieldset key={indexOffset}>
+                      <Field
+                        label="Expense group name"
+                        name={`newExpenseGroupFields.${indexOffset}.name`}
+                      >
+                        <ButtonFieldContainer>
+                          <InputText
+                            name={`newExpenseGroupFields.${indexOffset}.name`}
+                            register={register}
+                          />
+                          <Button disabled={isAutoBudget} onClick={() => onRemove(indexOffset)}>
+                            Remove
+                          </Button>
+                        </ButtonFieldContainer>
+                      </Field>
+                      <Field
+                        label="Target amount"
+                        name={`newExpenseGroupFields.${indexOffset}.targetAmount`}
+                      >
+                        <PercentageFieldContainer>
+                          <InputCurrency
+                            name={`newExpenseGroupFields.${indexOffset}.targetAmount`}
+                            control={control}
+                            onlyNegative
+                          />
+                          <PercentageField
+                            percentage={Math.abs(
+                              newExpenseGroupFields?.[indexOffset]
+                                ? getPercentageOfTargetIncome(
+                                    Number(newExpenseGroupFields?.[indexOffset].targetAmount)
+                                  )
+                                : 0
+                            )}
+                          />
+                        </PercentageFieldContainer>
+                      </Field>
+                      <Field
+                        label="Categories"
+                        name={`newExpenseGroupFields.${indexOffset}.categoriesCount`}
+                      >
+                        <InputText
+                          name={`newExpenseGroupFields.${indexOffset}.categoriesCount`}
+                          value="0"
+                          disabled
+                          readOnly
+                        />
+                      </Field>
+                    </Fieldset>
+                  );
+                }
+                return null;
+              })}
+
+            {!isAutoBudget && (
+              <Fieldset>
+                <Field name="addGroup" label="Expense group">
+                  <ButtonFieldset>
                     <Button
+                      disabled={isAutoBudget}
                       onClick={() => {
-                        onRemove(id);
+                        setNewExpenseGroups(prev => [...prev, { name: '', targetAmount: 0 }]);
                       }}
-                      disabled={isAutoBudget}
                     >
-                      Remove
+                      Add new
                     </Button>
-                  </ButtonFieldContainer>
-                </Field>
-                <Field label={`${name} target`} name="group">
-                  <PercentageFieldContainer>
-                    <InputCurrency
-                      name={`group.${id}.targetAmount`}
-                      control={control}
-                      onlyNegative
-                      disabled={isAutoBudget}
-                      rules={{ required: true }}
-                    />
-                    {group?.[id]?.targetAmount && <PercentageField error={savings < 0} percentage={getPercentage(group?.[id].targetAmount)} />}
-                  </PercentageFieldContainer>
+                  </ButtonFieldset>
                 </Field>
               </Fieldset>
-            ) : null
-        )}
-        {!isAutoBudget &&
-          addExpenseGroups.map((_, index) => (
-            <Fieldset key={index}>
-              <Field name="expense" label="Expense group">
-                <ButtonFieldContainer>
-                  <InputText
-                    name={`expense.${index}.name`}
-                    disabled={isAutoBudget}
-                    register={register}
-                    placeholder="My budget"
-                    required
-                  />
-                  <Button
-                    onClick={() => {
-                      setAddExpenseGroups(prev => {
-                        const newPrev = [...prev];
-                        newPrev.splice(index, 1);
-                        return newPrev;
-                      });
-                    }}
-                    disabled={isAutoBudget}
-                  >
-                    Remove
-                  </Button>
-                </ButtonFieldContainer>
+            )}
+
+            <Fieldset>
+              <Field label="Target savings" name="targetSavingsField">
+                <PercentageFieldContainer>
+                  <InputCurrency name="targetSavingsField" control={control} disabled={true} />
+                  <PercentageField percentage={getPercentageOfTargetIncome(targetSavingsField)} />
+                </PercentageFieldContainer>
               </Field>
-              <Field label="Target" name="expense">
+            </Fieldset>
+          </>
+        )}
+
+        {isAutoBudget && (
+          <>
+            <Fieldset>
+              <Field label="Target income" name="targetIncomeField">
                 <PercentageFieldContainer>
                   <InputCurrency
-                    name={`expense.${index}.targetAmount`}
+                    name="targetIncomeField"
                     control={control}
-                    onlyNegative
-                    rules={{ required: true }}
-                    disabled={isAutoBudget}
+                    value={autoBudgetTargetIncome}
+                    readOnly={true}
+                    disabled={true}
                   />
                   <PercentageField percentage={100} />
                 </PercentageFieldContainer>
               </Field>
             </Fieldset>
-          ))}
-        {!isAutoBudget && (
-          <Fieldset>
-            <Field name="addGroup" label="Expense group">
-              <ButtonFieldset>
-                <Button
-                  onClick={() => {
-                    setAddExpenseGroups(prev => [...prev, { name: '', targetAmount: 0 }]);
-                  }}
-                  disabled={isAutoBudget}
+
+            {autoBudgetExpenseGroups?.map(expenseGroup => (
+              <Fieldset key={expenseGroup.id}>
+                <Field
+                  label="Expense group name"
+                  name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.name`}
                 >
-                  Add new
-                </Button>
-              </ButtonFieldset>
-            </Field>
-          </Fieldset>
+                  <InputText
+                    name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.name`}
+                    value={expenseGroup.name.toString()}
+                    readOnly={true}
+                    disabled={true}
+                    register={register}
+                  />
+                </Field>
+                <Field
+                  label="Target amount"
+                  name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.targetAmount`}
+                >
+                  <PercentageFieldContainer>
+                    <InputCurrency
+                      name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.targetAmount`}
+                      value={expenseGroup.targetAmount}
+                      readOnly={true}
+                      disabled={true}
+                      control={control}
+                      onlyNegative
+                    />
+                    <PercentageField
+                      percentage={Math.abs(getPercentageOfTargetIncome(expenseGroup.targetAmount))}
+                    />
+                  </PercentageFieldContainer>
+                </Field>
+                <Field
+                  label="Categories"
+                  name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.categoriesCount`}
+                >
+                  <InputText
+                    name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.categoriesCount`}
+                    value={expenseGroup.categories.length.toString()}
+                    disabled
+                    readOnly
+                  />
+                </Field>
+              </Fieldset>
+            ))}
+            <Fieldset>
+              <Field label="Target savings" name="targetSavingsField">
+                <PercentageFieldContainer>
+                  <InputCurrency
+                    name="targetSavingsField"
+                    control={control}
+                    readOnly={true}
+                    disabled={true}
+                    value={targetSavingsAmount}
+                  />
+                  <PercentageField percentage={getPercentageOfTargetIncome(targetSavingsAmount)} />
+                </PercentageFieldContainer>
+              </Field>
+            </Fieldset>
+          </>
         )}
-        <Fieldset>
-          <InputTextField name="savings" disabled={true} label="Group" value="Savings" />
-          <Field label="Savings target" name="targetSavings">
-            <PercentageFieldContainer>
-              <InputCurrency
-                name="targetSavings"
-                control={control}
-                disabled={true}
-              />
-              <PercentageField percentage={savings < 0 ? 0 : savingsPercentage} error={savings < 0} />
-            </PercentageFieldContainer>
-          </Field>
-        </Fieldset>
         <FormFooter>
           <SubmitButton disabled={submitIsDisabled}>Save</SubmitButton>
         </FormFooter>

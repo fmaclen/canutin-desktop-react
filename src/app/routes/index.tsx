@@ -39,7 +39,7 @@ export const routesPaths = {
   addTransaction: '/transactions/addTransaction',
   editTransaction: '/transactions/:transactionDescription',
   canutinSetup: '/canutinSetup',
-  editBudget: '/budget/edit'
+  editBudget: '/budget/edit',
 };
 
 export interface RouteConfigProps {

@@ -112,9 +112,9 @@ import {
 import { NewAccountType } from '../types/account.type';
 import { BudgetRepository } from '@database/repositories/budget.repository';
 import { SettingsRepository } from '@database/repositories/settings.repository';
-import { EditBudgetSubmit } from '@app/components/Budget/EditBudgetGroups';
 import { EditBudgetCategorySubmit } from '@app/components/Budget/TransactionCategoriesForm';
 import { CategoryRepository } from '@database/repositories/category.repository';
+import { EditBudgetType } from '@app/components/Budget/EditBudgetGroups';
 
 let win: BrowserWindow | null = null;
 
@@ -248,9 +248,12 @@ const setupDbEvents = async () => {
     await getBudgets();
   });
 
-  ipcMain.on(DB_EDIT_BUDGET_GROUPS, async (_: IpcMainEvent, editBudgets: EditBudgetSubmit) => {
+  ipcMain.on(DB_EDIT_BUDGET_GROUPS, async (_: IpcMainEvent, editBudgets: EditBudgetType) => {
     try {
-      await editBudgetGroups(editBudgets);
+      await BudgetRepository.editBudgets(editBudgets);
+      await getSettings();
+      await getBudgets();
+      console.log('finished running the thing');
       win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, { status: EVENT_SUCCESS });
     } catch (e) {
       win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, {
@@ -500,12 +503,6 @@ const getBudgets = async () => {
 const getSettings = async () => {
   const settings = await SettingsRepository.getSettings();
   win?.webContents.send(DB_GET_SETTINGS_ACK, settings);
-};
-
-const editBudgetGroups = async (editBudgets: EditBudgetSubmit) => {
-  await BudgetRepository.editBudgets(editBudgets);
-  await getSettings();
-  await getBudgets();
 };
 
 const editBudgetCategory = async (editBudgetCategory: EditBudgetCategorySubmit) => {

@@ -157,11 +157,7 @@ export const getAutoBudgets = (
 };
 
 // Get the most recent user budget for any given period
-export const getUserBudgetForPeriod = (
-  userBudget: Budget[],
-  budgetFilterOption: SelectFieldValue
-) => {
-  const dateFrom = budgetFilterOption?.value.dateFrom;
+export const getUserBudgetForPeriod = (userBudget: Budget[], dateFrom: Date) => {
   const latestBudgetDate = userBudget
     .filter(
       ({ createdAt }) => isAfter(dateFrom, createdAt) || isSameMonth(dateFrom, createdAt)
