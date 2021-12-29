@@ -18,6 +18,6 @@ export const container = css<{ error: boolean }>`
     error &&
     css`
       color: ${redPlain};
-      border: 2px solid ${redPlain};
+      border-color: ${redPlain};
     `}
 `;

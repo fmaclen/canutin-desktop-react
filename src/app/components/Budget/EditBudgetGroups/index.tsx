@@ -113,13 +113,16 @@ const EditBudgetGroups = () => {
     expenseGroupFields,
     newExpenseGroupFields,
   } = watch();
-  const isAutoBudget = autoBudgetField === 'Enabled';
-  const submitIsDisabled =
-    targetSavingsField < 0 || !formState.isValid || (autoBudget && isAutoBudget);
 
   const getPercentageOfTargetIncome = (fieldTargetAmount: number) => {
     return Math.round(proportionBetween(fieldTargetAmount, targetIncomeField));
   };
+
+  const isAutoBudget = autoBudgetField === 'Enabled';
+  const hasNoExpenseGroups = targetSavingsField == targetIncomeField;
+  const hasNoSavings = targetSavingsField < 0;
+  const submitIsDisabled =
+    !formState.isValid || hasNoSavings || hasNoExpenseGroups || (autoBudget && isAutoBudget);
 
   useEffect(() => {
     let totalTargetsExpenses = expenseGroupFields
@@ -235,10 +238,10 @@ const EditBudgetGroups = () => {
             <FieldNotice
               title="Custom budget"
               description={
-                <div>{`By manually updating the following values you’ll be setting a new budget for the current month (${format(
+                <div>{`By manually updating the following values you'll be setting a new budget for the current month (${format(
                   new Date(),
                   'MMM yyyy'
-                )}). This budget will also be used for future months until it’s updated again.`}</div>
+                )}). This budget will also be used for future months until it's updated again.`}</div>
               }
             />
           )}
@@ -293,6 +296,7 @@ const EditBudgetGroups = () => {
                               )
                             : 0
                         }
+                        error={hasNoSavings}
                       />
                     </PercentageFieldContainer>
                   </Field>
@@ -353,6 +357,7 @@ const EditBudgetGroups = () => {
                                   )
                                 : 0
                             )}
+                            error={hasNoSavings}
                           />
                         </PercentageFieldContainer>
                       </Field>
@@ -387,6 +392,14 @@ const EditBudgetGroups = () => {
                     </Button>
                   </ButtonFieldset>
                 </Field>
+                {hasNoExpenseGroups && (
+                  <FieldNotice
+                    title="No expense groups"
+                    description={
+                      <div>You need to add at least one expense group to save this budget.</div>
+                    }
+                  />
+                )}
               </Fieldset>
             )}
 
@@ -394,7 +407,10 @@ const EditBudgetGroups = () => {
               <Field label="Target savings" name="targetSavingsField">
                 <PercentageFieldContainer>
                   <InputCurrency name="targetSavingsField" control={control} disabled={true} />
-                  <PercentageField percentage={getPercentageOfTargetIncome(targetSavingsField)} />
+                  <PercentageField
+                    percentage={getPercentageOfTargetIncome(targetSavingsField)}
+                    error={hasNoSavings}
+                  />
                 </PercentageFieldContainer>
               </Field>
             </Fieldset>
