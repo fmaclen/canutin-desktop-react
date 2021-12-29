@@ -114,7 +114,7 @@ import {
 import { NewAccountType } from '../types/account.type';
 import { BudgetRepository } from '@database/repositories/budget.repository';
 import { SettingsRepository } from '@database/repositories/settings.repository';
-import { EditBudgetCategorySubmit } from '@app/components/Budget/TransactionCategoriesForm';
+import { EditBudgetCategorySubmitType } from '@app/components/Budget/TransactionCategoriesForm';
 import { CategoryRepository } from '@database/repositories/category.repository';
 import { EditBudgetType } from '@app/components/Budget/EditBudgetGroups';
 
@@ -266,9 +266,9 @@ const setupDbEvents = async () => {
 
   ipcMain.on(
     DB_EDIT_BUDGET_CATEGORY,
-    async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmit) => {
+    async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmitType) => {
       try {
-        await BudgetRepository.editBudgetCategory(editBudgetCategorySubmit);
+        await BudgetRepository.addBudgetCategory(editBudgetCategorySubmit);
         await getBudgets();
         win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
       } catch (e) {
@@ -289,7 +289,7 @@ const setupDbEvents = async () => {
 
   ipcMain.on(
     DB_REMOVE_BUDGET_CATEGORY,
-    async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmit) => {
+    async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmitType) => {
       try {
         await BudgetRepository.removeBudgetCategory(editBudgetCategorySubmit);
         await getBudgets();

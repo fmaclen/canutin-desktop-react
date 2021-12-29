@@ -25,10 +25,10 @@ interface TransactionCategoriesFormProps {
   expenseBudgets?: Budget[];
 }
 
-export interface EditBudgetCategorySubmit {
+export type EditBudgetCategorySubmitType = {
   budgetId: number;
   categoryName: string;
-}
+};
 
 const TransactionCategoriesForm = ({ expenseBudgets }: TransactionCategoriesFormProps) => {
   const history = useHistory();
@@ -92,9 +92,9 @@ const TransactionCategoriesForm = ({ expenseBudgets }: TransactionCategoriesForm
 
   const isDisabled = !formState.isValid || autoBudget;
 
-  const onSubmit = (budgetCategory: EditBudgetCategorySubmit) => {
+  const onSubmit = (budgetCategory: EditBudgetCategorySubmitType) => {
     if (budgetCategory.budgetId !== 0) {
-      BudgetIpc.editBudgetCategory(budgetCategory);
+      BudgetIpc.addBudgetCategory(budgetCategory);
     } else {
       BudgetIpc.removeBudgetCategory(budgetCategory);
     }

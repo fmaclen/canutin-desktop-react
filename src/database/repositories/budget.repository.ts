@@ -6,7 +6,7 @@ import { Settings } from '@database/entities';
 
 import { Budget, TransactionSubCategory } from '../entities';
 import { dateInUTC } from '@app/utils/date.utils';
-import { EditBudgetCategorySubmit } from '@app/components/Budget/TransactionCategoriesForm';
+import { EditBudgetCategorySubmitType } from '@app/components/Budget/TransactionCategoriesForm';
 import { CategoryRepository } from './category.repository';
 import { EditBudgetType } from '@app/components/Budget/EditBudgetGroups';
 import { getUserBudgetForPeriod } from '@app/utils/budget.utils';
@@ -87,7 +87,7 @@ export class BudgetRepository {
     }
   }
 
-  static async editBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
+  static async addBudgetCategory(budgetCategory: EditBudgetCategorySubmitType) {
     const category = await CategoryRepository.getSubCategory(budgetCategory.categoryName);
     const budget = (await this.getBudgetById(budgetCategory.budgetId)) as Budget;
     await getRepository<Budget>(Budget)
@@ -97,7 +97,7 @@ export class BudgetRepository {
       .add(category);
   }
 
-  static async removeBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
+  static async removeBudgetCategory(budgetCategory: EditBudgetCategorySubmitType) {
     const category = await CategoryRepository.getSubCategory(budgetCategory.categoryName);
     const budget = await getRepository<Budget>(Budget)
       .createQueryBuilder('budget')

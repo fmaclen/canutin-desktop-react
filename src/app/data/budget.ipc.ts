@@ -6,7 +6,7 @@ import {
   DB_EDIT_BUDGET_CATEGORY,
   DB_REMOVE_BUDGET_CATEGORY,
 } from '@constants/events';
-import { EditBudgetCategorySubmit } from '@app/components/Budget/TransactionCategoriesForm';
+import { EditBudgetCategorySubmitType } from '@app/components/Budget/TransactionCategoriesForm';
 import { EditBudgetType } from '@app/components/Budget/EditBudgetGroups';
 
 export default class BudgetIpc {
@@ -18,11 +18,11 @@ export default class BudgetIpc {
     ipcRenderer.send(DB_EDIT_BUDGET_GROUPS, budgetGroups);
   }
 
-  static editBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
+  static addBudgetCategory(budgetCategory: EditBudgetCategorySubmitType) {
     ipcRenderer.send(DB_EDIT_BUDGET_CATEGORY, budgetCategory);
   }
 
-  static removeBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
+  static removeBudgetCategory(budgetCategory: EditBudgetCategorySubmitType) {
     ipcRenderer.send(DB_REMOVE_BUDGET_CATEGORY, budgetCategory);
   }
 }

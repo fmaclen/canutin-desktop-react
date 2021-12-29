@@ -50,7 +50,7 @@ export type EditBudgetType = {
   }[];
 };
 
-type EditBudgetGroupSubmit = {
+type EditBudgetSubmitType = {
   autoBudgetField: 'Enabled' | 'Disabled';
   targetIncomeField: string;
   expenseGroupFields: [
@@ -170,13 +170,13 @@ const EditBudgetGroups = () => {
     setRemoveGroupIds(prev => [...prev, id]);
   };
 
-  const onSubmit = (EditBudgetType: EditBudgetGroupSubmit) => {
+  const onSubmit = (editBudgetSubmit: EditBudgetSubmitType) => {
     const {
       autoBudgetField,
       targetIncomeField,
       expenseGroupFields,
       newExpenseGroupFields,
-    } = EditBudgetType;
+    } = editBudgetSubmit;
 
     const editedBudgets = [];
     if (autoBudgetField === 'Disabled') {
