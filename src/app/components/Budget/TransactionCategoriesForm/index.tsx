@@ -117,7 +117,7 @@ const TransactionCategoriesForm = ({ expenseBudgets }: TransactionCategoriesForm
           />
         )}
         <FieldNotice
-          title="Re-assigning categories"
+          title="Assigning categories"
           description={
             autoBudget ? (
               <div>
