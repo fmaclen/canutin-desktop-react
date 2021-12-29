@@ -133,7 +133,7 @@ const EditBudgetGroups = () => {
   };
 
   const isAutoBudget = autoBudgetField === 'Enabled';
-  const hasNoExpenseGroups = targetSavingsField == targetIncomeField;
+  const hasNoExpenseGroups = !isAutoBudget && targetSavingsField == targetIncomeField;
   const hasNoSavings = targetSavingsField < 0;
   const submitIsDisabled =
     !formState.isValid || hasNoSavings || hasNoExpenseGroups || (autoBudget && isAutoBudget);
@@ -256,9 +256,8 @@ const EditBudgetGroups = () => {
           <PercentageFieldContainer>
             <InputCurrency
               name={`${namespace}.${index}.targetAmount`}
-              value={targetAmount}
               control={control}
-              onlyNegative
+              onlyNegative={true}
             />
             <PercentageField
               percentage={targetAmount ? Math.abs(getPercentageOfTargetIncome(targetAmount)) : 0}
@@ -278,10 +277,16 @@ const EditBudgetGroups = () => {
           />
         </Field>
       </Fieldset>
+
       <Fieldset>
         <Field label="Target savings" name="targetSavingsField">
           <PercentageFieldContainer>
-            <InputCurrency name="targetSavingsField" control={control} disabled={true} />
+            <InputCurrency
+              name="targetSavingsField"
+              value={targetSavingsField}
+              control={control}
+              disabled={true}
+            />
             <PercentageField
               percentage={getPercentageOfTargetIncome(targetSavingsField)}
               error={hasNoSavings}
@@ -435,7 +440,7 @@ const EditBudgetGroups = () => {
                       readOnly={true}
                       disabled={true}
                       control={control}
-                      onlyNegative
+                      onlyNegative={true}
                     />
                     <PercentageField
                       percentage={Math.abs(getPercentageOfTargetIncome(expenseGroup.targetAmount))}
@@ -458,10 +463,10 @@ const EditBudgetGroups = () => {
             ))}
 
             <Fieldset>
-              <Field label="Target savings" name="targetSavingsField">
+              <Field label="Target savings" name="autoBudgetTargetSavingsField">
                 <PercentageFieldContainer>
                   <InputCurrency
-                    name="targetSavingsField"
+                    name="autoBudgetTargetSavingsField"
                     value={autoBudgetTargetSavingsAmount}
                     control={control}
                     readOnly={true}
