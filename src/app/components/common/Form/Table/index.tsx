@@ -14,7 +14,7 @@ import {
   tableEmptyRowCard,
 } from './styles';
 
-export const TableOuterContainer = styled.table`
+export const TableOuterContainer = styled.div`
   ${tableOuterContainer}
 `;
 export const TableInnerContainer = styled.table`
