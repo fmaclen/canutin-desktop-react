@@ -18,9 +18,15 @@ export class Budget extends Base {
 
   @ManyToMany(() => TransactionSubCategory, { cascade: true })
   @JoinTable()
-  categories: TransactionSubCategory[]
+  categories: TransactionSubCategory[];
 
-  constructor(name: string, targetAmount: number, type: BudgetTypeEnum, categories: TransactionSubCategory[], createdAt: Date) {
+  constructor(
+    name: string,
+    targetAmount: number,
+    type: BudgetTypeEnum,
+    categories: TransactionSubCategory[],
+    createdAt: Date
+  ) {
     super();
     this.createdAt = createdAt;
     this.name = name;

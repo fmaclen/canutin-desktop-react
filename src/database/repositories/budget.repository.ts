@@ -88,12 +88,27 @@ export class BudgetRepository {
   }
 
   static async editBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
+    const category = await CategoryRepository.getSubCategory(budgetCategory.categoryName);
     const budget = (await this.getBudgetById(budgetCategory.budgetId)) as Budget;
-    const category = await CategoryRepository.getSubCategory(budgetCategory.category);
     await getRepository<Budget>(Budget)
       .createQueryBuilder()
       .relation(Budget, 'categories')
       .of(budget)
       .add(category);
+  }
+
+  static async removeBudgetCategory(budgetCategory: EditBudgetCategorySubmit) {
+    const category = await CategoryRepository.getSubCategory(budgetCategory.categoryName);
+    const budget = await getRepository<Budget>(Budget)
+      .createQueryBuilder('budget')
+      .leftJoinAndSelect('budget.categories', 'categories')
+      .where('categories.id =:id', { id: category.id })
+      .getOne();
+
+    await getRepository<Budget>(Budget)
+      .createQueryBuilder()
+      .relation(Budget, 'categories')
+      .of(budget)
+      .remove(category);
   }
 }

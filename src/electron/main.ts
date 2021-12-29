@@ -68,9 +68,11 @@ import {
   DB_EDIT_BUDGET_GROUPS_ACK,
   DB_EDIT_BUDGET_CATEGORY,
   DB_EDIT_BUDGET_CATEGORY_ACK,
+  DB_REMOVE_BUDGET_CATEGORY,
+  DB_REMOVE_BUDGET_CATEGORY_ACK,
 } from '@constants/events';
 import { DATABASE_PATH, NEW_DATABASE } from '@constants';
-import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
+import { EVENT_ERROR, EVENT_SUCCESS, EVENT_NEUTRAL } from '@constants/eventStatus';
 import { CanutinFileType, UpdatedAccount } from '@appTypes/canutinFile.type';
 import { enumExtensionFiles, enumImportTitleOptions, WindowControlEnum } from '@appConstants/misc';
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
@@ -253,7 +255,6 @@ const setupDbEvents = async () => {
       await BudgetRepository.editBudgets(editBudgets);
       await getSettings();
       await getBudgets();
-      console.log('finished running the thing');
       win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, { status: EVENT_SUCCESS });
     } catch (e) {
       win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, {
@@ -267,13 +268,14 @@ const setupDbEvents = async () => {
     DB_EDIT_BUDGET_CATEGORY,
     async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmit) => {
       try {
-        await editBudgetCategory(editBudgetCategorySubmit);
+        await BudgetRepository.editBudgetCategory(editBudgetCategorySubmit);
+        await getBudgets();
         win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
       } catch (e) {
         if (e instanceof QueryFailedError) {
           win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
-            status: EVENT_ERROR,
-            message: 'This category is already assigned to the budget',
+            status: EVENT_NEUTRAL,
+            message: 'The category is already assigned to the budget',
           });
         } else {
           win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
@@ -281,6 +283,22 @@ const setupDbEvents = async () => {
             message: 'An error occurred, please try again',
           });
         }
+      }
+    }
+  );
+
+  ipcMain.on(
+    DB_REMOVE_BUDGET_CATEGORY,
+    async (_: IpcMainEvent, editBudgetCategorySubmit: EditBudgetCategorySubmit) => {
+      try {
+        await BudgetRepository.removeBudgetCategory(editBudgetCategorySubmit);
+        await getBudgets();
+        win?.webContents.send(DB_REMOVE_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
+      } catch (e) {
+        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+          status: EVENT_NEUTRAL,
+          message: 'The category is not assigned to any expense group',
+        });
       }
     }
   );
@@ -503,11 +521,6 @@ const getBudgets = async () => {
 const getSettings = async () => {
   const settings = await SettingsRepository.getSettings();
   win?.webContents.send(DB_GET_SETTINGS_ACK, settings);
-};
-
-const editBudgetCategory = async (editBudgetCategory: EditBudgetCategorySubmit) => {
-  await BudgetRepository.editBudgetCategory(editBudgetCategory);
-  await getBudgets();
 };
 
 const createWindow = async () => {

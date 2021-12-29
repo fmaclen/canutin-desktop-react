@@ -4,9 +4,10 @@ import useBudget from '@app/hooks/useBudget';
 
 import ScrollView from '@app/components/common/ScrollView';
 import EditBudgetGroups from '@app/components/Budget/EditBudgetGroups';
+import TransactionCategories from '@app/components/Budget/TransactionCategories';
 
 const EditBudget = () => {
-  const { isLoading } = useBudget();
+  const { isLoading, budgetExpenseGroups } = useBudget();
 
   const editBudgetSections = [
     {
@@ -15,7 +16,7 @@ const EditBudget = () => {
     },
     {
       label: 'Transaction categories',
-      component: <p>Transactions Categories go here</p>,
+      component: <TransactionCategories expenseBudgets={budgetExpenseGroups} />,
     },
   ];
 

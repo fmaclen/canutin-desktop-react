@@ -5,23 +5,16 @@ import styled from 'styled-components';
 import { Budget } from '@database/entities';
 
 import {
-  container,
   tableHeaderRow,
   tableHeaderItem,
   tableContainer,
   tableSortIcon,
   row,
   rowItem,
-  tableEmptyCard,
 } from './styles';
 import EmptyCard from '@components/common/EmptyCard';
-import {
-  CategoryCell,
-} from '@app/components/Transactions/TransactionsFilterTable/TransactionsFilterTableCells';
+import { CategoryCell } from '@app/components/Transactions/TransactionsFilterTable/TransactionsFilterTableCells';
 
-const Container = styled.div`
-  ${container}
-`;
 const TableContainer = styled.table`
   ${tableContainer}
 `;
@@ -40,16 +33,15 @@ const Row = styled.tr`
 const RowItem = styled.td`
   ${rowItem}
 `;
-const TableEmptyCard = styled(EmptyCard)`
-  ${tableEmptyCard}
-`;
 
-interface CategoriesBudgetGroupTableProps {
+interface CategoriesTableProps {
   expenseBudgets?: Budget[];
 }
 
-const CategoriesBudgetGroupTable = ({ expenseBudgets }: CategoriesBudgetGroupTableProps) => {
-  const [sortBy, setSortBy] = useState<SortingRule<{ name: string; categoryName: string }>[]>([{ id: 'categoryName', desc: true }]);
+const CategoriesTable = ({ expenseBudgets }: CategoriesTableProps) => {
+  const [sortBy, setSortBy] = useState<SortingRule<{ name: string; categoryName: string }>[]>([
+    { id: 'categoryName', desc: true },
+  ]);
   const budgetData = useMemo(
     () =>
       expenseBudgets
@@ -76,23 +68,16 @@ const CategoriesBudgetGroupTable = ({ expenseBudgets }: CategoriesBudgetGroupTab
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    state,
-  } = useTable(
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, state } = useTable(
     {
       columns,
       data: budgetData,
       disableSortRemove: true,
       initialState: {
         sortBy,
-      }
+      },
     },
-    useSortBy,
+    useSortBy
   );
 
   useEffect(() => {
@@ -139,16 +124,16 @@ const CategoriesBudgetGroupTable = ({ expenseBudgets }: CategoriesBudgetGroupTab
   );
 
   return (
-    <Container>
-      {rows.length === 0 && <TableEmptyCard message="No budget-categories were found" />}
+    <>
+      {rows.length === 0 && <EmptyCard message="No categories are assigned to any expense group" />}
       {rows.length !== 0 && (
         <TableContainer {...getTableProps()}>
           <thead>{RenderHeader()}</thead>
           <tbody {...getTableBodyProps()}>{RenderRow()}</tbody>
         </TableContainer>
       )}
-    </Container>
+    </>
   );
 };
 
-export default CategoriesBudgetGroupTable;
+export default CategoriesTable;

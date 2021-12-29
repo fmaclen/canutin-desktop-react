@@ -1,32 +1,6 @@
 import { css } from 'styled-components';
 
-import { monospaceRegular } from '@app/constants/fonts';
-import {
-  greenPlain,
-  grey3,
-  grey10,
-  grey30,
-  grey50,
-  grey80,
-  grey90,
-  underline,
-  underlineHover,
-  blackPlain,
-  shadowPlate,
-  borderGrey,
-  whitePlain,
-  grey5,
-  bluePlain,
-} from '@app/constants/colors';
-
-export const container = css`
-  background-color: ${grey3};
-  border-radius: 4px;
-  box-shadow: ${shadowPlate};
-  display: flex;
-  flex-direction: column;
-`;
-
+import { grey3, grey50, grey80, borderGrey, whitePlain } from '@app/constants/colors';
 
 export const tableHeaderRow = css`
   background-color: ${whitePlain};
@@ -102,11 +76,4 @@ export const rowItem = css`
   &:first-of-type {
     padding-left: 12px;
   }
-`;
-
-export const tableEmptyCard = css`
-  border-top: 1px solid ${borderGrey};
-  background-color: ${grey5};
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 `;

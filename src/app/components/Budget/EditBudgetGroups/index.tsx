@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { useHistory } from 'react-router';
-import { Control, RegisterOptions, useForm } from 'react-hook-form';
+import { format } from 'date-fns';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { EntitiesContext } from '@app/context/entitiesContext';
@@ -27,6 +28,7 @@ import { BudgetTypeEnum } from '@enums/budgetType.enum';
 import { proportionBetween } from '@app/utils/balance.utils';
 import { percentageFieldContainer, buttonFieldContainer, buttonFieldset } from './styles';
 import { TransactionSubCategory } from '@database/entities';
+import FieldNotice from '@app/components/common/Form/FieldNotice';
 
 const PercentageFieldContainer = styled.div`
   ${percentageFieldContainer}
@@ -217,6 +219,29 @@ const EditBudgetGroups = () => {
             register={register}
             values={['Enabled', 'Disabled']}
           />
+          {isAutoBudget ? (
+            <FieldNotice
+              title="What is auto-budget?"
+              description={
+                <div>
+                  When auto-budget is enabled Canutin estimates your income based on the 6-month
+                  trailing average income and applies the 50/30/20 rule of thumb which is a
+                  budgeting guideline where expenses are allocated as: 50% for "needs", 30% to wants
+                  " and the remaining 20% for "financial goals/savings".
+                </div>
+              }
+            />
+          ) : (
+            <FieldNotice
+              title="Custom budget"
+              description={
+                <div>{`By manually updating the following values you’ll be setting a new budget for the current month (${format(
+                  new Date(),
+                  'MMM yyyy'
+                )}). This budget will also be used for future months until it’s updated again.`}</div>
+              }
+            />
+          )}
         </Fieldset>
 
         {!isAutoBudget && (
