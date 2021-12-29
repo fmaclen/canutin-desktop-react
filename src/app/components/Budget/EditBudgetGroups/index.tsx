@@ -29,6 +29,7 @@ import { BudgetTypeEnum } from '@enums/budgetType.enum';
 import { proportionBetween } from '@app/utils/balance.utils';
 import { percentageFieldContainer, buttonFieldContainer, buttonFieldset } from './styles';
 import { TransactionSubCategory } from '@database/entities';
+import { handleBudgets } from '@app/utils/budget.utils';
 
 const PercentageFieldContainer = styled.div`
   ${percentageFieldContainer}
@@ -52,9 +53,11 @@ export type EditBudgetType = {
 
 type EditExpenseGroupFieldsetType = {
   index: number;
+  namespace: string;
   categoriesCount: number;
   error: boolean;
   targetAmount?: number;
+  name?: string;
   disabled?: boolean;
 };
 
@@ -78,7 +81,10 @@ const EditBudgetGroups = () => {
     { name: string; targetAmount: number }[]
   >([]);
 
-  const autoBudgetTargetIncome = budgetsIndex?.autoBudgets[0]?.targetAmount;
+  const autoBudgetIndex = budgetsIndex?.autoBudgets;
+  const autoBudgetTargetSavingsAmount =
+    autoBudgetIndex && handleBudgets(autoBudgetIndex).targetSavingsAmount;
+  const autoBudgetTargetIncome = autoBudgetIndex && autoBudgetIndex[0]?.targetAmount;
   const autoBudgetExpenseGroups = budgetsIndex?.autoBudgets.filter(
     ({ type }) => type === BudgetTypeEnum.EXPENSE
   );
@@ -220,54 +226,71 @@ const EditBudgetGroups = () => {
     BudgetIpc.editBudgetGroups({ autoBudgetField, editedBudgets });
   };
 
+  const TOOLTIP_BUDGET_INCOME_PERCENTAGE =
+    'The income amount you expect to make in any given month';
+  const TOOLTIP_BUDGET_EXPENSE_PERCENTAGE =
+    'The percentage of the target income that this expense group amounts to';
+  const TOOLTIP_BUDGET_SAVINGS_PERCENTAGE =
+    "The percentage that's left after your expense groups are substracted from the target income";
+
   const editExpenseGroupFieldset = ({
     index,
+    namespace,
     targetAmount,
     categoriesCount,
     error,
-    disabled = false,
   }: EditExpenseGroupFieldsetType) => (
-    <Fieldset key={index}>
-      <input {...register(`expenseGroupFields.${index}.id`)} type="hidden" />
-      <Field label="Expense group name" name={`expenseGroupFields.${index}.name`}>
-        <ButtonFieldContainer>
+    <>
+      <Fieldset key={index}>
+        <input {...register(`${namespace}.${index}.id`)} type="hidden" />
+        <Field label="Expense group name" name={`${namespace}.${index}.name`}>
+          <ButtonFieldContainer>
+            <InputText name={`${namespace}.${index}.name`} register={register} />
+            <Button disabled={isAutoBudget} onClick={() => onRemove(index)}>
+              Remove
+            </Button>
+          </ButtonFieldContainer>
+        </Field>
+
+        <Field label="Target amount" name={`${namespace}.${index}.targetAmount`}>
+          <PercentageFieldContainer>
+            <InputCurrency
+              name={`${namespace}.${index}.targetAmount`}
+              value={targetAmount}
+              control={control}
+              onlyNegative
+            />
+            <PercentageField
+              percentage={targetAmount ? Math.abs(getPercentageOfTargetIncome(targetAmount)) : 0}
+              tooltip={TOOLTIP_BUDGET_EXPENSE_PERCENTAGE}
+              error={error}
+            />
+          </PercentageFieldContainer>
+        </Field>
+
+        <Field label="Categories" name={`${namespace}.${index}.categoriesCount`}>
+          <input {...register(`${namespace}.${index}.categories`)} type="hidden" />
           <InputText
-            name={`expenseGroupFields.${index}.name`}
-            register={register}
-            disabled={disabled}
+            name={`${namespace}.${index}.categoriesCount`}
+            value={categoriesCount.toString()}
+            disabled
+            readOnly
           />
-          <Button disabled={isAutoBudget} onClick={() => onRemove(index)}>
-            Remove
-          </Button>
-        </ButtonFieldContainer>
-      </Field>
-
-      <Field label="Target amount" name={`expenseGroupFields.${index}.targetAmount`}>
-        <PercentageFieldContainer>
-          <InputCurrency
-            name={`expenseGroupFields.${index}.targetAmount`}
-            control={control}
-            onlyNegative
-            disabled={disabled}
-          />
-          <PercentageField
-            percentage={targetAmount ? Math.abs(getPercentageOfTargetIncome(targetAmount)) : 0}
-            tooltip="Target amount of the expense group as a percentage of the target income"
-            error={error}
-          />
-        </PercentageFieldContainer>
-      </Field>
-
-      <Field label="Categories" name={`expenseGroupFields.${index}.categoriesCount`}>
-        <input {...register(`expenseGroupFields.${index}.categories`)} type="hidden" />
-        <InputText
-          name={`expenseGroupFields.${index}.categoriesCount`}
-          value={categoriesCount.toString()}
-          disabled
-          readOnly
-        />
-      </Field>
-    </Fieldset>
+        </Field>
+      </Fieldset>
+      <Fieldset>
+        <Field label="Target savings" name="targetSavingsField">
+          <PercentageFieldContainer>
+            <InputCurrency name="targetSavingsField" control={control} disabled={true} />
+            <PercentageField
+              percentage={getPercentageOfTargetIncome(targetSavingsField)}
+              error={hasNoSavings}
+              tooltip={TOOLTIP_BUDGET_SAVINGS_PERCENTAGE}
+            />
+          </PercentageFieldContainer>
+        </Field>
+      </Fieldset>
+    </>
   );
 
   return (
@@ -311,10 +334,7 @@ const EditBudgetGroups = () => {
               <Field label="Target income" name="targetIncomeField">
                 <PercentageFieldContainer>
                   <InputCurrency name="targetIncomeField" control={control} />
-                  <PercentageField
-                    percentage={100}
-                    tooltip="This represents the income amount you expect to make in any given month"
-                  />
+                  <PercentageField percentage={100} tooltip={TOOLTIP_BUDGET_INCOME_PERCENTAGE} />
                 </PercentageFieldContainer>
               </Field>
             </Fieldset>
@@ -323,7 +343,8 @@ const EditBudgetGroups = () => {
               if (!removeGroupIds.includes(expenseGroup.id)) {
                 return editExpenseGroupFieldset({
                   index: expenseGroup.id,
-                  targetAmount: expenseGroupFields?.[expenseGroup.id].targetAmount,
+                  namespace: 'expenseGroupFields',
+                  targetAmount: expenseGroupFields?.[expenseGroup.id]?.targetAmount,
                   error: hasNoSavings,
                   categoriesCount: expenseGroup.categories.length,
                 });
@@ -337,6 +358,7 @@ const EditBudgetGroups = () => {
                 if (!removeGroupIds.includes(indexOffset)) {
                   return editExpenseGroupFieldset({
                     index: indexOffset,
+                    namespace: 'newExpenseGroupFields',
                     targetAmount: expenseGroupFields?.[indexOffset]?.targetAmount,
                     error: hasNoSavings,
                     categoriesCount: 0,
@@ -383,41 +405,77 @@ const EditBudgetGroups = () => {
                     value={autoBudgetTargetIncome}
                     disabled={true}
                   />
-                  <PercentageField percentage={100} />
+                  <PercentageField percentage={100} tooltip={TOOLTIP_BUDGET_INCOME_PERCENTAGE} />
                 </PercentageFieldContainer>
               </Field>
             </Fieldset>
 
-            {autoBudgetExpenseGroups?.map(expenseGroup =>
-              expenseGroup
-                ? editExpenseGroupFieldset({
-                    index: expenseGroup.id,
-                    targetAmount: expenseGroup.targetAmount,
-                    error: hasNoSavings,
-                    categoriesCount: expenseGroup.categories.length,
-                    disabled: true,
-                  })
-                : null
-            )}
+            {autoBudgetExpenseGroups?.map(expenseGroup => (
+              <Fieldset key={expenseGroup.id}>
+                <Field
+                  label="Expense group name"
+                  name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.name`}
+                >
+                  <InputText
+                    name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.name`}
+                    value={expenseGroup.name.toString()}
+                    readOnly={true}
+                    disabled={true}
+                    register={register}
+                  />
+                </Field>
+                <Field
+                  label="Target amount"
+                  name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.targetAmount`}
+                >
+                  <PercentageFieldContainer>
+                    <InputCurrency
+                      name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.targetAmount`}
+                      value={expenseGroup.targetAmount}
+                      readOnly={true}
+                      disabled={true}
+                      control={control}
+                      onlyNegative
+                    />
+                    <PercentageField
+                      percentage={Math.abs(getPercentageOfTargetIncome(expenseGroup.targetAmount))}
+                      tooltip={TOOLTIP_BUDGET_EXPENSE_PERCENTAGE}
+                    />
+                  </PercentageFieldContainer>
+                </Field>
+                <Field
+                  label="Categories"
+                  name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.categoriesCount`}
+                >
+                  <InputText
+                    name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.categoriesCount`}
+                    value={expenseGroup.categories.length.toString()}
+                    disabled
+                    readOnly
+                  />
+                </Field>
+              </Fieldset>
+            ))}
+
+            <Fieldset>
+              <Field label="Target savings" name="targetSavingsField">
+                <PercentageFieldContainer>
+                  <InputCurrency
+                    name="targetSavingsField"
+                    value={autoBudgetTargetSavingsAmount}
+                    control={control}
+                    readOnly={true}
+                    disabled={true}
+                  />
+                  <PercentageField
+                    percentage={getPercentageOfTargetIncome(autoBudgetTargetSavingsAmount!)}
+                    tooltip={TOOLTIP_BUDGET_SAVINGS_PERCENTAGE}
+                  />
+                </PercentageFieldContainer>
+              </Field>
+            </Fieldset>
           </>
         )}
-
-        <Fieldset>
-          <Field label="Target savings" name="targetSavingsField">
-            <PercentageFieldContainer>
-              <InputCurrency
-                name="targetSavingsField"
-                control={control}
-                value={targetSavingsField}
-                disabled={true}
-              />
-              <PercentageField
-                percentage={getPercentageOfTargetIncome(targetSavingsField)}
-                tooltip="This represents the amount that's left after your expense groups are substracted from the target income"
-              />
-            </PercentageFieldContainer>
-          </Field>
-        </Fieldset>
 
         <FormFooter>
           <SubmitButton disabled={submitIsDisabled}>Save</SubmitButton>

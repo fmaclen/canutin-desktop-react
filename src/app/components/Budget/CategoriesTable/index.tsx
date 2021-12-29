@@ -1,38 +1,19 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { useTable, useSortBy, Column, SortingRule } from 'react-table';
-import styled from 'styled-components';
 
 import { Budget } from '@database/entities';
 
 import {
-  tableHeaderRow,
-  tableHeaderItem,
-  tableContainer,
-  tableSortIcon,
-  row,
-  rowItem,
-} from './styles';
-import EmptyCard from '@components/common/EmptyCard';
+  TableOuterContainer,
+  TableInnerContainer,
+  TableHeaderRow,
+  TableHeaderItem,
+  TableSortIcon,
+  Row,
+  RowItem,
+  TableEmptyRow,
+} from '@app/components/common/Form/Table';
 import { CategoryCell } from '@app/components/Transactions/TransactionsFilterTable/TransactionsFilterTableCells';
-
-const TableContainer = styled.table`
-  ${tableContainer}
-`;
-const TableHeaderRow = styled.tr`
-  ${tableHeaderRow}
-`;
-const TableHeaderItem = styled.th`
-  ${tableHeaderItem}
-`;
-const TableSortIcon = styled.div`
-  ${tableSortIcon}
-`;
-const Row = styled.tr`
-  ${row};
-`;
-const RowItem = styled.td`
-  ${rowItem}
-`;
 
 interface CategoriesTableProps {
   expenseBudgets?: Budget[];
@@ -124,15 +105,15 @@ const CategoriesTable = ({ expenseBudgets }: CategoriesTableProps) => {
   );
 
   return (
-    <>
-      {rows.length === 0 && <EmptyCard message="No categories are assigned to any expense group" />}
-      {rows.length !== 0 && (
-        <TableContainer {...getTableProps()}>
-          <thead>{RenderHeader()}</thead>
-          <tbody {...getTableBodyProps()}>{RenderRow()}</tbody>
-        </TableContainer>
-      )}
-    </>
+    <TableOuterContainer>
+      <TableInnerContainer {...getTableProps()}>
+        <thead>{RenderHeader()}</thead>
+        {rows.length !== 0 && <tbody {...getTableBodyProps()}>{RenderRow()}</tbody>}
+        {rows.length === 0 && (
+          <TableEmptyRow message="No categories are assigned to any expense group" />
+        )}
+      </TableInnerContainer>
+    </TableOuterContainer>
   );
 };
 
