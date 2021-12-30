@@ -224,6 +224,8 @@ const EditBudgetGroups = () => {
     }
 
     BudgetIpc.editBudgetGroups({ autoBudgetField, editedBudgets });
+
+    console.log({ autoBudgetField, editedBudgets });
   };
 
   const TOOLTIP_BUDGET_INCOME_PERCENTAGE =
@@ -240,7 +242,7 @@ const EditBudgetGroups = () => {
     categoriesCount,
     error,
   }: EditExpenseGroupFieldsetType) => (
-    <Fieldset key={index}>
+    <Fieldset key={index} dataTestId="budget-fieldset-expense-group">
       <input {...register(`${namespace}.${index}.id`)} type="hidden" />
       <Field label="Expense group name" name={`${namespace}.${index}.name`}>
         <ButtonFieldContainer>
@@ -315,7 +317,7 @@ const EditBudgetGroups = () => {
 
         {!isAutoBudget && (
           <>
-            <Fieldset>
+            <Fieldset dataTestId="budget-fieldset-target-income">
               <Field label="Target income" name="targetIncomeField">
                 <PercentageFieldContainer>
                   <InputCurrency name="targetIncomeField" control={control} />
@@ -352,7 +354,7 @@ const EditBudgetGroups = () => {
                 return null;
               })}
 
-            <Fieldset>
+            <Fieldset dataTestId="budget-fieldset-add-expense-group">
               <Field name="addGroup" label="Expense group">
                 <ButtonFieldset>
                   <Button
@@ -374,7 +376,7 @@ const EditBudgetGroups = () => {
                 />
               )}
             </Fieldset>
-            <Fieldset>
+            <Fieldset dataTestId="budget-fieldset-target-savings">
               <Field label="Target savings" name="targetSavingsField">
                 <PercentageFieldContainer>
                   <InputCurrency
@@ -396,7 +398,7 @@ const EditBudgetGroups = () => {
 
         {isAutoBudget && (
           <>
-            <Fieldset>
+            <Fieldset dataTestId="budget-fieldset-target-income">
               <Field label="Target income" name="targetIncomeField">
                 <PercentageFieldContainer>
                   <InputCurrency
@@ -411,7 +413,7 @@ const EditBudgetGroups = () => {
             </Fieldset>
 
             {autoBudgetExpenseGroups?.map(expenseGroup => (
-              <Fieldset key={expenseGroup.id}>
+              <Fieldset key={expenseGroup.id} dataTestId="budget-fieldset-expense-group">
                 <Field
                   label="Expense group name"
                   name={`autoBudgetExpenseGroupFields.${expenseGroup.id}.name`}
@@ -457,7 +459,7 @@ const EditBudgetGroups = () => {
               </Fieldset>
             ))}
 
-            <Fieldset>
+            <Fieldset dataTestId="budget-fieldset-target-savings">
               <Field label="Target savings" name="autoBudgetTargetSavingsField">
                 <PercentageFieldContainer>
                   <InputCurrency

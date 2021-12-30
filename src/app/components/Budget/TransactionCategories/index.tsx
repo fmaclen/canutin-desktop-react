@@ -1,6 +1,7 @@
 import Section from '@app/components/common/Section';
 
 import { Budget } from '@database/entities';
+import useBudget from '@app/hooks/useBudget';
 
 import CategoriesTable from '../CategoriesTable';
 import TransactionCategoriesForm from '../TransactionCategoriesForm';
@@ -9,14 +10,16 @@ interface TransactionCategoriesProps {
   expenseBudgets?: Budget[];
 }
 
-const TransactionCategories = ({ expenseBudgets }: TransactionCategoriesProps) => {
+const TransactionCategories = () => {
+  const { budgetExpenseGroups } = useBudget();
+
   return (
     <>
       <Section title="Manage categories">
-        <TransactionCategoriesForm expenseBudgets={expenseBudgets} />
+        <TransactionCategoriesForm expenseBudgets={budgetExpenseGroups} />
       </Section>
       <Section title="Categories by expense group">
-        <CategoriesTable expenseBudgets={expenseBudgets} />
+        <CategoriesTable expenseBudgets={budgetExpenseGroups} />
       </Section>
     </>
   );

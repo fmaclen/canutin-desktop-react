@@ -69,7 +69,7 @@ export class BudgetRepository {
       const budgetRepository = getRepository<Budget>(Budget);
       const userBudgets = await this.getBudgets();
       const dateFrom = dateInUTC(startOfMonth(new Date()));
-      const isLastUserBudgetThisMonth = userBudgets[0].createdAt.getTime() === dateFrom.getTime();
+      const isLastUserBudgetThisMonth = userBudgets[0]?.createdAt.getTime() === dateFrom.getTime();
 
       // Deleting all budgets for this month
       if (isLastUserBudgetThisMonth) {
