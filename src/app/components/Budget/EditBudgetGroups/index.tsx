@@ -240,62 +240,42 @@ const EditBudgetGroups = () => {
     categoriesCount,
     error,
   }: EditExpenseGroupFieldsetType) => (
-    <>
-      <Fieldset key={index}>
-        <input {...register(`${namespace}.${index}.id`)} type="hidden" />
-        <Field label="Expense group name" name={`${namespace}.${index}.name`}>
-          <ButtonFieldContainer>
-            <InputText name={`${namespace}.${index}.name`} register={register} />
-            <Button disabled={isAutoBudget} onClick={() => onRemove(index)}>
-              Remove
-            </Button>
-          </ButtonFieldContainer>
-        </Field>
+    <Fieldset key={index}>
+      <input {...register(`${namespace}.${index}.id`)} type="hidden" />
+      <Field label="Expense group name" name={`${namespace}.${index}.name`}>
+        <ButtonFieldContainer>
+          <InputText name={`${namespace}.${index}.name`} register={register} />
+          <Button disabled={isAutoBudget} onClick={() => onRemove(index)}>
+            Remove
+          </Button>
+        </ButtonFieldContainer>
+      </Field>
 
-        <Field label="Target amount" name={`${namespace}.${index}.targetAmount`}>
-          <PercentageFieldContainer>
-            <InputCurrency
-              name={`${namespace}.${index}.targetAmount`}
-              control={control}
-              onlyNegative={true}
-            />
-            <PercentageField
-              percentage={targetAmount ? Math.abs(getPercentageOfTargetIncome(targetAmount)) : 0}
-              tooltip={TOOLTIP_BUDGET_EXPENSE_PERCENTAGE}
-              error={error}
-            />
-          </PercentageFieldContainer>
-        </Field>
-
-        <Field label="Categories" name={`${namespace}.${index}.categoriesCount`}>
-          <input {...register(`${namespace}.${index}.categories`)} type="hidden" />
-          <InputText
-            name={`${namespace}.${index}.categoriesCount`}
-            value={categoriesCount.toString()}
-            disabled
-            readOnly
+      <Field label="Target amount" name={`${namespace}.${index}.targetAmount`}>
+        <PercentageFieldContainer>
+          <InputCurrency
+            name={`${namespace}.${index}.targetAmount`}
+            control={control}
+            onlyNegative={true}
           />
-        </Field>
-      </Fieldset>
+          <PercentageField
+            percentage={targetAmount ? Math.abs(getPercentageOfTargetIncome(targetAmount)) : 0}
+            tooltip={TOOLTIP_BUDGET_EXPENSE_PERCENTAGE}
+            error={error}
+          />
+        </PercentageFieldContainer>
+      </Field>
 
-      <Fieldset>
-        <Field label="Target savings" name="targetSavingsField">
-          <PercentageFieldContainer>
-            <InputCurrency
-              name="targetSavingsField"
-              value={targetSavingsField}
-              control={control}
-              disabled={true}
-            />
-            <PercentageField
-              percentage={getPercentageOfTargetIncome(targetSavingsField)}
-              error={hasNoSavings}
-              tooltip={TOOLTIP_BUDGET_SAVINGS_PERCENTAGE}
-            />
-          </PercentageFieldContainer>
-        </Field>
-      </Fieldset>
-    </>
+      <Field label="Categories" name={`${namespace}.${index}.categoriesCount`}>
+        <input {...register(`${namespace}.${index}.categories`)} type="hidden" />
+        <InputText
+          name={`${namespace}.${index}.categoriesCount`}
+          value={categoriesCount.toString()}
+          disabled
+          readOnly
+        />
+      </Field>
+    </Fieldset>
   );
 
   return (
@@ -372,30 +352,45 @@ const EditBudgetGroups = () => {
                 return null;
               })}
 
-            {!isAutoBudget && (
-              <Fieldset>
-                <Field name="addGroup" label="Expense group">
-                  <ButtonFieldset>
-                    <Button
-                      disabled={isAutoBudget}
-                      onClick={() => {
-                        setNewExpenseGroups(prev => [...prev, { name: '', targetAmount: 0 }]);
-                      }}
-                    >
-                      Add new
-                    </Button>
-                  </ButtonFieldset>
-                </Field>
-                {hasNoExpenseGroups && (
-                  <FieldNotice
-                    title="No expense groups"
-                    description={
-                      <div>You need to add at least one expense group to save this budget.</div>
-                    }
+            <Fieldset>
+              <Field name="addGroup" label="Expense group">
+                <ButtonFieldset>
+                  <Button
+                    disabled={isAutoBudget}
+                    onClick={() => {
+                      setNewExpenseGroups(prev => [...prev, { name: '', targetAmount: 0 }]);
+                    }}
+                  >
+                    Add new
+                  </Button>
+                </ButtonFieldset>
+              </Field>
+              {hasNoExpenseGroups && (
+                <FieldNotice
+                  title="No expense groups"
+                  description={
+                    <div>You need to add at least one expense group to save this budget.</div>
+                  }
+                />
+              )}
+            </Fieldset>
+            <Fieldset>
+              <Field label="Target savings" name="targetSavingsField">
+                <PercentageFieldContainer>
+                  <InputCurrency
+                    name="targetSavingsField"
+                    value={targetSavingsField}
+                    control={control}
+                    disabled={true}
                   />
-                )}
-              </Fieldset>
-            )}
+                  <PercentageField
+                    percentage={getPercentageOfTargetIncome(targetSavingsField)}
+                    error={hasNoSavings}
+                    tooltip={TOOLTIP_BUDGET_SAVINGS_PERCENTAGE}
+                  />
+                </PercentageFieldContainer>
+              </Field>
+            </Fieldset>
           </>
         )}
 
