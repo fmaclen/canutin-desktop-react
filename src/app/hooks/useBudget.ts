@@ -21,8 +21,8 @@ const useBudget = () => {
   const { settingsIndex, budgetsIndex } = useContext(EntitiesContext);
   const [periodTransactions, setPeriodTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const autoBudget = settingsIndex?.settings.autoBudget;
 
+  const autoBudget = settingsIndex?.settings.autoBudget;
   const autoBudgetForPeriod = budgetsIndex?.autoBudgets;
   const userBudgetForPeriod =
     budgetsIndex &&
@@ -46,7 +46,6 @@ const useBudget = () => {
         setIsLoading(false);
       }
     );
-
     return () => {
       ipcRenderer.removeAllListeners(FILTER_TRANSACTIONS_ACK);
     };

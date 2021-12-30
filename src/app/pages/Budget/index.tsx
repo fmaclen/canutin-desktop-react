@@ -83,16 +83,19 @@ const Budget = () => {
                   periodAmount={periodIncomeAmount}
                   targetAmount={targetIncomeAmount}
                   title="Income"
+                  dataTestId="budget-bar-income"
                 />
                 <BudgetBar
                   periodAmount={periodExpensesAmount}
                   targetAmount={targetExpensesAmount}
                   title="Expenses"
+                  dataTestId="budget-bar-expenses"
                 />
                 <BudgetBar
                   periodAmount={periodSavingsAmount}
                   targetAmount={targetSavingsAmount}
                   title="Savings"
+                  dataTestId="budget-bar-savings"
                 />
               </Section>
 
@@ -104,6 +107,7 @@ const Budget = () => {
                       title={budgetGroup.name}
                       periodAmount={budgetGroup.periodAmount}
                       targetAmount={budgetGroup.targetAmount}
+                      dataTestId={`budget-bar-${budgetGroup.name.toLocaleLowerCase()}`}
                     />
                   ))}
                 </Section>
@@ -113,12 +117,17 @@ const Budget = () => {
 
           {periodOutOfBudgetAmount !== 0 && (
             <Section title="Other expenses">
-              <Card label="Out of budget" value={periodOutOfBudgetAmount} isCurrency={true} />
+              <Card
+                label="Out of budget"
+                value={periodOutOfBudgetAmount}
+                isCurrency={true}
+                dataTestId="budget-out-of-budget"
+              />
             </Section>
           )}
         </>
         {!isLoading && periodTransactions.length === 0 && (
-          <EmptyCard message="No transactions were found in the current period." />
+          <EmptyCard message="No transactions were found in the current period" />
         )}
       </ScrollView>
     </>

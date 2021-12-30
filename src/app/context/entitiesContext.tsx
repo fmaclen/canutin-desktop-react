@@ -111,7 +111,8 @@ export const EntitiesProvider = ({ children }: PropsWithChildren<Record<string, 
         if (needsCategories.length < autoBudgetNeedsCategories.length) {
           needsCategories.push(category);
         } else {
-          wantsCategories.push(category);
+          wantsCategories.length <= autoBudgetWantsCategories.length &&
+            wantsCategories.push(category);
         }
       }
     );

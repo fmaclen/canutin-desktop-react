@@ -68,6 +68,7 @@ const mapCategories = (category: string) => {
     case 'service fee':
     case 'trade comissions':
     case 'service charges/fees':
+    case 'fees':
       return 'Fees';
 
     case 'financial':
@@ -99,19 +100,21 @@ const mapCategories = (category: string) => {
     case 'strategy change':
       return 'Financial services';
 
+    case 'food & drink':
     case 'food & dining':
       return 'Food & drink';
 
     case 'furnishings':
       return 'Furnishings';
 
+    case 'gas stations':
     case 'gas & fuel':
     case 'gasoline/fuel':
       return 'Gas stations';
 
     case 'gift':
-    case 'gifts':
     case 'gifts & donations':
+    case 'gifts':
       return 'Gifts';
 
     case 'groceries':
@@ -122,14 +125,15 @@ const mapCategories = (category: string) => {
     case 'eyecare':
     case 'health insurance':
     case 'healthcare/medical':
+    case 'health':
       return 'Health';
 
     case 'hobbies':
       return 'Hobbies';
 
     case 'home improvement':
+    case 'lawn & garden':
     case 'home maintenance':
-    case 'Lawn & Garden':
       return 'Home maintenance';
 
     case 'home':
@@ -139,6 +143,7 @@ const mapCategories = (category: string) => {
     case 'mortgage':
     case 'mortgages':
     case 'rent':
+    case 'housing':
       return 'Housing';
 
     case 'income':
@@ -166,6 +171,7 @@ const mapCategories = (category: string) => {
     case 'mobile phone':
     case 'internet':
     case 'telephone':
+    case 'internet & phone':
       return 'Internet & phone';
 
     case 'kids':
@@ -174,6 +180,7 @@ const mapCategories = (category: string) => {
     case 'child/dependent':
       return 'Kids';
 
+    case 'kids supplies':
     case 'baby supplies':
       return 'Kids supplies';
 
@@ -197,12 +204,14 @@ const mapCategories = (category: string) => {
 
     case 'credit card payment':
     case 'credit card payments':
+    case 'payments':
       return 'Payments';
 
     case 'bonus':
     case 'paycheck':
     case 'paychecks/salary':
     case 'wages paid':
+    case 'payroll & benefits':
       return 'Payroll & benefits';
 
     case 'personal care':
@@ -235,6 +244,7 @@ const mapCategories = (category: string) => {
     case 'service & parts':
       return 'Service & parts';
 
+    case 'shops':
     case 'shopping':
     case 'books':
     case 'sporting goods':
@@ -247,6 +257,7 @@ const mapCategories = (category: string) => {
     case 'student loan':
       return 'Student loan';
 
+    case 'subscriptions':
     case 'dues & subscriptions':
       return 'Subscriptions';
 
@@ -259,6 +270,7 @@ const mapCategories = (category: string) => {
     case 'tax loss harvesting':
       return 'Taxes';
 
+    case 'taxi & ride sharing':
     case 'rental car & taxi':
       return 'Taxi & ride sharing';
 

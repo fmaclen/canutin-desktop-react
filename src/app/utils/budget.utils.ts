@@ -2,7 +2,6 @@ import { isAfter, isSameMonth } from 'date-fns';
 
 import { AccountsIndex } from '@app/context/entitiesContext';
 import { BudgetTypeEnum } from '@enums/budgetType.enum';
-import { SelectFieldValue } from '@app/components/common/Form/Select';
 
 import { TrailingCashflowSegmentsEnum } from '@app/components/BigPicture/TrailingCashflow';
 import {
@@ -19,12 +18,11 @@ export type AutoBudgetCategoriesType = {
 export const autoBudgetNeedsCategories = [
   'Education',
   'Studen loan',
-  'Food & drink',
   'Groceries',
   'Health',
   'Medical care',
   'Pharmacies',
-  'Home maintenance',
+  'Housing',
   'Mortgage',
   'Rent',
   'Institutional',
@@ -77,9 +75,11 @@ export const autoBudgetWantsCategories = [
   'Withdrawals',
   'Bars',
   'Coffee shops',
+  'Food & drink',
   'Restaurants',
   'Fitness',
   'Furnishings',
+  'Home maintenance',
   'Home improvement',
   'Home security',
   'Religious',

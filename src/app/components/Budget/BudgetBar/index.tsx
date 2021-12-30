@@ -36,9 +36,10 @@ interface BudgetBarProps {
   title: string;
   periodAmount: number;
   targetAmount: number;
+  dataTestId?: string;
 }
 
-const BudgetBar = ({ title, periodAmount, targetAmount }: BudgetBarProps) => {
+const BudgetBar = ({ title, periodAmount, targetAmount, dataTestId }: BudgetBarProps) => {
   const percentage = Math.round(proportionBetween(periodAmount, targetAmount));
 
   const getBudgetStatus = () => {
@@ -58,7 +59,7 @@ const BudgetBar = ({ title, periodAmount, targetAmount }: BudgetBarProps) => {
   };
 
   return (
-    <Container>
+    <Container data-testid={dataTestId}>
       <Header>{title}</Header>
       <ProgressContainer>
         <Progress percentage={percentage} status={getBudgetStatus()}>
