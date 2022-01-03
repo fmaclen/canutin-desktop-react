@@ -11,8 +11,7 @@ export const autoBudgetCategoriesBuilder = (transactions: Transaction[]) => {
   const wantsCategories = [] as FakeCategoryProps[];
 
   autoBudgetNeedsCategories.forEach(autoBudgetCategory => {
-    const lastCategoryId =
-      needsCategories.length > 0 && needsCategories[needsCategories.length - 1].id;
+    const lastCategoryId = needsCategories?.[needsCategories.length - 1]?.id;
     const newCategory = {
       id: lastCategoryId ? lastCategoryId + 1 : 1,
       name: autoBudgetCategory,
@@ -21,8 +20,7 @@ export const autoBudgetCategoriesBuilder = (transactions: Transaction[]) => {
   });
 
   autoBudgetWantsCategories.forEach(autoBudgetCategory => {
-    const lastCategoryId =
-      wantsCategories.length > 0 && wantsCategories[wantsCategories.length - 1].id;
+    const lastCategoryId = wantsCategories?.[wantsCategories.length - 1]?.id;
     const newCategory = {
       id: lastCategoryId ? lastCategoryId + 1 : 100,
       name: autoBudgetCategory,

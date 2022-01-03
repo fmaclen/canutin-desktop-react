@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { mocked } from 'ts-jest/utils';
 import userEvent from '@testing-library/user-event';
-import { endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, format, startOfDay, subMonths } from 'date-fns';
 
 import { render } from '@tests/utils';
 import App from '@components/App';
@@ -94,6 +94,13 @@ describe('Budget tests', () => {
     expect(budgetSidebarLink).toHaveAttribute('active', '1');
     expect(screen.getByText('Auto-budget')).toBeVisible();
     expect(screen.getByText('No transactions were found in the current period')).toBeVisible();
+
+    const periodChooser = screen.getByText(format(new Date(), 'MMMM yyyy'));
+    expect(periodChooser).toBeVisible();
+
+    userEvent.click(periodChooser);
+    expect(screen.getByText(format(subMonths(new Date(), 6), 'MMMM yyyy'))).toBeVisible();
+    expect(screen.getByText(format(subMonths(new Date(), 12), 'MMMM yyyy'))).toBeVisible();
   });
 
   test('Budget page displays the correct data when auto-budget is enabled', async () => {
