@@ -364,7 +364,6 @@ const setupDbEvents = async () => {
 
   ipcMain.on(DB_GET_TRANSACTION_CATEGORY, async (_: IpcMainEvent, subCategoryName: string) => {
     const subCategory = await CategoryRepository.getSubCategory(subCategoryName);
-    // const subCategory = await CategoryRepository.getSubCategoryById(subCategoryName);
     win?.webContents.send(DB_GET_TRANSACTION_CATEGORY_ACK, subCategory);
   });
 

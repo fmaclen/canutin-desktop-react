@@ -221,6 +221,8 @@ describe('Budget tests', () => {
     expect(budgetBarWants).toHaveTextContent('-$3,769 (166%)');
     expect(budgetBarWants).toHaveTextContent('-$2,273');
 
+    // TODO: add assertions for "Out of budget" component
+
     userEvent.click(screen.getByText('Edit'));
     await waitFor(() => {
       expect(screen.getByText('What is auto-budget?')).toBeVisible();
@@ -325,11 +327,7 @@ describe('Budget tests', () => {
       expect(budgetFieldsetTargetSavings).not.toHaveTextContent('60%');
       expect(budgetFieldsetTargetSavings).toHaveTextContent('100%');
     });
-    expect(
-      screen.getByText(
-        'You need to add at least one expense group with a target amount to save this budget.'
-      )
-    ).toBeVisible();
+    expect(screen.getByText('No expenses in budget')).toBeVisible();
 
     userEvent.click(screen.getByText('Add new'));
     await waitFor(() => {
@@ -347,15 +345,10 @@ describe('Budget tests', () => {
       budgetFieldsetExpenseGroups = screen.getAllByTestId('budget-fieldset-expense-group');
       expect(budgetFieldsetExpenseGroups[0]).toHaveTextContent('150%');
     });
-
     budgetFieldsetTargetSavings = screen.getByTestId('budget-fieldset-target-savings');
     expect(budgetFieldsetTargetSavings).toHaveTextContent('-50%');
     expect(screen.getByText('Save')).toHaveAttribute('disabled');
-
-    // TODO:
-    // - Click "save" and assert the right payload is sent with `ipcRenderer.send(DB_EDIT_BUDGET_GROUPS, budgetGroups);`
-    // - Test "Out of budget" card
   });
 
-  // test('Budget page displays the correct data when auto-budget is disabled', async () => {});
+  // TODO: test('Budget page displays the correct data when auto-budget is disabled', async () => {});
 });

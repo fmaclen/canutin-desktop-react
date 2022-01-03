@@ -111,11 +111,10 @@ export const getAutoBudgets = (
   accountsIndex: AccountsIndex,
   autoBudgetCategories: AutoBudgetCategoriesType
 ) => {
-  const transactions =
-    accountsIndex && accountsIndex.accounts.map(account => account.transactions!).flat();
+  const transactions = accountsIndex?.accounts.map(account => account.transactions!).flat();
 
   const targetIncomeAmount = Math.round(
-    transactions && transactions.sort((a, b) => b.date.getTime() - a.date.getTime())
+    transactions?.sort((a, b) => b.date.getTime() - a.date.getTime())
       ? getTransactionTrailingCashflowAverage(
           getTransactionsTrailingCashflow(transactions),
           TrailingCashflowSegmentsEnum.LAST_6_MONTHS
@@ -168,18 +167,19 @@ export const getUserBudgetForPeriod = (userBudget: Budget[], dateFrom: Date) => 
 };
 
 export const handleBudgets = (budgetsForPeriod: Budget[]) => {
-  const budgetExpenseGroups =
-    budgetsForPeriod && budgetsForPeriod.filter(({ type }) => type === BudgetTypeEnum.EXPENSE);
+  const budgetExpenseGroups = budgetsForPeriod?.filter(
+    ({ type }) => type === BudgetTypeEnum.EXPENSE
+  );
 
-  let targetIncomeAmount =
-    budgetsForPeriod &&
-    budgetsForPeriod.find(({ type }) => type === BudgetTypeEnum.INCOME)?.targetAmount;
-  targetIncomeAmount = targetIncomeAmount ? targetIncomeAmount : 0;
+  let targetIncomeAmount = budgetsForPeriod?.find(({ type }) => type === BudgetTypeEnum.INCOME)
+    ?.targetAmount;
+  targetIncomeAmount = targetIncomeAmount || 0;
 
-  let targetExpensesAmount =
-    budgetExpenseGroups &&
-    budgetExpenseGroups.reduce((acc, { targetAmount }) => acc + targetAmount, 0);
-  targetExpensesAmount = targetExpensesAmount ? targetExpensesAmount : 0;
+  let targetExpensesAmount = budgetExpenseGroups?.reduce(
+    (acc, { targetAmount }) => acc + targetAmount,
+    0
+  );
+  targetExpensesAmount = targetExpensesAmount || 0;
 
   const targetSavingsAmount = Math.round(targetIncomeAmount - Math.abs(targetExpensesAmount));
 

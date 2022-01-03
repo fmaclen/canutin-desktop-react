@@ -68,6 +68,7 @@ export const EntitiesProvider = ({ children }: PropsWithChildren<Record<string, 
   const [settingsIndex, setSettingsIndex] = useState<SettingsIndex>(defaultSettingsIndex);
   const { filePath } = useContext(AppContext);
 
+  // Get accounts, assets & settings
   useEffect(() => {
     setTimeout(() => {
       AccountIpc.getAccounts();
@@ -93,7 +94,7 @@ export const EntitiesProvider = ({ children }: PropsWithChildren<Record<string, 
     };
   }, [filePath]);
 
-  // Budgets
+  // Get budgets
   useEffect(() => {
     autoBudgetNeedsCategories.forEach(categoryName => {
       TransactionIpc.getTransactionCategory(categoryName);
