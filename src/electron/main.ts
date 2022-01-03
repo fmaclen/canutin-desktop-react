@@ -252,6 +252,9 @@ const setupDbEvents = async () => {
 
   ipcMain.on(DB_EDIT_BUDGET_GROUPS, async (_: IpcMainEvent, editBudgets: EditBudgetType) => {
     try {
+      await SettingsRepository.editSettings(
+        editBudgets.autoBudgetField === 'Enabled' ? true : false
+      );
       await BudgetRepository.editBudgets(editBudgets);
       await getSettings();
       await getBudgets();

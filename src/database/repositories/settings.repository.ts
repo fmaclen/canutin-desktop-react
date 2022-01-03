@@ -10,6 +10,14 @@ export class SettingsRepository {
   static async getSettings(): Promise<Settings> {
     return (await getRepository<Settings>(Settings).findOne({
       order: { id: 'DESC' },
-    })) as Settings; // Return the last one
+    })) as Settings; // Return the last (and only) one
+  }
+
+  static async editSettings(autoBudget: boolean): Promise<void> {
+    const userSettings = await this.getSettings();
+
+    await getRepository<Settings>(Settings).update(userSettings.id, {
+      autoBudget,
+    });
   }
 }

@@ -50,22 +50,7 @@ export class BudgetRepository {
   }
 
   static async editBudgets(editBudgets: EditBudgetType): Promise<void> {
-    const userSettings = (await getRepository<Settings>(Settings).findOne({
-      order: { id: 'DESC' },
-    })) as Settings;
-
-    if (editBudgets.autoBudgetField === 'Enabled') {
-      await getRepository<Settings>(Settings).update(userSettings.id, {
-        autoBudget: true,
-        updatedAt: dateInUTC(new Date()),
-      });
-    } else {
-      userSettings.autoBudget &&
-        (await getRepository<Settings>(Settings).update(userSettings.id, {
-          autoBudget: false,
-          updatedAt: dateInUTC(new Date()),
-        }));
-
+    if (editBudgets.autoBudgetField === 'Disabled') {
       const budgetRepository = getRepository<Budget>(Budget);
       const userBudgets = await this.getBudgets();
       const dateFrom = dateInUTC(startOfMonth(new Date()));

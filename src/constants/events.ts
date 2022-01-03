@@ -52,6 +52,9 @@ export const DB_DELETE_ACCOUNT_ACK = 'dbDeleteAccountAck';
 export const DB_GET_SETTINGS = 'dbGetSettings';
 export const DB_GET_SETTINGS_ACK = 'dbGetSettingsAck';
 
+export const DB_EDIT_SETTINGS = 'dbEditSettings';
+export const DB_EDIT_SETTINGS_ACK = 'dbEditSettingsAck';
+
 export const DB_GET_TRANSACTION_CATEGORY = 'dbGetTransactionSubCategory';
 export const DB_GET_TRANSACTION_CATEGORY_ACK = 'dbGetTransactionSubCategoryAck';
 

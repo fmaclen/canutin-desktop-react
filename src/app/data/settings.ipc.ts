@@ -1,8 +1,6 @@
 import { ipcRenderer } from 'electron';
 
-import {
-  DB_GET_SETTINGS,
-} from '@constants/events';
+import { DB_GET_SETTINGS, DB_EDIT_SETTINGS } from '@constants/events';
 
 export default class SettingsIpc {
   static getSettings() {
@@ -10,6 +8,6 @@ export default class SettingsIpc {
   }
 
   static editSettings() {
-    // TODO
+    ipcRenderer.send(DB_EDIT_SETTINGS);
   }
 }
