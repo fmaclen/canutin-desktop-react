@@ -1,5 +1,5 @@
 import { getRepository, getConnection, Between, UpdateResult } from 'typeorm';
-import { startOfDay, endOfDay } from 'date-fns';
+import { subMinutes } from 'date-fns';
 
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 
@@ -63,11 +63,18 @@ export class TransactionRepository {
   }
 
   static async getFilterTransactions(filter: FilterTransactionInterface): Promise<Transaction[]> {
-    const dateFrom = startOfDay(dateInUTC(filter.dateFrom));
-    const dateTo = endOfDay(dateInUTC(filter.dateTo));
+    const dateFrom = subMinutes(
+      dateInUTC(filter.dateFrom),
+      dateInUTC(filter.dateFrom).getTimezoneOffset()
+    );
+    const dateTo = subMinutes(
+      dateInUTC(filter.dateTo),
+      dateInUTC(filter.dateTo).getTimezoneOffset()
+    );
 
     return await getRepository<Transaction>(Transaction).find({
       relations: ['account', 'category'],
+      order: { date: 'DESC' },
       where: {
         date: Between(dateFrom.toISOString(), dateTo.toISOString()),
       },

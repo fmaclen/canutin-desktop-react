@@ -15,7 +15,6 @@ import {
   greenLight,
   redPlain,
   redLight,
-  borderGrey,
   grey40,
 } from '@app/constants/colors';
 import { monospaceRegular, sansSerifBold } from '@app/constants/fonts';
@@ -127,8 +126,6 @@ export const progressTooltip = css`
   border-radius: 3px;
   padding: 2px;
   white-space: nowrap;
-  /* border-bottom: 1px dashed ${borderGrey};
-  cursor: help; */
 `;
 
 export const balanceContainer = css`

@@ -45,10 +45,10 @@ const BudgetBar = ({ title, periodAmount, targetAmount, dataTestId }: BudgetBarP
   const getBudgetStatus = () => {
     if (percentage === 0) return;
 
-    // Budget bar with negative value
+    // Budget bar with negative targetAmount
     if (targetAmount < 0) return percentage < 100 ? StatusEnum.NEUTRAL : StatusEnum.NEGATIVE;
 
-    // Budget bar with positive value
+    // Budget bar with positive targetAmount
     switch (targetAmount > 0) {
       case percentage < 0:
         return StatusEnum.NEGATIVE;
