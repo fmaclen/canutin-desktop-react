@@ -59,7 +59,6 @@ describe('Budget tests', () => {
     });
 
     initAppWithContexts();
-
     const budgetSidebarLink = screen.getByTestId('sidebar-budget');
     expect(budgetSidebarLink).toHaveAttribute('disabled');
 
@@ -87,7 +86,6 @@ describe('Budget tests', () => {
     });
 
     initAppWithContexts();
-
     const budgetSidebarLink = screen.getByTestId('sidebar-budget');
     expect(budgetSidebarLink).not.toHaveAttribute('disabled');
 
@@ -215,16 +213,13 @@ describe('Budget tests', () => {
     expect(budgetBarWants).toHaveTextContent('-$3,769 (166%)');
     expect(budgetBarWants).toHaveTextContent('-$2,273');
 
-    // const budgetOutOfBudget = screen.getByTestId('budget-out-of-budget');
-    // expect(budgetOutOfBudget).toHaveTextContent('Out of budget');
-    // expect(budgetOutOfBudget).toHaveTextContent('-$1,498');
-
     userEvent.click(screen.getByText('Edit'));
     await waitFor(() => {
       expect(screen.getByText('What is auto-budget?')).toBeVisible();
       expect(screen.getByDisplayValue('Enabled')).toBeChecked();
       expect(screen.getByDisplayValue('Disabled')).not.toBeChecked();
       expect(screen.getByText('Save')).toHaveAttribute('disabled');
+      expect(screen.queryByText('Add new')).toBeNull();
     });
 
     const budgetFieldsetTargetIncome = screen.getByTestId('budget-fieldset-target-income');
@@ -270,34 +265,81 @@ describe('Budget tests', () => {
     expect(screen.getByDisplayValue('Wants')).not.toHaveAttribute('disabled');
     expect(screen.getByDisplayValue('-$2,273')).not.toHaveAttribute('disabled');
 
+    // FIXME: When disabling auto-budget from the Edit page, the expense groups are
+    // populated with the data from auto-budget but only in the app and not during the tests.
     userEvent.clear(screen.getByDisplayValue('+$7,577'));
-    const expenseGroupTargetAmountInput = screen.getAllByPlaceholderText('$0.00');
+    let expenseGroupTargetAmountInput = screen.getAllByPlaceholderText('$0.00');
+    expect(expenseGroupTargetAmountInput.length).toEqual(4);
+
     userEvent.clear(expenseGroupTargetAmountInput[0]);
     userEvent.type(expenseGroupTargetAmountInput[0], '1000');
     userEvent.clear(expenseGroupTargetAmountInput[1]);
     userEvent.type(expenseGroupTargetAmountInput[1], '500');
     userEvent.clear(expenseGroupTargetAmountInput[2]);
     userEvent.type(expenseGroupTargetAmountInput[2], '400');
-
     budgetFieldsetExpenseGroups = screen.getAllByTestId('budget-fieldset-expense-group');
+    expect(budgetFieldsetExpenseGroups.length).toEqual(2);
     expect(budgetFieldsetExpenseGroups[0]).toHaveTextContent('50%');
     expect(budgetFieldsetExpenseGroups[1]).toHaveTextContent('40%');
 
     budgetFieldsetTargetSavings = screen.getByTestId('budget-fieldset-target-savings');
     expect(budgetFieldsetTargetSavings).toHaveTextContent('10%');
 
-    userEvent.click(screen.getAllByText('Remove')[0]);
+    const removeButtons = screen.getAllByText('Remove');
+    expect(removeButtons.length).toEqual(2);
+
+    userEvent.click(removeButtons[0]);
     await waitFor(() => {
       budgetFieldsetExpenseGroups = screen.getAllByTestId('budget-fieldset-expense-group');
+      expect(budgetFieldsetExpenseGroups.length).toEqual(1);
       expect(budgetFieldsetExpenseGroups[0]).not.toHaveTextContent('50%');
       expect(budgetFieldsetExpenseGroups[0]).toHaveTextContent('40%');
 
       budgetFieldsetTargetSavings = screen.getByTestId('budget-fieldset-target-savings');
       expect(budgetFieldsetTargetSavings).not.toHaveTextContent('10%');
       expect(budgetFieldsetTargetSavings).toHaveTextContent('60%');
+      expect(screen.getByText('Save')).not.toHaveAttribute('disabled');
     });
 
-    // TODO: click "save" and assert the right payload is sent with `ipcRenderer.send(DB_EDIT_BUDGET_GROUPS, budgetGroups);`
+    userEvent.click(removeButtons[1]);
+    await waitFor(() => {
+      budgetFieldsetExpenseGroups = screen.queryAllByTestId('budget-fieldset-expense-group');
+      expect(budgetFieldsetExpenseGroups.length).toEqual(0);
+
+      budgetFieldsetTargetSavings = screen.getByTestId('budget-fieldset-target-savings');
+      expect(budgetFieldsetTargetSavings).not.toHaveTextContent('60%');
+      expect(budgetFieldsetTargetSavings).toHaveTextContent('100%');
+    });
+    expect(
+      screen.getByText(
+        'You need to add at least one expense group with a target amount to save this budget.'
+      )
+    ).toBeVisible();
+
+    userEvent.click(screen.getByText('Add new'));
+    await waitFor(() => {
+      budgetFieldsetExpenseGroups = screen.getAllByTestId('budget-fieldset-expense-group');
+      expect(budgetFieldsetExpenseGroups.length).toEqual(1);
+      expect(budgetFieldsetExpenseGroups[0]).toHaveTextContent('0%');
+    });
+
+    expenseGroupTargetAmountInput = screen.getAllByPlaceholderText('$0.00');
+    expect(expenseGroupTargetAmountInput.length).toEqual(3);
+    expect(screen.getByText('Save')).toHaveAttribute('disabled');
+
+    userEvent.type(expenseGroupTargetAmountInput[1], '1500');
+    await waitFor(() => {
+      budgetFieldsetExpenseGroups = screen.getAllByTestId('budget-fieldset-expense-group');
+      expect(budgetFieldsetExpenseGroups[0]).toHaveTextContent('150%');
+    });
+
+    budgetFieldsetTargetSavings = screen.getByTestId('budget-fieldset-target-savings');
+    expect(budgetFieldsetTargetSavings).toHaveTextContent('-50%');
+    expect(screen.getByText('Save')).toHaveAttribute('disabled');
+
+    // TODO:
+    // - Click "save" and assert the right payload is sent with `ipcRenderer.send(DB_EDIT_BUDGET_GROUPS, budgetGroups);`
+    // - Test "Out of budget" card
   });
 
   // test('Budget page displays the correct data when auto-budget is disabled', async () => {});

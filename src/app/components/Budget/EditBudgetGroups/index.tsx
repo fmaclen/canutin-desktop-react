@@ -89,7 +89,7 @@ const EditBudgetGroups = () => {
     ({ type }) => type === BudgetTypeEnum.EXPENSE
   );
 
-  const { handleSubmit, register, watch, setValue, control, formState } = useForm({
+  const { handleSubmit, register, watch, setValue, getValues, control, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
       autoBudgetField: autoBudget ? 'Enabled' : 'Disabled',
@@ -224,8 +224,6 @@ const EditBudgetGroups = () => {
     }
 
     BudgetIpc.editBudgetGroups({ autoBudgetField, editedBudgets });
-
-    console.log({ autoBudgetField, editedBudgets });
   };
 
   const TOOLTIP_BUDGET_INCOME_PERCENTAGE =
@@ -238,7 +236,6 @@ const EditBudgetGroups = () => {
   const editExpenseGroupFieldset = ({
     index,
     namespace,
-    targetAmount,
     categoriesCount,
     error,
   }: EditExpenseGroupFieldsetType) => (
@@ -261,7 +258,13 @@ const EditBudgetGroups = () => {
             onlyNegative={true}
           />
           <PercentageField
-            percentage={targetAmount ? Math.abs(getPercentageOfTargetIncome(targetAmount)) : 0}
+            percentage={Math.abs(
+              getPercentageOfTargetIncome(
+                parseInt(getValues(`${namespace}.${index}.targetAmount`)) < 0
+                  ? getValues(`${namespace}.${index}.targetAmount`)
+                  : 0
+              )
+            )}
             tooltip={TOOLTIP_BUDGET_EXPENSE_PERCENTAGE}
             error={error}
           />
@@ -331,7 +334,6 @@ const EditBudgetGroups = () => {
                 return editExpenseGroupFieldset({
                   index: expenseGroup.id,
                   namespace: 'expenseGroupFields',
-                  targetAmount: expenseGroupFields?.[expenseGroup.id]?.targetAmount,
                   error: hasNoSavings,
                   categoriesCount: expenseGroup.categories.length,
                 });
@@ -346,7 +348,6 @@ const EditBudgetGroups = () => {
                   return editExpenseGroupFieldset({
                     index: indexOffset,
                     namespace: 'newExpenseGroupFields',
-                    targetAmount: expenseGroupFields?.[indexOffset]?.targetAmount,
                     error: hasNoSavings,
                     categoriesCount: 0,
                   });
@@ -369,9 +370,12 @@ const EditBudgetGroups = () => {
               </Field>
               {hasNoExpenseGroups && (
                 <FieldNotice
-                  title="No expense groups"
+                  title="No expenses in budget"
                   description={
-                    <div>You need to add at least one expense group to save this budget.</div>
+                    <div>
+                      You need to add at least one expense group with a target amount to save this
+                      budget.
+                    </div>
                   }
                 />
               )}
