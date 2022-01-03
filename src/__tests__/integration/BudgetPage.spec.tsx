@@ -31,6 +31,7 @@ import {
 import { filters } from '@app/constants/filters';
 import { dateInUTC } from '@app/utils/date.utils';
 import mapCategories from '@database/helpers/importResources/mapCategories';
+import BudgetIpc from '@app/data/budget.ipc';
 
 const initAppWithContexts = () => {
   render(
@@ -284,6 +285,14 @@ describe('Budget tests', () => {
 
     budgetFieldsetTargetSavings = screen.getByTestId('budget-fieldset-target-savings');
     expect(budgetFieldsetTargetSavings).toHaveTextContent('10%');
+    expect(screen.getByText('Save')).not.toHaveAttribute('disabled');
+
+    const spyOnSubmit = jest.spyOn(BudgetIpc, 'editBudgetGroups');
+    userEvent.click(screen.getByText('Save'));
+    await waitFor(() => {
+      expect(spyOnSubmit).toHaveBeenCalledTimes(1);
+      expect(spyOnSubmit).toMatchSnapshot();
+    });
 
     const removeButtons = screen.getAllByText('Remove');
     expect(removeButtons.length).toEqual(2);
@@ -298,7 +307,6 @@ describe('Budget tests', () => {
       budgetFieldsetTargetSavings = screen.getByTestId('budget-fieldset-target-savings');
       expect(budgetFieldsetTargetSavings).not.toHaveTextContent('10%');
       expect(budgetFieldsetTargetSavings).toHaveTextContent('60%');
-      expect(screen.getByText('Save')).not.toHaveAttribute('disabled');
     });
 
     userEvent.click(removeButtons[1]);

@@ -807,9 +807,9 @@ exports[`Balance sheet tests Balance sheet page displays the correct data 1`] = 
               <div>
                 <a
                   class="gVKLTO"
-                  href="/asset/2021 Toyota RAV4"
+                  href="/asset/2022 Toyota RAV4"
                 >
-                  2021 Toyota RAV4
+                  2022 Toyota RAV4
                 </a>
                 <div
                   class="bVdapH"
@@ -1638,9 +1638,9 @@ exports[`Balance sheet tests Balance sheet page displays the correct data 3`] = 
               <div>
                 <a
                   class="gVKLTO"
-                  href="/asset/2021 Toyota RAV4"
+                  href="/asset/2022 Toyota RAV4"
                 >
-                  2021 Toyota RAV4
+                  2022 Toyota RAV4
                 </a>
                 <div
                   class="bVdapH"
