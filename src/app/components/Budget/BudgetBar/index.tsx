@@ -43,18 +43,19 @@ const BudgetBar = ({ title, periodAmount, targetAmount, dataTestId }: BudgetBarP
   const percentage = Math.round(proportionBetween(periodAmount, targetAmount));
 
   const getBudgetStatus = () => {
-    if (targetAmount > 0) {
-      // Budget bar with positive value
-      if (percentage <= 20) {
+    if (percentage === 0) return;
+
+    // Budget bar with negative value
+    if (targetAmount < 0) return percentage < 100 ? StatusEnum.NEUTRAL : StatusEnum.NEGATIVE;
+
+    // Budget bar with positive value
+    switch (true) {
+      case percentage >= 20:
         return StatusEnum.WARNING;
-      } else if (percentage > 20 && percentage < 85) {
+      case percentage > 20 && percentage < 85:
         return StatusEnum.NEUTRAL;
-      } else {
+      default:
         return StatusEnum.POSITIVE;
-      }
-    } else {
-      // Budget bar with negative value
-      return percentage < 100 ? StatusEnum.NEUTRAL : StatusEnum.NEGATIVE;
     }
   };
 

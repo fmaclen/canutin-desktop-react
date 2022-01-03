@@ -16,6 +16,7 @@ import {
   redPlain,
   redLight,
   borderGrey,
+  grey40,
 } from '@app/constants/colors';
 import { monospaceRegular, sansSerifBold } from '@app/constants/fonts';
 
@@ -47,7 +48,7 @@ export const progressContainer = css`
   display: flex;
 `;
 
-export const progress = css<{ status: StatusEnum; percentage: number }>`
+export const progress = css<{ status?: StatusEnum; percentage: number }>`
   width: ${({ percentage }) => `${percentage > 100 ? 100 : percentage}%`};
 
   position: relative;
@@ -75,8 +76,10 @@ export const progress = css<{ status: StatusEnum; percentage: number }>`
           return `background-color: ${yellowPlain}`;
         case StatusEnum.NEGATIVE:
           return `background-color: ${redPlain}`;
-        default:
+        case StatusEnum.NEUTRAL:
           return `background-color: ${bluePlain}`;
+        default:
+          return `background-color: ${grey10}`;
       }
     }}
   }
@@ -90,8 +93,10 @@ export const progress = css<{ status: StatusEnum; percentage: number }>`
           return `color: ${yellowPlain}`;
         case StatusEnum.NEGATIVE:
           return `color: ${redPlain}`;
-        default:
+        case StatusEnum.NEUTRAL:
           return `color: ${bluePlain}`;
+        default:
+          return `color: ${grey40}`;
       }
     }}
   }
@@ -104,8 +109,10 @@ export const progress = css<{ status: StatusEnum; percentage: number }>`
         return `background-color: ${yellowLight}`;
       case StatusEnum.NEGATIVE:
         return `background-color: ${redLight}`;
-      default:
+      case StatusEnum.NEUTRAL:
         return `background-color: ${blueLight}`;
+      default:
+        return `background-color: ${grey3}`;
     }
   }}
 `;
