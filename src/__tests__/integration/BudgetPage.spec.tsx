@@ -151,6 +151,17 @@ describe('Budget tests', () => {
         });
       });
 
+    // Out of budget transaction
+    oneMonthOfTransactions.push({
+      description: 'Better Purchase Electronics Co.',
+      amount: -99.99,
+      date: new Date(),
+      categoryName: 'Uncategorized',
+      excludeFromTotals: false,
+      account: { ...accountCreditCardDetails },
+      category: { name: mapCategories('Uncategorized') },
+    });
+
     const {
       needsCategories,
       wantsCategories,
@@ -208,12 +219,12 @@ describe('Budget tests', () => {
     const budgetBarExpenses = screen.getByTestId('budget-bar-expenses');
     expect(budgetBarExpenses).toHaveTextContent('Expenses');
     expect(budgetBarExpenses).toHaveTextContent('-$6,061');
-    expect(budgetBarExpenses).toHaveTextContent('-$7,822 (129%)');
+    expect(budgetBarExpenses).toHaveTextContent('-$7,922 (131%)');
 
     const budgetBarSavings = screen.getByTestId('budget-bar-savings');
     expect(budgetBarSavings).toHaveTextContent('Savings');
     expect(budgetBarSavings).toHaveTextContent('$1,516');
-    expect(budgetBarSavings).toHaveTextContent('$228 (15%)');
+    expect(budgetBarSavings).toHaveTextContent('$128 (8%)');
 
     const budgetBarNeeds = screen.getByTestId('budget-bar-needs');
     expect(budgetBarNeeds).toHaveTextContent('Needs');
@@ -225,7 +236,9 @@ describe('Budget tests', () => {
     expect(budgetBarWants).toHaveTextContent('-$3,769 (166%)');
     expect(budgetBarWants).toHaveTextContent('-$2,273');
 
-    // TODO: add assertions for "Out of budget" component
+    const budgetBarOutOfBudget = screen.getByTestId('budget-out-of-budget');
+    expect(budgetBarOutOfBudget).toHaveTextContent('Out of budget');
+    expect(budgetBarOutOfBudget).toHaveTextContent('-$100');
 
     userEvent.click(screen.getByText('Edit'));
     await waitFor(() => {
