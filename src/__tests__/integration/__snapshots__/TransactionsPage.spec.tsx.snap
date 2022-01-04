@@ -26,13 +26,13 @@ exports[`Transactions tests Transactions page displays an empty view when no eno
           class="evIijI"
         >
           <button
-            class="clBAQD"
+            class="eVxMpZ"
             type="button"
           >
             Add transaction
           </button>
           <button
-            class="clBAQD"
+            class="eVxMpZ"
             type="button"
           >
             Import

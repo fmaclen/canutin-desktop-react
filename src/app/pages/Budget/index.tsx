@@ -62,8 +62,8 @@ const Budget = () => {
         subTitle={autoBudget ? 'Auto-budget' : 'Custom budget'}
         headerNav={<BudgetHeaderButtons />}
       >
-        <>
-          {!isLoading && targetIncomeAmount > 0 && periodTransactions.length > 0 && (
+        {!isLoading && targetIncomeAmount > 0 && periodTransactions.length > 0 && (
+          <>
             <BudgetThisMonthContainer>
               {isThisMonth(budgetFilterOption?.value?.dateFrom) && (
                 <BudgetThisMonthTime>
@@ -113,21 +113,22 @@ const Budget = () => {
                 </Section>
               )}
             </BudgetThisMonthContainer>
-          )}
 
-          {periodOutOfBudgetAmount !== 0 && (
-            <Section title="Other expenses">
-              <Card
-                label="Out of budget"
-                value={periodOutOfBudgetAmount}
-                isCurrency={true}
-                dataTestId="budget-out-of-budget"
-              />
-            </Section>
-          )}
-        </>
-        {!isLoading && periodTransactions.length === 0 && (
-          <EmptyCard message="No transactions were found in the current period" />
+            {periodOutOfBudgetAmount !== 0 && (
+              <Section title="Other expenses">
+                <Card
+                  label="Out of budget"
+                  value={periodOutOfBudgetAmount}
+                  isCurrency={true}
+                  dataTestId="budget-out-of-budget"
+                />
+              </Section>
+            )}
+          </>
+        )}
+
+        {!isLoading && autoBudget && targetIncomeAmount <= 0 && (
+          <EmptyCard message="Need at least 2 months of transactions for budgets to be displayed when auto-budget is enabled" />
         )}
       </ScrollView>
     </>

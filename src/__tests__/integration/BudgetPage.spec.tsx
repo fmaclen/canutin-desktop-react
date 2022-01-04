@@ -93,7 +93,11 @@ describe('Budget tests', () => {
     userEvent.click(budgetSidebarLink);
     expect(budgetSidebarLink).toHaveAttribute('active', '1');
     expect(screen.getByText('Auto-budget')).toBeVisible();
-    expect(screen.getByText('No transactions were found in the current period')).toBeVisible();
+    expect(
+      screen.getByText(
+        'Need at least 2 months of transactions for budgets to be displayed when auto-budget is enabled'
+      )
+    ).toBeVisible();
 
     const periodChooser = screen.getByText(format(new Date(), 'MMMM yyyy'));
     expect(periodChooser).toBeVisible();
