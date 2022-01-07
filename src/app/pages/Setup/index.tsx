@@ -23,7 +23,7 @@ import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarCont
 const noVaultBreadcrumbs = [{ breadcrumb: 'Canutin setup', path: '/' }];
 
 const Setup = () => {
-  const { setIsLoading, setIsAppInitialized, isLoading, filePath } = useContext(AppContext);
+  const { setIsLoading, setIsAppInitialized, filePath } = useContext(AppContext);
   const { setStatusMessage, setBreadcrumbs } = useContext(StatusBarContext);
   const history = useHistory();
   const breadcrumbItems = useBreadcrumbs(noVaultBreadcrumbs, {
@@ -78,7 +78,7 @@ const Setup = () => {
     ipcRenderer.send(OPEN_EXISTING_VAULT);
   };
 
-  return !isLoading ? (
+  return (
     <ScrollView title="Canutin setup" wizard={true}>
       <SectionRow>
         <Section title="Choose vault">
@@ -99,7 +99,7 @@ const Setup = () => {
         </Section>
       </SectionRow>
     </ScrollView>
-  ) : null;
+  );
 };
 
 export default Setup;

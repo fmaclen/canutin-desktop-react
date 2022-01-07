@@ -1,23 +1,23 @@
-import React, { useEffect, useContext } from 'react';
-import { Switch, Route, HashRouter, Redirect } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useContext, useEffect } from 'react';
 import { ipcRenderer } from 'electron';
 
-import TitleBar from '@components/common/TitleBar';
-import StatusBar from '@components/common/StatusBar';
-import SideBar from '@components/common/SideBar';
-import { AppContext } from '@app/context/appContext';
-
-import Setup from '@pages/Setup';
+import { Switch, Route, HashRouter, Redirect } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { routesConfig, RouteConfigProps, routesPaths } from '@routes';
+
+import { EntitiesContext } from '@app/context/entitiesContext';
+import { AppContext } from '@app/context/appContext';
 import { DATABASE_CONNECTED, DATABASE_NOT_DETECTED } from '@constants';
 import AssetIpc from '@app/data/asset.ipc';
 import AccountIpc from '@app/data/account.ipc';
-
+import TitleBar from '@components/common/TitleBar';
+import StatusBar from '@components/common/StatusBar';
+import SideBar from '@components/common/SideBar';
+import Setup from '@pages/Setup';
 import GlobalStyle from '@app/styles/global';
+import NotReady from '@app/pages/NotReady';
 import { container } from './styles';
-import { EntitiesContext } from '@app/context/entitiesContext';
 
 const Container = styled.div`
   ${container}
@@ -33,13 +33,15 @@ const App = () => {
     isDbEmpty,
     setIsDbEmpty,
   } = useContext(AppContext);
-  const { accountsIndex, assetsIndex } = useContext(EntitiesContext);
+  const { accountsIndex, assetsIndex, budgetsIndex, settingsIndex } = useContext(EntitiesContext);
 
   useEffect(() => {
     ipcRenderer.on(DATABASE_CONNECTED, (_, filePath) => {
-      setIsLoading(false);
       setIsAppInitialized(true);
       setFilePath(filePath?.filePath);
+      setIsDbEmpty(true);
+      setIsLoading(true);
+
       if (filePath) {
         AssetIpc.getAssets();
         AccountIpc.getAccounts();
@@ -52,12 +54,14 @@ const App = () => {
     });
 
     return () => {
-      ipcRenderer.removeAllListeners(DATABASE_NOT_DETECTED);
       ipcRenderer.removeAllListeners(DATABASE_CONNECTED);
+      ipcRenderer.removeAllListeners(DATABASE_NOT_DETECTED);
     };
   }, []);
 
   useEffect(() => {
+    if (isLoading) return;
+
     if (
       Array.isArray(accountsIndex?.accounts) &&
       accountsIndex?.accounts.length === 0 &&
@@ -68,25 +72,34 @@ const App = () => {
     } else {
       setIsDbEmpty(false);
     }
-  }, [assetsIndex?.lastUpdate, accountsIndex?.lastUpdate]);
+  }, [isLoading]);
+
+  // Set app loading state after all indexes have been updated
+  useEffect(() => {
+    assetsIndex?.lastUpdate &&
+      accountsIndex?.lastUpdate &&
+      budgetsIndex?.lastUpdate &&
+      settingsIndex?.lastUpdate &&
+      setIsLoading(false);
+  }, [assetsIndex, accountsIndex, budgetsIndex, settingsIndex]);
 
   return (
     <>
       <GlobalStyle />
       <HashRouter>
         <Container hasSidebar={isAppInitialized}>
+          <TitleBar />
+
+          {isAppInitialized && isLoading && <NotReady />}
+
+          {!isAppInitialized && !isLoading && <Setup />}
+
           {!isLoading && isAppInitialized && (
             <>
-              <TitleBar />
               <SideBar />
+              {isDbEmpty && <Redirect to={routesPaths.addAccountOrAsset} />}
+              {!isDbEmpty && <Redirect to={routesPaths.index} />}
               <Switch>
-                {isDbEmpty && (
-                  <Redirect
-                    exact
-                    from={routesPaths.bigpicture}
-                    to={routesPaths.addAccountOrAsset}
-                  />
-                )}
                 {routesConfig.map(({ path, component, exact }: RouteConfigProps, index) => (
                   <Route key={index} exact={exact} path={path}>
                     {component}
@@ -96,12 +109,6 @@ const App = () => {
             </>
           )}
 
-          {!isAppInitialized && (
-            <>
-              <TitleBar />
-              <Setup />
-            </>
-          )}
           <StatusBar />
         </Container>
       </HashRouter>

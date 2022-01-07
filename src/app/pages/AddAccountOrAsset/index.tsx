@@ -45,6 +45,10 @@ const AddAccountOrAsset = () => {
         push(routesPaths.balance);
       }
     });
+
+    return () => {
+      ipcRenderer.removeAllListeners(DB_SEED_VAULT_ACK);
+    };
   }, []);
 
   return (
