@@ -74,8 +74,8 @@ export const EntitiesProvider = ({ children }: PropsWithChildren<Record<string, 
       return;
     }
 
-    setAssetsIndex(defaultAssetsIndex);
     setAccountsIndex(defaultAccountsIndex);
+    setAssetsIndex(defaultAssetsIndex);
     setSettingsIndex(defaultSettingsIndex);
     setBudgetsIndex(defaultBudgetsIndex);
 

@@ -1,16 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import { ipcRenderer } from 'electron';
-
 import { Switch, Route, HashRouter, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { routesConfig, RouteConfigProps, routesPaths } from '@routes';
+import { DATABASE_CONNECTED, DATABASE_NOT_DETECTED, DATABASE_DOES_NOT_EXIST } from '@constants';
 
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { AppContext } from '@app/context/appContext';
-import { DATABASE_CONNECTED, DATABASE_NOT_DETECTED } from '@constants';
-import AssetIpc from '@app/data/asset.ipc';
-import AccountIpc from '@app/data/account.ipc';
+import { StatusBarContext } from '@app/context/statusBarContext';
+import { StatusEnum } from '@app/constants/misc';
+import { DatabaseDoesNotExistsMessage } from '@constants/messages';
 import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
@@ -34,6 +34,7 @@ const App = () => {
     setIsDbEmpty,
   } = useContext(AppContext);
   const { accountsIndex, assetsIndex, budgetsIndex, settingsIndex } = useContext(EntitiesContext);
+  const { setStatusMessage } = useContext(StatusBarContext);
 
   useEffect(() => {
     ipcRenderer.on(DATABASE_CONNECTED, (_, filePath) => {
@@ -41,11 +42,6 @@ const App = () => {
       setFilePath(filePath?.filePath);
       setIsDbEmpty(true);
       setIsLoading(true);
-
-      if (filePath) {
-        AssetIpc.getAssets();
-        AccountIpc.getAccounts();
-      }
     });
 
     ipcRenderer.on(DATABASE_NOT_DETECTED, () => {
@@ -53,9 +49,24 @@ const App = () => {
       setIsAppInitialized(false);
     });
 
+    ipcRenderer.on(DATABASE_DOES_NOT_EXIST, (_, { dbPath }: DatabaseDoesNotExistsMessage) => {
+      setIsLoading(false);
+      setIsAppInitialized(false);
+      setStatusMessage({
+        sentiment: StatusEnum.NEGATIVE,
+        message: (
+          <>
+            The vault located at <b>{dbPath}</b> was moved or deleted
+          </>
+        ),
+        isLoading: false,
+      });
+    });
+
     return () => {
       ipcRenderer.removeAllListeners(DATABASE_CONNECTED);
       ipcRenderer.removeAllListeners(DATABASE_NOT_DETECTED);
+      ipcRenderer.removeAllListeners(DATABASE_DOES_NOT_EXIST);
     };
   }, []);
 
