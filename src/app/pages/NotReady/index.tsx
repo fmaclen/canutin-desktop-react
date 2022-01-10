@@ -5,11 +5,10 @@ import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import { routesPaths } from '@routes';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import Breadcrumbs from '@components/common/Breadcrumbs';
-
+import { ReactComponent as Loading } from '@assets/icons/Loading.svg';
 import { container } from './styles';
-import { Main } from '@app/components/common/ScrollView';
 
-const Container = styled(Main)`
+const Container = styled.div`
   ${container};
 `;
 
@@ -29,6 +28,10 @@ const NotReady = () => {
     };
   }, []);
 
-  return <Container wizard={true}></Container>;
+  return (
+    <Container>
+      <Loading />
+    </Container>
+  );
 };
 export default NotReady;

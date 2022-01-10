@@ -61,13 +61,9 @@ const App = () => {
 
   useEffect(() => {
     if (isLoading) return;
+    if (!Array.isArray(accountsIndex?.accounts) && !Array.isArray(assetsIndex?.assets)) return;
 
-    if (
-      Array.isArray(accountsIndex?.accounts) &&
-      accountsIndex?.accounts.length === 0 &&
-      Array.isArray(assetsIndex?.assets) &&
-      assetsIndex?.assets.length === 0
-    ) {
+    if (accountsIndex?.accounts.length === 0 && assetsIndex?.assets.length === 0) {
       setIsDbEmpty(true);
     } else {
       setIsDbEmpty(false);
@@ -90,7 +86,7 @@ const App = () => {
         <Container hasSidebar={isAppInitialized}>
           <TitleBar />
 
-          {isAppInitialized && isLoading && <NotReady />}
+          {isLoading && <NotReady />}
 
           {!isAppInitialized && !isLoading && <Setup />}
 
