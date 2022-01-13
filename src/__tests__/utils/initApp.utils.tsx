@@ -19,16 +19,10 @@ interface SeedSettings {
   autoBudget?: true | false;
 }
 
-// TODO
-interface SeedBudget {
-  wip: string;
-}
-
 interface InitAppWithProps {
   accounts?: SeedAccount[];
   assets?: SeedAsset[];
   settings?: SeedSettings;
-  budgets?: SeedBudget[];
   filterTransactions?: SeedTransaction[] | false;
 }
 
@@ -46,7 +40,6 @@ export const initAppWith = ({
   accounts = [],
   assets = [],
   settings = { autoBudget: true },
-  budgets,
   filterTransactions = [],
 }: InitAppWithProps) => {
   mocked(ipcRenderer).on.mockImplementation((event, callback) => {
@@ -69,7 +62,7 @@ export const initAppWith = ({
     }
 
     if (event === DB_GET_BUDGETS_ACK) {
-      callback((event as unknown) as IpcRendererEvent, budgets);
+      callback((event as unknown) as IpcRendererEvent, []);
     }
 
     if (event === FILTER_TRANSACTIONS_ACK) {
