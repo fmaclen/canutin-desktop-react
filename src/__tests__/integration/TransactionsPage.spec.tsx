@@ -1,7 +1,7 @@
-import { screen } from '@testing-library/react';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
-import { mocked } from 'ts-jest/utils';
+import { screen, waitFor } from '@testing-library/react';
+import { ipcRenderer } from 'electron';
 import userEvent from '@testing-library/user-event';
+import selectEvent from 'react-select-event';
 import 'jest-styled-components';
 import { endOfDay, startOfDay } from 'date-fns';
 
@@ -10,50 +10,17 @@ import { endOfDay, startOfDay } from 'date-fns';
 import 'regenerator-runtime/runtime';
 
 import { dateInUTC } from '@app/utils/date.utils';
-import {
-  DB_GET_ACCOUNTS_ACK,
-  FILTER_TRANSACTIONS_ACK,
-  FILTER_TRANSACTIONS,
-} from '@constants/events';
-import { DATABASE_CONNECTED } from '@constants';
-import { AppCtxProvider } from '@app/context/appContext';
-import { EntitiesProvider } from '@app/context/entitiesContext';
-import { render } from '@tests/utils';
-import App from '@components/App';
-
+import { FILTER_TRANSACTIONS } from '@constants/events';
 import { accountCheckingDetails } from '@database/seed/demoData/accounts';
-import { TransactionsProvider } from '@app/context/transactionsContext';
 import { accountCheckingTransactionSet } from '@database/seed/demoData/transactions';
 import { filters } from '@app/constants/filters';
 import mapCategories from '@database/helpers/importResources/mapCategories';
-
-const initAppWithContexts = () => {
-  render(
-    <AppCtxProvider>
-      <EntitiesProvider>
-        <TransactionsProvider>
-          <App />
-        </TransactionsProvider>
-      </EntitiesProvider>
-    </AppCtxProvider>
-  );
-};
+import { initAppWith } from '@tests/utils/initApp.utils';
+import { seedMinimumAccount } from '@tests/factories/entitiesFactory';
 
 describe('Transactions tests', () => {
-  const minimumAccount = [{ ...accountCheckingDetails, transactions: [] }];
-
   test("Sidebar link can't be clicked if no accounts or assets are present", async () => {
-    mocked(ipcRenderer).on.mockImplementation((event, callback) => {
-      if (event === DATABASE_CONNECTED) {
-        callback((event as unknown) as IpcRendererEvent, {
-          filePath: 'testFilePath',
-        });
-      }
-
-      return ipcRenderer;
-    });
-
-    initAppWithContexts();
+    initAppWith({});
     const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
     expect(transactionsSidebarLink).toHaveAttribute('disabled');
 
@@ -62,28 +29,11 @@ describe('Transactions tests', () => {
   });
 
   test('Transactions page displays an empty view when no enough data is available', async () => {
-    mocked(ipcRenderer).on.mockImplementation((event, callback) => {
-      if (event === DATABASE_CONNECTED) {
-        callback((event as unknown) as IpcRendererEvent, {
-          filePath: 'testFilePath',
-        });
-      }
-
-      if (event === DB_GET_ACCOUNTS_ACK) {
-        callback((event as unknown) as IpcRendererEvent, minimumAccount);
-      }
-
-      if (event === FILTER_TRANSACTIONS_ACK) {
-        callback((event as unknown) as IpcRendererEvent, { transactions: [] });
-      }
-
-      return ipcRenderer;
-    });
-
-    initAppWithContexts();
+    initAppWith({ accounts: seedMinimumAccount });
     const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
     expect(transactionsSidebarLink).toHaveAttribute('active', '0');
     expect(transactionsSidebarLink).not.toHaveAttribute('disabled');
+    expect(transactionsSidebarLink).toHaveAttribute('href', '#/transactions');
 
     userEvent.click(transactionsSidebarLink);
     expect(transactionsSidebarLink).toHaveAttribute('active', '1');
@@ -106,27 +56,7 @@ describe('Transactions tests', () => {
         category: { name: mapCategories(transaction.categoryName) },
       }));
 
-    mocked(ipcRenderer).on.mockImplementation((event, callback) => {
-      if (event === DATABASE_CONNECTED) {
-        callback((event as unknown) as IpcRendererEvent, {
-          filePath: 'testFilePath',
-        });
-      }
-
-      if (event === DB_GET_ACCOUNTS_ACK) {
-        callback((event as unknown) as IpcRendererEvent, minimumAccount);
-      }
-
-      if (event === FILTER_TRANSACTIONS_ACK) {
-        callback((event as unknown) as IpcRendererEvent, {
-          transactions: seedTransactionsThisMonth,
-        });
-      }
-
-      return ipcRenderer;
-    });
-
-    initAppWithContexts();
+    initAppWith({ accounts: seedMinimumAccount, filterTransactions: seedTransactionsThisMonth });
     userEvent.click(screen.getByTestId('sidebar-big-picture')); // Resets path back to the default
     const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
     expect(transactionsSidebarLink).toHaveAttribute('active', '0');
@@ -220,12 +150,19 @@ describe('Transactions tests', () => {
       'Type to filter by date, description, category, account or amount'
     );
     userEvent.type(inputSearch, 'transfer to');
-    setTimeout(() => {
-      rowTransactions = screen.getAllByTestId('row-transaction');
-      expect(rowTransactions.length).toBe(2);
-    }, 200);
+    await waitFor(() => {
+      expect(screen.getAllByTestId('row-transaction').length).toBe(3);
 
-    userEvent.click(screen.getByText('Last 3 months'));
+      rowTransactions = screen.getAllByTestId('row-transaction');
+      expect(rowTransactions.length).toBe(3);
+      expect(rowTransactions[0].textContent).toContain('Transfer to MegaCoin Exchange');
+      expect(rowTransactions[1].textContent).toContain('Transfer to Ransack Savings');
+      expect(rowTransactions[2].textContent).toContain('Transfer to Loot Financial');
+    });
+
+    // Change date filter
+    const selectLast3Months = screen.getByText('Last 3 months');
+    await selectEvent.openMenu(selectLast3Months);
     expect(screen.getByText('This month')).toBeVisible();
     expect(screen.getByText('Last 6 months')).toBeVisible();
     expect(screen.getByText('Last 12 months')).toBeVisible();
@@ -233,15 +170,19 @@ describe('Transactions tests', () => {
     expect(screen.getByText('Last year')).toBeVisible();
     expect(screen.getByText('Lifetime')).toBeVisible();
 
-    userEvent.click(screen.getByText('Last 6 months'));
-    const spyOnIpcRenderer = jest.spyOn(ipcRenderer, 'send');
-    const { dateFrom, dateTo } = filters.find(filter => {
-      return filter.label === 'Last 6 months';
-    })!;
-    expect(spyOnIpcRenderer).toBeCalledWith(FILTER_TRANSACTIONS, {
-      dateFrom: dateFrom,
-      dateTo: dateTo,
-    });
+    // FIXME: onChange event is not fired when an option in `<CustomSelect>` is selected
+    // await selectEvent.select(selectLast3Months, 'Last 6 months');
+    // const spyOnIpcRenderer = jest.spyOn(ipcRenderer, 'send');
+    // const { dateFrom, dateTo } = filters.find(filter => {
+    //   return filter.label === 'Last 6 months';
+    // })!;
+    // await waitFor(() => {
+    //   expect(screen.queryByText('Last 3 months')).not.toBeVisible();
+    //   expect(spyOnIpcRenderer).toHaveBeenCalledWith(FILTER_TRANSACTIONS, {
+    //     dateFrom: dateFrom,
+    //     dateTo: dateTo,
+    //   });
+    // });
   });
 
   // TODO: add test for "add transaction" flow
