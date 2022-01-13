@@ -3,20 +3,20 @@ import { ipcRenderer } from 'electron';
 import userEvent from '@testing-library/user-event';
 import selectEvent from 'react-select-event';
 import 'jest-styled-components';
-import { endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, format, startOfDay } from 'date-fns';
 
 // Fixes `ReferenceError: regeneratorRuntime is not defined` error on `useAsyncDebounce`.
 // REF: https://github.com/tannerlinsley/react-table/issues/2071
 import 'regenerator-runtime/runtime';
 
 import { dateInUTC } from '@app/utils/date.utils';
-import { FILTER_TRANSACTIONS } from '@constants/events';
 import { accountCheckingDetails } from '@database/seed/demoData/accounts';
 import { accountCheckingTransactionSet } from '@database/seed/demoData/transactions';
 import { filters } from '@app/constants/filters';
 import mapCategories from '@database/helpers/importResources/mapCategories';
 import { initAppWith } from '@tests/utils/initApp.utils';
 import { seedMinimumAccount } from '@tests/factories/entitiesFactory';
+import { DB_NEW_TRANSACTION } from '@constants/events';
 
 describe('Transactions tests', () => {
   test("Sidebar link can't be clicked if no accounts or assets are present", async () => {
@@ -185,5 +185,66 @@ describe('Transactions tests', () => {
     // });
   });
 
-  // TODO: add test for "add transaction" flow
+  test('Create a new transaction by hand', async () => {
+    initAppWith({ accounts: seedMinimumAccount });
+    const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
+    userEvent.click(transactionsSidebarLink);
+    expect(screen.getByText(/Browse transactions/i)).toBeInTheDocument();
+
+    userEvent.click(screen.getByText('Add transaction'));
+    expect(screen.queryByText(/Browse transactions/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Transaction details/i)).toBeInTheDocument();
+    expect(screen.getByText("Alice's Checking")).toBeVisible();
+    expect(screen.getByText('Uncategorized')).toBeVisible();
+    expect(screen.getByRole('form')).toHaveFormValues({});
+
+    // Date field
+    const today = new Date();
+    expect(screen.getByText(format(today, 'yyyy'))).toBeVisible();
+    expect(screen.getByText(format(today, 'MMM'))).toBeVisible();
+    expect(screen.getByText(format(today, 'dd'))).toBeVisible();
+
+    const buttonAddTransaction = screen.getByRole('button', { name: /Add transaction/i });
+    waitFor(() => {
+      expect(buttonAddTransaction).toBeDisabled();
+    });
+
+    const inputDescription = screen.getByLabelText('Description');
+    const inputExcludeFromTotals = screen.getByLabelText('Exclude from totals');
+    userEvent.type(inputDescription, 'Evergreen Market');
+    userEvent.click(inputExcludeFromTotals);
+    await waitFor(() => {
+      expect(buttonAddTransaction).not.toBeDisabled();
+    });
+
+    userEvent.click(inputExcludeFromTotals);
+    await waitFor(() => {
+      expect(buttonAddTransaction).toBeDisabled();
+    });
+
+    const inputAmount = screen.getByLabelText('Amount');
+    userEvent.type(inputAmount, '135.5');
+    expect(inputAmount).toHaveValue('+$135.5');
+
+    userEvent.type(inputAmount, '-');
+    expect(inputAmount).toHaveValue('-$135.5');
+    await waitFor(() => {
+      expect(buttonAddTransaction).not.toBeDisabled();
+    });
+
+    await selectEvent.select(screen.getByLabelText('Category'), 'Groceries');
+    userEvent.click(buttonAddTransaction);
+    const spySendIpcRenderer = jest.spyOn(ipcRenderer, 'send');
+    await waitFor(() => {
+      expect(spySendIpcRenderer).toHaveBeenLastCalledWith(DB_NEW_TRANSACTION, {
+        accountId: 1,
+        amount: -135.5,
+        date: dateInUTC(today),
+        categoryName: 'Groceries',
+        description: 'Evergreen Market',
+        excludeFromTotals: false,
+        id: undefined,
+      });
+    });
+  });
 });

@@ -111,7 +111,7 @@ const handleSeedBalanceStatements = (
     createdAt: fromUnixTime(balanceStatement.createdAt),
   }));
 
-export const seedMinimumAccount = [{ ...accountCheckingDetails, transactions: [] }];
+export const seedMinimumAccount = [{ ...accountCheckingDetails, id: 1, transactions: [] }];
 
 export const seedAccounts: SeedAccount[] = [
   {
