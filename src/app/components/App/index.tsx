@@ -94,14 +94,14 @@ const App = () => {
     <>
       <GlobalStyle />
       <HashRouter>
-        <Container hasSidebar={isAppInitialized}>
+        <Container hasSidebar={isAppInitialized && !isLoading}>
           <TitleBar />
 
           {isLoading && <NotReady />}
 
           {!isAppInitialized && !isLoading && <Setup />}
 
-          {!isLoading && isAppInitialized && (
+          {isAppInitialized && !isLoading && (
             <>
               <SideBar />
               {isDbEmpty && <Redirect to={routesPaths.addAccountOrAsset} />}
