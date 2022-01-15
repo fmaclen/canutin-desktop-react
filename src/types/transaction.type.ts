@@ -1,5 +1,3 @@
-import { Budget } from '@database/entities';
-
 export interface FilterTransactionInterface {
   dateFrom: Date;
   dateTo: Date;
@@ -10,10 +8,9 @@ export type NewTransactionType = {
   description: string | null;
   date: Date;
   categoryName: string;
-  amount: number;
+  balance: number;
   excludeFromTotals: boolean;
   pending: boolean;
-  budget?: Budget;
   id?: number;
   linkId?: string;
   createdAt?: number;

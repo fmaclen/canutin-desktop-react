@@ -9,6 +9,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 1),
       categoryName: 'Rent',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -17,6 +18,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 5),
       categoryName: 'Payroll & benefits',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -25,6 +27,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
       categoryName: 'Transfer',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -33,6 +36,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
       categoryName: 'Payments',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -41,6 +45,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 20),
       categoryName: 'Payroll & benefits',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -49,6 +54,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 24),
       categoryName: 'Transfer',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -57,6 +63,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
       categoryName: 'Transfer',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -65,6 +72,7 @@ export const accountCheckingMonthlyTransactions = (accountId: number, i: number)
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
       categoryName: 'Auto payment',
       excludeFromTotals: false,
+      pending: false,
     },
   ];
 };
@@ -78,6 +86,7 @@ export const accountSavingsMonthlyTransactions = (accountId: number, i: number) 
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
       categoryName: 'Transfer',
       excludeFromTotals: false,
+      pending: false,
     },
   ];
 };
@@ -91,6 +100,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 1),
       categoryName: 'Groceries',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -99,6 +109,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
       categoryName: 'Groceries',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -107,6 +118,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 15),
       categoryName: 'Groceries',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -115,6 +127,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 23),
       categoryName: 'Groceries',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -123,6 +136,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 3),
       categoryName: 'Food & drink',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -131,6 +145,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 6),
       categoryName: 'Food & drink',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -139,6 +154,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 10),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -147,6 +163,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 11),
       categoryName: 'Food & drink',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -155,6 +172,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 14),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -163,6 +181,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 20),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -171,6 +190,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 25),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -179,6 +199,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
       categoryName: 'Restaurants',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -187,6 +208,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 2),
       categoryName: 'Subscriptions',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -195,6 +217,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 12),
       categoryName: 'Shops',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -203,6 +226,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 18),
       categoryName: 'Shops',
       excludeFromTotals: true,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -211,6 +235,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 28),
       categoryName: 'Shops',
       excludeFromTotals: true,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -219,6 +244,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 7),
       categoryName: 'Gas stations',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -227,6 +253,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 24),
       categoryName: 'Gas stations',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -235,6 +262,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 2),
       categoryName: 'Insurance',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -243,6 +271,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 15),
       categoryName: 'Internet & phone',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -251,6 +280,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 16),
       categoryName: i % 2 === 0 ? 'Furnishings' : 'Home maintenance',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -259,6 +289,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 26),
       categoryName: i % 5 === 0 ? 'Electronics' : 'Music',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -267,6 +298,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 3),
       categoryName: 'Health',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -276,6 +308,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 27),
       categoryName: i % 3 === 0 ? 'Mobile phone' : 'Financial & banking',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -284,6 +317,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 8),
       categoryName: 'Payment',
       excludeFromTotals: false,
+      pending: false,
     },
     {
       accountId: accountId,
@@ -292,6 +326,7 @@ export const accountCreditCardMonthlyTransactions = (accountId: number, i: numbe
       date: addDays(startOfMonth(subMonths(new Date(), i)), 8),
       categoryName: 'Fees',
       excludeFromTotals: false,
+      pending: false,
     },
   ];
 };

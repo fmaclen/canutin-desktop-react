@@ -57,7 +57,7 @@ export const DescriptionCell = ({ value, ...props }: CellProps<Transaction>) => 
       </Tag>
     )}
     <TextLink
-      pathname={`transactions/${props.row.original.category.name}/${props.row.original.account.name}/Edit`}
+      pathname={`transactions/${props.row.original.description}`}
       state={{ transaction: props.row.original }}
       label={value}
     />

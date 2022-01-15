@@ -16,7 +16,7 @@ export class TransactionRepository {
       new Transaction(
         transaction.description as string,
         dateInUTC(transaction.date),
-        transaction.amount,
+        transaction.balance,
         transaction.excludeFromTotals,
         account as Account,
         category,
@@ -37,7 +37,7 @@ export class TransactionRepository {
       transaction.id as number,
       {
         account,
-        amount: transaction.amount,
+        amount: transaction.balance,
         category,
         date: dateInUTC(transaction.date),
         excludeFromTotals: transaction.excludeFromTotals,
