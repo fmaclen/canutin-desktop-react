@@ -1,9 +1,8 @@
-import { format, parse } from 'date-fns';
+import { getUnixTime, parse } from 'date-fns';
 
-import { CanutinFileType } from '@appTypes/canutin';
+import { CanutinFileType } from '@appTypes/canutinFile.type';
 import mapCategories from '@database/helpers/importResources/mapCategories';
 import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
-import { CANUTIN_FILE_DATE_FORMAT, PREVIOUS_AUTO_CALCULATED } from '@constants';
 
 export interface MintCsvEntryType {
   Date: string;
@@ -33,7 +32,7 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
 
       const transaction = {
         description: mintEntry.Description,
-        date: format(parse(mintEntry.Date, 'M/dd/yyyy', new Date()), CANUTIN_FILE_DATE_FORMAT),
+        date: getUnixTime(parse(mintEntry.Date, 'M/dd/yyyy', new Date())),
         amount: mintEntry['Transaction Type'] === 'credit' ? mintEntry.Amount : -mintEntry.Amount,
         excludeFromTotals: false,
         pending: false,
@@ -43,7 +42,7 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
       countTransactions++;
 
       if (accountIndex > -1) {
-        acc.accounts[accountIndex].transactions.push(transaction);
+        acc.accounts[accountIndex].transactions?.push(transaction);
       } else {
         countAccounts++;
         if (!mintEntry['Account Name']) {
@@ -55,7 +54,8 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
           balanceGroup: BalanceGroupEnum.CASH,
           accountType: 'checking',
           transactions: [transaction],
-          autoCalculate: PREVIOUS_AUTO_CALCULATED,
+          autoCalculated: true,
+          closed: false,
         });
       }
 

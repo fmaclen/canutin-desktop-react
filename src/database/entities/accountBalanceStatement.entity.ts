@@ -1,23 +1,21 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { Base } from './base.entity';
 import { Account } from './account.entity';
 
 @Entity()
-export class BalanceStatement extends Base {
+@Unique('UQ_COLUMNS', ['account', 'createdAt'])
+export class AccountBalanceStatement extends Base {
   @Column({ nullable: true })
   value?: number;
-
-  @Column({ default: false })
-  autoCalculate: boolean;
 
   @ManyToOne(() => Account, account => account.balanceStatements, { eager: false })
   @JoinColumn()
   account: Account;
 
-  constructor(autoCalculate: boolean, account: Account, value?: number) {
+  constructor(account: Account, createdAt: Date, value?: number) {
     super();
     this.value = value;
-    this.autoCalculate = autoCalculate;
     this.account = account;
+    this.createdAt = createdAt;
   }
 }

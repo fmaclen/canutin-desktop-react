@@ -110,6 +110,7 @@ const SideBar = () => {
             toggled={toggled}
             to={routesPaths.addAccountOrAsset}
             primary={!linkAccount}
+            dataTestId="sidebar-add-or-update-data"
           />
 
           {linkAccount && (

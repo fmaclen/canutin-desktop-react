@@ -13,6 +13,7 @@ import {
   borderGrey,
   whitePlain,
   grey5,
+  bluePlain,
 } from '@app/constants/colors';
 import pendingBackground from '@assets/icons/ChartCurrentBackground.svg';
 
@@ -60,7 +61,7 @@ export const dateCell = css`
   white-space: nowrap;
 `;
 
-export const linkCell = css`
+export const cellField = css`
   color: ${grey80};
   font-size: 12px;
 `;
@@ -69,6 +70,16 @@ export const descriptionCellContainer = css`
   display: flex;
   column-gap: 8px;
   align-items: center;
+`;
+
+export const linkCellField = css`
+  color: ${grey80};
+  font-size: 12px;
+  text-decoration: none;
+
+  &:hover {
+    color: ${bluePlain};
+  }
 `;
 
 export const tableHeaderRow = css`

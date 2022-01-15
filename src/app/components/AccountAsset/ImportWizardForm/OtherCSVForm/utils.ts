@@ -1,12 +1,15 @@
-import { parse, format, isEqual } from 'date-fns';
+import { parse, isEqual, getUnixTime } from 'date-fns';
 
 import { Account } from '@database/entities';
 import { getBalanceGroupByAccountType } from '@database/helpers';
-import { CanutinFileType, CanutinFileTransactionType, UpdatedAccount } from '@appTypes/canutin';
+import {
+  CanutinFileType,
+  CanutinFileTransactionType,
+  UpdatedAccount,
+} from '@appTypes/canutinFile.type';
 
 import { SupportedDateFormatType } from './otherCsvConstants';
 import { OtherCSVFormSubmit } from './index';
-import { CANUTIN_FILE_DATE_FORMAT } from '@constants';
 
 export const getTransactionsForOneAccount = (
   csvData: { [columnName: string]: string }[],
@@ -19,7 +22,7 @@ export const getTransactionsForOneAccount = (
 ) => {
   const transactions = csvData.map((rowData: { [x: string]: any }) => ({
     description: rowData[descriptionColumn],
-    date: format(parse(rowData[dateColumn], dateFormat, new Date()), CANUTIN_FILE_DATE_FORMAT),
+    date: getUnixTime(parse(rowData[dateColumn], dateFormat, new Date())),
     amount: Number(rowData[amountColumn]),
     excludeFromTotals: false,
     pending: false,
@@ -51,10 +54,7 @@ export const getTransactionsForAccountColumn = (
         accountName = rowData[accountColumn];
         transactions.push({
           description: rowData[descriptionColumn],
-          date: format(
-            parse(rowData[dateColumn], dateFormat, new Date()),
-            CANUTIN_FILE_DATE_FORMAT
-          ),
+          date: getUnixTime(parse(rowData[dateColumn], dateFormat, new Date())),
           amount: Number(rowData[amountColumn]),
           excludeFromTotals: false,
           pending: false,
@@ -70,7 +70,8 @@ export const getTransactionsForAccountColumn = (
       name: accountName,
       balanceGroup: getBalanceGroupByAccountType(accounts[accountColumnName]),
       accountType: accounts[accountColumnName],
-      autoCalculate: true,
+      autoCalculated: true,
+      closed: false,
       transactions,
     };
 
@@ -115,7 +116,7 @@ export const getUpdatedTransactionsForExistingAccounts = (
 
       const newTransaction = {
         description: rowData[descriptionColumn],
-        date: format(parse(rowData[dateColumn], dateFormat, new Date()), CANUTIN_FILE_DATE_FORMAT),
+        date: getUnixTime(parse(rowData[dateColumn], dateFormat, new Date())),
         amount: Number(rowData[amountColumn]),
         excludeFromTotals: false,
         pending: false,
@@ -173,13 +174,13 @@ export const formToCantuinJsonFile = (
         ({ id }) => id === Number(formData?.account?.importAccount)
       );
     }
-    let { name, accountType, autoCalculate, balance, institution } = formData.account;
+    let { name, accountType, autoCalculated, institution, closed } = formData.account;
 
     if (canutinAccount) {
       name = canutinAccount.name;
       accountType = canutinAccount.accountType.name;
-      balance = formData.account.balance;
-      autoCalculate = formData.account.autoCalculate;
+      autoCalculated = formData.account.autoCalculated;
+      closed = formData.account.closed;
       if (canutinAccount.institution) {
         institution = canutinAccount.institution;
       }
@@ -201,8 +202,8 @@ export const formToCantuinJsonFile = (
           balanceGroup: getBalanceGroupByAccountType(accountType),
           accountType,
           institution,
-          autoCalculate,
-          balance,
+          autoCalculated,
+          closed,
           transactions,
         },
       ],

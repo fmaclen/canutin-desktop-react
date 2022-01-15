@@ -22,24 +22,25 @@ import AssetOverview from '@app/pages/AssetOverview';
 export const rootRoutesPaths = {
   bigpicture: '/bigpicture',
   balance: '/balance',
+  account: '/account',
+  asset: '/asset',
   budget: '/budget',
   transactions: '/transactions',
   trends: '/trends',
   settings: '/settings',
-  account: '/account',
-  addAccountOrAsset: '/account/addAccountOrAsset',
   link: '/link',
+  addAccountOrAsset: '/addAccountOrAsset',
 };
 
 export const routesPaths = {
   index: '/index.html',
   ...rootRoutesPaths,
-  addAccountOrAssetByHand: '/account/addAccountOrAsset/byHand',
-  addAccountOrAssetByWizard: '/account/addAccountOrAsset/byWizard',
-  accountOverview: '/account/:accountName/',
-  assetOverview: '/asset/:assetName/',
+  addAccountOrAssetByHand: '/addAccountOrAsset/byHand',
+  addAccountOrAssetByWizard: '/addAccountOrAsset/byWizard',
+  accountOverview: '/account/:accountName',
+  assetOverview: '/asset/:assetName',
   addTransaction: '/transactions/addTransaction',
-  editTransaction: '/transactions/:categoryName/:accountName/Edit',
+  editTransaction: '/transactions/:transactionDescription',
   canutinSetup: '/canutinSetup',
   linkCreateAccount: '/link/create-account',
   linkInstitution: '/link/link-institution',
@@ -93,7 +94,6 @@ export const routesConfig: RouteConfigProps[] = [
     path: routesPaths.editTransaction,
     exact: true,
     component: <EditTransaction />,
-    breadcrumb: 'Edit',
   },
   {
     path: routesPaths.trends,
@@ -110,14 +110,20 @@ export const routesConfig: RouteConfigProps[] = [
   {
     path: routesPaths.account,
     exact: true,
-    component: <Redirect to={routesPaths.addAccountOrAsset} />,
+    component: <Redirect to={routesPaths.balance} />,
     breadcrumb: 'Account',
+  },
+  {
+    path: routesPaths.asset,
+    exact: true,
+    component: <Redirect to={routesPaths.balance} />,
+    breadcrumb: 'Asset',
   },
   {
     path: routesPaths.addAccountOrAsset,
     exact: true,
     component: <AddAccountOrAsset />,
-    breadcrumb: 'Add new',
+    breadcrumb: 'Add accounts or assets',
   },
   {
     path: routesPaths.addAccountOrAssetByHand,

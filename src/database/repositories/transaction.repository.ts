@@ -1,9 +1,9 @@
 import { getRepository, getConnection, Between, UpdateResult } from 'typeorm';
-import { subDays } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 
-import { dateInUTC } from '@app/utils/date.utils';
+import { dateInUTC, createdAtDate } from '@app/utils/date.utils';
 import { Transaction, Account } from '../entities';
 import { AccountRepository } from './account.repository';
 import { CategoryRepository } from './category.repository';
@@ -12,18 +12,16 @@ export class TransactionRepository {
   static async createTransaction(transaction: NewTransactionType): Promise<Transaction> {
     const account = await AccountRepository.getAccountById(transaction.accountId);
     const category = await CategoryRepository.getOrCreateSubCategory(transaction.categoryName);
-    const budget = transaction.budget || undefined;
-
     const newTransaction = await getRepository<Transaction>(Transaction).save(
       new Transaction(
         transaction.description as string,
         dateInUTC(transaction.date),
-        transaction.amount,
+        transaction.balance,
         transaction.excludeFromTotals,
         account as Account,
         category,
         transaction.pending,
-        budget,
+        createdAtDate(transaction.createdAt),
         transaction.linkId
       )
     );
@@ -39,7 +37,7 @@ export class TransactionRepository {
       transaction.id as number,
       {
         account,
-        amount: transaction.amount,
+        amount: transaction.balance,
         category,
         date: dateInUTC(transaction.date),
         excludeFromTotals: transaction.excludeFromTotals,
@@ -70,19 +68,9 @@ export class TransactionRepository {
     return await getConnection().manager.query(nsql, args);
   }
 
-  static async getTransactions(): Promise<Transaction[]> {
-    return await getRepository<Transaction>(Transaction).find({
-      relations: ['account', 'account.accountType'],
-      order: {
-        date: 'DESC',
-      },
-    });
-  }
-
   static async getFilterTransactions(filter: FilterTransactionInterface): Promise<Transaction[]> {
-    // The query seems to only return the expected results if the dates are offset by -1
-    const dateFrom = subDays(dateInUTC(filter.dateFrom), 1);
-    const dateTo = subDays(dateInUTC(filter.dateTo), 1);
+    const dateFrom = startOfDay(dateInUTC(filter.dateFrom));
+    const dateTo = endOfDay(dateInUTC(filter.dateTo));
 
     return await getRepository<Transaction>(Transaction).find({
       relations: ['account', 'category'],
