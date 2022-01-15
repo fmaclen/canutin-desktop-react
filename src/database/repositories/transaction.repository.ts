@@ -18,9 +18,11 @@ export class TransactionRepository {
         dateInUTC(transaction.date),
         transaction.amount,
         transaction.excludeFromTotals,
+        transaction.pending,
         account as Account,
         category,
-        createdAtDate(transaction.createdAt)
+        createdAtDate(transaction.createdAt),
+        transaction.importedAt
       )
     );
 

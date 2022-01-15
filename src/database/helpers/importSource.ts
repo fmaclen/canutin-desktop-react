@@ -59,8 +59,10 @@ const handleCanutinFileTransactions = async (
   account: Account,
   canutinFileTransactions: CanutinFileTransactionType[]
 ) => {
+  const importedAt = new Date();
   const transactions = await Promise.all(
     canutinFileTransactions.map(async canutinFileTransaction => {
+      const pending = canutinFileTransaction.pending ? canutinFileTransaction.pending : false;
       const category = await CategoryRepository.getSubCategory(canutinFileTransaction.category);
 
       return new Transaction(
@@ -68,9 +70,11 @@ const handleCanutinFileTransactions = async (
         createdAtDate(canutinFileTransaction.date),
         canutinFileTransaction.amount,
         canutinFileTransaction.excludeFromTotals,
+        pending,
         account,
         category,
-        createdAtDate(canutinFileTransaction.createdAt)
+        createdAtDate(canutinFileTransaction.createdAt),
+        importedAt
       );
     })
   );

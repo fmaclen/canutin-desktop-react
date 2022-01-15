@@ -137,6 +137,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
       date: dateInUTC(date),
       description,
       excludeFromTotals,
+      pending: false,
       id: initialState?.id,
     };
 
