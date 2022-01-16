@@ -12,6 +12,7 @@ export const container = css<{ title?: string }>`
   background-color: ${grey7};
   padding: 4px 8px;
   border-radius: 4px;
+
   ${({ title }) =>
     title &&
     css`

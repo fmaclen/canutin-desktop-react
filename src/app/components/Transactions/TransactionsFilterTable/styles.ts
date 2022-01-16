@@ -87,6 +87,7 @@ export const transactionRow = css<{ isPending: boolean }>`
     > td {
       background-color: rgba(0, 0, 0, 0.025);
     }
+
     &:last-child {
       border-bottom: none;
     }

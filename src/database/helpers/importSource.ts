@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 
-import { createdAtDate } from '@app/utils/date.utils';
+import { handleDate } from '@app/utils/date.utils';
 import { Transaction } from '@database/entities/transaction.entity';
 import { AccountRepository } from '@database/repositories/account.repository';
 import { CategoryRepository } from '@database/repositories/category.repository';
@@ -59,22 +59,30 @@ const handleCanutinFileTransactions = async (
   account: Account,
   canutinFileTransactions: CanutinFileTransactionType[]
 ) => {
-  const importedAt = new Date();
+  const sessionDate = new Date(); // Applies the same date to all transactions processed in the session
   const transactions = await Promise.all(
     canutinFileTransactions.map(async canutinFileTransaction => {
-      const pending = canutinFileTransaction.pending ? canutinFileTransaction.pending : false;
+      const {
+        description,
+        date,
+        amount,
+        excludeFromTotals,
+        pending,
+        createdAt,
+        importedAt,
+      } = canutinFileTransaction;
       const category = await CategoryRepository.getSubCategory(canutinFileTransaction.category);
 
       return new Transaction(
-        canutinFileTransaction.description,
-        createdAtDate(canutinFileTransaction.date),
-        canutinFileTransaction.amount,
-        canutinFileTransaction.excludeFromTotals,
-        pending,
+        description,
+        handleDate(date),
+        amount,
+        excludeFromTotals,
+        pending ? pending : false,
         account,
         category,
-        createdAtDate(canutinFileTransaction.createdAt),
-        importedAt
+        handleDate(createdAt),
+        importedAt ? handleDate(importedAt) : sessionDate
       );
     })
   );
