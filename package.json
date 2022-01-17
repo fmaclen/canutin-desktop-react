@@ -42,12 +42,6 @@
   },
   "devDependencies": {
     "@jackfranklin/test-data-bot": "^1.3.0",
-    "@storybook/addon-actions": "^6.1.21",
-    "@storybook/addon-essentials": "^6.1.21",
-    "@storybook/addon-links": "^6.1.21",
-    "@storybook/node-logger": "^6.1.21",
-    "@storybook/preset-create-react-app": "^3.1.7",
-    "@storybook/react": "^6.1.21",
     "@testing-library/dom": "^7.30.2",
     "@testing-library/user-event": "^13.1.1",
     "@types/electron-settings": "^3.1.2",
@@ -75,7 +69,6 @@
     "wait-on": "^5.2.1"
   },
   "scripts": {
-    "storybook": "start-storybook -p 9001",
     "electron-tsc": "tsc --project src/electron/tsconfig.json && tscpaths -p src/electron/tsconfig.json -s ./src -o ./build",
     "react-start": "react-app-rewired start",
     "react-build": "react-app-rewired build",
