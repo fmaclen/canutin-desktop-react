@@ -534,7 +534,7 @@ const createWindow = async () => {
     height: calculateWindowHeight(height),
     frame: false,
     titleBarStyle: 'hidden',
-    trafficLightPosition: { x: 16, y: 32 },
+    trafficLightPosition: { x: 16, y: 16 },
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
