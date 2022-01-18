@@ -2,7 +2,6 @@ import { screen, waitFor } from '@testing-library/react';
 import { ipcRenderer } from 'electron';
 import userEvent from '@testing-library/user-event';
 import selectEvent from 'react-select-event';
-import 'jest-styled-components';
 import { endOfDay, format, startOfDay } from 'date-fns';
 
 // Fixes `ReferenceError: regeneratorRuntime is not defined` error on `useAsyncDebounce`.
@@ -23,9 +22,8 @@ describe('Transactions tests', () => {
     initAppWith({});
     const transactionsSidebarLink = screen.getByTestId('sidebar-transactions');
     expect(transactionsSidebarLink).toHaveAttribute('disabled');
-
-    userEvent.click(transactionsSidebarLink);
-    expect(transactionsSidebarLink).not.toHaveAttribute('active', '1');
+    expect(transactionsSidebarLink).toHaveAttribute('active', '0');
+    expect(transactionsSidebarLink).toHaveStyle('pointer-events: none');
   });
 
   test('Transactions page displays an empty view when no enough data is available', async () => {
@@ -37,6 +35,9 @@ describe('Transactions tests', () => {
 
     userEvent.click(transactionsSidebarLink);
     expect(transactionsSidebarLink).toHaveAttribute('active', '1');
+    await waitFor(() => {
+      expect(screen.getByText('No transactions were found')).toBeVisible();
+    });
 
     const scrollViewTransactions = screen.getByTestId('scrollview-transactions');
     expect(scrollViewTransactions).toMatchSnapshot();
@@ -65,9 +66,11 @@ describe('Transactions tests', () => {
     userEvent.click(transactionsSidebarLink);
     expect(transactionsSidebarLink).toHaveAttribute('active', '1');
 
-    const cardTransactions = screen.getByTestId('card-transactions');
-    expect(cardTransactions).toHaveTextContent('Transactions');
-    expect(cardTransactions).toHaveTextContent('8');
+    await waitFor(() => {
+      const cardTransactions = screen.getByTestId('card-transactions');
+      expect(cardTransactions).toHaveTextContent('Transactions');
+      expect(cardTransactions).toHaveTextContent('8');
+    });
 
     let cardNetBalance = screen.getByTestId('card-net-balance');
     expect(cardNetBalance).toHaveTextContent('Net balance');
@@ -205,7 +208,7 @@ describe('Transactions tests', () => {
     expect(screen.getByText(format(today, 'dd'))).toBeVisible();
 
     const buttonAddTransaction = screen.getByRole('button', { name: /Add transaction/i });
-    waitFor(() => {
+    await waitFor(() => {
       expect(buttonAddTransaction).toBeDisabled();
     });
 
@@ -213,14 +216,10 @@ describe('Transactions tests', () => {
     const inputExcludeFromTotals = screen.getByLabelText('Exclude from totals');
     userEvent.type(inputDescription, 'Evergreen Market');
     userEvent.click(inputExcludeFromTotals);
-    await waitFor(() => {
-      expect(buttonAddTransaction).not.toBeDisabled();
-    });
+    expect(buttonAddTransaction).toBeDisabled();
 
     userEvent.click(inputExcludeFromTotals);
-    await waitFor(() => {
-      expect(buttonAddTransaction).toBeDisabled();
-    });
+    expect(buttonAddTransaction).toBeDisabled();
 
     const inputAmount = screen.getByLabelText('Amount');
     userEvent.type(inputAmount, '135.5');

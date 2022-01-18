@@ -199,7 +199,7 @@ const TransactionForm = ({ initialState }: TransactionFormProps) => {
           <ToggleInputField>
             <InputCurrency
               value={amount && Number(amount)}
-              rules={{ validate: v => excludeFromTotals || v !== '' }}
+              rules={{ validate: v => v !== '' }}
               name="amount"
               control={control}
               required
