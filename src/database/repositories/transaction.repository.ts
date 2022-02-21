@@ -7,11 +7,13 @@ import { dateInUTC, handleDate } from '@app/utils/date.utils';
 import { Transaction, Account } from '../entities';
 import { AccountRepository } from './account.repository';
 import { CategoryRepository } from './category.repository';
+import { splitInChunks } from 'src/electron/helpers/database.helper';
 
 export class TransactionRepository {
   static async createTransaction(transaction: NewTransactionType): Promise<Transaction> {
     const account = await AccountRepository.getAccountById(transaction.accountId);
     const category = await CategoryRepository.getSubCategory(transaction.categoryName);
+
     const newTransaction = await getRepository<Transaction>(Transaction).save(
       new Transaction(
         transaction.description as string,
@@ -56,12 +58,20 @@ export class TransactionRepository {
     await getRepository<Transaction>(Transaction).delete(transactionsIds);
   }
 
-  static async createTransactions(transactions: Transaction[]): Promise<Transaction[]> {
-    const q = getRepository(Transaction).createQueryBuilder().insert().values(transactions);
-    const [sql, args] = q.getQueryAndParameters();
-    const nsql = sql.replace('INSERT INTO', 'INSERT OR IGNORE INTO');
+  static async createTransactions(transactions: Transaction[]) {
+    const transactionChunks: Transaction[][] = splitInChunks(transactions);
 
-    return await getConnection().manager.query(nsql, args);
+    transactionChunks.forEach(async transactionChunk => {
+      try {
+        const q = getRepository(Transaction).createQueryBuilder().insert().values(transactionChunk);
+        const [sql, args] = q.getQueryAndParameters();
+        const nsql = sql.replace('INSERT INTO', 'INSERT OR IGNORE INTO'); // Skips duplicate transactions
+
+        return await getConnection().manager.query(nsql, args);
+      } catch (e) {
+        console.error(e);
+      }
+    });
   }
 
   static async getFilterTransactions(filter: FilterTransactionInterface): Promise<Transaction[]> {

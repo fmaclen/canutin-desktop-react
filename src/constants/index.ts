@@ -1,3 +1,4 @@
+export const DATABASE_CHUNK_SIZE = 250;
 export const DATABASE_PATH = 'databasePath';
 export const DATABASE_CONNECTED = 'databaseConnected';
 export const DATABASE_DOES_NOT_EXIST = 'databaseDoesNotExist';
