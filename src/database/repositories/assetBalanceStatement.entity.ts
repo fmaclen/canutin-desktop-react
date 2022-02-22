@@ -1,9 +1,8 @@
 import { getRepository, getConnection } from 'typeorm';
 
-import { DATABASE_CHUNK_SIZE } from '@constants';
 import { AssetBalanceStatement } from '../entities';
 import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
-import { splitInChunks } from 'src/electron/helpers/database.helper';
+import { splitInChunks } from '@database/connection';
 
 export class AssetBalanceStatementRepository {
   static async createBalanceStatement(

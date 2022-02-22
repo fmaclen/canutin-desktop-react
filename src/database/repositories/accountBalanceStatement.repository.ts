@@ -2,7 +2,7 @@ import { getRepository, getConnection } from 'typeorm';
 
 import { AccountBalanceStatement } from '../entities';
 import { NewAccountBalanceStatementType } from '@appTypes/accountBalanceStatement.type';
-import { splitInChunks } from 'src/electron/helpers/database.helper';
+import { splitInChunks } from '@database/connection';
 
 export class AccountBalanceStatementRepository {
   static async createBalanceStatement(

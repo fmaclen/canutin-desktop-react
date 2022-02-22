@@ -3,11 +3,11 @@ import { subMinutes } from 'date-fns';
 
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 
+import { splitInChunks } from '@database/connection';
 import { dateInUTC, handleDate } from '@app/utils/date.utils';
 import { Transaction, Account } from '../entities';
 import { AccountRepository } from './account.repository';
 import { CategoryRepository } from './category.repository';
-import { splitInChunks } from 'src/electron/helpers/database.helper';
 
 export class TransactionRepository {
   static async createTransaction(transaction: NewTransactionType): Promise<Transaction> {

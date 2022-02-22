@@ -10,7 +10,6 @@ import {
   DATABASE_NOT_DETECTED,
   DATABASE_PATH,
   DATABASE_NOT_VALID,
-  DATABASE_CHUNK_SIZE,
 } from '@constants';
 
 export const connectAndSaveDB = async (win: BrowserWindow | null, filePath: string) => {
@@ -41,12 +40,4 @@ export const findAndConnectDB = async (win: BrowserWindow | null, filePath: stri
   } else {
     win?.webContents.send(DATABASE_NOT_DETECTED);
   }
-};
-
-export const splitInChunks = (array: any[]) => {
-  const chunks: any[] = [];
-  for (let i = 0; i < array.length; i += DATABASE_CHUNK_SIZE) {
-    chunks.push(array.slice(i, i + DATABASE_CHUNK_SIZE));
-  }
-  return chunks;
 };
