@@ -110,6 +110,7 @@ describe('Big picture tests', () => {
     expect(bigPictureCashflowChartPeriods[8]).toHaveTextContent('$1,058');
     expect(bigPictureCashflowChartPeriods[9]).toHaveTextContent('$228');
     expect(bigPictureCashflowChartPeriods[10]).toHaveTextContent('$478');
+    console.log('\n\n\n\n\nToday:\n', new Date());
     expect(bigPictureCashflowChartPeriods[11]).toHaveTextContent('$228');
     expect(bigPictureCashflowChartPeriods.map(period => period.textContent)).toEqual(
       expect.arrayContaining(bigPictureCashflowChartPeriodMonths)
