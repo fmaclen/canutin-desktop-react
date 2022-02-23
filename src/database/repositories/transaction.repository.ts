@@ -1,9 +1,9 @@
-import { getRepository, getConnection, Between, UpdateResult } from 'typeorm';
+import { getRepository, Between, UpdateResult } from 'typeorm';
 import { subMinutes } from 'date-fns';
 
 import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
 
-import { splitInChunks } from '@database/connection';
+import { splitInChunks } from '@database/helpers';
 import { dateInUTC, handleDate } from '@app/utils/date.utils';
 import { Transaction, Account } from '../entities';
 import { AccountRepository } from './account.repository';
@@ -63,11 +63,12 @@ export class TransactionRepository {
 
     transactionChunks.forEach(async transactionChunk => {
       try {
-        const q = getRepository(Transaction).createQueryBuilder().insert().values(transactionChunk);
-        const [sql, args] = q.getQueryAndParameters();
-        const nsql = sql.replace('INSERT INTO', 'INSERT OR IGNORE INTO'); // Skips duplicate transactions
-
-        return await getConnection().manager.query(nsql, args);
+        await getRepository(Transaction)
+          .createQueryBuilder()
+          .insert()
+          .orIgnore()
+          .values(transactionChunk)
+          .execute();
       } catch (e) {
         console.error(e);
       }

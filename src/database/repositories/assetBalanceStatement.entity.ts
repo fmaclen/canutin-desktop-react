@@ -1,8 +1,8 @@
-import { getRepository, getConnection } from 'typeorm';
+import { getRepository } from 'typeorm';
 
 import { AssetBalanceStatement } from '../entities';
 import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
-import { splitInChunks } from '@database/connection';
+import { splitInChunks } from '@database/helpers';
 
 export class AssetBalanceStatementRepository {
   static async createBalanceStatement(
@@ -24,14 +24,12 @@ export class AssetBalanceStatementRepository {
 
     balanceStatementChunks.forEach(async balanceStatementChunk => {
       try {
-        const q = getRepository(AssetBalanceStatement)
+        await getRepository(AssetBalanceStatement)
           .createQueryBuilder()
           .insert()
-          .values(balanceStatementChunk);
-        const [sql, args] = q.getQueryAndParameters();
-        const nsql = sql.replace('INSERT INTO', 'INSERT OR IGNORE INTO'); // Skips duplicate assetBalanceStatements
-
-        return await getConnection().manager.query(nsql, args);
+          .orIgnore()
+          .values(balanceStatementChunk)
+          .execute();
       } catch (e) {
         console.error(e);
       }

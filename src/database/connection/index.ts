@@ -21,7 +21,6 @@ import {
   AssetBalanceStatement,
   Settings,
 } from '../entities';
-import { DATABASE_CHUNK_SIZE } from '@constants';
 
 export const dbConfig = {
   type: 'better-sqlite3',
@@ -40,15 +39,6 @@ export const dbConfig = {
     Budget,
     Settings,
   ],
-};
-
-// Splits arrays in chunks so they can be bulk inserted within the DB's driver limits
-export const splitInChunks = (array: any[]) => {
-  const chunks: any[] = [];
-  for (let i = 0; i < array.length; i += DATABASE_CHUNK_SIZE) {
-    chunks.push(array.slice(i, i + DATABASE_CHUNK_SIZE));
-  }
-  return chunks;
 };
 
 const connection = {
