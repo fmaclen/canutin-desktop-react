@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { ipcRenderer } from 'electron';
 import userEvent from '@testing-library/user-event';
 import selectEvent from 'react-select-event';
-import { endOfDay, format, startOfDay } from 'date-fns';
+import { endOfDay, getYear, getMonth, getDate, startOfDay } from 'date-fns';
 
 // Fixes `ReferenceError: regeneratorRuntime is not defined` error on `useAsyncDebounce`.
 // REF: https://github.com/tannerlinsley/react-table/issues/2071
@@ -203,9 +203,9 @@ describe('Transactions tests', () => {
 
     // Date field
     const today = new Date();
-    expect(screen.getByText(format(today, 'yyyy'))).toBeVisible();
-    expect(screen.getByText(format(today, 'MMM'))).toBeVisible();
-    expect(screen.getByText(format(today, 'dd'))).toBeVisible();
+    expect(screen.getByText(getYear(today))).toBeVisible();
+    expect(screen.getByText(getMonth(today))).toBeVisible();
+    expect(screen.getByText(getDate(today))).toBeVisible();
 
     const buttonAddTransaction = screen.getByRole('button', { name: /Add transaction/i });
     await waitFor(() => {
