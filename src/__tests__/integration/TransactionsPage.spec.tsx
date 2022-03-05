@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { ipcRenderer } from 'electron';
 import userEvent from '@testing-library/user-event';
 import selectEvent from 'react-select-event';
-import { endOfDay, format, startOfDay } from 'date-fns';
+import { endOfDay, format, startOfDay, startOfToday } from 'date-fns';
 
 // Fixes `ReferenceError: regeneratorRuntime is not defined` error on `useAsyncDebounce`.
 // REF: https://github.com/tannerlinsley/react-table/issues/2071
@@ -205,7 +205,7 @@ describe('Transactions tests', () => {
     const today = new Date();
     expect(screen.getByText(format(today, 'yyyy'))).toBeVisible();
     expect(screen.getByText(format(today, 'MMM'))).toBeVisible();
-    expect(screen.getByText(format(today, 'dd'))).toBeVisible();
+    expect(screen.getByText(format(today, 'd'))).toBeVisible();
 
     const buttonAddTransaction = screen.getByRole('button', { name: /Add transaction/i });
     await waitFor(() => {
@@ -239,7 +239,7 @@ describe('Transactions tests', () => {
         accountId: 1,
         amount: -135.5,
         categoryName: 'Groceries',
-        date: dateInUTC(today),
+        date: dateInUTC(startOfToday()),
         description: 'Evergreen Market',
         excludeFromTotals: false,
         pending: false,
