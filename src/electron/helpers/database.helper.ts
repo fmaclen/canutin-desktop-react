@@ -18,6 +18,11 @@ export const connectAndSaveDB = async (win: BrowserWindow | null, filePath: stri
       ...dbConfig,
       database: filePath,
       type: 'better-sqlite3',
+      driver: require('better-sqlite3-multiple-ciphers'),
+      prepareDatabase: db => {
+        db.pragma(`cipher='sqlcipher'`);
+        db.pragma(`key='secret'`);
+      },
     };
     const isConnected = await connection.isConnected();
     if (isConnected) await connection.close();
