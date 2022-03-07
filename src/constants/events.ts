@@ -1,5 +1,6 @@
 export const OPEN_CREATE_VAULT = 'openCreateVault';
 export const OPEN_EXISTING_VAULT = 'openExistingVault';
+export const UNLOCK_VAULT = 'unlockVault';
 
 // Database
 export const DB_NEW_ACCOUNT = 'dbNewAccount';

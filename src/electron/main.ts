@@ -16,8 +16,6 @@ import isDev from 'electron-is-dev';
 import * as path from 'path';
 
 import {
-  OPEN_CREATE_VAULT,
-  OPEN_EXISTING_VAULT,
   DB_NEW_ACCOUNT,
   DB_NEW_ASSET,
   DB_NEW_ASSET_ACK,
@@ -71,7 +69,7 @@ import {
   DB_GET_SETTINGS,
   DB_GET_SETTINGS_ACK,
 } from '@constants/events';
-import { DATABASE_PATH } from '@constants';
+import { DATABASE_MASTER_KEY, DATABASE_PATH } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS, EVENT_NEUTRAL } from '@constants/eventStatus';
 import { CanutinFileType, UpdatedAccount } from '@appTypes/canutinFile.type';
 import { enumExtensionFiles, enumImportTitleOptions, WindowControlEnum } from '@appConstants/misc';
@@ -84,7 +82,7 @@ import {
   ELECTRON_READY,
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
-import { connectAndSaveDB, findAndConnectDB } from './helpers/database.helper';
+import { findAndConnectDB } from './helpers/database.helper';
 import { filterTransactions } from './helpers/transactionHelpers/transaction.helper';
 import { importSourceData, importUpdatedAccounts } from './helpers/importSource.helper';
 import {
@@ -96,10 +94,6 @@ import {
 import { AssetRepository } from '@database/repositories/asset.repository';
 import { AccountBalanceStatementRepository } from '@database/repositories/accountBalanceStatement.repository';
 import { TransactionRepository } from '@database/repositories/transaction.repository';
-import seedCategories from '@database/seed/seedCategories';
-import seedAssetTypes from '@database/seed/seedAssetTypes';
-import seedAccountTypes from '@database/seed/seedAccountTypes';
-import seedSettings from '@database/seed/seedSettings';
 import seedDemoData from '@database/seed/seedDemoData';
 import { AccountRepository } from '@database/repositories/account.repository';
 import {
@@ -114,35 +108,12 @@ import { EditBudgetCategorySubmitType } from '@app/components/Budget/Transaction
 import { CategoryRepository } from '@database/repositories/category.repository';
 import { EditBudgetType } from '@app/components/Budget/EditBudgetGroups';
 import { importFromCanutinFile } from '@database/helpers/importSource';
+import setupVaultEvents from './events/setupVaultEvents';
 
 let win: BrowserWindow | null = null;
 
-const setupEvents = async () => {
-  ipcMain.on(OPEN_CREATE_VAULT, async () => {
-    if (win) {
-      const { filePath } = await dialog.showSaveDialog(win, {
-        filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
-      });
-
-      if (filePath) await connectAndSaveDB(win, filePath);
-      await seedSettings();
-      await seedAccountTypes();
-      await seedAssetTypes();
-      await seedCategories();
-    }
-  });
-
-  ipcMain.on(OPEN_EXISTING_VAULT, async () => {
-    if (win) {
-      const { filePaths } = await dialog.showOpenDialog(win, {
-        properties: ['openFile'],
-        filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
-      });
-
-      if (filePaths.length) await connectAndSaveDB(win, filePaths[0]);
-    }
-  });
-
+// FIXME: split these events into separate files
+const setupDbEvents = async () => {
   ipcMain.on(IMPORT_SOURCE_FILE, async (_: IpcMainEvent, extension: enumExtensionFiles) => {
     if (win) {
       const { filePaths } = await dialog.showOpenDialog(win, {
@@ -186,9 +157,7 @@ const setupEvents = async () => {
   ipcMain.on(FILTER_TRANSACTIONS, async (_: IpcMainEvent, filter: FilterTransactionInterface) => {
     await filterTransactions(win, filter);
   });
-};
 
-const setupDbEvents = async () => {
   ipcMain.on(DB_NEW_ASSET, async (_: IpcMainEvent, asset: NewAssetType) => {
     try {
       const newAsset = await AssetRepository.createAsset(asset);
@@ -568,12 +537,14 @@ const createWindow = async () => {
     win.webContents.openDevTools();
   }
 
-  await setupEvents();
+  await setupVaultEvents(win);
   await setupDbEvents();
 
   win.webContents.on(DID_FINISH_LOADING, async () => {
     const dbPath = (await settings.get(DATABASE_PATH)) as string;
-    await findAndConnectDB(win, dbPath);
+    const dbMasterKey = (await settings.get(DATABASE_MASTER_KEY)) as string;
+
+    await findAndConnectDB(win, dbPath, dbMasterKey);
   });
 };
 

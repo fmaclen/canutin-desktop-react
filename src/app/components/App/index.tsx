@@ -72,7 +72,7 @@ const App = () => {
       setIsLoading(false);
       setStatusMessage({
         sentiment: StatusEnum.NEGATIVE,
-        message: 'The chosen file is not a valid Canutin vault',
+        message: 'Incorrect master key or the chosen file is not a valid Canutin vault',
         isLoading: false,
       });
     });
