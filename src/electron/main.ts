@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import settings from 'electron-settings';
 import { QueryFailedError } from 'typeorm';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import {
@@ -69,7 +68,6 @@ import {
   DB_GET_SETTINGS,
   DB_GET_SETTINGS_ACK,
 } from '@constants/events';
-import { DATABASE_MASTER_KEY, DATABASE_PATH } from '@constants';
 import { EVENT_ERROR, EVENT_SUCCESS, EVENT_NEUTRAL } from '@constants/eventStatus';
 import { CanutinFileType, UpdatedAccount } from '@appTypes/canutinFile.type';
 import { enumExtensionFiles, enumImportTitleOptions, WindowControlEnum } from '@appConstants/misc';
@@ -82,7 +80,7 @@ import {
   ELECTRON_READY,
   ELECTRON_WINDOW_CLOSED,
 } from './constants';
-import { findAndConnectDB } from './helpers/database.helper';
+import { findAndConnectDB, getDbFromSettings } from './helpers/database.helper';
 import { filterTransactions } from './helpers/transactionHelpers/transaction.helper';
 import { importSourceData, importUpdatedAccounts } from './helpers/importSource.helper';
 import {
@@ -541,10 +539,8 @@ const createWindow = async () => {
   await setupDbEvents();
 
   win.webContents.on(DID_FINISH_LOADING, async () => {
-    const dbPath = (await settings.get(DATABASE_PATH)) as string;
-    const dbMasterKey = (await settings.get(DATABASE_MASTER_KEY)) as string;
-
-    await findAndConnectDB(win, dbPath, dbMasterKey);
+    const { filePath, masterKey } = await getDbFromSettings();
+    await findAndConnectDB(win, filePath, masterKey);
   });
 };
 

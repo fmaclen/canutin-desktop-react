@@ -9,6 +9,7 @@ import {
   DATABASE_NOT_DETECTED,
   DATABASE_DOES_NOT_EXIST,
   DATABASE_NOT_VALID,
+  DATABASE_EXISTS_WITHOUT_MASTER_KEY,
 } from '@constants';
 
 import { EntitiesContext } from '@app/context/entitiesContext';
@@ -44,7 +45,8 @@ const App = () => {
   useEffect(() => {
     ipcRenderer.on(DATABASE_CONNECTED, (_, filePath) => {
       setIsAppInitialized(true);
-      setFilePath(filePath?.filePath);
+      filePath && setFilePath(''); // Reset existing filePath
+      setFilePath(filePath);
       setIsDbEmpty(true);
       setIsLoading(true);
     });
@@ -77,11 +79,19 @@ const App = () => {
       });
     });
 
+    ipcRenderer.on(DATABASE_EXISTS_WITHOUT_MASTER_KEY, (_, filePath) => {
+      setIsAppInitialized(true);
+      filePath && setFilePath(''); // Reset existing filePath
+      setFilePath(filePath);
+      setIsLoading(false);
+    });
+
     return () => {
       ipcRenderer.removeAllListeners(DATABASE_CONNECTED);
       ipcRenderer.removeAllListeners(DATABASE_NOT_DETECTED);
       ipcRenderer.removeAllListeners(DATABASE_DOES_NOT_EXIST);
       ipcRenderer.removeAllListeners(DATABASE_NOT_VALID);
+      ipcRenderer.removeAllListeners(DATABASE_EXISTS_WITHOUT_MASTER_KEY);
     };
   }, []);
 

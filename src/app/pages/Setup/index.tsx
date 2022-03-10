@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, safeStorage } from 'electron';
 import { useForm } from 'react-hook-form';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 
@@ -21,9 +21,14 @@ import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT, UNLOCK_VAULT } from '@constants
 import { VaultType } from '@appTypes/vault.type';
 import { routesPaths } from '@routes';
 import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
+import Field from '@app/components/common/Form/Field';
+import ToggleInputField from '@app/components/common/Form/ToggleInputField';
+import InlineCheckbox from '@app/components/common/Form/Checkbox';
+import InputText from '@app/components/common/Form/InputText';
 
 const Setup = () => {
   const [filePath, setFilePath] = useState('');
+  const [hasSafeStorage, setHasSafeStorage] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const { setStatusMessage, setBreadcrumbs } = useContext(StatusBarContext);
   const noVaultBreadcrumbs = [{ breadcrumb: 'Canutin setup', path: '/' }];
@@ -33,9 +38,9 @@ const Setup = () => {
 
   const { handleSubmit, register, watch } = useForm({
     defaultValues: {
-      filePath: filePath,
+      filePath: '',
       masterKey: '',
-      isNew: isNew,
+      rememberMasterkey: false,
     },
   });
   const masterKey = watch('masterKey');
@@ -51,20 +56,27 @@ const Setup = () => {
   }, []);
 
   const onOpenCreateVault = async () => {
-    const newfilePath = await ipcRenderer.invoke(OPEN_CREATE_VAULT);
-    setFilePath(newfilePath);
+    const { newFilePath, isEncryptionAvailable } = await ipcRenderer.invoke(OPEN_CREATE_VAULT);
+    setFilePath(newFilePath);
+    setHasSafeStorage(isEncryptionAvailable);
     setIsNew(true);
   };
 
   const onOpenExistingVault = async () => {
-    const existingfilePath = await ipcRenderer.invoke(OPEN_EXISTING_VAULT);
-    setFilePath(existingfilePath);
+    const { existingFilePath, isEncryptionAvailable } = await ipcRenderer.invoke(
+      OPEN_EXISTING_VAULT
+    );
+    setFilePath(existingFilePath);
+    setHasSafeStorage(isEncryptionAvailable);
     setIsNew(false);
   };
 
   const onSubmit = async (unlockVaultSubmit: VaultType) => {
-    const toto = { ...unlockVaultSubmit, isNew: isNew };
-    await ipcRenderer.send(UNLOCK_VAULT, { ...unlockVaultSubmit, isNew: isNew });
+    await ipcRenderer.send(UNLOCK_VAULT, {
+      ...unlockVaultSubmit,
+      filePath: filePath,
+      isNew: isNew,
+    });
   };
 
   return (
@@ -89,6 +101,8 @@ const Setup = () => {
           </Section>
         )}
 
+        {/* TODO: should also show this form when the app boots up and only the filepath is present */}
+        {/* TODO: The wording on the UI needs improvement, i.e: when a new vault is created you shouldn't "unlock" the vault */}
         {filePath && (
           <Section title="Unlock vault">
             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -99,14 +113,19 @@ const Setup = () => {
                   value={filePath}
                   disabled
                 />
-                <InputTextField
-                  label="Master key"
-                  name="masterKey"
-                  type="password"
-                  required
-                  register={register}
-                />
-                <input type="hidden" name="filePath" value={filePath} ref={register} />
+                <Field label="Master key" name="masterKeyCombo">
+                  <ToggleInputField>
+                    <InputText name="masterKey" type="password" required register={register} />
+                    {hasSafeStorage && (
+                      <InlineCheckbox
+                        name="rememberMasterKey"
+                        id="rememberMasterKey"
+                        label="Remember key"
+                        register={register}
+                      />
+                    )}
+                  </ToggleInputField>
+                </Field>
               </Fieldset>
               <FormFooter>
                 <SubmitButton disabled={submitDisabled}>Unlock</SubmitButton>

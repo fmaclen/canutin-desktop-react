@@ -1,9 +1,9 @@
-import { BrowserWindow, dialog, ipcMain, IpcMainEvent } from 'electron';
+import { BrowserWindow, dialog, ipcMain, IpcMainEvent, safeStorage } from 'electron';
 
 import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT, UNLOCK_VAULT } from '@constants/events';
 
 import { VaultType } from '../../types/vault.type';
-import { connectAndSaveDB } from '../helpers/database.helper';
+import { connectAndSaveDB, findAndConnectDB } from '../helpers/database.helper';
 
 import seedCategories from '@database/seed/seedCategories';
 import seedAssetTypes from '@database/seed/seedAssetTypes';
@@ -14,10 +14,14 @@ const setupVaultEvents = async (win: BrowserWindow) => {
   ipcMain.handle(OPEN_CREATE_VAULT, async () => {
     if (win) {
       const { filePath } = await dialog.showSaveDialog(win, {
-        filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
+        title: 'Canutin',
+        filters: [{ name: 'DatabaseType', extensions: ['vault'] }],
       });
 
-      return filePath;
+      return {
+        newFilePath: filePath,
+        isEncryptionAvailable: safeStorage.isEncryptionAvailable(),
+      };
     }
   });
 
@@ -25,22 +29,28 @@ const setupVaultEvents = async (win: BrowserWindow) => {
     if (win) {
       const { filePaths } = await dialog.showOpenDialog(win, {
         properties: ['openFile'],
-        filters: [{ name: 'DatabaseType', extensions: ['sqlite'] }],
+        filters: [{ name: 'DatabaseType', extensions: ['vault'] }],
       });
 
-      return filePaths[0];
+      return {
+        existingFilePath: filePaths[0],
+        isEncryptionAvailable: safeStorage.isEncryptionAvailable(),
+      };
     }
   });
 
   ipcMain.on(UNLOCK_VAULT, async (_: IpcMainEvent, vault: VaultType) => {
-    if (win) {
-      await connectAndSaveDB(win, vault.filePath, vault.masterKey);
+    const { isNew, filePath, masterKey, rememberMasterKey } = vault;
 
-      if (vault.isNew) {
+    if (win) {
+      if (isNew) {
+        await connectAndSaveDB(win, filePath, masterKey, rememberMasterKey);
         await seedSettings();
         await seedAccountTypes();
         await seedAssetTypes();
         await seedCategories();
+      } else {
+        await findAndConnectDB(win, filePath, masterKey, rememberMasterKey);
       }
     }
   });
