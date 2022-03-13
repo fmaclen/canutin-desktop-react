@@ -1,6 +1,3 @@
-import 'reflect-metadata';
-import { QueryFailedError } from 'typeorm';
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import {
   app,
   BrowserWindow,
@@ -11,6 +8,9 @@ import {
   screen,
   IpcMainInvokeEvent,
 } from 'electron';
+import 'reflect-metadata';
+import { QueryFailedError } from 'typeorm';
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import isDev from 'electron-is-dev';
 import * as path from 'path';
 
@@ -69,18 +69,18 @@ import {
   DB_GET_SETTINGS_ACK,
 } from '@constants/events';
 import { EVENT_ERROR, EVENT_SUCCESS, EVENT_NEUTRAL } from '@constants/eventStatus';
-import { CanutinFileType, UpdatedAccount } from '@appTypes/canutinFile.type';
-import { enumExtensionFiles, enumImportTitleOptions, WindowControlEnum } from '@appConstants/misc';
-import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
-import { AccountEditBalanceSubmitType, AccountEditDetailsSubmitType } from '@appTypes/account.type';
-
 import {
   DID_FINISH_LOADING,
   ELECTRON_ACTIVATE,
   ELECTRON_READY,
   ELECTRON_WINDOW_CLOSED,
+  ELECTRON_CLOSED,
 } from './constants';
-import { findAndConnectDB, getDbFromSettings } from './helpers/database.helper';
+import { CanutinFileType, UpdatedAccount } from '@appTypes/canutinFile.type';
+import { enumExtensionFiles, enumImportTitleOptions, WindowControlEnum } from '@appConstants/misc';
+import { FilterTransactionInterface, NewTransactionType } from '@appTypes/transaction.type';
+import { AccountEditBalanceSubmitType, AccountEditDetailsSubmitType } from '@appTypes/account.type';
+import { findAndConnectVault, getVaultFromDeviceSettings } from './helpers/database.helper';
 import { filterTransactions } from './helpers/transactionHelpers/transaction.helper';
 import { importSourceData, importUpdatedAccounts } from './helpers/importSource.helper';
 import {
@@ -513,10 +513,10 @@ const createWindow = async () => {
     win.loadURL(`file://${__dirname}/../../build/index.html`);
   }
 
-  win.on('closed', () => (win = null));
+  win.on(ELECTRON_CLOSED, () => (win = null));
 
-  // Hot Reloading
   if (isDev) {
+    // Hot Reloading
     // 'node_modules/.bin/electronPath'
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('electron-reload')(__dirname, {
@@ -524,23 +524,26 @@ const createWindow = async () => {
       forceHardReset: true,
       hardResetMethod: 'exit',
     });
-  }
 
-  // DevTools
-  installExtension(REACT_DEVELOPER_TOOLS)
-    .then(name => console.log(`Added Extension:  ${name}`))
-    .catch(err => console.log('An error occurred: ', err));
+    // React Dev Tools
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then(name => console.log(`Added Extension:  ${name}`))
+      .catch(err => console.log('An error occurred: ', err));
 
-  if (isDev) {
+    // Chrome Dev Tools
     win.webContents.openDevTools();
+
+    // Reset device settings
+    // await settings.unset(VAULT_PATH);
+    // await settings.unset(VAULT_MASTER_KEY);
   }
 
   await setupVaultEvents(win);
   await setupDbEvents();
 
   win.webContents.on(DID_FINISH_LOADING, async () => {
-    const { filePath, masterKey } = await getDbFromSettings();
-    await findAndConnectDB(win, filePath, masterKey);
+    const { vaultPath, vaultMasterKey } = await getVaultFromDeviceSettings();
+    await findAndConnectVault(win, vaultPath, vaultMasterKey);
   });
 };
 

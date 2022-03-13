@@ -11,20 +11,20 @@ import { AppContext } from '@app/context/appContext';
 import { routesPaths } from '@routes';
 
 const Vault = () => {
-  const { filePath } = useContext(AppContext);
+  const { vaultPath } = useContext(AppContext);
   const history = useHistory();
 
   return (
     <Form
       onSubmit={() => {
-        history.push(routesPaths.canutinSetup);
+        history.push(routesPaths.setup);
       }}
     >
       <Fieldset>
         <InputTextField
           label="Current vault"
           name="vault"
-          value={filePath || 'Not defined'}
+          value={vaultPath || 'Not defined'}
           disabled
         />
       </Fieldset>

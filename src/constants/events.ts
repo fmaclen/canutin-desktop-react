@@ -1,7 +1,3 @@
-export const OPEN_CREATE_VAULT = 'openCreateVault';
-export const OPEN_EXISTING_VAULT = 'openExistingVault';
-export const UNLOCK_VAULT = 'unlockVault';
-
 // Database
 export const DB_NEW_ACCOUNT = 'dbNewAccount';
 export const DB_NEW_ACCOUNT_ACK = 'dbNewAccountAck';
@@ -88,3 +84,4 @@ export const FILTER_TRANSACTIONS_ACK = 'filterTransactionsAck';
 // App
 export const WINDOW_CONTROL = 'windowControl';
 export const APP_INFO = 'appInfo';
+export const DEVICE_HAS_SAFE_STORAGE = 'deviceHasSecureStorage';

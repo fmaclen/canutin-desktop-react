@@ -6,79 +6,82 @@ import settings from 'electron-settings';
 
 import connection, { dbConfig } from '@database/connection';
 import {
-  DATABASE_CONNECTED,
-  DATABASE_DOES_NOT_EXIST,
-  DATABASE_NOT_DETECTED,
-  DATABASE_PATH,
-  DATABASE_NOT_VALID,
-  DATABASE_MASTER_KEY,
-  DATABASE_MASTER_KEY_ENCODING,
-  DATABASE_EXISTS_WITHOUT_MASTER_KEY,
-} from '@constants';
+  VAULT_PATH,
+  VAULT_MASTER_KEY_ENCODING,
+  VAULT_MASTER_KEY,
+  VAULT_READY,
+  VAULT_SET_WRONG_MASTER_KEY,
+  VAULT_SET_NO_MASTER_KEY,
+  VAULT_SET_NO_FILE,
+  VAULT_NOT_SET,
+} from '@constants/vault';
 
-export const connectAndSaveDB = async (
+export const connectAndSaveVault = async (
   win: BrowserWindow | null,
-  filePath: string,
-  masterKey: string,
-  rememberMasterKey?: boolean
+  vaultPath: string,
+  vaultMasterKey: string,
+  rememberVaultMasterKey?: boolean
 ) => {
   try {
     const databaseConnection: ConnectionOptions = {
       ...dbConfig,
-      database: filePath,
+      database: vaultPath,
       type: 'better-sqlite3',
       driver: require('better-sqlite3-multiple-ciphers'),
       verbose: isDev ? console.log : undefined,
       prepareDatabase: db => {
         db.pragma(`CIPHER = 'sqlcipher'`);
-        db.pragma(`KEY = '${masterKey}'`);
+        db.pragma(`KEY = '${vaultMasterKey}'`);
       },
     };
     const isConnected = await connection.isConnected();
     if (isConnected) await connection.close();
 
     await connection.create(databaseConnection);
-    await settings.set(DATABASE_PATH, filePath);
+    await settings.set(VAULT_PATH, vaultPath);
 
-    if (safeStorage.isEncryptionAvailable() && rememberMasterKey && masterKey) {
-      const buffer = safeStorage.encryptString(masterKey);
-      await settings.set(DATABASE_MASTER_KEY, buffer.toString(DATABASE_MASTER_KEY_ENCODING));
+    if (rememberVaultMasterKey && vaultMasterKey && safeStorage.isEncryptionAvailable()) {
+      const buffer = safeStorage.encryptString(vaultMasterKey);
+      await settings.set(VAULT_MASTER_KEY, buffer.toString(VAULT_MASTER_KEY_ENCODING));
     }
 
-    win?.webContents.send(DATABASE_CONNECTED, filePath);
+    rememberVaultMasterKey === false && (await settings.unset(VAULT_MASTER_KEY));
+    win?.webContents.send(VAULT_READY, vaultPath);
   } catch (error) {
-    await settings.set(DATABASE_MASTER_KEY, '');
-    win?.webContents.send(DATABASE_NOT_VALID);
+    await settings.unset(VAULT_MASTER_KEY);
+    win?.webContents.send(VAULT_SET_WRONG_MASTER_KEY);
   }
 };
 
-export const findAndConnectDB = async (
+export const findAndConnectVault = async (
   win: BrowserWindow | null,
-  filePath?: string,
-  masterKey?: string,
-  rememberMasterKey?: boolean
+  vaultPath?: string,
+  vaultMasterKey?: string,
+  rememberVaultMasterKey?: boolean
 ) => {
-  if (filePath && masterKey) {
-    if (existsSync(filePath)) {
-      await connectAndSaveDB(win, filePath, masterKey, rememberMasterKey);
+  if (vaultPath) {
+    const fileExists = existsSync(vaultPath);
+    if (fileExists && vaultMasterKey) {
+      await connectAndSaveVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
+    } else if (fileExists && !vaultMasterKey) {
+      win?.webContents.send(VAULT_SET_NO_MASTER_KEY, vaultPath);
     } else {
-      win?.webContents.send(DATABASE_DOES_NOT_EXIST, { dbPath: filePath });
+      win?.webContents.send(VAULT_SET_NO_FILE, { dbPath: vaultPath });
     }
-  } else if (masterKey) {
-    win?.webContents.send(DATABASE_EXISTS_WITHOUT_MASTER_KEY, filePath);
   } else {
-    win?.webContents.send(DATABASE_NOT_DETECTED);
+    win?.webContents.send(VAULT_NOT_SET);
   }
 };
 
-export const getDbFromSettings = async () => {
-  const filePath = (await settings.get(DATABASE_PATH)) as string | undefined;
+export const getVaultFromDeviceSettings = async () => {
+  const vaultPath = (await settings.get(VAULT_PATH)) as string | undefined;
 
-  let masterKey: string | undefined;
+  let vaultMasterKey: string | undefined;
   if (safeStorage.isEncryptionAvailable()) {
-    const buffer = (await settings.get(DATABASE_MASTER_KEY)) as string;
-    masterKey = safeStorage.decryptString(Buffer.from(buffer, DATABASE_MASTER_KEY_ENCODING));
+    const buffer = (await settings.get(VAULT_MASTER_KEY)) as string;
+    vaultMasterKey =
+      buffer && safeStorage.decryptString(Buffer.from(buffer, VAULT_MASTER_KEY_ENCODING));
   }
 
-  return { filePath, masterKey };
+  return { vaultPath, vaultMasterKey };
 };

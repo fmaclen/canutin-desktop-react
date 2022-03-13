@@ -1,6 +1,6 @@
 export type VaultType = {
-  filePath: string;
-  masterKey: string;
+  vaultPath: string;
+  vaultMasterKey: string;
   isNew: boolean;
-  rememberMasterKey?: boolean;
+  rememberVaultMasterKey?: boolean;
 };
