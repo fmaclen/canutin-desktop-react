@@ -17,7 +17,7 @@
       "request": "launch",
       "protocol": "inspector",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": ["start-debugger"],
+      "runtimeArgs": ["start", "--inspect=5858", "--remote-debugging-port=9223"],
       "env": {
         "PORT": "3000"
       }
