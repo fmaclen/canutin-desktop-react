@@ -9,7 +9,7 @@ import {
   DB_GET_BUDGETS_ACK,
   DB_GET_SETTINGS_ACK,
   DB_GET_TRANSACTION_CATEGORY_ACK,
-} from '@constants/events';
+} from '@constants/repositories';
 import { VaultStatusEnum } from '@enums/vault.enum';
 import { Account, Asset, Budget, Settings, TransactionSubCategory } from '@database/entities';
 import { AppContext } from './appContext';

@@ -13,7 +13,7 @@ import {
   DB_GET_BUDGETS_ACK,
   DB_GET_TRANSACTION_CATEGORY_ACK,
   FILTER_TRANSACTIONS_ACK,
-} from '@constants/events';
+} from '@constants/repositories';
 import { VAULT_READY } from '@constants/vault';
 
 import {

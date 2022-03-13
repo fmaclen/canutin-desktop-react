@@ -7,7 +7,7 @@ import {
   DB_GET_SETTINGS_ACK,
   DB_GET_BUDGETS_ACK,
   FILTER_TRANSACTIONS_ACK,
-} from '@constants/events';
+} from '@constants/repositories';
 import { VAULT_READY } from '@constants/vault';
 import { SeedAccount, SeedAsset, SeedTransaction } from '@tests/factories/entitiesFactory';
 import { AppCtxProvider } from '@app/context/appContext';

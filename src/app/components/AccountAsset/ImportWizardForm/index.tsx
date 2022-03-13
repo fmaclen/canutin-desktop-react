@@ -18,7 +18,7 @@ import {
   ANALYZE_SOURCE_FILE_ACK,
   LOAD_FROM_CANUTIN_FILE,
   LOAD_DATA_ACK,
-} from '@constants/events';
+} from '@constants/imports';
 import { sourceExtensionFile, enumImportTitleOptions, StatusEnum } from '@appConstants/misc';
 import { CanutinFileType } from '@appTypes/canutinFile.type';
 import { ParseMeta } from '@appTypes/parseCsv';

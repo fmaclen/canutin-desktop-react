@@ -15,7 +15,7 @@ import { ReactComponent as Keyboard } from '@assets/icons/Keyboard.svg';
 import { ReactComponent as Bot } from '@assets/icons/Bot.svg';
 import { ReactComponent as Lightning } from '@assets/icons/Lightning.svg';
 import { ReactComponent as PaperAccount } from '@assets/icons/PaperAccount.svg';
-import { DB_SEED_VAULT, DB_SEED_VAULT_ACK } from '@constants/events';
+import { DB_SEED_VAULT, DB_SEED_VAULT_ACK } from '@constants/repositories';
 import { EVENT_SUCCESS } from '@constants/eventStatus';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';

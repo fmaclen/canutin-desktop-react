@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 
 import { VAULT_UNLOCK } from '@constants/vault';
-import { DEVICE_HAS_SAFE_STORAGE } from '@constants/events';
+import { APP_HAS_SAFE_STORAGE } from '@constants/app';
 import { VaultType } from '@appTypes/vault.type';
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
@@ -37,7 +37,7 @@ const VaultSecurity = () => {
   });
 
   const checkHasSafeStorage = async () => {
-    const deviceHasSafeStorage = await ipcRenderer.invoke(DEVICE_HAS_SAFE_STORAGE);
+    const deviceHasSafeStorage = await ipcRenderer.invoke(APP_HAS_SAFE_STORAGE);
     setHasSafeStorage(deviceHasSafeStorage);
   };
 

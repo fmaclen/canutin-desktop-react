@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ipcRenderer } from 'electron';
 
-import { APP_INFO } from '@constants/events';
+import { APP_INFO } from '@constants/app';
 
 import Form from '@components/common/Form/Form';
 import Fieldset from '@components/common/Form/Fieldset';

@@ -6,7 +6,7 @@ import ScrollView from '@components/common/ScrollView';
 import Section from '@components/common/Section';
 import AddAccountAssetForm from '@components/AccountAsset/AddAccountAssetForm';
 
-import { DB_NEW_ACCOUNT_ACK, DB_NEW_ASSET_ACK } from '@constants/events';
+import { DB_NEW_ACCOUNT_ACK, DB_NEW_ASSET_ACK } from '@constants/repositories';
 import { EVENT_SUCCESS, EVENT_ERROR } from '@constants/eventStatus';
 import { ACCOUNT, StatusEnum } from '@appConstants/misc';
 import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
