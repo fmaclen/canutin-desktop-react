@@ -8,7 +8,7 @@ import {
   DB_GET_BUDGETS_ACK,
   FILTER_TRANSACTIONS_ACK,
 } from '@constants/events';
-import { DATABASE_CONNECTED } from '@constants';
+import { VAULT_READY } from '@constants/vault';
 import { SeedAccount, SeedAsset, SeedTransaction } from '@tests/factories/entitiesFactory';
 import { AppCtxProvider } from '@app/context/appContext';
 import { EntitiesProvider } from '@app/context/entitiesContext';
@@ -43,30 +43,30 @@ export const initAppWith = ({
   filterTransactions = [],
 }: InitAppWithProps) => {
   mocked(ipcRenderer).on.mockImplementation((event, callback) => {
-    if (event === DATABASE_CONNECTED) {
-      callback((event as unknown) as IpcRendererEvent, {
+    if (event === VAULT_READY) {
+      callback(event as unknown as IpcRendererEvent, {
         filePath: 'testFilePath',
       });
     }
 
     if (event === DB_GET_ACCOUNTS_ACK) {
-      callback((event as unknown) as IpcRendererEvent, accounts);
+      callback(event as unknown as IpcRendererEvent, accounts);
     }
 
     if (event === DB_GET_ASSETS_ACK) {
-      callback((event as unknown) as IpcRendererEvent, assets);
+      callback(event as unknown as IpcRendererEvent, assets);
     }
 
     if (event === DB_GET_SETTINGS_ACK) {
-      callback((event as unknown) as IpcRendererEvent, settings);
+      callback(event as unknown as IpcRendererEvent, settings);
     }
 
     if (event === DB_GET_BUDGETS_ACK) {
-      callback((event as unknown) as IpcRendererEvent, []);
+      callback(event as unknown as IpcRendererEvent, []);
     }
 
     if (event === FILTER_TRANSACTIONS_ACK) {
-      callback((event as unknown) as IpcRendererEvent, { transactions: filterTransactions });
+      callback(event as unknown as IpcRendererEvent, { transactions: filterTransactions });
     }
 
     return ipcRenderer;

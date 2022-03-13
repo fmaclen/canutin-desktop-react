@@ -1,16 +1,19 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { mocked } from 'jest-mock';
 import userEvent from '@testing-library/user-event';
 
-import { DATABASE_NOT_DETECTED } from '@constants';
-import { OPEN_CREATE_VAULT, OPEN_EXISTING_VAULT } from '@constants/events';
+import {
+  VAULT_NOT_SET,
+  VAULT_OPEN_SAVE_DIALOG,
+  VAULT_OPEN_EXISTING_FILE_DIALOG,
+} from '@constants/vault';
 import { initAppWith, initAppWithContexts } from '@tests/utils/initApp.utils';
 
 test('Setup Page in case there is not a database set', async () => {
   mocked(ipcRenderer).on.mockImplementation((event, callback) => {
-    if (event === DATABASE_NOT_DETECTED) {
-      callback((event as unknown) as IpcRendererEvent);
+    if (event === VAULT_NOT_SET) {
+      callback(event as unknown as IpcRendererEvent);
     }
 
     return ipcRenderer;
@@ -22,14 +25,18 @@ test('Setup Page in case there is not a database set', async () => {
   expect(screen.getByText('Existing vault')).toBeInTheDocument();
   expect(screen.getAllByText(/Canutin setup/i)).toHaveLength(1);
 
-  const spyOnIpcRenderer = jest.spyOn(ipcRenderer, 'send');
+  const spyOnIpcRenderer = jest.spyOn(ipcRenderer, 'invoke');
   const onCreateNewVault = screen.getByRole('button', { name: /Create a brand new vault/i });
   userEvent.click(onCreateNewVault);
-  expect(spyOnIpcRenderer).toBeCalledWith(OPEN_CREATE_VAULT);
+  await waitFor(() => {
+    expect(spyOnIpcRenderer).toBeCalledWith(VAULT_OPEN_SAVE_DIALOG);
+  });
 
   const onUseExisitngVault = screen.getByRole('button', { name: /Locate an existing vault file/i });
   userEvent.click(onUseExisitngVault);
-  expect(spyOnIpcRenderer).toBeCalledWith(OPEN_EXISTING_VAULT);
+  await waitFor(() => {
+    expect(spyOnIpcRenderer).toBeCalledWith(VAULT_OPEN_EXISTING_FILE_DIALOG);
+  });
 });
 
 test('Setup Page in case there is a database set', async () => {
