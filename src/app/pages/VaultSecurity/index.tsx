@@ -36,16 +36,20 @@ const VaultSecurity = () => {
     excludePaths: Object.values(routesPaths),
   });
 
-  const checkHasSafeStorage = async () => {
-    const deviceHasSafeStorage = await ipcRenderer.invoke(APP_HAS_SAFE_STORAGE);
-    setHasSafeStorage(deviceHasSafeStorage);
-  };
-
   useEffect(() => {
+    // Using mounted state to handle the async function when component is unmounted
+    // REF: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
+    let mounted = true;
+    ipcRenderer.invoke(APP_HAS_SAFE_STORAGE).then(newItems => {
+      if (mounted) {
+        setHasSafeStorage(newItems);
+      }
+    });
+
     setBreadcrumbs(<Breadcrumbs items={breadcrumbItems} />);
-    checkHasSafeStorage();
 
     return () => {
+      mounted = false;
       setStatusMessage(emptyStatusMessage);
       setBreadcrumbs(undefined);
     };
