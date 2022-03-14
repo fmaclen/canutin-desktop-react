@@ -14,7 +14,7 @@ export enum ButtonType {
 
 export interface ButtonProps {
   children: ReactNode;
-  onClick?: (() => void) | undefined;
+  onClick?: () => void;
   disabled?: boolean;
   type?: ButtonType;
   className?: string;
