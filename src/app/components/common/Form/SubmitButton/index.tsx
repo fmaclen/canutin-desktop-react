@@ -7,18 +7,20 @@ export interface SubmitButtonProp {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  appearance?: string;
 }
 
 const Container = styled.button`
   ${container}
 `;
 
-const SubmitButton = ({ children, onClick, disabled = false }: SubmitButtonProp) => {
+const SubmitButton = ({ children, onClick, appearance, disabled = false }: SubmitButtonProp) => {
   return (
     <Container
-      type="submit"
+      type={appearance === 'secondary' ? 'button' : 'submit'}
       onClick={!disabled && onClick ? () => onClick() : () => {}}
       disabled={disabled}
+      appearance={appearance}
     >
       {children}
     </Container>

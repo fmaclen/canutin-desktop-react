@@ -19,7 +19,7 @@ export const AppContext = createContext<AppContextValue>({
   setIsAppInitialized: () => {},
   vaultPath: null,
   setVaultPath: () => {},
-  vaultStatus: VaultStatusEnum.NOT_READY,
+  vaultStatus: VaultStatusEnum.NOT_SET,
   setVaultStatus: () => {},
 });
 
@@ -27,7 +27,7 @@ export const AppCtxProvider = ({ children }: PropsWithChildren<Record<string, un
   const [isLoading, setIsLoading] = useState(true);
   const [isAppInitialized, setIsAppInitialized] = useState(false);
   const [vaultPath, setVaultPath] = useState<string | null>(null);
-  const [vaultStatus, setVaultStatus] = useState(VaultStatusEnum.NOT_READY);
+  const [vaultStatus, setVaultStatus] = useState(VaultStatusEnum.NOT_SET);
 
   const value = {
     isLoading,

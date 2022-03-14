@@ -7,14 +7,24 @@ export const Container = styled.button`
   ${container}
 `;
 
-export interface ButtonProps {
-  children: ReactNode;
-  onClick: (() => void) | undefined;
-  disabled?: boolean;
+export enum ButtonType {
+  SUBMIT = 'submit',
+  BUTTON = 'button',
 }
 
-const Button = ({ children, onClick, disabled = false }: ButtonProps) => (
-  <Container onClick={!disabled && onClick ? () => onClick() : () => {}} disabled={disabled} type="button">
+export interface ButtonProps {
+  children: ReactNode;
+  onClick?: (() => void) | undefined;
+  disabled?: boolean;
+  type?: ButtonType;
+}
+
+const Button = ({ children, onClick, type, disabled = false }: ButtonProps) => (
+  <Container
+    onClick={!disabled && onClick ? () => onClick() : () => {}}
+    disabled={disabled}
+    type={type || 'button'}
+  >
     {children}
   </Container>
 );

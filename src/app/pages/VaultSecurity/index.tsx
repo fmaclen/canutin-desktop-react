@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 
 import { VAULT_UNLOCK } from '@constants/vault';
-import { APP_HAS_SAFE_STORAGE } from '@constants/app';
+import { APP_SAFE_STORAGE } from '@constants/app';
 import { VaultType } from '@appTypes/vault.type';
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
@@ -16,18 +16,21 @@ import Section from '@components/common/Section';
 import SectionRow from '@components/common/SectionRow';
 import Form from '@components/common/Form/Form';
 import FormFooter from '@components/common/Form/FormFooter';
-import SubmitButton from '@components/common/Form/SubmitButton';
 import Fieldset from '@components/common/Form/Fieldset';
 import InputTextField from '@components/common/Form/InputTextField';
 import Field from '@app/components/common/Form/Field';
 import ToggleInputField from '@app/components/common/Form/ToggleInputField';
 import InlineCheckbox from '@app/components/common/Form/Checkbox';
 import InputText from '@app/components/common/Form/InputText';
+import Button, { ButtonType } from '@app/components/common/Button';
+import FieldNotice from '@components/common/Form/FieldNotice';
+import { VaultStatusEnum } from '@enums/vault.enum';
 
 const VaultSecurity = () => {
-  const { vaultPath } = useContext(AppContext);
+  const { vaultPath, setVaultPath, vaultStatus } = useContext(AppContext);
   const [hasSafeStorage, setHasSafeStorage] = useState(false);
   const { setStatusMessage, setBreadcrumbs } = useContext(StatusBarContext);
+
   const vaultSecurityBreadcrumbs = [
     { breadcrumb: 'Canutin setup', path: '/setup' },
     { breadcrumb: 'Vault security', path: '/setup/security' },
@@ -40,9 +43,9 @@ const VaultSecurity = () => {
     // Using mounted state to handle the async function when component is unmounted
     // REF: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
     let mounted = true;
-    ipcRenderer.invoke(APP_HAS_SAFE_STORAGE).then(newItems => {
+    ipcRenderer.invoke(APP_SAFE_STORAGE).then(appHasSafeStorage => {
       if (mounted) {
-        setHasSafeStorage(newItems);
+        setHasSafeStorage(appHasSafeStorage);
       }
     });
 
@@ -64,6 +67,7 @@ const VaultSecurity = () => {
   });
   const vaultMasterKey = watch('vaultMasterKey');
   const submitDisabled = !vaultMasterKey;
+  const isVaultNew = vaultStatus === VaultStatusEnum.SET_NEW_NOT_READY;
 
   const onSubmit = async (unlockVaultSubmit: VaultType) => {
     await ipcRenderer.send(VAULT_UNLOCK, {
@@ -91,15 +95,29 @@ const VaultSecurity = () => {
                     <InlineCheckbox
                       name="rememberVaultMasterKey"
                       id="rememberVaultMasterKey"
-                      label="Remember key"
+                      label="Remember on this computer"
                       register={register}
                     />
                   )}
                 </ToggleInputField>
               </Field>
+              {isVaultNew && (
+                <FieldNotice
+                  title="Write down your master key somewhere safe"
+                  description={
+                    <div>
+                      This key will be used to encrypt the vault. Without it you won't be able to
+                      retrieve the information inside.
+                    </div>
+                  }
+                />
+              )}
             </Fieldset>
             <FormFooter>
-              <SubmitButton disabled={submitDisabled}>Unlock</SubmitButton>
+              <Button onClick={() => setVaultPath('')}>Cancel</Button>
+              <Button disabled={submitDisabled} type={ButtonType.SUBMIT}>
+                {isVaultNew ? 'Create & unlock' : 'Unlock'}
+              </Button>
             </FormFooter>
           </Form>
         </Section>

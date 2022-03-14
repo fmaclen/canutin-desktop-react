@@ -44,7 +44,6 @@ const AddOrUpdateData = () => {
           sentiment: StatusEnum.POSITIVE,
           isLoading: false,
         });
-        push(routesPaths.balance);
       }
     });
 

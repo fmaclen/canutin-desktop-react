@@ -38,14 +38,14 @@ const Setup = () => {
     const newFilePath = await ipcRenderer.invoke(VAULT_OPEN_SAVE_DIALOG);
     setVaultPath('');
     setVaultPath(newFilePath);
-    setVaultStatus(VaultStatusEnum.NOT_READY);
+    setVaultStatus(VaultStatusEnum.SET_NEW_NOT_READY);
   };
 
   const onOpenExistingVault = async () => {
     const existingFilePath = await ipcRenderer.invoke(VAULT_OPEN_EXISTING_FILE_DIALOG);
     setVaultPath('');
     setVaultPath(existingFilePath);
-    setVaultStatus(VaultStatusEnum.NOT_READY);
+    setVaultStatus(VaultStatusEnum.SET_EXISTING_NOT_READY);
   };
 
   return (

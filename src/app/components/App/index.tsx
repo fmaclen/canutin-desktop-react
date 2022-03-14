@@ -56,20 +56,20 @@ const App = () => {
     ipcRenderer.on(VAULT_NOT_SET, () => {
       setIsAppInitialized(false);
       setIsLoading(false);
-      setVaultStatus(VaultStatusEnum.NOT_READY);
+      setVaultStatus(VaultStatusEnum.NOT_SET);
     });
 
     ipcRenderer.on(VAULT_SET_NO_MASTER_KEY, (_, vaultPath: string) => {
       setIsAppInitialized(true);
       setIsLoading(false);
       setVaultPath(vaultPath);
-      setVaultStatus(VaultStatusEnum.NOT_READY);
+      setVaultStatus(VaultStatusEnum.NOT_SET);
     });
 
     ipcRenderer.on(VAULT_SET_WRONG_MASTER_KEY, () => {
       setIsAppInitialized(true);
       setIsLoading(false);
-      setVaultStatus(VaultStatusEnum.NOT_READY);
+      setVaultStatus(VaultStatusEnum.NOT_SET);
       setStatusMessage({
         sentiment: StatusEnum.WARNING,
         message: 'Incorrect master key or the chosen file is not a valid Canutin vault',
@@ -80,7 +80,7 @@ const App = () => {
     ipcRenderer.on(VAULT_SET_NO_FILE, (_, { dbPath }: DatabaseDoesNotExistsMessage) => {
       setIsAppInitialized(true);
       setIsLoading(false);
-      setVaultStatus(VaultStatusEnum.NOT_READY);
+      setVaultStatus(VaultStatusEnum.NOT_SET);
       setStatusMessage({
         sentiment: StatusEnum.NEGATIVE,
         message: (
@@ -130,27 +130,32 @@ const App = () => {
 
           {isLoading && <NotReady />}
           {!isLoading && !vaultPath && <Setup />}
-          {!isLoading && vaultPath && vaultStatus === VaultStatusEnum.NOT_READY && (
-            <VaultSecurity />
-          )}
-          {!isLoading && vaultPath && vaultStatus !== VaultStatusEnum.NOT_READY && (
-            <>
-              <SideBar />
-              {vaultStatus === VaultStatusEnum.INDEXED_NO_DATA && (
-                <Redirect to={routesPaths.addOrUpdateData} />
-              )}
-              {vaultStatus === VaultStatusEnum.INDEXED_WITH_DATA && (
-                <Redirect to={routesPaths.index} />
-              )}
-              <Switch>
-                {routesConfig.map(({ path, component, exact }: RouteConfigProps, index) => (
-                  <Route key={index} exact={exact} path={path}>
-                    {component}
-                  </Route>
-                ))}
-              </Switch>
-            </>
-          )}
+          {!isLoading &&
+            vaultPath &&
+            (vaultStatus === VaultStatusEnum.SET_EXISTING_NOT_READY ||
+              vaultStatus === VaultStatusEnum.SET_NEW_NOT_READY) && <VaultSecurity />}
+          {!isLoading &&
+            vaultPath &&
+            vaultStatus !== VaultStatusEnum.NOT_SET &&
+            vaultStatus !== VaultStatusEnum.SET_EXISTING_NOT_READY &&
+            vaultStatus !== VaultStatusEnum.SET_NEW_NOT_READY && (
+              <>
+                <SideBar />
+                {vaultStatus === VaultStatusEnum.INDEXED_NO_DATA && (
+                  <Redirect to={routesPaths.addOrUpdateData} />
+                )}
+                {vaultStatus === VaultStatusEnum.INDEXED_WITH_DATA && (
+                  <Redirect to={routesPaths.index} />
+                )}
+                <Switch>
+                  {routesConfig.map(({ path, component, exact }: RouteConfigProps, index) => (
+                    <Route key={index} exact={exact} path={path}>
+                      {component}
+                    </Route>
+                  ))}
+                </Switch>
+              </>
+            )}
 
           <StatusBar />
         </Container>

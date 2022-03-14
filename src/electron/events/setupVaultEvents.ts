@@ -6,7 +6,7 @@ import {
   VAULT_OPEN_EXISTING_FILE_DIALOG,
   VAULT_UNLOCK,
 } from '@constants/vault';
-import { APP_HAS_SAFE_STORAGE } from '@constants/app';
+import { APP_SAFE_STORAGE } from '@constants/app';
 
 import { VaultType } from '../../types/vault.type';
 import { connectAndSaveVault, findAndConnectVault } from '../helpers/database.helper';
@@ -56,7 +56,7 @@ const setupVaultEvents = async (win: BrowserWindow) => {
     }
   });
 
-  ipcMain.handle(APP_HAS_SAFE_STORAGE, async () => {
+  ipcMain.handle(APP_SAFE_STORAGE, async () => {
     if (win) {
       return safeStorage.isEncryptionAvailable();
     }
