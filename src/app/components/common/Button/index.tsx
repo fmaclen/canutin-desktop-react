@@ -17,13 +17,15 @@ export interface ButtonProps {
   onClick?: (() => void) | undefined;
   disabled?: boolean;
   type?: ButtonType;
+  className?: string;
 }
 
-const Button = ({ children, onClick, type, disabled = false }: ButtonProps) => (
+const Button = ({ children, onClick, type, className, disabled = false }: ButtonProps) => (
   <Container
     onClick={!disabled && onClick ? () => onClick() : () => {}}
     disabled={disabled}
     type={type || 'button'}
+    className={className}
   >
     {children}
   </Container>

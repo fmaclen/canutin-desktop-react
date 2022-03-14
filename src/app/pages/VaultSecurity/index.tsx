@@ -22,7 +22,8 @@ import Field from '@app/components/common/Form/Field';
 import ToggleInputField from '@app/components/common/Form/ToggleInputField';
 import InlineCheckbox from '@app/components/common/Form/Checkbox';
 import InputText from '@app/components/common/Form/InputText';
-import Button, { ButtonType } from '@app/components/common/Button';
+import Button from '@app/components/common/Button';
+import SubmitButton from '@app/components/common/Form/SubmitButton';
 import FieldNotice from '@components/common/Form/FieldNotice';
 import { VaultStatusEnum } from '@enums/vault.enum';
 
@@ -115,9 +116,9 @@ const VaultSecurity = () => {
             </Fieldset>
             <FormFooter>
               <Button onClick={() => setVaultPath('')}>Cancel</Button>
-              <Button disabled={submitDisabled} type={ButtonType.SUBMIT}>
+              <SubmitButton disabled={submitDisabled}>
                 {isVaultNew ? 'Create & unlock' : 'Unlock'}
-              </Button>
+              </SubmitButton>
             </FormFooter>
           </Form>
         </Section>

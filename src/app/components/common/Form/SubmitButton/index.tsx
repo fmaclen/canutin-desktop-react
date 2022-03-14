@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+import Button, { ButtonType } from '../../Button';
 
 import { container } from './styles';
 
@@ -7,20 +8,18 @@ export interface SubmitButtonProp {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
-  appearance?: string;
 }
 
-const Container = styled.button`
+const Container = styled(Button)`
   ${container}
 `;
 
-const SubmitButton = ({ children, onClick, appearance, disabled = false }: SubmitButtonProp) => {
+const SubmitButton = ({ children, onClick, disabled = false }: SubmitButtonProp) => {
   return (
     <Container
-      type={appearance === 'secondary' ? 'button' : 'submit'}
+      type={ButtonType.SUBMIT}
       onClick={!disabled && onClick ? () => onClick() : () => {}}
       disabled={disabled}
-      appearance={appearance}
     >
       {children}
     </Container>

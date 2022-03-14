@@ -33,16 +33,4 @@ export const container = css<{ type?: string; disabled: boolean }>`
       color: ${grey30};
       cursor: default;
     `}
-
-  ${({ disabled, type }) =>
-    !disabled &&
-    type === 'submit' &&
-    css`
-      background-color: ${bluePlain};
-      color: ${whitePlain};
-
-      &:hover {
-        filter: saturate(1.5);
-      }
-    `}
 `;
