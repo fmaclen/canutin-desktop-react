@@ -1,12 +1,13 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { ipcRenderer } from 'electron';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 
 import { VAULT_UNLOCK } from '@constants/vault';
 import { APP_SAFE_STORAGE } from '@constants/app';
 import { VaultType } from '@appTypes/vault.type';
-import { routesPaths } from '@routes';
+import { rootRoutesPaths, routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
 import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
 
@@ -28,13 +29,14 @@ import FieldNotice from '@components/common/Form/FieldNotice';
 import { VaultStatusEnum } from '@enums/vault.enum';
 
 const VaultSecurity = () => {
+  const history = useHistory();
   const { vaultPath, setVaultPath, vaultStatus } = useContext(AppContext);
   const [hasSafeStorage, setHasSafeStorage] = useState(false);
   const { setStatusMessage, setBreadcrumbs } = useContext(StatusBarContext);
 
   const vaultSecurityBreadcrumbs = [
     { breadcrumb: 'Canutin setup', path: '/setup' },
-    { breadcrumb: 'Vault security', path: '/setup/security' },
+    { breadcrumb: 'Canutin vault', path: '/setup/security' },
   ];
   const breadcrumbItems = useBreadcrumbs(vaultSecurityBreadcrumbs, {
     excludePaths: Object.values(routesPaths),
@@ -77,8 +79,16 @@ const VaultSecurity = () => {
     });
   };
 
+  const cancelVault = () => {
+    if (history.length > 1) {
+      history.goBack();
+    } else {
+      history.push(rootRoutesPaths.setup);
+    }
+  };
+
   return (
-    <ScrollView title={'Vault security'} wizard={true}>
+    <ScrollView title={'Canutin vault'} wizard={true}>
       <SectionRow>
         <Section title="Vault encryption">
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -115,9 +125,9 @@ const VaultSecurity = () => {
               )}
             </Fieldset>
             <FormFooter>
-              <Button onClick={() => setVaultPath('')}>Cancel</Button>
+              <Button onClick={cancelVault}>Cancel</Button>
               <SubmitButton disabled={submitDisabled}>
-                {isVaultNew ? 'Create & unlock' : 'Unlock'}
+                {isVaultNew ? 'Create vault' : 'Unlock vault'}
               </SubmitButton>
             </FormFooter>
           </Form>

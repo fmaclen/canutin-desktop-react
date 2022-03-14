@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { ipcRenderer } from 'electron';
+import { useHistory } from 'react-router-dom';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 
 import ScrollView from '@components/common/ScrollView';
@@ -18,6 +19,7 @@ import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarCont
 import { VaultStatusEnum } from '@enums/vault.enum';
 
 const Setup = () => {
+  const history = useHistory();
   const { setVaultPath, setVaultStatus } = useContext(AppContext);
   const { setStatusMessage, setBreadcrumbs } = useContext(StatusBarContext);
   const noVaultBreadcrumbs = [{ breadcrumb: 'Canutin setup', path: '/setup' }];
@@ -39,6 +41,7 @@ const Setup = () => {
     setVaultPath('');
     setVaultPath(newFilePath);
     setVaultStatus(VaultStatusEnum.SET_NEW_NOT_READY);
+    history.push(routesPaths.vaultSecurity);
   };
 
   const onOpenExistingVault = async () => {
@@ -46,6 +49,7 @@ const Setup = () => {
     setVaultPath('');
     setVaultPath(existingFilePath);
     setVaultStatus(VaultStatusEnum.SET_EXISTING_NOT_READY);
+    history.push(routesPaths.vaultSecurity);
   };
 
   return (

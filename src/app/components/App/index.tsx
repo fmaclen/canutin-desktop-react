@@ -63,13 +63,13 @@ const App = () => {
       setIsAppInitialized(true);
       setIsLoading(false);
       setVaultPath(vaultPath);
-      setVaultStatus(VaultStatusEnum.NOT_SET);
+      setVaultStatus(VaultStatusEnum.SET_EXISTING_NOT_READY);
     });
 
     ipcRenderer.on(VAULT_SET_WRONG_MASTER_KEY, () => {
       setIsAppInitialized(true);
       setIsLoading(false);
-      setVaultStatus(VaultStatusEnum.NOT_SET);
+      setVaultStatus(VaultStatusEnum.SET_EXISTING_NOT_READY);
       setStatusMessage({
         sentiment: StatusEnum.WARNING,
         message: 'Incorrect master key or the chosen file is not a valid Canutin vault',
@@ -114,12 +114,20 @@ const App = () => {
     }
   }, [vaultStatus]);
 
-  // Set app loading state after all indexes have been updated
   useEffect(() => {
     if (assetsIndex?.lastUpdate && accountsIndex?.lastUpdate && settingsIndex?.lastUpdate) {
+      setIsLoading(true);
       setVaultStatus(VaultStatusEnum.INDEX_PENDING);
     }
   }, [assetsIndex, accountsIndex, settingsIndex]);
+
+  const isVaultNotSet = !vaultPath || vaultStatus === VaultStatusEnum.NOT_SET;
+  const isVaultLocked =
+    vaultPath &&
+    (vaultStatus === VaultStatusEnum.SET_NEW_NOT_READY ||
+      vaultStatus === VaultStatusEnum.SET_EXISTING_NOT_READY);
+  const isVaultEmpty = vaultStatus === VaultStatusEnum.INDEXED_NO_DATA;
+  const isVaultWithData = vaultStatus === VaultStatusEnum.INDEXED_WITH_DATA;
 
   return (
     <>
@@ -129,33 +137,25 @@ const App = () => {
           <TitleBar />
 
           {isLoading && <NotReady />}
-          {!isLoading && !vaultPath && <Setup />}
-          {!isLoading &&
-            vaultPath &&
-            (vaultStatus === VaultStatusEnum.SET_EXISTING_NOT_READY ||
-              vaultStatus === VaultStatusEnum.SET_NEW_NOT_READY) && <VaultSecurity />}
-          {!isLoading &&
-            vaultPath &&
-            vaultStatus !== VaultStatusEnum.NOT_SET &&
-            vaultStatus !== VaultStatusEnum.SET_EXISTING_NOT_READY &&
-            vaultStatus !== VaultStatusEnum.SET_NEW_NOT_READY && (
-              <>
-                <SideBar />
-                {vaultStatus === VaultStatusEnum.INDEXED_NO_DATA && (
-                  <Redirect to={routesPaths.addOrUpdateData} />
-                )}
-                {vaultStatus === VaultStatusEnum.INDEXED_WITH_DATA && (
-                  <Redirect to={routesPaths.index} />
-                )}
-                <Switch>
-                  {routesConfig.map(({ path, component, exact }: RouteConfigProps, index) => (
-                    <Route key={index} exact={exact} path={path}>
-                      {component}
-                    </Route>
-                  ))}
-                </Switch>
-              </>
-            )}
+
+          {!isLoading && (
+            <>
+              {vaultPath && <SideBar />}
+
+              {isVaultNotSet && <Redirect to={routesPaths.setup} />}
+              {isVaultLocked && <Redirect to={routesPaths.vaultSecurity} />}
+              {isVaultEmpty && <Redirect to={routesPaths.addOrUpdateData} />}
+              {isVaultWithData && <Redirect to={routesPaths.index} />}
+
+              <Switch>
+                {routesConfig.map(({ path, component, exact }: RouteConfigProps, index) => (
+                  <Route key={index} exact={exact} path={path}>
+                    {component}
+                  </Route>
+                ))}
+              </Switch>
+            </>
+          )}
 
           <StatusBar />
         </Container>
