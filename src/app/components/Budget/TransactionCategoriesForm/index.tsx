@@ -21,7 +21,6 @@ import {
 import { Budget } from '@database/entities';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';
-import { rootRoutesPaths } from '@app/routes';
 import BudgetIpc from '@app/data/budget.ipc';
 import InputText from '@app/components/common/Form/InputText';
 
@@ -63,7 +62,10 @@ const TransactionCategoriesForm = ({ expenseBudgets }: TransactionCategoriesForm
             sentiment: StatusEnum.POSITIVE,
             isLoading: false,
           });
-          history.push(rootRoutesPaths.budget);
+
+          // FIXME: should use `routePaths.budget` but it breaks type definitions
+          // when running `yarn electron-tsc`.
+          history.push('/budget');
           break;
         case EVENT_NEUTRAL:
           setStatusMessage({ message, sentiment: StatusEnum.NEUTRAL, isLoading: false });
@@ -81,7 +83,10 @@ const TransactionCategoriesForm = ({ expenseBudgets }: TransactionCategoriesForm
             sentiment: StatusEnum.NEUTRAL,
             isLoading: false,
           });
-          history.push(rootRoutesPaths.budget);
+
+          // FIXME: should use `routePaths.budget` but it breaks type definitions
+          // when running `yarn electron-tsc`.
+          history.push('/budget');
           break;
         case EVENT_NEUTRAL:
           setStatusMessage({ message, sentiment: StatusEnum.NEUTRAL, isLoading: false });

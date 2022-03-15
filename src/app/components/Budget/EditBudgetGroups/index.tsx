@@ -10,12 +10,6 @@ import { DB_EDIT_BUDGET_GROUPS_ACK } from '@constants/repositories';
 import { EVENT_ERROR, EVENT_SUCCESS } from '@constants/eventStatus';
 import { StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';
-import { rootRoutesPaths } from '@app/routes';
-import { BudgetTypeEnum } from '@enums/budgetType.enum';
-import { proportionBetween } from '@app/utils/balance.utils';
-import { percentageFieldContainer, buttonFieldContainer, buttonFieldset } from './styles';
-import { TransactionSubCategory } from '@database/entities';
-import { handleBudgets } from '@app/utils/budget.utils';
 import useBudget from '@app/hooks/useBudget';
 import BudgetIpc from '@app/data/budget.ipc';
 
@@ -31,6 +25,11 @@ import SubmitButton from '@app/components/common/Form/SubmitButton';
 import RadioGroupField from '@app/components/common/Form/RadioGroupField';
 import Button from '@app/components/common/Button';
 import PercentageField from '@app/components/common/Form/PercentageField';
+import { BudgetTypeEnum } from '@enums/budgetType.enum';
+import { proportionBetween } from '@app/utils/balance.utils';
+import { percentageFieldContainer, buttonFieldContainer, buttonFieldset } from './styles';
+import { TransactionSubCategory } from '@database/entities';
+import { handleBudgets } from '@app/utils/budget.utils';
 
 const PercentageFieldContainer = styled.div`
   ${percentageFieldContainer}
@@ -175,7 +174,10 @@ const EditBudgetGroups = () => {
             sentiment: StatusEnum.POSITIVE,
             isLoading: false,
           });
-          history.push(rootRoutesPaths.budget);
+
+          // FIXME: should use `routePaths.budget` but it breaks type definitions
+          // when running `yarn electron-tsc`.
+          history.push('/budget');
           break;
         case EVENT_ERROR:
           setStatusMessage({ message, sentiment: StatusEnum.NEGATIVE, isLoading: false });
