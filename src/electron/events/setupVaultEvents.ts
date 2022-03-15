@@ -38,14 +38,14 @@ const setupVaultEvents = async (win: BrowserWindow) => {
   ipcMain.on(VAULT_UNLOCK, async (_: IpcMainEvent, vault: VaultType) => {
     const { vaultPath, vaultMasterKey, rememberVaultMasterKey } = vault;
 
-    if (!existsSync(vaultPath)) {
+    if (existsSync(vaultPath)) {
+      await findAndConnectVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
+    } else {
       await connectAndSaveVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
       await seedSettings();
       await seedAccountTypes();
       await seedAssetTypes();
       await seedCategories();
-    } else {
-      await findAndConnectVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
     }
   });
 };
