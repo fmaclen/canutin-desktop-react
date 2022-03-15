@@ -18,17 +18,15 @@ import { importFromCanutinFile } from '@database/helpers/importSource';
 
 const setupImportEvents = async (win: BrowserWindow) => {
   ipcMain.on(IMPORT_SOURCE_FILE, async (_: IpcMainEvent, extension: enumExtensionFiles) => {
-    if (win) {
-      const { filePaths } = await dialog.showOpenDialog(win, {
-        properties: ['openFile'],
-        filters: [{ name: 'Import Source file', extensions: [extension] }],
-      });
+    const { filePaths } = await dialog.showOpenDialog(win, {
+      properties: ['openFile'],
+      filters: [{ name: 'Import Source file', extensions: [extension] }],
+    });
 
-      if (filePaths.length) {
-        win.webContents.send(IMPORT_SOURCE_FILE_ACK, { filePath: filePaths[0] });
-      } else {
-        win.webContents.send(IMPORT_SOURCE_FILE_ACK, { filePath: undefined });
-      }
+    if (filePaths.length) {
+      win.webContents.send(IMPORT_SOURCE_FILE_ACK, { filePath: filePaths[0] });
+    } else {
+      win.webContents.send(IMPORT_SOURCE_FILE_ACK, { filePath: undefined });
     }
   });
 

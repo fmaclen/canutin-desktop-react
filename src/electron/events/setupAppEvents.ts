@@ -1,6 +1,6 @@
-import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
+import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, safeStorage } from 'electron';
 
-import { APP_WINDOW_CONTROL, APP_INFO } from '@constants/app';
+import { APP_WINDOW_CONTROL, APP_INFO, APP_SAFE_STORAGE } from '@constants/app';
 import { WindowControlEnum } from '@appConstants/misc';
 
 const setupAppEvents = async (win: BrowserWindow) => {
@@ -23,6 +23,10 @@ const setupAppEvents = async (win: BrowserWindow) => {
     return {
       version: app.getVersion(),
     };
+  });
+
+  ipcMain.handle(APP_SAFE_STORAGE, async () => {
+    return safeStorage.isEncryptionAvailable();
   });
 };
 

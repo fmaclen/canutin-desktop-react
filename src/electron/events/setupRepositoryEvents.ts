@@ -74,22 +74,22 @@ import { filterTransactions } from '../../electron/helpers/transactionHelpers/tr
 const setupRepositoryEvents = async (win: BrowserWindow) => {
   const getAccounts = async () => {
     const accounts = await AccountRepository.getAccounts();
-    win?.webContents.send(DB_GET_ACCOUNTS_ACK, accounts);
+    win.webContents.send(DB_GET_ACCOUNTS_ACK, accounts);
   };
 
   const getAssets = async () => {
     const assets = await AssetRepository.getAssets();
-    win?.webContents.send(DB_GET_ASSETS_ACK, assets);
+    win.webContents.send(DB_GET_ASSETS_ACK, assets);
   };
 
   const getBudgets = async () => {
     const budgets = await BudgetRepository.getBudgets();
-    win?.webContents.send(DB_GET_BUDGETS_ACK, budgets);
+    win.webContents.send(DB_GET_BUDGETS_ACK, budgets);
   };
 
   const getSettings = async () => {
     const settings = await SettingsRepository.getSettings();
-    win?.webContents.send(DB_GET_SETTINGS_ACK, settings);
+    win.webContents.send(DB_GET_SETTINGS_ACK, settings);
   };
 
   ipcMain.on(FILTER_TRANSACTIONS, async (_: IpcMainEvent, filter: FilterTransactionInterface) => {
@@ -99,16 +99,16 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_NEW_ASSET, async (_: IpcMainEvent, asset: NewAssetType) => {
     try {
       const newAsset = await AssetRepository.createAsset(asset);
-      win?.webContents.send(DB_NEW_ASSET_ACK, { ...newAsset, status: EVENT_SUCCESS });
+      win.webContents.send(DB_NEW_ASSET_ACK, { ...newAsset, status: EVENT_SUCCESS });
       await getAssets();
     } catch (e) {
       if (e instanceof QueryFailedError) {
-        win?.webContents.send(DB_NEW_ASSET_ACK, {
+        win.webContents.send(DB_NEW_ASSET_ACK, {
           status: EVENT_ERROR,
           message: 'There is already an asset with this name, please try a different one',
         });
       } else {
-        win?.webContents.send(DB_NEW_ASSET_ACK, {
+        win.webContents.send(DB_NEW_ASSET_ACK, {
           status: EVENT_ERROR,
           message: 'An error occurred, please try again',
         });
@@ -119,16 +119,16 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_NEW_ACCOUNT, async (_: IpcMainEvent, account: NewAccountType) => {
     try {
       const newAccount = await AccountRepository.createAccount(account);
-      win?.webContents.send(DB_NEW_ACCOUNT_ACK, { ...newAccount, status: EVENT_SUCCESS });
+      win.webContents.send(DB_NEW_ACCOUNT_ACK, { ...newAccount, status: EVENT_SUCCESS });
       await getAccounts();
     } catch (e) {
       if (e instanceof QueryFailedError) {
-        win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
+        win.webContents.send(DB_NEW_ACCOUNT_ACK, {
           status: EVENT_ERROR,
           message: 'There is already an account with this name, please try a different one',
         });
       } else {
-        win?.webContents.send(DB_NEW_ACCOUNT_ACK, {
+        win.webContents.send(DB_NEW_ACCOUNT_ACK, {
           status: EVENT_ERROR,
           message: 'An error occurred, please try again',
         });
@@ -138,7 +138,7 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
 
   ipcMain.on(DB_GET_BALANCE_STATEMENTS, async (_: IpcMainEvent) => {
     const balanceStatements = await AccountBalanceStatementRepository.getBalanceStatements();
-    win?.webContents.send(DB_GET_BALANCE_STATEMENTS_ACK, balanceStatements);
+    win.webContents.send(DB_GET_BALANCE_STATEMENTS_ACK, balanceStatements);
   });
 
   ipcMain.on(DB_GET_ACCOUNTS, async (_: IpcMainEvent) => {
@@ -161,9 +161,9 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
       await BudgetRepository.editBudgets(editBudgets);
       await getSettings();
       await getBudgets();
-      win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, { status: EVENT_SUCCESS });
+      win.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, { status: EVENT_SUCCESS });
     } catch (e) {
-      win?.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, {
+      win.webContents.send(DB_EDIT_BUDGET_GROUPS_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
@@ -176,15 +176,15 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
       try {
         await BudgetRepository.addBudgetCategory(editBudgetCategorySubmit);
         await getBudgets();
-        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
+        win.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
       } catch (e) {
         if (e instanceof QueryFailedError) {
-          win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+          win.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
             status: EVENT_NEUTRAL,
             message: 'The category is already assigned to the budget',
           });
         } else {
-          win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+          win.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
             status: EVENT_ERROR,
             message: 'An error occurred, please try again',
           });
@@ -199,9 +199,9 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
       try {
         await BudgetRepository.removeBudgetCategory(editBudgetCategorySubmit);
         await getBudgets();
-        win?.webContents.send(DB_REMOVE_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
+        win.webContents.send(DB_REMOVE_BUDGET_CATEGORY_ACK, { status: EVENT_SUCCESS });
       } catch (e) {
-        win?.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
+        win.webContents.send(DB_EDIT_BUDGET_CATEGORY_ACK, {
           status: EVENT_NEUTRAL,
           message: 'The category is not assigned to any expense group',
         });
@@ -216,17 +216,17 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_NEW_TRANSACTION, async (_: IpcMainEvent, transaction: NewTransactionType) => {
     try {
       const newTransaction = await TransactionRepository.createTransaction(transaction);
-      win?.webContents.send(DB_NEW_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
+      win.webContents.send(DB_NEW_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
       await getAccounts();
       await getBudgets();
     } catch (e) {
       if (e instanceof QueryFailedError) {
-        win?.webContents.send(DB_NEW_TRANSACTION_ACK, {
+        win.webContents.send(DB_NEW_TRANSACTION_ACK, {
           status: EVENT_ERROR,
           message: 'There is already a transaction with this name, please try a different one',
         });
       } else {
-        win?.webContents.send(DB_NEW_TRANSACTION_ACK, {
+        win.webContents.send(DB_NEW_TRANSACTION_ACK, {
           status: EVENT_ERROR,
           message: 'An error occurred, please try again',
         });
@@ -237,11 +237,11 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_EDIT_TRANSACTION, async (_: IpcMainEvent, transaction: NewTransactionType) => {
     try {
       const newTransaction = await TransactionRepository.editTransaction(transaction);
-      win?.webContents.send(DB_EDIT_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
+      win.webContents.send(DB_EDIT_TRANSACTION_ACK, { ...newTransaction, status: EVENT_SUCCESS });
       await getAccounts();
       await getBudgets();
     } catch (e) {
-      win?.webContents.send(DB_EDIT_TRANSACTION_ACK, {
+      win.webContents.send(DB_EDIT_TRANSACTION_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
@@ -253,11 +253,11 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
     async (_: IpcMainEvent, accountId: number, transactionId: number) => {
       try {
         await TransactionRepository.deleteTransaction(transactionId);
-        win?.webContents.send(DB_DELETE_TRANSACTION_ACK, { status: EVENT_SUCCESS });
+        win.webContents.send(DB_DELETE_TRANSACTION_ACK, { status: EVENT_SUCCESS });
         await getAccounts();
         await getBudgets();
       } catch (e) {
-        win?.webContents.send(DB_DELETE_TRANSACTION_ACK, {
+        win.webContents.send(DB_DELETE_TRANSACTION_ACK, {
           status: EVENT_ERROR,
           message: 'An error occurred, please try again',
         });
@@ -267,7 +267,7 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
 
   ipcMain.on(DB_GET_TRANSACTION_CATEGORY, async (_: IpcMainEvent, subCategoryName: string) => {
     const subCategory = await CategoryRepository.getSubCategory(subCategoryName);
-    win?.webContents.send(DB_GET_TRANSACTION_CATEGORY_ACK, subCategory);
+    win.webContents.send(DB_GET_TRANSACTION_CATEGORY_ACK, subCategory);
   });
 
   ipcMain.on(
@@ -275,14 +275,14 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
     async (_: IpcMainEvent, accountBalance: AccountEditBalanceSubmitType) => {
       try {
         const newAccount = await AccountRepository.editBalance(accountBalance);
-        win?.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
+        win.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
           ...newAccount,
           status: EVENT_SUCCESS,
         });
         await getAccounts();
         await getBudgets();
       } catch (e) {
-        win?.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
+        win.webContents.send(DB_EDIT_ACCOUNT_BALANCE_ACK, {
           status: EVENT_ERROR,
           message: 'An error occurred, please try again',
         });
@@ -295,14 +295,14 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
     async (_: IpcMainEvent, accountDetails: AccountEditDetailsSubmitType) => {
       try {
         const newAccount = await AccountRepository.editDetails(accountDetails);
-        win?.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
+        win.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
           ...newAccount,
           status: EVENT_SUCCESS,
         });
         await getAccounts();
         await getBudgets();
       } catch (e) {
-        win?.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
+        win.webContents.send(DB_EDIT_ACCOUNT_DETAILS_ACK, {
           status: EVENT_ERROR,
           message: 'An error occurred, please try again',
         });
@@ -313,11 +313,11 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_DELETE_ACCOUNT, async (event: IpcMainEvent, accountId: number) => {
     try {
       await AccountRepository.deleteAccount(accountId);
-      win?.webContents.send(DB_DELETE_ACCOUNT_ACK, { status: EVENT_SUCCESS });
+      win.webContents.send(DB_DELETE_ACCOUNT_ACK, { status: EVENT_SUCCESS });
       await getAccounts();
       await getBudgets();
     } catch (e) {
-      win?.webContents.send(DB_DELETE_ACCOUNT_ACK, {
+      win.webContents.send(DB_DELETE_ACCOUNT_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
@@ -327,10 +327,10 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_DELETE_ASSET, async (_: IpcMainEvent, assetId: number) => {
     try {
       await AssetRepository.deleteAsset(assetId);
-      win?.webContents.send(DB_DELETE_ASSET_ACK, { status: EVENT_SUCCESS });
+      win.webContents.send(DB_DELETE_ASSET_ACK, { status: EVENT_SUCCESS });
       await getAssets();
     } catch (e) {
-      win?.webContents.send(DB_DELETE_ASSET_ACK, {
+      win.webContents.send(DB_DELETE_ASSET_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
@@ -340,9 +340,9 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_GET_ASSET, async (_: IpcMainEvent, assetId: number) => {
     try {
       const asset = await AssetRepository.getAssetById(assetId);
-      win?.webContents.send(DB_GET_ASSET_ACK, { asset, status: EVENT_SUCCESS });
+      win.webContents.send(DB_GET_ASSET_ACK, { asset, status: EVENT_SUCCESS });
     } catch (e) {
-      win?.webContents.send(DB_GET_ASSET_ACK, {
+      win.webContents.send(DB_GET_ASSET_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
@@ -352,10 +352,10 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
   ipcMain.on(DB_EDIT_ASSET_VALUE, async (_: IpcMainEvent, assetValue: AssetEditValueSubmitType) => {
     try {
       const newAsset = await AssetRepository.editValue(assetValue);
-      win?.webContents.send(DB_EDIT_ASSET_VALUE_ACK, { ...newAsset, status: EVENT_SUCCESS });
+      win.webContents.send(DB_EDIT_ASSET_VALUE_ACK, { ...newAsset, status: EVENT_SUCCESS });
       await getAssets();
     } catch (e) {
-      win?.webContents.send(DB_EDIT_ASSET_VALUE_ACK, {
+      win.webContents.send(DB_EDIT_ASSET_VALUE_ACK, {
         status: EVENT_ERROR,
         message: 'An error occurred, please try again',
       });
@@ -367,10 +367,10 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
     async (_: IpcMainEvent, assetValue: AssetEditDetailsSubmitType) => {
       try {
         const newAsset = await AssetRepository.editDetails(assetValue);
-        win?.webContents.send(DB_EDIT_ASSET_DETAILS_ACK, { ...newAsset, status: EVENT_SUCCESS });
+        win.webContents.send(DB_EDIT_ASSET_DETAILS_ACK, { ...newAsset, status: EVENT_SUCCESS });
         await getAssets();
       } catch (e) {
-        win?.webContents.send(DB_EDIT_ASSET_DETAILS_ACK, {
+        win.webContents.send(DB_EDIT_ASSET_DETAILS_ACK, {
           status: EVENT_ERROR,
           message: 'There is already an asset with this name, please try a different one',
         });
@@ -383,7 +383,7 @@ const setupRepositoryEvents = async (win: BrowserWindow) => {
     await getAccounts();
     await getAssets();
     await getBudgets();
-    win?.webContents.send(DB_SEED_VAULT_ACK, { status: EVENT_SUCCESS });
+    win.webContents.send(DB_SEED_VAULT_ACK, { status: EVENT_SUCCESS });
   });
 };
 

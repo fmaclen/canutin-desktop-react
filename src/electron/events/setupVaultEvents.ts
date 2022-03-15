@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, ipcMain, IpcMainEvent, safeStorage } from 'electron';
+import { BrowserWindow, dialog, ipcMain, IpcMainEvent } from 'electron';
 import { existsSync } from 'fs';
 
 import {
@@ -6,7 +6,6 @@ import {
   VAULT_OPEN_EXISTING_FILE_DIALOG,
   VAULT_UNLOCK,
 } from '@constants/vault';
-import { APP_SAFE_STORAGE } from '@constants/app';
 
 import { VaultType } from '../../types/vault.type';
 import { connectAndSaveVault, findAndConnectVault } from '../helpers/database.helper';
@@ -18,47 +17,35 @@ import seedSettings from '@database/seed/seedSettings';
 
 const setupVaultEvents = async (win: BrowserWindow) => {
   ipcMain.handle(VAULT_OPEN_SAVE_DIALOG, async () => {
-    if (win) {
-      const { filePath } = await dialog.showSaveDialog(win, {
-        title: 'Canutin',
-        defaultPath: '~/Canutin.vault',
-        filters: [{ name: 'DatabaseType', extensions: ['vault'] }],
-      });
+    const { filePath } = await dialog.showSaveDialog(win, {
+      title: 'Canutin',
+      defaultPath: '~/Canutin.vault',
+      filters: [{ name: 'DatabaseType', extensions: ['vault'] }],
+    });
 
-      return filePath;
-    }
+    return filePath;
   });
 
   ipcMain.handle(VAULT_OPEN_EXISTING_FILE_DIALOG, async () => {
-    if (win) {
-      const { filePaths } = await dialog.showOpenDialog(win, {
-        properties: ['openFile'],
-        filters: [{ name: 'DatabaseType', extensions: ['vault'] }],
-      });
+    const { filePaths } = await dialog.showOpenDialog(win, {
+      properties: ['openFile'],
+      filters: [{ name: 'DatabaseType', extensions: ['vault'] }],
+    });
 
-      return filePaths[0];
-    }
+    return filePaths[0];
   });
 
   ipcMain.on(VAULT_UNLOCK, async (_: IpcMainEvent, vault: VaultType) => {
     const { vaultPath, vaultMasterKey, rememberVaultMasterKey } = vault;
 
-    if (win) {
-      if (!existsSync(vaultPath)) {
-        await connectAndSaveVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
-        await seedSettings();
-        await seedAccountTypes();
-        await seedAssetTypes();
-        await seedCategories();
-      } else {
-        await findAndConnectVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
-      }
-    }
-  });
-
-  ipcMain.handle(APP_SAFE_STORAGE, async () => {
-    if (win) {
-      return safeStorage.isEncryptionAvailable();
+    if (!existsSync(vaultPath)) {
+      await connectAndSaveVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
+      await seedSettings();
+      await seedAccountTypes();
+      await seedAssetTypes();
+      await seedCategories();
+    } else {
+      await findAndConnectVault(win, vaultPath, vaultMasterKey, rememberVaultMasterKey);
     }
   });
 };
