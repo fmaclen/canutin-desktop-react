@@ -45,7 +45,7 @@ export const initAppWith = ({
   mocked(ipcRenderer).on.mockImplementation((event, callback) => {
     if (event === VAULT_READY) {
       callback(event as unknown as IpcRendererEvent, {
-        filePath: 'testFilePath',
+        vaultPath: 'Canutin.test.vault',
       });
     }
 
