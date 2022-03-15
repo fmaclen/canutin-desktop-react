@@ -12,20 +12,18 @@ import {
   VAULT_SET_NO_MASTER_KEY,
 } from '@constants/vault';
 
-import { EntitiesContext } from '@app/context/entitiesContext';
-import { AppContext } from '@app/context/appContext';
-import { StatusBarContext } from '@app/context/statusBarContext';
-import { StatusEnum } from '@app/constants/misc';
-import { DatabaseDoesNotExistsMessage } from '@constants/messages';
 import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
 import GlobalStyle from '@app/styles/global';
 import NotReady from '@app/pages/NotReady';
-import Setup from '@pages/Setup';
-import VaultSecurity from '@app/pages/VaultSecurity';
-import { container } from './styles';
+import { EntitiesContext } from '@app/context/entitiesContext';
+import { AppContext } from '@app/context/appContext';
+import { StatusBarContext } from '@app/context/statusBarContext';
+import { StatusEnum } from '@app/constants/misc';
+import { DatabaseDoesNotExistsMessage } from '@constants/messages';
 import { VaultStatusEnum } from '@enums/vault.enum';
+import { container } from './styles';
 
 const Container = styled.div`
   ${container}
@@ -48,7 +46,6 @@ const App = () => {
   useEffect(() => {
     ipcRenderer.on(VAULT_READY, (_, vaultPath: string) => {
       setIsAppInitialized(true);
-      setIsLoading(false);
       setVaultPath(vaultPath);
       setVaultStatus(VaultStatusEnum.READY_TO_INDEX);
     });
@@ -82,7 +79,7 @@ const App = () => {
       setIsLoading(false);
       setVaultStatus(VaultStatusEnum.NOT_SET);
       setStatusMessage({
-        sentiment: StatusEnum.NEGATIVE,
+        sentiment: StatusEnum.WARNING,
         message: (
           <>
             The vault located at <b>{dbPath}</b> was moved or deleted
@@ -140,7 +137,7 @@ const App = () => {
 
           {!isLoading && (
             <>
-              {vaultPath && <SideBar />}
+              {(isVaultEmpty || isVaultWithData) && <SideBar />}
 
               {isVaultNotSet && <Redirect to={routesPaths.setup} />}
               {isVaultLocked && <Redirect to={routesPaths.vaultSecurity} />}

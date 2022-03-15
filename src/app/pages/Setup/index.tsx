@@ -1,10 +1,8 @@
 import React, { useEffect, useContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { useHistory } from 'react-router-dom';
-import useBreadcrumbs from 'use-react-router-breadcrumbs';
 
 import ScrollView from '@components/common/ScrollView';
-import Breadcrumbs from '@components/common/Breadcrumbs';
 import Section from '@components/common/Section';
 import SectionRow from '@components/common/SectionRow';
 import PrimaryCard from '@components/common/PrimaryCard';
@@ -21,24 +19,16 @@ import { VaultStatusEnum } from '@enums/vault.enum';
 const Setup = () => {
   const history = useHistory();
   const { setVaultPath, setVaultStatus } = useContext(AppContext);
-  const { setStatusMessage, setBreadcrumbs } = useContext(StatusBarContext);
-  const noVaultBreadcrumbs = [{ breadcrumb: 'Canutin setup', path: '/setup' }];
-  const breadcrumbItems = useBreadcrumbs(noVaultBreadcrumbs, {
-    excludePaths: Object.values(routesPaths),
-  });
+  const { setStatusMessage } = useContext(StatusBarContext);
 
   useEffect(() => {
-    setBreadcrumbs(<Breadcrumbs items={breadcrumbItems} />);
-
     return () => {
       setStatusMessage(emptyStatusMessage);
-      setBreadcrumbs(undefined);
     };
   }, []);
 
   const onOpenCreateVault = async () => {
     const newFilePath = await ipcRenderer.invoke(VAULT_OPEN_SAVE_DIALOG);
-    setVaultPath('');
     setVaultPath(newFilePath);
     setVaultStatus(VaultStatusEnum.SET_NEW_NOT_READY);
     history.push(routesPaths.vaultSecurity);
@@ -46,14 +36,13 @@ const Setup = () => {
 
   const onOpenExistingVault = async () => {
     const existingFilePath = await ipcRenderer.invoke(VAULT_OPEN_EXISTING_FILE_DIALOG);
-    setVaultPath('');
     setVaultPath(existingFilePath);
     setVaultStatus(VaultStatusEnum.SET_EXISTING_NOT_READY);
     history.push(routesPaths.vaultSecurity);
   };
 
   return (
-    <ScrollView title={'Canutin setup'} wizard={true}>
+    <ScrollView title="Vault setup" wizard={true}>
       <SectionRow>
         <Section title="Choose vault">
           <PrimaryCardRow>

@@ -144,13 +144,13 @@ export const routesConfig: RouteConfigProps[] = [
     path: routesPaths.setup,
     exact: true,
     component: <Setup />,
-    breadcrumb: 'Canutin setup',
+    breadcrumb: 'Vault setup',
   },
   {
     path: routesPaths.vaultSecurity,
     exact: true,
     component: <VaultSecurity />,
-    breadcrumb: 'Vault security',
+    breadcrumb: 'Security',
   },
   {
     path: routesPaths.accountOverview,

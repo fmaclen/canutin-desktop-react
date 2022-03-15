@@ -2,17 +2,15 @@ import React, { useEffect, useContext, useState } from 'react';
 import { ipcRenderer } from 'electron';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import useBreadcrumbs from 'use-react-router-breadcrumbs';
 
 import { VAULT_UNLOCK } from '@constants/vault';
 import { APP_SAFE_STORAGE } from '@constants/app';
 import { VaultType } from '@appTypes/vault.type';
-import { rootRoutesPaths, routesPaths } from '@routes';
+import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
 import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
 
 import ScrollView from '@components/common/ScrollView';
-import Breadcrumbs from '@components/common/Breadcrumbs';
 import Section from '@components/common/Section';
 import SectionRow from '@components/common/SectionRow';
 import Form from '@components/common/Form/Form';
@@ -30,17 +28,9 @@ import { VaultStatusEnum } from '@enums/vault.enum';
 
 const VaultSecurity = () => {
   const history = useHistory();
-  const { vaultPath, setVaultPath, vaultStatus } = useContext(AppContext);
+  const { vaultPath, vaultStatus } = useContext(AppContext);
   const [hasSafeStorage, setHasSafeStorage] = useState(false);
-  const { setStatusMessage, setBreadcrumbs } = useContext(StatusBarContext);
-
-  const vaultSecurityBreadcrumbs = [
-    { breadcrumb: 'Canutin setup', path: '/setup' },
-    { breadcrumb: 'Canutin vault', path: '/setup/security' },
-  ];
-  const breadcrumbItems = useBreadcrumbs(vaultSecurityBreadcrumbs, {
-    excludePaths: Object.values(routesPaths),
-  });
+  const { setStatusMessage } = useContext(StatusBarContext);
 
   useEffect(() => {
     // Using mounted state to handle the async function when component is unmounted
@@ -52,12 +42,9 @@ const VaultSecurity = () => {
       }
     });
 
-    setBreadcrumbs(<Breadcrumbs items={breadcrumbItems} />);
-
     return () => {
       mounted = false;
       setStatusMessage(emptyStatusMessage);
-      setBreadcrumbs(undefined);
     };
   }, []);
 
@@ -83,7 +70,7 @@ const VaultSecurity = () => {
     if (history.length > 1) {
       history.goBack();
     } else {
-      history.push(rootRoutesPaths.setup);
+      history.push(routesPaths.setup);
     }
   };
 
