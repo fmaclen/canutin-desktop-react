@@ -8,7 +8,7 @@ import { APP_SAFE_STORAGE } from '@constants/app';
 import { VaultType } from '@appTypes/vault.type';
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
-import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
+import { VaultStatusEnum } from '@enums/vault.enum';
 
 import ScrollView from '@components/common/ScrollView';
 import Section from '@components/common/Section';
@@ -24,27 +24,22 @@ import InputText from '@app/components/common/Form/InputText';
 import Button from '@app/components/common/Button';
 import SubmitButton from '@app/components/common/Form/SubmitButton';
 import FieldNotice from '@components/common/Form/FieldNotice';
-import { VaultStatusEnum } from '@enums/vault.enum';
 
 const VaultSecurity = () => {
   const history = useHistory();
   const { vaultPath, vaultStatus } = useContext(AppContext);
   const [hasSafeStorage, setHasSafeStorage] = useState(false);
-  const { setStatusMessage } = useContext(StatusBarContext);
+
+  const getAppSafeStorage = async () => {
+    const appHasSafeStorage = await ipcRenderer.invoke(APP_SAFE_STORAGE);
+    setHasSafeStorage(appHasSafeStorage);
+  };
 
   useEffect(() => {
-    // Using mounted state to handle the async function when component is unmounted
-    // REF: https://www.benmvp.com/blog/handling-async-react-component-effects-after-unmount/
-    let mounted = true;
-    ipcRenderer.invoke(APP_SAFE_STORAGE).then(appHasSafeStorage => {
-      if (mounted) {
-        setHasSafeStorage(appHasSafeStorage);
-      }
-    });
+    getAppSafeStorage();
 
     return () => {
-      mounted = false;
-      setStatusMessage(emptyStatusMessage);
+      setHasSafeStorage(false);
     };
   }, []);
 
@@ -86,17 +81,17 @@ const VaultSecurity = () => {
                 value={vaultPath!}
                 disabled
               />
-              <Field label="Master key" name="masterKeyCombo">
+              <Field label="Master key" name="vaultMasterKey">
                 <ToggleInputField>
                   <InputText name="vaultMasterKey" type="password" required register={register} />
-                  {hasSafeStorage && (
-                    <InlineCheckbox
-                      name="rememberVaultMasterKey"
-                      id="rememberVaultMasterKey"
-                      label="Remember on this computer"
-                      register={register}
-                    />
-                  )}
+                  <InlineCheckbox
+                    name="rememberVaultMasterKey"
+                    id="rememberVaultMasterKey"
+                    label="Remember on this computer"
+                    register={register}
+                    disabled={!hasSafeStorage}
+                    disabledTitle={'This computer is unable store the master key securely'}
+                  />
                 </ToggleInputField>
               </Field>
               {isVaultNew && (
