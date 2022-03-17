@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 
 import { VAULT_UNLOCK } from '@constants/vault';
-import { APP_SAFE_STORAGE } from '@constants/app';
+import { APP_SAFE_STORAGE, APP_SAFE_STORAGE_ACK } from '@constants/app';
 import { VaultType } from '@appTypes/vault.type';
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
@@ -24,22 +24,24 @@ import InputText from '@app/components/common/Form/InputText';
 import Button from '@app/components/common/Button';
 import SubmitButton from '@app/components/common/Form/SubmitButton';
 import FieldNotice from '@components/common/Form/FieldNotice';
+import AppIpc from '@app/data/app.ipc';
 
 const VaultSecurity = () => {
-  const history = useHistory();
   const { vaultPath, vaultStatus } = useContext(AppContext);
   const [hasSafeStorage, setHasSafeStorage] = useState(false);
-
-  const getAppSafeStorage = async () => {
-    const appHasSafeStorage = await ipcRenderer.invoke(APP_SAFE_STORAGE);
-    setHasSafeStorage(appHasSafeStorage);
-  };
+  const history = useHistory();
 
   useEffect(() => {
-    getAppSafeStorage();
+    ipcRenderer.on(APP_SAFE_STORAGE_ACK, (_, appHasSafeStorage: boolean) => {
+      setHasSafeStorage(appHasSafeStorage);
+    });
+
+    setTimeout(() => {
+      AppIpc.hasAppSecureStorage();
+    }, 100);
 
     return () => {
-      setHasSafeStorage(false);
+      ipcRenderer.removeAllListeners(APP_SAFE_STORAGE_ACK);
     };
   }, []);
 

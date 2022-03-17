@@ -9,17 +9,19 @@ import InputTextField from '@components/common/Form/InputTextField';
 
 import { AppContext } from '@app/context/appContext';
 import { routesPaths } from '@routes';
+import { useForm } from 'react-hook-form';
 
 const Vault = () => {
   const { vaultPath } = useContext(AppContext);
+  const { handleSubmit } = useForm();
   const history = useHistory();
 
+  const onSubmit = async () => {
+    history.push(routesPaths.setup);
+  };
+
   return (
-    <Form
-      onSubmit={() => {
-        history.push(routesPaths.setup);
-      }}
-    >
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <Fieldset>
         <InputTextField
           label="Current vault"
