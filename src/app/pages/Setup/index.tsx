@@ -27,18 +27,23 @@ const Setup = () => {
     };
   }, []);
 
+  const redirectToVaultSecurity = () => {
+    history.location.pathname !== routesPaths.vaultSecurity &&
+      history.push(routesPaths.vaultSecurity);
+  };
+
   const onOpenCreateVault = async () => {
     const newFilePath = await ipcRenderer.invoke(VAULT_OPEN_SAVE_DIALOG);
     setVaultPath(newFilePath);
     setVaultStatus(VaultStatusEnum.SET_NEW_NOT_READY);
-    history.push(routesPaths.vaultSecurity);
+    redirectToVaultSecurity();
   };
 
   const onOpenExistingVault = async () => {
     const existingFilePath = await ipcRenderer.invoke(VAULT_OPEN_EXISTING_FILE_DIALOG);
     setVaultPath(existingFilePath);
     setVaultStatus(VaultStatusEnum.SET_EXISTING_NOT_READY);
-    history.push(routesPaths.vaultSecurity);
+    redirectToVaultSecurity();
   };
 
   return (

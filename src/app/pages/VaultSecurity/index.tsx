@@ -46,6 +46,7 @@ const VaultSecurity = () => {
   }, []);
 
   const { handleSubmit, register, watch } = useForm({
+    mode: 'onChange',
     defaultValues: {
       vaultPath: '',
       vaultMasterKey: '',
@@ -56,8 +57,8 @@ const VaultSecurity = () => {
   const submitDisabled = !vaultMasterKey;
   const isVaultNew = vaultStatus === VaultStatusEnum.SET_NEW_NOT_READY;
 
-  const onSubmit = async (unlockVaultSubmit: VaultType) => {
-    await ipcRenderer.send(VAULT_UNLOCK, {
+  const onSubmit = (unlockVaultSubmit: VaultType) => {
+    ipcRenderer.send(VAULT_UNLOCK, {
       ...unlockVaultSubmit,
       vaultPath: vaultPath,
     });

@@ -60,10 +60,11 @@ test('Setup Page in case there is not a vault set', async () => {
   });
 
   userEvent.click(screen.getByLabelText('Remember on this computer'));
-  expect(screen.getByLabelText('Remember on this computer')).toBeChecked();
-
   userEvent.type(screen.getByLabelText('Master key'), '1234567890');
-  expect(screen.getByText('Create vault')).not.toBeDisabled();
+  await waitFor(() => {
+    expect(screen.getByLabelText('Remember on this computer')).toBeChecked();
+    expect(screen.getByText('Create vault')).not.toBeDisabled();
+  });
 
   userEvent.click(screen.getByText('Create vault'));
   await waitFor(() => {
@@ -103,15 +104,15 @@ test('Setup Page in case there is not a vault set', async () => {
     expect(screen.getByLabelText('Master key')).toHaveValue('');
     expect(screen.getByLabelText('Remember on this computer')).not.toBeChecked();
     expect(screen.queryByText('Write down your master key somewhere safe')).not.toBeInTheDocument();
+    expect(screen.getByText('Unlock vault')).toBeDisabled();
   });
 
-  expect(screen.getByText('Unlock vault')).toBeDisabled();
-
   userEvent.click(screen.getByLabelText('Remember on this computer'));
-  expect(screen.getByLabelText('Remember on this computer')).not.toBeChecked();
-
   userEvent.type(screen.getByLabelText('Master key'), '1234567890');
-  expect(screen.getByText('Unlock vault')).not.toBeDisabled();
+  await waitFor(() => {
+    expect(screen.getByLabelText('Remember on this computer')).not.toBeChecked();
+    expect(screen.getByText('Unlock vault')).not.toBeDisabled();
+  });
 
   userEvent.click(screen.getByText('Unlock vault'));
   await waitFor(() => {
