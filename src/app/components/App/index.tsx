@@ -125,19 +125,20 @@ const App = () => {
       vaultStatus === VaultStatusEnum.SET_EXISTING_NOT_READY);
   const isVaultEmpty = vaultStatus === VaultStatusEnum.INDEXED_NO_DATA;
   const isVaultWithData = vaultStatus === VaultStatusEnum.INDEXED_WITH_DATA;
+  const hasSidebar = isVaultEmpty || isVaultWithData;
 
   return (
     <>
       <GlobalStyle />
       <HashRouter>
-        <Container hasSidebar={isAppInitialized && !isLoading}>
+        <Container hasSidebar={hasSidebar}>
           <TitleBar />
 
           {isLoading && <NotReady />}
 
           {!isLoading && (
             <>
-              {(isVaultEmpty || isVaultWithData) && <SideBar />}
+              {hasSidebar && <SideBar />}
 
               {isVaultNotSet && <Redirect to={routesPaths.setup} />}
               {isVaultLocked && <Redirect to={routesPaths.vaultSecurity} />}
