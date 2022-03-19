@@ -4,7 +4,8 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 
 import { VAULT_UNLOCK } from '@constants/vault';
-import { APP_SAFE_STORAGE, APP_SAFE_STORAGE_ACK } from '@constants/app';
+import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
+import { APP_SAFE_STORAGE_ACK } from '@constants/app';
 import { VaultType } from '@appTypes/vault.type';
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
@@ -28,6 +29,7 @@ import AppIpc from '@app/data/app.ipc';
 
 const VaultSecurity = () => {
   const { vaultPath, vaultStatus } = useContext(AppContext);
+  const { setStatusMessage } = useContext(StatusBarContext);
   const [hasSafeStorage, setHasSafeStorage] = useState(false);
   const history = useHistory();
 
@@ -62,6 +64,7 @@ const VaultSecurity = () => {
       ...unlockVaultSubmit,
       vaultPath: vaultPath,
     });
+    setStatusMessage(emptyStatusMessage);
   };
 
   const cancelVault = () => {
@@ -70,6 +73,7 @@ const VaultSecurity = () => {
     } else {
       history.push(routesPaths.setup);
     }
+    setStatusMessage(emptyStatusMessage);
   };
 
   return (
