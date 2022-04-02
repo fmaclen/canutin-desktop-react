@@ -1,6 +1,8 @@
 name: Canutin - Build & Release
 
-on: push
+on:
+  release:
+    types: [published]
 
 jobs:
   release:
