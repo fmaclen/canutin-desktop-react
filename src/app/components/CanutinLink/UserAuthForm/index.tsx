@@ -59,9 +59,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
       .then(async response => {
         if (response.data.success) {
           const summary = await requestLinkSummary();
-          if (summary) {
-            setLinkAccount(summary);
-          }
+          summary && setLinkAccount(summary);
         }
         history.push(routesPaths.link);
       })

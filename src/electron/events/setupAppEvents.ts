@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, safeStorage } from 'electron';
+import { app, BrowserWindow, ipcMain, safeStorage, session } from 'electron';
 
 import {
   APP_WINDOW_CONTROL,
@@ -6,6 +6,8 @@ import {
   APP_VERSION_ACK,
   APP_SAFE_STORAGE,
   APP_SAFE_STORAGE_ACK,
+  APP_HAS_COOKIE,
+  APP_HAS_COOKIE_ACK,
 } from '@constants/app';
 
 import { WindowControlEnum } from '@appConstants/misc';
@@ -32,6 +34,12 @@ const setupAppEvents = async (win: BrowserWindow) => {
 
   ipcMain.on(APP_SAFE_STORAGE, async () => {
     win.webContents.send(APP_SAFE_STORAGE_ACK, safeStorage.isEncryptionAvailable());
+  });
+
+  ipcMain.on(APP_HAS_COOKIE, async () => {
+    session.defaultSession.cookies.get({ name: 'canutin.link' }).then(cookies => {
+      cookies.length > 0 && win.webContents.send(APP_HAS_COOKIE_ACK);
+    });
   });
 };
 

@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron';
 import { Switch, Route, HashRouter, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { routesConfig, RouteConfigProps, routesPaths } from '@routes';
 import {
   VAULT_READY,
   VAULT_NOT_SET,
@@ -11,12 +10,9 @@ import {
   VAULT_SET_WRONG_MASTER_KEY,
   VAULT_SET_NO_MASTER_KEY,
 } from '@constants/vault';
+import { APP_HAS_COOKIE, APP_HAS_COOKIE_ACK } from '@constants/app';
 
-import TitleBar from '@components/common/TitleBar';
-import StatusBar from '@components/common/StatusBar';
-import SideBar from '@components/common/SideBar';
-import GlobalStyle from '@app/styles/global';
-import NotReady from '@app/pages/NotReady';
+import { routesConfig, RouteConfigProps, routesPaths } from '@routes';
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { AppContext } from '@app/context/appContext';
 import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
@@ -24,6 +20,13 @@ import { StatusEnum } from '@app/constants/misc';
 import { DatabaseDoesNotExistsMessage } from '@constants/messages';
 import { VaultStatusEnum } from '@enums/vault.enum';
 import { container } from './styles';
+import { requestLinkSummary } from '@app/data/canutinLink.api';
+
+import TitleBar from '@components/common/TitleBar';
+import StatusBar from '@components/common/StatusBar';
+import SideBar from '@components/common/SideBar';
+import GlobalStyle from '@app/styles/global';
+import NotReady from '@app/pages/NotReady';
 
 const Container = styled.div`
   ${container}
@@ -34,6 +37,7 @@ const App = () => {
     isLoading,
     setIsLoading,
     setIsAppInitialized,
+    setLinkAccount,
     vaultPath,
     setVaultPath,
     vaultStatus,
@@ -47,6 +51,7 @@ const App = () => {
       setIsAppInitialized(true);
       setVaultPath(vaultPath);
       setVaultStatus(VaultStatusEnum.READY_TO_INDEX);
+      ipcRenderer.send(APP_HAS_COOKIE);
     });
 
     ipcRenderer.on(VAULT_NOT_SET, () => {
@@ -86,6 +91,11 @@ const App = () => {
         ),
         isLoading: false,
       });
+    });
+
+    ipcRenderer.on(APP_HAS_COOKIE_ACK, async () => {
+      const summary = await requestLinkSummary();
+      summary && setLinkAccount(summary);
     });
 
     return () => {
