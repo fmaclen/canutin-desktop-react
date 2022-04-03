@@ -101,14 +101,16 @@ const SideBar = () => {
       </TopNav>
 
       <BottomNav>
+        {/* FIXME: Icon for link is wrong color and size for sidebar */}
         <NavItem icon={<LinkSideBarIcon />} text="Link" toggled={toggled} to={routesPaths.link} />
+
         <NavItem icon={<Settings />} text="Settings" toggled={toggled} to={routesPaths.settings} />
+
         <NavItem
           icon={<Add />}
           text="Add or update data"
           toggled={toggled}
           to={routesPaths.addOrUpdateData}
-          primary={!linkAccount}
           dataTestId="sidebar-add-or-update-data"
         />
         {linkAccount && (
@@ -117,7 +119,6 @@ const SideBar = () => {
             text={linkAccount.isSyncing ? 'Syncing' : 'Sync'}
             toggled={toggled}
             to={'#sync'}
-            primary={true}
             status={
               toggled && <LastSync>{capitalize(timeago.format(linkAccount.lastSync))}</LastSync>
             }

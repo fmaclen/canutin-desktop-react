@@ -35,6 +35,12 @@ export const topNav = css`
 
 export const bottomNav = css`
   margin-top: auto;
+
+  // Add border-top to the last <NavItem />
+  > *:last-child {
+    max-height: 48px;
+    border-top: 1px solid ${grey10};
+  }
 `;
 
 export const navItems = css`

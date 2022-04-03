@@ -5,7 +5,7 @@ import { useLocation, Link } from 'react-router-dom';
 
 import styled from 'styled-components';
 
-import { container, text, icon } from './styles';
+import { container, text, icon, status } from './styles';
 
 const Container = styled(Link)`
   ${container}
@@ -17,17 +17,16 @@ const Text = styled.p`
   ${text}
 `;
 const Status = styled.div`
-  margin-left: auto;
+  ${status}
 `;
 
-export interface NavItemProps {
+interface NavItemProps {
   icon: ReactNode;
   text: string;
   toggled: boolean;
   to: string;
   disabled?: boolean;
   dataTestId?: string;
-  primary?: boolean;
   status?: ReactNode;
 }
 
@@ -38,7 +37,6 @@ const NavItem = ({
   to,
   dataTestId,
   disabled = false,
-  primary = false,
   status = false,
 }: NavItemProps) => {
   const { linkAccount, setLinkAccount } = useContext(AppContext);
@@ -47,12 +45,11 @@ const NavItem = ({
 
   return (
     <Container
-      active={isActive}
-      toggled={toggled}
+      active={+isActive}
+      toggled={+toggled}
       to={to}
       disabled={disabled}
       data-testid={dataTestId}
-      primary={primary}
       onClick={() =>
         to === '#sync' && linkAccount && setLinkAccount({ ...linkAccount, isSyncing: true })
       }

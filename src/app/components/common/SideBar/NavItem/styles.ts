@@ -1,14 +1,14 @@
 import { css } from 'styled-components';
 import { grey3, grey5, grey10, grey30, grey80, bluePlain } from '@appConstants/colors';
 
-export interface NavItemProps {
-  toggled: boolean;
-  active?: boolean;
-  primary?: boolean;
+export const container = css<{
   disabled?: boolean;
-}
-
-export const container = css<NavItemProps>`
+  // Because this is a styled `Link` the props are passed as string attributes
+  // so instead we expect a `1` or `0` as a booleans.
+  // REF: https://github.com/styled-components/styled-components/issues/1198#issuecomment-336628848
+  toggled: boolean | number;
+  active?: boolean | number;
+}>`
   color: ${grey80};
   cursor: default;
   display: flex;
@@ -53,13 +53,6 @@ export const container = css<NavItemProps>`
       color: ${grey10};
       pointer-events: none;
     `}
-
-  ${({ primary }) =>
-    primary &&
-    css`
-      max-height: 48px;
-      border-top: 1px solid ${grey10};
-    `}
 `;
 
 export const icon = css<{ isSyncing: boolean }>`
@@ -87,10 +80,14 @@ export const icon = css<{ isSyncing: boolean }>`
     `};
 `;
 
-export const text = css<NavItemProps>`
+export const text = css<{ toggled: boolean }>`
   display: ${({ toggled }) => (toggled ? 'block' : 'none')};
   font-size: 13px;
   font-weight: 600;
 
   -webkit-user-select: none;
+`;
+
+export const status = css`
+  margin-left: auto;
 `;
