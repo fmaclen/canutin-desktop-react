@@ -24,6 +24,13 @@ interface StatusBarContextValue {
 
 export const emptyStatusMessage = { message: '', isLoading: false };
 
+export const serverErrorStatusMessage = {
+  sentiment: StatusEnum.WARNING,
+  message:
+    "Couldn't connect to Canutin's server, check your internet connection or try syncing again later",
+  isLoading: false,
+};
+
 export const StatusBarContext = createContext<StatusBarContextValue>({
   statusMessage: emptyStatusMessage,
   breadcrumbs: null,

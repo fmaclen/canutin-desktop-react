@@ -1,9 +1,20 @@
 import { css } from 'styled-components';
 
-import { sansSerifBold } from '@appConstants/fonts';
-import { grey20, grey30, grey40, grey70 } from '@appConstants/colors';
+import { StatusEnum } from '@appConstants/misc';
 
-export const container = css<{ disabled: boolean }>`
+import { sansSerifBold } from '@appConstants/fonts';
+import {
+  grey20,
+  grey30,
+  grey40,
+  grey70,
+  redLight,
+  blueLight,
+  getStatusColor,
+  greenPlain,
+} from '@appConstants/colors';
+
+export const container = css<{ disabled?: boolean; status?: StatusEnum }>`
   ${sansSerifBold};
   padding: 10px 16px;
   font-size: 12px;
@@ -14,11 +25,19 @@ export const container = css<{ disabled: boolean }>`
   line-height: 1em;
   transition: transform 100ms;
   outline: none;
+  border-color: ${({ status }) => status && getStatusColor(status)};
+  color: ${({ status }) => status && getStatusColor(status)};
 
   &:active,
   &:focus,
   &:hover {
     border-color: ${grey40};
+    border-color: ${({ status }) => status && getStatusColor(status)};
+  }
+
+  &:hover {
+    background-color: ${({ status }) =>
+      status === StatusEnum.NEGATIVE ? redLight : status === StatusEnum.NEUTRAL ? blueLight : null};
   }
 
   &:active {

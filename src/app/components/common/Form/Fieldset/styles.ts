@@ -8,6 +8,7 @@ export const container = css`
   display: grid;
   grid-row-gap: 8px;
   margin: 0;
+  backdrop-filter: blur(5px);
 
   &:first-child {
     border-top: none;

@@ -1,6 +1,9 @@
 import React from 'react';
 
+import { StatusEnum } from '@app/constants/misc';
+
 import Field from '@components/common/Form/Field';
+import FieldStatus from '@components/common/Form/FieldStatus';
 import InputText from '@components/common/Form/InputText';
 
 type RefReturn =
@@ -9,6 +12,11 @@ type RefReturn =
   | React.RefObject<HTMLInputElement>
   | null
   | undefined;
+
+interface FieldStatusProps {
+  status: StatusEnum;
+  message?: string;
+}
 
 export interface InputTextFieldProps {
   label?: string;
@@ -21,6 +29,7 @@ export interface InputTextFieldProps {
   optional?: boolean;
   upperCase?: boolean;
   setRef?: any;
+  status?: FieldStatusProps;
 }
 
 const InputTextField = ({
@@ -33,6 +42,7 @@ const InputTextField = ({
   disabled = false,
   optional = false,
   setRef = null,
+  status,
 }: InputTextFieldProps) => (
   <Field label={label} name={name} optional={optional}>
     <InputText
@@ -42,6 +52,8 @@ const InputTextField = ({
       value={value}
       disabled={disabled}
     />
+
+    {status && <FieldStatus status={status.status}>{status.message}</FieldStatus>}
   </Field>
 );
 
