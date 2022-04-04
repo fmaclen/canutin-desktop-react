@@ -1,16 +1,17 @@
 import { css } from 'styled-components';
-import { grey10 } from '@appConstants/colors';
+import { grey5, grey10 } from '@appConstants/colors';
 
 export const container = css`
   border: none;
-  border-top: 1px solid ${grey10};
+  border-bottom: 1px solid ${grey10};
   padding: 12px 0;
   display: grid;
   grid-row-gap: 8px;
   margin: 0;
-  backdrop-filter: blur(5px);
+  background-color: ${grey5};
 
-  &:first-child {
-    border-top: none;
+  &:last-child {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
   }
 `;

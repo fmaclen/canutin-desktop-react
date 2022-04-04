@@ -3,8 +3,8 @@ import React from 'react';
 import { StatusEnum } from '@app/constants/misc';
 
 import Field from '@components/common/Form/Field';
-import FieldStatus from '@components/common/Form/FieldStatus';
 import InputText from '@components/common/Form/InputText';
+import FieldStatus from '../FieldStatus';
 
 type RefReturn =
   | string
@@ -45,15 +45,17 @@ const InputTextField = ({
   status,
 }: InputTextFieldProps) => (
   <Field label={label} name={name} optional={optional}>
-    <InputText
-      name={name}
-      setRef={setRef ? setRef : register ? register({ required }) : null}
-      type={type}
-      value={value}
-      disabled={disabled}
-    />
+    <div>
+      <InputText
+        name={name}
+        setRef={setRef ? setRef : register ? register({ required }) : null}
+        type={type}
+        value={value}
+        disabled={disabled}
+      />
 
-    {status && <FieldStatus status={status.status}>{status.message}</FieldStatus>}
+      {status && <FieldStatus status={status.status}>{status.message}</FieldStatus>}
+    </div>
   </Field>
 );
 

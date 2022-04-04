@@ -50,8 +50,13 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
     handleSubmit: handleLoginSubmit,
     setError,
     formState: { errors },
+    watch,
   } = useForm<UserAuthProps>();
   const history = useHistory();
+
+  const login = watch('login');
+  const password = watch('password');
+  const submitDisabled = !login || !password;
 
   const formSubmit: SubmitHandler<UserAuthProps> = async data => {
     canutinLinkApi
@@ -125,26 +130,26 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             name="login"
             type="email"
             register={registerAuthForm}
+            required
             status={
               errors.login && {
                 status: StatusEnum.NEGATIVE,
                 message: errors.login.message && capitalize(errors.login.message),
               }
             }
-            required
           />
           <InputTextField
             label="Password"
             name="password"
             type="password"
             register={registerAuthForm}
+            required
             status={
               errors.password && {
                 status: StatusEnum.NEGATIVE,
                 message: errors.password.message && capitalize(errors.password.message),
               }
             }
-            required
           />
 
           {userAuthLabel === 'Create account' && (
@@ -159,7 +164,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
           )}
         </Fieldset>
         <FormFooter>
-          <SubmitButton>{userAuthLabel}</SubmitButton>
+          <SubmitButton disabled={submitDisabled}>{userAuthLabel}</SubmitButton>
         </FormFooter>
       </Form>
     </Section>
