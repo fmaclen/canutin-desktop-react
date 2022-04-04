@@ -45,7 +45,7 @@ export const container = css<{ sentiment?: StatusEnum }>`
         `;
       case StatusEnum.WARNING:
         return css`
-          color: ${yellowPlain};
+          color: #c58200;
           background-color: ${yellowLight};
         `;
       case StatusEnum.POSITIVE:

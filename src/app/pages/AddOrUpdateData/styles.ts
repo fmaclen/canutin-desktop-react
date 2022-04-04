@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { grey40 } from '@appConstants/colors';
+import { grey40, bluePlain } from '@appConstants/colors';
 import { monospaceRegular } from '@appConstants/fonts';
 
 export const section = css`
@@ -22,4 +22,10 @@ export const boxContainer = css`
   grid-auto-flow: column;
   grid-gap: 8px;
   grid-template-columns: 1fr 1fr;
+`;
+
+export const lightningPrimaryCard = css`
+  > path {
+    stroke: ${bluePlain};
+  }
 `;
