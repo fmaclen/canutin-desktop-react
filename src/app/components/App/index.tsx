@@ -10,7 +10,6 @@ import {
   VAULT_SET_WRONG_MASTER_KEY,
   VAULT_SET_NO_MASTER_KEY,
 } from '@constants/vault';
-import { APP_HAS_COOKIE, APP_HAS_COOKIE_ACK } from '@constants/app';
 
 import { routesConfig, RouteConfigProps, routesPaths } from '@routes';
 import { EntitiesContext } from '@app/context/entitiesContext';
@@ -20,13 +19,16 @@ import { StatusEnum } from '@app/constants/misc';
 import { DatabaseDoesNotExistsMessage } from '@constants/messages';
 import { VaultStatusEnum } from '@enums/vault.enum';
 import { container } from './styles';
-import { requestLinkSummary } from '@app/data/canutinLink.api';
 
 import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
 import GlobalStyle from '@app/styles/global';
 import NotReady from '@app/pages/NotReady';
+import { LinkContext } from '@app/context/linkContext';
+import { LINK_HEARTBEAT_ACK, LINK_SUMMARY_ACK, SummaryProps } from '@constants/link';
+import { EVENT_SUCCESS } from '@constants/eventStatus';
+import LinkIpc from '@app/data/link.ipc';
 
 const Container = styled.div`
   ${container}
@@ -37,21 +39,23 @@ const App = () => {
     isLoading,
     setIsLoading,
     setIsAppInitialized,
-    setLinkAccount,
     vaultPath,
     setVaultPath,
     vaultStatus,
     setVaultStatus,
   } = useContext(AppContext);
+  const { setIsOnline, isOnline, setIsSyncing, setInstitutions, setProfile } =
+    useContext(LinkContext);
   const { accountsIndex, assetsIndex, settingsIndex } = useContext(EntitiesContext);
   const { setStatusMessage } = useContext(StatusBarContext);
 
   useEffect(() => {
+    // Vault Events
     ipcRenderer.on(VAULT_READY, (_, vaultPath: string) => {
       setIsAppInitialized(true);
       setVaultPath(vaultPath);
       setVaultStatus(VaultStatusEnum.READY_TO_INDEX);
-      ipcRenderer.send(APP_HAS_COOKIE);
+      LinkIpc.getHeartbeat();
     });
 
     ipcRenderer.on(VAULT_NOT_SET, () => {
@@ -93,9 +97,15 @@ const App = () => {
       });
     });
 
-    ipcRenderer.on(APP_HAS_COOKIE_ACK, async () => {
-      const summary = await requestLinkSummary();
-      summary && setLinkAccount(summary);
+    // Link Events
+    ipcRenderer.on(LINK_HEARTBEAT_ACK, (_, { status }) => {
+      setIsOnline(status === EVENT_SUCCESS);
+    });
+
+    ipcRenderer.on(LINK_SUMMARY_ACK, (_, summary: SummaryProps | null) => {
+      setIsSyncing(false);
+      setProfile(summary ? summary.profile : null);
+      setInstitutions(summary ? summary.institutions : null);
     });
 
     return () => {
@@ -104,6 +114,8 @@ const App = () => {
       ipcRenderer.removeAllListeners(VAULT_SET_NO_MASTER_KEY);
       ipcRenderer.removeAllListeners(VAULT_SET_NO_FILE);
       ipcRenderer.removeAllListeners(VAULT_SET_WRONG_MASTER_KEY);
+      ipcRenderer.removeAllListeners(LINK_HEARTBEAT_ACK);
+      ipcRenderer.removeAllListeners(LINK_SUMMARY_ACK);
     };
   }, []);
 
@@ -133,6 +145,10 @@ const App = () => {
       setVaultStatus(VaultStatusEnum.INDEX_PENDING);
     }
   }, [assetsIndex, accountsIndex, settingsIndex]);
+
+  useEffect(() => {
+    isOnline && LinkIpc.getSummary();
+  }, [isOnline]);
 
   const isVaultNotSet = !vaultPath || vaultStatus === VaultStatusEnum.NOT_SET;
   const isVaultLocked =

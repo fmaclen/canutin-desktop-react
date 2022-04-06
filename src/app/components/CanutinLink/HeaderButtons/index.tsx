@@ -2,52 +2,38 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import { LinkContext } from '@app/context/linkContext';
 import { StatusEnum } from '@appConstants/misc';
-import { AppContext } from '@app/context/appContext';
 import { routesPaths } from '@routes';
-import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
 
 import Button from '@components/common/Button';
 import { buttonRow } from './styles';
+import LinkIpc from '@app/data/link.ipc';
 
 const ButtonRow = styled.div`
   ${buttonRow}
 `;
 
 const HeaderButtons = () => {
-  const { linkAccount, setLinkAccount } = useContext(AppContext);
+  const { profile, isSyncing, setIsSyncing } = useContext(LinkContext);
   const history = useHistory();
   const { pathname } = useLocation();
 
   const handleLogout = async () => {
-    await canutinLinkApi
-      .post(ApiEndpoints.USER_LOGOUT, {})
-      .then(res => {
-        setLinkAccount(null);
-      })
-      .catch(e => {});
+    LinkIpc.logout();
   };
 
   const handleSync = () => {
-    setLinkAccount(linkAccount && { ...linkAccount, isSyncing: true });
+    setIsSyncing(true);
   };
 
-  if (linkAccount) {
+  if (profile) {
     return (
       <ButtonRow>
-        <Button
-          onClick={() => handleSync()}
-          status={StatusEnum.NEUTRAL}
-          disabled={linkAccount.isSyncing}
-        >
+        <Button onClick={() => handleSync()} status={StatusEnum.NEUTRAL} disabled={isSyncing}>
           Sync
         </Button>
-        <Button
-          onClick={() => history.push(routesPaths.linkInstitution)}
-          disabled={!linkAccount.isOnline}
-        >
-          Link institution
-        </Button>
+        <Button onClick={() => history.push(routesPaths.linkInstitution)}>Link institution</Button>
         <Button onClick={() => handleLogout()}>Logout</Button>
       </ButtonRow>
     );

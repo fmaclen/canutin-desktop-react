@@ -1,11 +1,13 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import * as timeago from 'timeago.js';
 
-import { AppContext } from '@app/context/appContext';
-import { serverErrorStatusMessage } from '@app/context/statusBarContext';
-import canutinLinkApi, { ApiEndpoints, InstitutionProps } from '@app/data/canutinLink.api';
+import LinkIpc from '@app/data/link.ipc';
+import { routesPaths } from '@app/routes';
+import { LinkContext } from '@app/context/linkContext';
+import { serverErrorStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
+import { ApiEndpoints, InstitutionProps, LINK_UNLINK_INSTITUTION_ACK } from '@constants/link';
 import { StatusEnum } from '@appConstants/misc';
 import { capitalize } from '@app/utils/strings.utils';
 
@@ -18,18 +20,14 @@ import Button from '@app/components/common/Button';
 import Fieldset from '@components/common/Form/Fieldset';
 import FieldNotice from '@components/common/Form/FieldNotice';
 import InputTextField from '@components/common/Form/InputTextField';
+import SectionRow from '@app/components/common/SectionRow';
 
 import { container as institutions } from '@components/common/Form/Form/styles';
 import { container as institution } from '@components/common/Form/FieldContainer/styles';
 import { label } from '@components/common/Form/Field/styles';
 import { row, value } from './styles';
-import { routesPaths } from '@app/routes';
-import SectionRow from '@app/components/common/SectionRow';
-
-interface UserAccountProps {
-  email: string;
-  institutions: InstitutionProps[];
-}
+import { ipcRenderer } from 'electron';
+import { EVENT_SUCCESS } from '@constants/eventStatus';
 
 const Institutions = styled.div`
   ${institutions};
@@ -48,60 +46,57 @@ const ButtonRow = styled.div`
 `;
 
 const CanutinLink = () => {
-  const [userAccount, setUserAccount] = useState<UserAccountProps | null>(null);
-  const { linkAccount } = useContext(AppContext);
+  const { isOnline, profile, institutions } = useContext(LinkContext);
+  const { setStatusMessage } = useContext(StatusBarContext);
   const history = useHistory();
 
-  const getUserDetails = async () => {
-    await canutinLinkApi
-      .get(ApiEndpoints.SUMMARY, {})
-      .then(response => {
-        setUserAccount(response.data);
-      })
-      .catch(e => {});
-  };
-
-  const handleUnlink = async (id: string) => {
-    if (window.confirm('Are you sure you want to unlink this institution?')) {
-      await canutinLinkApi
-        .post(ApiEndpoints.UNLINK_INSTITUTION, { id: id })
-        .then(res => {
-          getUserDetails();
-        })
-        .catch(e => {});
-    }
+  const handleUnlink = async (institution: InstitutionProps) => {
+    window.confirm(
+      `
+        Unlinking an institution will prevent it from being updated automatically.\n
+        Are you sure you want to unlink ${institution.name}?
+      `
+    ) && LinkIpc.unlinkInstitution(institution.id);
   };
 
   useEffect(() => {
-    getUserDetails();
-  }, [linkAccount]);
+    LinkIpc.getHeartbeat();
 
-  useEffect(() => {
-    linkAccount && getUserDetails();
-    // eslint-disable-next-line
+    !isOnline && setStatusMessage(serverErrorStatusMessage);
+
+    ipcRenderer.on(LINK_UNLINK_INSTITUTION_ACK, (_, { status }) => {
+      setStatusMessage({
+        message:
+          status === EVENT_SUCCESS
+            ? 'Institution was succesfully unlinked'
+            : "Institution couldn't be unlinked, please try again later",
+        sentiment: status === EVENT_SUCCESS ? StatusEnum.POSITIVE : StatusEnum.WARNING,
+        isLoading: false,
+      });
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners(LINK_UNLINK_INSTITUTION_ACK);
+    };
   }, []);
 
   return (
-    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={!linkAccount}>
-      {linkAccount && !linkAccount.isOnline && (
-        <Section title="Connection error">
-          <EmptyCard message={serverErrorStatusMessage.message} />
-        </Section>
-      )}
-      {!linkAccount && (
+    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={!profile}>
+      {!profile && (
         <SectionRow>
           <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />
         </SectionRow>
       )}
-      {linkAccount && userAccount && (
+
+      {profile && (
         <>
           <Section title="Summary">
-            <EmptyCard message={`Logged in as: ${userAccount.email}`} />
+            <EmptyCard message={`Logged in as: ${profile.email}`} />
           </Section>
-          <Section title={`Linked institutions / ${userAccount?.institutions.length}`}>
-            {userAccount && userAccount.institutions.length > 0 ? (
+          <Section title={`Linked institutions / ${institutions?.length}`}>
+            {institutions && institutions.length > 0 ? (
               <Institutions>
-                {userAccount?.institutions.map((institution: InstitutionProps) => {
+                {institutions?.map((institution: InstitutionProps) => {
                   return (
                     <Fieldset key={institution.id}>
                       <Institution>
@@ -109,7 +104,7 @@ const CanutinLink = () => {
                         <Value hasErrors={institution.errorTitle ? true : false}>
                           <span>{institution.name}</span>
                           <ButtonRow>
-                            <Button onClick={() => handleUnlink(institution.id)}>Unlink</Button>
+                            <Button onClick={() => handleUnlink(institution)}>Unlink</Button>
                             {institution.errorTitle && (
                               <Button
                                 status={StatusEnum.NEGATIVE}

@@ -1,11 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { ipcRenderer, IpcRendererEvent } from 'electron';
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
 
-import canutinLinkApi, { ApiEndpoints, requestLinkSummary } from '@app/data/canutinLink.api';
-import { routesPaths } from '@app/routes';
-import { AppContext } from '@app/context/appContext';
+import {
+  LINK_CREATE_ACCOUNT_ACK,
+  LINK_LOGIN_ACK,
+  UserAuthProps,
+  UserAuthResponseProps,
+} from '@constants/link';
+import { LinkContext } from '@app/context/linkContext';
+import { ApiEndpoints } from '@app/data/canutinLink.api';
 import { serverErrorStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@appConstants/misc';
 import { capitalize } from '@app/utils/strings.utils';
@@ -19,31 +24,20 @@ import Section from '@app/components/common/Section';
 import FieldNotice from '@app/components/common/Form/FieldNotice';
 import InlineCheckbox from '@app/components/common/Form/Checkbox';
 import Field from '@app/components/common/Form/Field';
+import LinkIpc from '@app/data/link.ipc';
 
-interface UserAuthProps {
-  login: string;
-  password: string;
-  confirmPassword?: string;
-}
+import { fieldNoticeParagraph } from './styles';
 
 interface UserAuthFormProps {
   endpoint: ApiEndpoints;
 }
 
 const FieldNoticeParagraph = styled.p`
-  margin-top: 12px;
-  margin-bottom: 12px;
-
-  &:first-child {
-    margin-top: 0;
-  }
-  &:last-child {
-    margin-bottom: 0;
-  }
+  ${fieldNoticeParagraph}
 `;
 
 const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
-  const { linkAccount, setLinkAccount } = useContext(AppContext);
+  const { setIsSyncing } = useContext(LinkContext);
   const { setStatusMessage } = useContext(StatusBarContext);
   const {
     register: registerAuthForm,
@@ -52,47 +46,58 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
     formState: { errors },
     watch,
   } = useForm<UserAuthProps>();
-  const history = useHistory();
 
   const login = watch('login');
   const password = watch('password');
   const submitDisabled = !login || !password;
+  const sectionLabel = endpoint === ApiEndpoints.USER_LOGIN ? 'Login' : 'Create account';
 
-  const formSubmit: SubmitHandler<UserAuthProps> = async data => {
-    canutinLinkApi
-      .post(endpoint, data)
-      .then(async response => {
-        if (response.data.success) {
-          const summary = await requestLinkSummary();
-          summary && setLinkAccount(summary);
-        }
-        history.push(routesPaths.link);
-      })
-      .catch(e => {
-        if (e.response) {
-          setError(e.response.data['field-error'][0], {
-            type: 'server',
-            message: e.response.data['field-error'][1],
-          });
-        } else {
-          linkAccount &&
-            setLinkAccount({
-              ...linkAccount,
-              errors: { user: true, institution: false },
-              isSyncing: false,
+  useEffect(() => {
+    const handleResponse = (response: UserAuthResponseProps) => {
+      switch (response.status) {
+        case 200:
+          setIsSyncing(true);
+          LinkIpc.getSummary();
+          break;
+        case 401:
+          response.error &&
+            setError(response.error[0] as keyof UserAuthProps, {
+              type: 'server',
+              message: response.error[1],
             });
+          break;
+        default:
           setStatusMessage(serverErrorStatusMessage);
-        }
-      });
+      }
+    };
+
+    ipcRenderer.on(LINK_LOGIN_ACK, (_: IpcRendererEvent, response: UserAuthResponseProps) => {
+      handleResponse(response);
+    });
+    ipcRenderer.on(
+      LINK_CREATE_ACCOUNT_ACK,
+      (_: IpcRendererEvent, response: UserAuthResponseProps) => {
+        handleResponse(response);
+      }
+    );
+
+    return () => {
+      ipcRenderer.removeAllListeners(LINK_LOGIN_ACK);
+      ipcRenderer.removeAllListeners(LINK_CREATE_ACCOUNT_ACK);
+    };
+  }, []);
+
+  const formSubmit: SubmitHandler<UserAuthProps> = userAuth => {
+    endpoint === ApiEndpoints.USER_LOGIN
+      ? LinkIpc.login(userAuth)
+      : LinkIpc.createAccount(userAuth);
   };
 
-  const userAuthLabel = endpoint === ApiEndpoints.USER_LOGIN ? 'Login' : 'Create account';
-
   return (
-    <Section title={userAuthLabel}>
+    <Section title={sectionLabel}>
       <Form onSubmit={handleLoginSubmit(formSubmit)} role="form">
         <Fieldset>
-          {userAuthLabel === 'Login' && (
+          {endpoint === ApiEndpoints.USER_LOGIN && (
             <FieldNotice
               title="What is Canutin Link?"
               description={
@@ -110,7 +115,8 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
               }
             />
           )}
-          {userAuthLabel === 'Create account' && (
+
+          {endpoint === ApiEndpoints.USER_CREATE_ACCOUNT && (
             <FieldNotice
               title="Join private beta"
               description={
@@ -152,7 +158,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
             }
           />
 
-          {userAuthLabel === 'Create account' && (
+          {sectionLabel === 'Create account' && (
             <Field label="Terms &amp; conditions" name="agreeToTerms">
               <InlineCheckbox
                 name="legal"
@@ -164,7 +170,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
           )}
         </Fieldset>
         <FormFooter>
-          <SubmitButton disabled={submitDisabled}>{userAuthLabel}</SubmitButton>
+          <SubmitButton disabled={submitDisabled}>{sectionLabel}</SubmitButton>
         </FormFooter>
       </Form>
     </Section>

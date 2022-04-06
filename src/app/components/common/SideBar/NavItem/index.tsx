@@ -1,9 +1,8 @@
 import React, { ReactNode, useContext } from 'react';
-
-import { AppContext } from '@app/context/appContext';
 import { useLocation, Link } from 'react-router-dom';
-
 import styled from 'styled-components';
+
+import { LinkContext } from '@app/context/linkContext';
 
 import { container, text, icon, status } from './styles';
 
@@ -39,7 +38,7 @@ const NavItem = ({
   disabled = false,
   status = false,
 }: NavItemProps) => {
-  const { linkAccount, setLinkAccount } = useContext(AppContext);
+  const { isSyncing, setIsSyncing } = useContext(LinkContext);
   const { pathname } = useLocation();
   const isActive = pathname === to;
 
@@ -50,15 +49,10 @@ const NavItem = ({
       to={to}
       disabled={disabled}
       data-testid={dataTestId}
-      onClick={() =>
-        to === '#sync' && linkAccount && setLinkAccount({ ...linkAccount, isSyncing: true })
-      }
+      onClick={() => to === '#sync' && setIsSyncing(true)}
       replace
     >
-      <Icon
-        isSyncing={to === '#sync' && linkAccount ? linkAccount.isSyncing : false}
-        data-testid={dataTestId}
-      >
+      <Icon isSyncing={to === '#sync' && isSyncing} data-testid={dataTestId}>
         {icon}
       </Icon>
       <Text toggled={toggled}>{text}</Text>

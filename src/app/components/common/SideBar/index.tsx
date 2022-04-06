@@ -21,6 +21,7 @@ import NavItem from './NavItem';
 import LinkSideBarIcon from '@app/components/CanutinLink/LinkSideBarIcon';
 
 import { container, burgerButton, topNav, bottomNav, navItems, lastSync } from './styles';
+import { LinkContext } from '@app/context/linkContext';
 
 const Container = styled.nav`
   ${container}
@@ -43,7 +44,8 @@ const LastSync = styled.p`
 
 const SideBar = () => {
   const [toggled, setToggled] = useState(true);
-  const { vaultStatus, linkAccount } = useContext(AppContext);
+  const { vaultStatus } = useContext(AppContext);
+  const { profile, isSyncing, lastSync } = useContext(LinkContext);
   const isNavDisabled = vaultStatus !== VaultStatusEnum.INDEXED_WITH_DATA;
 
   return (
@@ -113,14 +115,14 @@ const SideBar = () => {
           to={routesPaths.addOrUpdateData}
           dataTestId="sidebar-add-or-update-data"
         />
-        {linkAccount && (
+        {profile && (
           <NavItem
             icon={<Sync />}
-            text={linkAccount.isSyncing ? 'Syncing' : 'Sync'}
+            text={isSyncing ? 'Syncing' : 'Sync'}
             toggled={toggled}
             to={'#sync'}
             status={
-              toggled && <LastSync>{capitalize(timeago.format(linkAccount.lastSync))}</LastSync>
+              toggled && lastSync && <LastSync>{capitalize(timeago.format(lastSync))}</LastSync>
             }
           />
         )}

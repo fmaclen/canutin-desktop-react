@@ -12,8 +12,6 @@ interface AppContextValue {
   setVaultPath: (_: string) => void;
   vaultStatus: VaultStatusEnum;
   setVaultStatus: (_: VaultStatusEnum) => void;
-  linkAccount: LinkAccountProps | null;
-  setLinkAccount: (_: LinkAccountProps | null) => void;
 }
 
 export const AppContext = createContext<AppContextValue>({
@@ -25,8 +23,6 @@ export const AppContext = createContext<AppContextValue>({
   setVaultPath: () => {},
   vaultStatus: VaultStatusEnum.NOT_SET,
   setVaultStatus: () => {},
-  linkAccount: null,
-  setLinkAccount: () => {},
 });
 
 export const AppCtxProvider = ({ children }: PropsWithChildren<Record<string, unknown>>) => {
@@ -34,7 +30,6 @@ export const AppCtxProvider = ({ children }: PropsWithChildren<Record<string, un
   const [isAppInitialized, setIsAppInitialized] = useState(false);
   const [vaultPath, setVaultPath] = useState<string | null>(null);
   const [vaultStatus, setVaultStatus] = useState(VaultStatusEnum.NOT_SET);
-  const [linkAccount, setLinkAccount] = useState<LinkAccountProps | null>(null);
 
   const value = {
     isLoading,
@@ -45,8 +40,6 @@ export const AppCtxProvider = ({ children }: PropsWithChildren<Record<string, un
     setVaultPath,
     vaultStatus,
     setVaultStatus,
-    linkAccount,
-    setLinkAccount,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 
-import { container, icon } from './styles';
-import { AppContext } from '@app/context/appContext';
+import { LinkContext } from '@app/context/linkContext';
 import { StatusEnum } from '@app/constants/misc';
 
 import { ReactComponent as Lightning } from '@assets/icons/Lightning.svg';
+import { container, icon } from './styles';
 
 const Container = styled.div`
   ${container};
@@ -15,18 +15,18 @@ const Icon = styled(Lightning)`
 `;
 
 const LinkSideBarIcon = () => {
-  const { linkAccount } = useContext(AppContext);
+  const { profile, isOnline, errors } = useContext(LinkContext);
 
-  const linkAccountErrors = linkAccount?.errors?.user || linkAccount?.errors?.institution;
+  const linkErrors = errors?.user || errors?.institution;
 
   return (
     <Container
       status={
-        !linkAccount
+        !profile
           ? null
-          : !linkAccount.isOnline
+          : !isOnline
           ? StatusEnum.WARNING
-          : linkAccountErrors
+          : linkErrors
           ? StatusEnum.NEGATIVE
           : StatusEnum.POSITIVE
       }

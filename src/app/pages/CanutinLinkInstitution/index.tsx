@@ -98,8 +98,6 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
           });
         });
     }
-
-    // eslint-disable-next-line
   }, []);
 
   const onExit = () => {
@@ -120,7 +118,6 @@ const PlaidLink = ({ token }: PlaidLinkProps) => {
       linkIframe.style.position = 'relative';
       mainFrame?.appendChild(linkIframe);
     }
-    // eslint-disable-next-line
   }, [ready]);
 
   return <></>;
@@ -150,7 +147,6 @@ const LinkInstitution = () => {
     } else {
       newLinkToken();
     }
-    // eslint-disable-next-line
   }, []);
 
   return <PlaidWizard wizard={true}>{token && <PlaidLink token={token} />}</PlaidWizard>;

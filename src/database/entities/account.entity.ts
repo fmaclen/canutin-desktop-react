@@ -37,6 +37,9 @@ export class Account extends Base {
   @JoinColumn()
   accountType: AccountType;
 
+  @Column({ nullable: true })
+  linkId?: string;
+
   constructor(
     name: string,
     closed: boolean,
@@ -45,7 +48,8 @@ export class Account extends Base {
     officialName?: string,
     institution?: string,
     transactions?: Transaction[],
-    balanceStatements?: AccountBalanceStatement[]
+    balanceStatements?: AccountBalanceStatement[],
+    linkId?: string
   ) {
     super();
     this.name = name;
@@ -57,5 +61,6 @@ export class Account extends Base {
     this.accountType = accountType;
     this.transactions = transactions;
     this.balanceStatements = balanceStatements;
+    this.linkId = linkId;
   }
 }
