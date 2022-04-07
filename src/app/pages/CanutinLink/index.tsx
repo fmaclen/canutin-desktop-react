@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { ipcRenderer } from 'electron';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import * as timeago from 'timeago.js';
@@ -6,8 +7,13 @@ import * as timeago from 'timeago.js';
 import LinkIpc from '@app/data/link.ipc';
 import { routesPaths } from '@app/routes';
 import { LinkContext } from '@app/context/linkContext';
-import { serverErrorStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
-import { ApiEndpoints, InstitutionProps, LINK_UNLINK_INSTITUTION_ACK } from '@constants/link';
+import {
+  serverErrorStatusMessage,
+  StatusBarContext,
+  StatusMessageProps,
+} from '@app/context/statusBarContext';
+import { ApiEndpoints, LINK_UNLINK_INSTITUTION_ACK } from '@constants/link';
+import { InstitutionProps } from '@appTypes/canutinLink.type';
 import { StatusEnum } from '@appConstants/misc';
 import { capitalize } from '@app/utils/strings.utils';
 
@@ -26,8 +32,6 @@ import { container as institutions } from '@components/common/Form/Form/styles';
 import { container as institution } from '@components/common/Form/FieldContainer/styles';
 import { label } from '@components/common/Form/Field/styles';
 import { row, value } from './styles';
-import { ipcRenderer } from 'electron';
-import { EVENT_SUCCESS } from '@constants/eventStatus';
 
 const Institutions = styled.div`
   ${institutions};
@@ -64,15 +68,8 @@ const CanutinLink = () => {
 
     !isOnline && setStatusMessage(serverErrorStatusMessage);
 
-    ipcRenderer.on(LINK_UNLINK_INSTITUTION_ACK, (_, { status }) => {
-      setStatusMessage({
-        message:
-          status === EVENT_SUCCESS
-            ? 'Institution was succesfully unlinked'
-            : "Institution couldn't be unlinked, please try again later",
-        sentiment: status === EVENT_SUCCESS ? StatusEnum.POSITIVE : StatusEnum.WARNING,
-        isLoading: false,
-      });
+    ipcRenderer.on(LINK_UNLINK_INSTITUTION_ACK, (_, statusMessage: StatusMessageProps) => {
+      setStatusMessage(statusMessage);
     });
 
     return () => {

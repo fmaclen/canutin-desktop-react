@@ -1,16 +1,12 @@
 import React, { useContext, useEffect } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
-import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import styled from 'styled-components';
 
-import {
-  LINK_CREATE_ACCOUNT_ACK,
-  LINK_LOGIN_ACK,
-  UserAuthProps,
-  UserAuthResponseProps,
-} from '@constants/link';
+import LinkIpc from '@app/data/link.ipc';
+import { ApiEndpoints, LINK_CREATE_ACCOUNT_ACK, LINK_LOGIN_ACK } from '@constants/link';
 import { LinkContext } from '@app/context/linkContext';
-import { ApiEndpoints } from '@app/data/canutinLink.api';
+import { UserAuthProps, UserAuthResponseProps } from '@appTypes/canutinLink.type';
 import { serverErrorStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
 import { StatusEnum } from '@appConstants/misc';
 import { capitalize } from '@app/utils/strings.utils';
@@ -24,7 +20,6 @@ import Section from '@app/components/common/Section';
 import FieldNotice from '@app/components/common/Form/FieldNotice';
 import InlineCheckbox from '@app/components/common/Form/Checkbox';
 import Field from '@app/components/common/Form/Field';
-import LinkIpc from '@app/data/link.ipc';
 
 import { fieldNoticeParagraph } from './styles';
 
@@ -49,7 +44,9 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
 
   const login = watch('login');
   const password = watch('password');
-  const submitDisabled = !login || !password;
+  const legal = watch('legal');
+  const submitDisabled =
+    !login || !password || (endpoint === ApiEndpoints.USER_CREATE_ACCOUNT && !legal);
   const sectionLabel = endpoint === ApiEndpoints.USER_LOGIN ? 'Login' : 'Create account';
 
   useEffect(() => {
@@ -57,7 +54,6 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
       switch (response.status) {
         case 200:
           setIsSyncing(true);
-          LinkIpc.getSummary();
           break;
         case 401:
           response.error &&
@@ -74,6 +70,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
     ipcRenderer.on(LINK_LOGIN_ACK, (_: IpcRendererEvent, response: UserAuthResponseProps) => {
       handleResponse(response);
     });
+
     ipcRenderer.on(
       LINK_CREATE_ACCOUNT_ACK,
       (_: IpcRendererEvent, response: UserAuthResponseProps) => {

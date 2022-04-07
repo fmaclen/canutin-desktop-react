@@ -1,7 +1,6 @@
 import { createContext, PropsWithChildren, useState } from 'react';
 
 import { VaultStatusEnum } from '@enums/vault.enum';
-import { LinkAccountProps } from '@app/data/canutinLink.api';
 
 interface AppContextValue {
   isLoading: boolean;

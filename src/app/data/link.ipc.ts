@@ -5,10 +5,18 @@ import {
   LINK_HEARTBEAT,
   LINK_LOGIN,
   LINK_LOGOUT,
+  LINK_NEW_INSTITUTION,
+  LINK_NEW_INSTITUTION_TOKEN,
   LINK_SUMMARY,
+  LINK_SYNC,
   LINK_UNLINK_INSTITUTION,
-  UserAuthProps,
+  LINK_UPDATE_INSTITUTION,
+  LINK_UPDATE_INSTITUTION_TOKEN,
 } from '@constants/link';
+
+import { Asset } from '@database/entities';
+import { UserAuthProps } from '@appTypes/canutinLink.type';
+import { PlaidLinkOnSuccessMetadata } from 'react-plaid-link';
 
 export default class LinkIpc {
   static getHeartbeat() {
@@ -29,6 +37,26 @@ export default class LinkIpc {
 
   static getSummary() {
     ipcRenderer.send(LINK_SUMMARY);
+  }
+
+  static sync(assets?: Asset[]) {
+    ipcRenderer.send(LINK_SYNC, assets);
+  }
+
+  static newInstitutionToken() {
+    ipcRenderer.send(LINK_NEW_INSTITUTION_TOKEN);
+  }
+
+  static updateInstitutionToken(id: string) {
+    ipcRenderer.send(LINK_UPDATE_INSTITUTION_TOKEN, id);
+  }
+
+  static createInstitution(metadata: PlaidLinkOnSuccessMetadata) {
+    ipcRenderer.send(LINK_NEW_INSTITUTION, metadata);
+  }
+
+  static updateInstitution(metadata: PlaidLinkOnSuccessMetadata) {
+    ipcRenderer.send(LINK_UPDATE_INSTITUTION, metadata);
   }
 
   static unlinkInstitution(id: string) {

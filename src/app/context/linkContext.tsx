@@ -1,5 +1,6 @@
-import { ProfileProps } from '@constants/link';
 import { createContext, PropsWithChildren, useState } from 'react';
+
+import { ProfileProps } from '@appTypes/canutinLink.type';
 
 interface InstitutionProps {
   id: string;

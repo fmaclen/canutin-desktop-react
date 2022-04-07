@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
+import { ipcRenderer } from 'electron';
 import { usePlaidLink, PlaidLinkOptions, PlaidLinkOnSuccess } from 'react-plaid-link';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { LINK_NEW_INSTITUTION_TOKEN_ACK, LINK_UPDATE_INSTITUTION_TOKEN_ACK } from '@constants/link';
+
+import LinkIpc from '@app/data/link.ipc';
 import { routesPaths } from '@routes';
 import { StatusBarContext } from '@app/context/statusBarContext';
-import canutinLinkApi, { ApiEndpoints } from '@app/data/canutinLink.api';
-import { handleLinkedAccounts } from '@app/utils/account.utils';
-
-import { main } from '@components/common/ScrollView/styles';
-import { plaidWizard } from './styles';
 import { StatusEnum } from '@app/constants/misc';
-import { EntitiesContext } from '@app/context/entitiesContext';
+
+import { plaidWizard } from './styles';
+import { main } from '@components/common/ScrollView/styles';
 
 interface PlaidLinkProps {
   token: string;
@@ -26,82 +27,30 @@ const PlaidWizard = styled.main`
   ${plaidWizard};
 `;
 
-let isNewInstitution = false;
-
 const PlaidLink = ({ token }: PlaidLinkProps) => {
   const { setStatusMessage } = useContext(StatusBarContext);
-  const { accountsIndex } = useContext(EntitiesContext);
   const { institution_id } = useParams<InstitutionParams>();
+  const [isInstitutionNew, setIsInstitutionNew] = useState(false);
   const history = useHistory();
 
   const onSuccess = useCallback<PlaidLinkOnSuccess>(async (_public_token, metadata) => {
     if (institution_id) {
-      // Updates existing item
-      await canutinLinkApi
-        .post(ApiEndpoints.UPDATE_INSTITUTION, metadata)
-        .then(res => {
-          setStatusMessage({
-            sentiment: StatusEnum.POSITIVE,
-            message: 'The institution is now fixed.',
-            isLoading: false,
-          });
-          history.push(routesPaths.link);
-        })
-        .catch(e => {
-          setStatusMessage({
-            sentiment: StatusEnum.NEGATIVE,
-            message: "Couldn't fix the institution, please try again later.",
-            isLoading: false,
-          });
-        });
+      LinkIpc.updateInstitution(metadata);
+      history.push(routesPaths.link);
     } else {
+      LinkIpc.createInstitution(metadata);
+      setIsInstitutionNew(true);
       setStatusMessage({
         sentiment: StatusEnum.NEUTRAL,
-        message: 'Please wait while we gather the institution data...',
+        message: 'Gathering data from the institution',
         isLoading: true,
       });
-
       history.push(routesPaths.balance);
-
-      // Creates new item
-      await canutinLinkApi
-        .post(ApiEndpoints.NEW_INSTITUTION, metadata)
-        .then(response => {
-          isNewInstitution = true;
-
-          if (response.status === 201) {
-            setStatusMessage({
-              sentiment: StatusEnum.POSITIVE,
-              message: 'The institution has been linked succesfully',
-              isLoading: false,
-            });
-          } else if (response.status === 204) {
-            setStatusMessage({
-              sentiment: StatusEnum.WARNING,
-              message:
-                'The institution has been linked but transaction data is not available yet, please try again later',
-              isLoading: false,
-            });
-          }
-
-          // TODO: handle `response.data.accounts`
-          // Blocked by https://github.com/Canutin/desktop/issues/191
-
-          response.data.accounts &&
-            handleLinkedAccounts(response.data.accounts, accountsIndex?.accounts);
-        })
-        .catch(e => {
-          setStatusMessage({
-            sentiment: StatusEnum.NEGATIVE,
-            message: "Couldn't link the institution, please try again later.",
-            isLoading: false,
-          });
-        });
     }
   }, []);
 
   const onExit = () => {
-    !isNewInstitution && history.push(routesPaths.link);
+    !isInstitutionNew && history.push(routesPaths.link);
   };
 
   const config: PlaidLinkOptions = { token, onSuccess, onExit };
@@ -127,26 +76,28 @@ const LinkInstitution = () => {
   const { institution_id } = useParams<InstitutionParams>();
   const [token, setToken] = useState<string | null>(null);
 
-  const newLinkToken = async () => {
-    await canutinLinkApi.get(ApiEndpoints.NEW_INSTITUTION_TOKEN).then(response => {
-      setToken(response.data.linkToken);
-    });
-  };
-
-  const updateLinkToken = async () => {
-    await canutinLinkApi
-      .post(ApiEndpoints.UPDATE_INSTITUTION_TOKEN, { id: institution_id })
-      .then(response => {
-        setToken(response.data.linkToken);
-      });
-  };
-
   useEffect(() => {
     if (institution_id) {
-      updateLinkToken();
+      LinkIpc.updateInstitutionToken(institution_id);
     } else {
-      newLinkToken();
+      LinkIpc.newInstitutionToken();
     }
+
+    ipcRenderer.on(LINK_NEW_INSTITUTION_TOKEN_ACK, (_, newInstitutionToken: string | null) => {
+      setToken(newInstitutionToken);
+    });
+
+    ipcRenderer.on(
+      LINK_UPDATE_INSTITUTION_TOKEN_ACK,
+      (_, updateInstitutionToken: string | null) => {
+        setToken(updateInstitutionToken);
+      }
+    );
+
+    return () => {
+      ipcRenderer.removeAllListeners(LINK_NEW_INSTITUTION_TOKEN_ACK);
+      ipcRenderer.removeAllListeners(LINK_UPDATE_INSTITUTION_TOKEN_ACK);
+    };
   }, []);
 
   return <PlaidWizard wizard={true}>{token && <PlaidLink token={token} />}</PlaidWizard>;

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { LinkContext } from '@app/context/linkContext';
-import { ApiEndpoints } from '@app/data/canutinLink.api';
+import { ApiEndpoints } from '@constants/link';
 
 import ScrollView from '@components/common/ScrollView';
 import HeaderButtons from '@app/components/CanutinLink/HeaderButtons';

@@ -10,25 +10,36 @@ import {
   VAULT_SET_WRONG_MASTER_KEY,
   VAULT_SET_NO_MASTER_KEY,
 } from '@constants/vault';
+import {
+  LINK_HEARTBEAT_ACK,
+  LINK_SUMMARY_ACK,
+  LINK_LOGOUT_ACK,
+  LINK_NEW_INSTITUTION_ACK,
+  LINK_UPDATE_INSTITUTION_ACK,
+} from '@constants/link';
+import { EVENT_SUCCESS } from '@constants/eventStatus';
 
+import LinkIpc from '@app/data/link.ipc';
 import { routesConfig, RouteConfigProps, routesPaths } from '@routes';
 import { EntitiesContext } from '@app/context/entitiesContext';
 import { AppContext } from '@app/context/appContext';
-import { emptyStatusMessage, StatusBarContext } from '@app/context/statusBarContext';
+import {
+  emptyStatusMessage,
+  StatusBarContext,
+  StatusMessageProps,
+} from '@app/context/statusBarContext';
 import { StatusEnum } from '@app/constants/misc';
 import { DatabaseDoesNotExistsMessage } from '@constants/messages';
 import { VaultStatusEnum } from '@enums/vault.enum';
-import { container } from './styles';
+import { LinkContext } from '@app/context/linkContext';
+import { SummaryResponseProps } from '@appTypes/canutinLink.type';
 
 import TitleBar from '@components/common/TitleBar';
 import StatusBar from '@components/common/StatusBar';
 import SideBar from '@components/common/SideBar';
 import GlobalStyle from '@app/styles/global';
 import NotReady from '@app/pages/NotReady';
-import { LinkContext } from '@app/context/linkContext';
-import { LINK_HEARTBEAT_ACK, LINK_SUMMARY_ACK, SummaryProps } from '@constants/link';
-import { EVENT_SUCCESS } from '@constants/eventStatus';
-import LinkIpc from '@app/data/link.ipc';
+import { container } from './styles';
 
 const Container = styled.div`
   ${container}
@@ -44,7 +55,7 @@ const App = () => {
     vaultStatus,
     setVaultStatus,
   } = useContext(AppContext);
-  const { setIsOnline, isOnline, setIsSyncing, setInstitutions, setProfile } =
+  const { setIsOnline, isOnline, isSyncing, setIsSyncing, setInstitutions, setProfile } =
     useContext(LinkContext);
   const { accountsIndex, assetsIndex, settingsIndex } = useContext(EntitiesContext);
   const { setStatusMessage } = useContext(StatusBarContext);
@@ -100,12 +111,30 @@ const App = () => {
     // Link Events
     ipcRenderer.on(LINK_HEARTBEAT_ACK, (_, { status }) => {
       setIsOnline(status === EVENT_SUCCESS);
+      setIsSyncing(false);
     });
 
-    ipcRenderer.on(LINK_SUMMARY_ACK, (_, summary: SummaryProps | null) => {
+    ipcRenderer.on(LINK_SUMMARY_ACK, (_, summaryResponse: SummaryResponseProps | null) => {
       setIsSyncing(false);
-      setProfile(summary ? summary.profile : null);
-      setInstitutions(summary ? summary.institutions : null);
+      setProfile(summaryResponse ? summaryResponse.profile : null);
+      setInstitutions(summaryResponse ? summaryResponse.institutions : null);
+    });
+
+    ipcRenderer.on(LINK_LOGOUT_ACK, () => {
+      setIsOnline(false);
+      setIsSyncing(false);
+      setProfile(null);
+      setInstitutions(null);
+    });
+
+    ipcRenderer.on(LINK_NEW_INSTITUTION_ACK, (_, statusMessage: StatusMessageProps) => {
+      setStatusMessage(statusMessage);
+      setIsSyncing(true);
+    });
+
+    ipcRenderer.on(LINK_UPDATE_INSTITUTION_ACK, (_, statusMessage: StatusMessageProps) => {
+      setStatusMessage(statusMessage);
+      setIsSyncing(true);
     });
 
     return () => {
@@ -116,6 +145,9 @@ const App = () => {
       ipcRenderer.removeAllListeners(VAULT_SET_WRONG_MASTER_KEY);
       ipcRenderer.removeAllListeners(LINK_HEARTBEAT_ACK);
       ipcRenderer.removeAllListeners(LINK_SUMMARY_ACK);
+      ipcRenderer.removeAllListeners(LINK_LOGOUT_ACK);
+      ipcRenderer.removeAllListeners(LINK_NEW_INSTITUTION_ACK);
+      ipcRenderer.removeAllListeners(LINK_UPDATE_INSTITUTION_ACK);
     };
   }, []);
 
@@ -149,6 +181,10 @@ const App = () => {
   useEffect(() => {
     isOnline && LinkIpc.getSummary();
   }, [isOnline]);
+
+  useEffect(() => {
+    isSyncing && LinkIpc.sync(assetsIndex?.assets);
+  }, [isSyncing]);
 
   const isVaultNotSet = !vaultPath || vaultStatus === VaultStatusEnum.NOT_SET;
   const isVaultLocked =
