@@ -17,8 +17,8 @@ const ButtonRow = styled.div`
 
 const HeaderButtons = () => {
   const { profile, isSyncing, setIsSyncing } = useContext(LinkContext);
-  const history = useHistory();
   const { pathname } = useLocation();
+  const history = useHistory();
 
   if (profile) {
     return (

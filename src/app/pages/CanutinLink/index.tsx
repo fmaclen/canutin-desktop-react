@@ -90,7 +90,7 @@ const CanutinLink = () => {
           <Section title="Summary">
             <EmptyCard message={`Logged in as: ${profile.email}`} />
           </Section>
-          <Section title={`Linked institutions / ${institutions?.length}`}>
+          <Section title={`Linked institutions / ${institutions ? institutions.length : 0}`}>
             {institutions && institutions.length > 0 ? (
               <Institutions>
                 {institutions?.map((institution: InstitutionProps) => {

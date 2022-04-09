@@ -31,11 +31,8 @@ export const connectAndSaveVault = async (
       verbose: isDev ? console.log : undefined,
       prepareDatabase: db => {
         db.pragma(`CIPHER = 'sqlcipher'`);
-        db.pragma(`KEY = '${vaultMasterKey}'`);
-
-        // FIXME: remove legacy support when the app is no longer in "alpha"
-        // REF: https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_legacy_mode/
         db.pragma(`LEGACY = 4`);
+        db.pragma(`KEY = '${vaultMasterKey}'`);
       },
     };
     const isConnected = await connection.isConnected();

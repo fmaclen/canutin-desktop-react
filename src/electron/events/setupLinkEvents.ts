@@ -45,6 +45,8 @@ import {
 import { PlaidLinkOnSuccessMetadata } from 'react-plaid-link';
 import { StatusEnum } from '@app/constants/misc';
 import { StatusMessageProps } from '@app/context/statusBarContext';
+import { getAssets } from './setupAssetEvents';
+import { getAccounts } from './setupAccountEvents';
 
 const setupLinkEvents = async (win: BrowserWindow) => {
   const getHeartbeat = async () => {
@@ -144,9 +146,15 @@ const setupLinkEvents = async (win: BrowserWindow) => {
 
     if (response.status === 200) {
       const { assetPrices, accounts, removedTransactions } = response.data as SyncResponseProps;
-      assetPrices && handleLinkAssets(assetPrices);
-      accounts && handleLinkAccounts(accounts);
-      removedTransactions && handleLinkRemovedTransactions(removedTransactions);
+
+      removedTransactions && (await handleLinkRemovedTransactions(removedTransactions));
+      const updatedAccounts = accounts && (await handleLinkAccounts(accounts));
+      const updatedAssets = assetPrices && (await handleLinkAssets(assetPrices));
+
+      setTimeout(async () => {
+        // updatedAccounts && (await getAccounts(win));
+        updatedAssets && (await getAssets(win));
+      }, 100);
     }
 
     await getSummary();
