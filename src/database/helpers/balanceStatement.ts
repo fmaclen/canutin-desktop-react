@@ -52,7 +52,7 @@ export const handleAssetBalanceStatements = async (
           balanceStatement.value ? balanceStatement.value : 0,
           existingAsset,
           handleDate(balanceStatement.createdAt),
-          balanceStatement.quantity,
+          balanceStatement.quantity ? balanceStatement.quantity : 1,
           balanceStatement.cost
         );
       }
@@ -64,6 +64,7 @@ export const handleAssetBalanceStatements = async (
     await AssetBalanceStatementRepository.createBalanceStatement({
       createdAt: new Date(),
       value: 0,
+      quantity: 1,
       asset: existingAsset,
     });
   }

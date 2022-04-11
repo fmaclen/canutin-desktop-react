@@ -7,6 +7,7 @@ export const container = css`
   flex-direction: column;
   background-color: ${whitePlain};
   border-right: 1px solid ${grey10};
+  min-width: 240px;
   height: 100%;
 `;
 

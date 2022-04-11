@@ -66,7 +66,7 @@ export class AssetRepository {
     await AssetBalanceStatementRepository.createBalanceStatement({
       asset: asset as Asset,
       createdAt: new Date(),
-      quantity: assetValue.quantity,
+      quantity: assetValue.quantity ? assetValue.quantity : 1,
       cost: assetValue.cost,
       value: assetValue.value ? assetValue.value : 0,
     });

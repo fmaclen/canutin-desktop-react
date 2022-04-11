@@ -151,8 +151,9 @@ const setupLinkEvents = async (win: BrowserWindow) => {
       const updatedAccounts = accounts && (await handleLinkAccounts(accounts));
       const updatedAssets = assetPrices && (await handleLinkAssets(assetPrices));
 
+      // There's a race condition if we getAssets/getAccounts immediately after adding them to the DB
       setTimeout(async () => {
-        // updatedAccounts && (await getAccounts(win));
+        updatedAccounts && (await getAccounts(win));
         updatedAssets && (await getAssets(win));
       }, 100);
     }

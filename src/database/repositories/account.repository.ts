@@ -25,7 +25,8 @@ export class AccountRepository {
         account.autoCalculated,
         accountType,
         account.officialName,
-        account.institution
+        account.institution,
+        account.linkId
       )
     );
 
@@ -75,6 +76,15 @@ export class AccountRepository {
         id: 'DESC',
       },
     });
+  }
+
+  static async getAccountByLinkId(linkId: string): Promise<Account | undefined> {
+    return await await getRepository<Account>(Account)
+      .createQueryBuilder('account')
+      .leftJoinAndSelect('account.balanceStatements', 'balanceStatements')
+      .where('account.autoCalculated = :autoCalculated', { autoCalculated: false })
+      .where('account.linkId like :linkId', { linkId: `%${linkId}%` })
+      .getOne();
   }
 
   static async getOrCreateAccount(account: NewAccountType): Promise<Account> {

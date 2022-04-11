@@ -1,4 +1,4 @@
-import { NewTransactionType } from '@appTypes/transaction.type';
+import { CanutinFileAccountType } from './canutinFile.type';
 
 export interface UserAuthProps {
   login: string;
@@ -41,20 +41,8 @@ export interface AssetPricesProps {
   latestPrice: number;
 }
 
-export interface RemoteAccountProps {
-  accountType: string;
-  autoCalculated: boolean;
-  balance: number;
-  balanceGroup: string;
-  institutionName: string;
-  linkId: string;
-  name: string;
-  officialName: string;
-  transactions?: NewTransactionType[];
-}
-
 export interface SyncResponseProps {
-  accounts: RemoteAccountProps[];
+  accounts: CanutinFileAccountType[];
   removedTransactions: string[];
   assetPrices: AssetPricesProps[];
 }

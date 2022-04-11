@@ -1,8 +1,6 @@
 import { AccountRepository } from '@database/repositories/account.repository';
-import { TransactionRepository } from '@database/repositories/transaction.repository';
-import { CategoryRepository } from '@database/repositories/category.repository';
 import { AssetRepository } from '@database/repositories/asset.repository';
-import { Transaction } from '@database/entities';
+import { createTransactionsFromCanutinFile } from '@database/helpers/importSource';
 
 import {
   accountCheckingDetails,
@@ -40,74 +38,17 @@ import {
 } from './demoData/balanceStatements';
 
 const seedDemoData = async () => {
-  const sessionDate = new Date();
-  const pending = false;
-
   // Account: Checking
   const accountChecking = await AccountRepository.createAccount(accountCheckingDetails);
-  const accountCheckingTransactions = await Promise.all(
-    accountCheckingTransactionSet().map(async transaction => {
-      const { description, date, amount, excludeFromTotals, categoryName } = transaction;
-      const category = await CategoryRepository.getSubCategory(categoryName);
-
-      return new Transaction(
-        description,
-        date,
-        amount,
-        excludeFromTotals,
-        pending,
-        accountChecking,
-        category,
-        new Date(),
-        sessionDate
-      );
-    })
-  );
-  await TransactionRepository.createTransactions(accountCheckingTransactions);
+  createTransactionsFromCanutinFile(accountChecking, accountCheckingTransactionSet());
 
   // Account: Savings
   const accountSavings = await AccountRepository.createAccount(accountSavingsDetails);
-  const accountSavingsTransaction = await Promise.all(
-    accountSavingsTransactionSet().map(async transaction => {
-      const { description, date, amount, excludeFromTotals, categoryName } = transaction;
-      const category = await CategoryRepository.getSubCategory(categoryName);
-
-      return new Transaction(
-        description,
-        date,
-        amount,
-        excludeFromTotals,
-        pending,
-        accountSavings,
-        category,
-        new Date(),
-        sessionDate
-      );
-    })
-  );
-  await TransactionRepository.createTransactions(accountSavingsTransaction);
+  createTransactionsFromCanutinFile(accountSavings, accountSavingsTransactionSet());
 
   // Account: Credit card
   const accountCreditCard = await AccountRepository.createAccount(accountCreditCardDetails);
-  const accountCreditCardTransaction = await Promise.all(
-    accountCreditCardTransactionSet().map(async transaction => {
-      const { description, date, amount, excludeFromTotals, categoryName } = transaction;
-      const category = await CategoryRepository.getSubCategory(categoryName);
-
-      return new Transaction(
-        description,
-        date,
-        amount,
-        excludeFromTotals,
-        pending,
-        accountCreditCard,
-        category,
-        new Date(),
-        sessionDate
-      );
-    })
-  );
-  await TransactionRepository.createTransactions(accountCreditCardTransaction);
+  createTransactionsFromCanutinFile(accountCreditCard, accountCreditCardTransactionSet());
 
   // // Account: Auto-loan
   await AccountRepository.createAccount({

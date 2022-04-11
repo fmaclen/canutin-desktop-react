@@ -8,8 +8,8 @@ export class AssetBalanceStatement extends Base {
   @Column({ default: 0 })
   value: number;
 
-  @Column({ nullable: true })
-  quantity?: number;
+  @Column({ default: 1 })
+  quantity: number;
 
   @Column({ nullable: true })
   cost?: number;
@@ -18,7 +18,7 @@ export class AssetBalanceStatement extends Base {
   @JoinColumn()
   asset: Asset;
 
-  constructor(value = 0, asset: Asset, createdAt: Date, quantity?: number, cost?: number) {
+  constructor(value = 0, asset: Asset, createdAt: Date, quantity: number, cost?: number) {
     super();
     this.value = quantity && cost ? quantity * cost : value;
     this.asset = asset;

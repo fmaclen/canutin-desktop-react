@@ -4,9 +4,11 @@ export interface CanutinFileTransactionType {
   description: string;
   date: number;
   amount: number;
-  category: string;
+  categoryName: string;
   excludeFromTotals: boolean;
   pending: boolean;
+  institutionLinkId?: string;
+  linkId?: string;
   importedAt?: number;
   createdAt?: number;
 }
@@ -26,6 +28,7 @@ export interface CanutinFileAccountType {
   closed: boolean;
   officialName?: string;
   institution?: string;
+  linkId?: string;
   transactions?: CanutinFileTransactionType[];
   balanceStatements?: CanutinFileAccountBalanceStatementType[];
 }

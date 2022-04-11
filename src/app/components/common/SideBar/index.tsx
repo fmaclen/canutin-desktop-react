@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import * as timeago from 'timeago.js';
 
@@ -22,6 +22,7 @@ import LinkSideBarIcon from '@app/components/CanutinLink/LinkSideBarIcon';
 
 import { container, burgerButton, topNav, bottomNav, navItems, lastSync } from './styles';
 import { LinkContext } from '@app/context/linkContext';
+import { formatRelativeDate } from '@app/utils/date.utils';
 
 const Container = styled.nav`
   ${container}
@@ -47,6 +48,18 @@ const SideBar = () => {
   const { vaultStatus } = useContext(AppContext);
   const { profile, isSyncing, lastSync } = useContext(LinkContext);
   const isNavDisabled = vaultStatus !== VaultStatusEnum.INDEXED_WITH_DATA;
+  const [relativeDate, setRelativeDate] = useState('');
+
+  useEffect(() => {
+    const getRelativeDate = () => (lastSync ? capitalize(formatRelativeDate(lastSync)) : '');
+    const interval = setInterval(() => setRelativeDate(getRelativeDate()), 10000);
+
+    setRelativeDate(getRelativeDate());
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <Container>
@@ -115,15 +128,14 @@ const SideBar = () => {
           to={routesPaths.addOrUpdateData}
           dataTestId="sidebar-add-or-update-data"
         />
+
         {profile && (
           <NavItem
             icon={<Sync />}
             text={isSyncing ? 'Syncing' : 'Sync'}
             toggled={toggled}
             to={'#sync'}
-            status={
-              toggled && lastSync && <LastSync>{capitalize(timeago.format(lastSync))}</LastSync>
-            }
+            status={!isSyncing && toggled && lastSync && <LastSync>{relativeDate}</LastSync>}
           />
         )}
       </BottomNav>

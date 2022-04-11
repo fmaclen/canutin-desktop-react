@@ -55,8 +55,15 @@ const App = () => {
     vaultStatus,
     setVaultStatus,
   } = useContext(AppContext);
-  const { setIsOnline, isOnline, isSyncing, setIsSyncing, setInstitutions, setProfile } =
-    useContext(LinkContext);
+  const {
+    setIsOnline,
+    isOnline,
+    isSyncing,
+    setIsSyncing,
+    setLastSync,
+    setInstitutions,
+    setProfile,
+  } = useContext(LinkContext);
   const { accountsIndex, assetsIndex, settingsIndex } = useContext(EntitiesContext);
   const { setStatusMessage } = useContext(StatusBarContext);
 
@@ -112,10 +119,12 @@ const App = () => {
     ipcRenderer.on(LINK_HEARTBEAT_ACK, (_, { status }) => {
       setIsOnline(status === EVENT_SUCCESS);
       setIsSyncing(false);
+      setLastSync(new Date());
     });
 
     ipcRenderer.on(LINK_SUMMARY_ACK, (_, summaryResponse: SummaryResponseProps | null) => {
       setIsSyncing(false);
+      setLastSync(new Date());
       setProfile(summaryResponse ? summaryResponse.profile : null);
       setInstitutions(summaryResponse ? summaryResponse.institutions : null);
     });

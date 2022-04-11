@@ -27,6 +27,9 @@ export class Account extends Base {
   @Column()
   balanceGroup: BalanceGroupEnum;
 
+  @Column({ nullable: true })
+  linkId?: string;
+
   @OneToMany(() => AccountBalanceStatement, balanceStatement => balanceStatement.account)
   balanceStatements?: AccountBalanceStatement[];
 
@@ -37,9 +40,6 @@ export class Account extends Base {
   @JoinColumn()
   accountType: AccountType;
 
-  @Column({ nullable: true })
-  linkId?: string;
-
   constructor(
     name: string,
     closed: boolean,
@@ -47,9 +47,9 @@ export class Account extends Base {
     accountType: AccountType,
     officialName?: string,
     institution?: string,
+    linkId?: string,
     transactions?: Transaction[],
-    balanceStatements?: AccountBalanceStatement[],
-    linkId?: string
+    balanceStatements?: AccountBalanceStatement[]
   ) {
     super();
     this.name = name;
@@ -59,8 +59,8 @@ export class Account extends Base {
     this.autoCalculated = autoCalculated;
     this.balanceGroup = getBalanceGroupByAccountType(accountType?.name);
     this.accountType = accountType;
+    this.linkId = linkId;
     this.transactions = transactions;
     this.balanceStatements = balanceStatements;
-    this.linkId = linkId;
   }
 }

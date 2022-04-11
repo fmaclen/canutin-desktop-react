@@ -52,9 +52,7 @@ const NavItem = ({
       onClick={() => to === '#sync' && setIsSyncing(true)}
       replace
     >
-      <Icon isSyncing={to === '#sync' && isSyncing} data-testid={dataTestId}>
-        {icon}
-      </Icon>
+      <Icon isSyncing={to === '#sync' && isSyncing}>{icon}</Icon>
       <Text toggled={toggled}>{text}</Text>
       {status && <Status>{status}</Status>}
     </Container>

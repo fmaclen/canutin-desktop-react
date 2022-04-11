@@ -36,7 +36,7 @@ export const mintCsvToJson = (mintCsv: MintCsvEntryType[]) => {
         amount: mintEntry['Transaction Type'] === 'credit' ? mintEntry.Amount : -mintEntry.Amount,
         excludeFromTotals: false,
         pending: false,
-        category: mapCategories(mintEntry.Category),
+        categoryName: mapCategories(mintEntry.Category),
       };
 
       countTransactions++;
