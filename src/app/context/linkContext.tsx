@@ -1,14 +1,6 @@
 import { createContext, PropsWithChildren, useState } from 'react';
 
-import { ProfileProps } from '@appTypes/canutinLink.type';
-
-interface InstitutionProps {
-  id: string;
-  name: string;
-  errorTitle: string;
-  errorMessage: string;
-  lastUpdate: Date;
-}
+import { ProfileProps, InstitutionProps } from '@appTypes/canutinLink.type';
 
 interface LinkAccountErrorProps {
   user: boolean;

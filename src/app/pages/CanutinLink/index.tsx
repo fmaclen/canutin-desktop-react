@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import { ipcRenderer } from 'electron';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import * as timeago from 'timeago.js';
 
 import LinkIpc from '@app/data/link.ipc';
 import { routesPaths } from '@app/routes';
@@ -16,6 +15,7 @@ import { ApiEndpoints, LINK_UNLINK_INSTITUTION_ACK } from '@constants/link';
 import { InstitutionProps } from '@appTypes/canutinLink.type';
 import { StatusEnum } from '@appConstants/misc';
 import { capitalize } from '@app/utils/strings.utils';
+import { formatRelativeDate, handleDate } from '@app/utils/date.utils';
 
 import ScrollView from '@components/common/ScrollView';
 import Section from '@components/common/Section';
@@ -93,7 +93,7 @@ const CanutinLink = () => {
           <Section title={`Linked institutions / ${institutions ? institutions.length : 0}`}>
             {institutions && institutions.length > 0 ? (
               <Institutions>
-                {institutions?.map((institution: InstitutionProps) => {
+                {institutions?.map(institution => {
                   return (
                     <Fieldset key={institution.id}>
                       <Institution>
@@ -125,7 +125,7 @@ const CanutinLink = () => {
                       <InputTextField
                         label="Last sync"
                         name="lastSync"
-                        value={capitalize(timeago.format(institution.lastUpdate))}
+                        value={capitalize(formatRelativeDate(handleDate(institution.lastUpdate)))}
                         disabled
                       />
                     </Fieldset>

@@ -21,7 +21,7 @@ export interface InstitutionProps {
   name: string;
   errorTitle: string;
   errorMessage: string;
-  lastUpdate: Date;
+  lastUpdate: number;
 }
 
 interface SummaryErrorProps {

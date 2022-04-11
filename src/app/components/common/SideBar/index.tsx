@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import * as timeago from 'timeago.js';
 
 import { routesPaths } from '@routes';
 import { AppContext } from '@app/context/appContext';
