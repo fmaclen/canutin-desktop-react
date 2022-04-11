@@ -1,12 +1,12 @@
 import { format, differenceInCalendarWeeks, fromUnixTime, differenceInSeconds } from 'date-fns';
 
 export const dateInUTC = (date: Date) => {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0));
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getDate(), 0, 0, 0));
 };
 
 export const formatDate = (date: Date) => {
   const DATE_FORMAT = 'MMM dd, yyyy';
-  return format(dateInUTC(date), DATE_FORMAT);
+  return format(date, DATE_FORMAT);
 };
 
 export const getNumberOfWeeks = (from: Date, to: Date) =>

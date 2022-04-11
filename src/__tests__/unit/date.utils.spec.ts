@@ -2,8 +2,8 @@ import { endOfDay, subDays, subHours, subMinutes, subMonths, subSeconds, subYear
 
 import { dateInUTC, formatDate, formatRelativeDate, handleDate } from '@app/utils/date.utils';
 
-test('Timezoned date is forced to UTC', () => {
-  const date = new Date(1970, 0, 0, 23, 59, 59);
+test('Timezoned date is converted to UTC at the zero hour', () => {
+  const date = new Date(1970, 0, 1, 23, 59, 59);
   expect(dateInUTC(date).getTime()).toEqual(0);
 });
 
@@ -13,7 +13,7 @@ test('Date is formatted', () => {
 });
 
 test('Normalize dates of any type to a Date object', () => {
-  const date = new Date(2000, 0, 1, 0, 0, 0);
+  const date = new Date(2000, 0, 1, 23, 59, 59);
   const dateAsUnixEpoch = date.getTime() / 1000;
   expect(handleDate(date)).toBe(date);
   expect(handleDate(dateAsUnixEpoch)).toEqual(date);
