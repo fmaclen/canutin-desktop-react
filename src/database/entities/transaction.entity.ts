@@ -21,6 +21,9 @@ export class Transaction extends Base {
   @Column()
   pending: boolean;
 
+  @Column()
+  linkId?: string;
+
   @Column({ nullable: true })
   importedAt?: Date;
 
@@ -46,6 +49,7 @@ export class Transaction extends Base {
     account: Account,
     category: TransactionSubCategory,
     createdAt: Date,
+    linkId?: string,
     importedAt?: Date
   ) {
     super();
@@ -54,6 +58,7 @@ export class Transaction extends Base {
     this.amount = amount;
     this.excludeFromTotals = excludeFromTotals ? excludeFromTotals : false;
     this.pending = pending ? pending : false;
+    this.linkId = linkId;
     this.importedAt = importedAt;
     this.account = account;
     this.category = category;

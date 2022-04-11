@@ -4,6 +4,7 @@ import { AssetPricesProps } from '@appTypes/canutinLink.type';
 import { AssetBalanceStatementRepository } from '@database/repositories/assetBalanceStatement.entity';
 import { AssetTypeEnum } from '@enums/assetType.enum';
 import { AccountRepository } from '@database/repositories/account.repository';
+import { TransactionRepository } from '@database/repositories/transaction.repository';
 import {
   CanutinFileAccountBalanceStatementType,
   CanutinFileAccountType,
@@ -40,8 +41,9 @@ export const handleLinkAssets = async (assetPrices: AssetPricesProps[]) => {
         };
 
         await AssetBalanceStatementRepository.createBalanceStatement(updatedBalanceStatementValues);
+
+        return asset;
       }
-      return asset; // TODO: move this inside the if statement
     });
     return updatedAssets;
   });
@@ -82,5 +84,8 @@ export const handleLinkAccounts = (remoteAccounts: CanutinFileAccountType[]) => 
 };
 
 export const handleLinkRemovedTransactions = (removedTransactions: string[]) => {
-  console.log('\n\n\n\n\n handleLinkRemovedTransactions', removedTransactions);
+  removedTransactions.map(async transactionLinkId => {
+    const transaction = await TransactionRepository.findTransactionByLinkId(transactionLinkId);
+    transaction && (await TransactionRepository.deleteTransaction(transaction.id));
+  });
 };

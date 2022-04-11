@@ -147,7 +147,7 @@ const setupLinkEvents = async (win: BrowserWindow) => {
     if (response.status === 200) {
       const { assetPrices, accounts, removedTransactions } = response.data as SyncResponseProps;
 
-      removedTransactions && (await handleLinkRemovedTransactions(removedTransactions));
+      removedTransactions.length > 0 && (await handleLinkRemovedTransactions(removedTransactions));
       const updatedAccounts = accounts && (await handleLinkAccounts(accounts));
       const updatedAssets = assetPrices && (await handleLinkAssets(assetPrices));
 

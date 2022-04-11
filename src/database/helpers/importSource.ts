@@ -70,7 +70,7 @@ export const createTransactionsFromCanutinFile = async (
   const sessionDate = new Date(); // Applies the same date to all transactions processed in the session
 
   for (const canutinFileTransaction of canutinFileTransactions) {
-    const { description, date, amount, excludeFromTotals, pending, createdAt, importedAt } =
+    const { description, date, amount, excludeFromTotals, pending, createdAt, linkId, importedAt } =
       canutinFileTransaction;
 
     const category = await CategoryRepository.getSubCategory(canutinFileTransaction.categoryName);
@@ -85,6 +85,7 @@ export const createTransactionsFromCanutinFile = async (
         account,
         category,
         handleDate(createdAt),
+        linkId,
         importedAt ? handleDate(importedAt) : sessionDate
       )
     );
