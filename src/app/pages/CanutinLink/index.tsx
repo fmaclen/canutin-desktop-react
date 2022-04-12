@@ -78,7 +78,7 @@ const CanutinLink = () => {
   }, []);
 
   return (
-    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={!profile}>
+    <ScrollView title="Canutin Link" headerNav={<HeaderButtons />} wizard={!profile?.hasBetaAccess}>
       {!profile && (
         <SectionRow>
           <UserAuthForm endpoint={ApiEndpoints.USER_LOGIN} />
@@ -87,17 +87,19 @@ const CanutinLink = () => {
 
       {profile && (
         <>
-          <Section title="Summary">
-            <EmptyCard
-              message={
-                <span>
-                  <strong>You are in the waitlist!</strong>
-                  <br />
-                  We'll email {profile.email} as soon as your account is ready.
-                </span>
-              }
-            />
-          </Section>
+          <SectionRow>
+            <Section title="Beta access">
+              <EmptyCard
+                message={
+                  <span>
+                    <strong>You are in the waitlist!</strong>
+                    <br />
+                    We'll email {profile.email} as soon as your account is ready.
+                  </span>
+                }
+              />
+            </Section>
+          </SectionRow>
           {profile.hasBetaAccess && (
             <Section title={`Linked institutions / ${institutions ? institutions.length : 0}`}>
               {institutions && institutions.length > 0 ? (
