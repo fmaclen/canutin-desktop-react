@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { container } from './styles';
@@ -8,7 +8,7 @@ const Container = styled.div`
 `;
 
 interface EmptyCardProps {
-  message: string;
+  message: string | ReactNode;
   className?: string;
 }
 

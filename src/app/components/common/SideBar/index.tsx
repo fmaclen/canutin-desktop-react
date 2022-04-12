@@ -128,7 +128,7 @@ const SideBar = () => {
           dataTestId="sidebar-add-or-update-data"
         />
 
-        {profile && (
+        {profile?.hasBetaAccess && (
           <NavItem
             icon={<Sync />}
             text={isSyncing ? 'Syncing' : 'Sync'}

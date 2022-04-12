@@ -23,10 +23,20 @@ const HeaderButtons = () => {
   if (profile) {
     return (
       <ButtonRow>
-        <Button onClick={() => setIsSyncing(true)} status={StatusEnum.NEUTRAL} disabled={isSyncing}>
-          Sync
-        </Button>
-        <Button onClick={() => history.push(routesPaths.linkInstitution)}>Link institution</Button>
+        {profile.hasBetaAccess && (
+          <>
+            <Button
+              onClick={() => setIsSyncing(true)}
+              status={StatusEnum.NEUTRAL}
+              disabled={isSyncing}
+            >
+              Sync
+            </Button>
+            <Button onClick={() => history.push(routesPaths.linkInstitution)}>
+              Link institution
+            </Button>
+          </>
+        )}
         <Button onClick={() => LinkIpc.logout()}>Logout</Button>
       </ButtonRow>
     );

@@ -88,54 +88,64 @@ const CanutinLink = () => {
       {profile && (
         <>
           <Section title="Summary">
-            <EmptyCard message={`Logged in as: ${profile.email}`} />
+            <EmptyCard
+              message={
+                <span>
+                  <strong>You are in the waitlist!</strong>
+                  <br />
+                  We'll email {profile.email} as soon as your account is ready.
+                </span>
+              }
+            />
           </Section>
-          <Section title={`Linked institutions / ${institutions ? institutions.length : 0}`}>
-            {institutions && institutions.length > 0 ? (
-              <Institutions>
-                {institutions?.map(institution => {
-                  return (
-                    <Fieldset key={institution.id}>
-                      <Institution>
-                        <Label>Institution</Label>
-                        <Value hasErrors={institution.errorTitle ? true : false}>
-                          <span>{institution.name}</span>
-                          <ButtonRow>
-                            <Button onClick={() => handleUnlink(institution)}>Unlink</Button>
-                            {institution.errorTitle && (
-                              <Button
-                                status={StatusEnum.NEGATIVE}
-                                onClick={() =>
-                                  history.push(`${routesPaths.linkInstitution}/${institution.id}`)
-                                }
-                              >
-                                Fix
-                              </Button>
-                            )}
-                          </ButtonRow>
-                        </Value>
-                      </Institution>
-                      {institution.errorTitle && (
-                        <FieldNotice
-                          error={true}
-                          title={institution.errorTitle}
-                          description={<div>{institution.errorMessage}</div>}
+          {profile.hasBetaAccess && (
+            <Section title={`Linked institutions / ${institutions ? institutions.length : 0}`}>
+              {institutions && institutions.length > 0 ? (
+                <Institutions>
+                  {institutions?.map(institution => {
+                    return (
+                      <Fieldset key={institution.id}>
+                        <Institution>
+                          <Label>Institution</Label>
+                          <Value hasErrors={institution.errorTitle ? true : false}>
+                            <span>{institution.name}</span>
+                            <ButtonRow>
+                              <Button onClick={() => handleUnlink(institution)}>Unlink</Button>
+                              {institution.errorTitle && (
+                                <Button
+                                  status={StatusEnum.NEGATIVE}
+                                  onClick={() =>
+                                    history.push(`${routesPaths.linkInstitution}/${institution.id}`)
+                                  }
+                                >
+                                  Fix
+                                </Button>
+                              )}
+                            </ButtonRow>
+                          </Value>
+                        </Institution>
+                        {institution.errorTitle && (
+                          <FieldNotice
+                            error={true}
+                            title={institution.errorTitle}
+                            description={<div>{institution.errorMessage}</div>}
+                          />
+                        )}
+                        <InputTextField
+                          label="Last sync"
+                          name="lastSync"
+                          value={capitalize(formatRelativeDate(handleDate(institution.lastUpdate)))}
+                          disabled
                         />
-                      )}
-                      <InputTextField
-                        label="Last sync"
-                        name="lastSync"
-                        value={capitalize(formatRelativeDate(handleDate(institution.lastUpdate)))}
-                        disabled
-                      />
-                    </Fieldset>
-                  );
-                })}
-              </Institutions>
-            ) : (
-              <EmptyCard message="No linked institutions." />
-            )}
-          </Section>
+                      </Fieldset>
+                    );
+                  })}
+                </Institutions>
+              ) : (
+                <EmptyCard message="No linked institutions." />
+              )}
+            </Section>
+          )}
         </>
       )}
     </ScrollView>

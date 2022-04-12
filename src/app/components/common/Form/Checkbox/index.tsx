@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { inputContainer, inputCheckbox, valueLabel } from './styles';
@@ -21,7 +21,7 @@ type RefReturn =
   | undefined;
 
 export interface CheckboxProps {
-  label: string;
+  label: string | ReactNode;
   name: string;
   id: string;
   register?: () => RefReturn;

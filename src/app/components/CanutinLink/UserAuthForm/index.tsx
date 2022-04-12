@@ -20,6 +20,7 @@ import Section from '@app/components/common/Section';
 import FieldNotice from '@app/components/common/Form/FieldNotice';
 import InlineCheckbox from '@app/components/common/Form/Checkbox';
 import Field from '@app/components/common/Form/Field';
+import TextLink from '@app/components/common/TextLink';
 
 import { fieldNoticeParagraph } from './styles';
 
@@ -27,9 +28,32 @@ interface UserAuthFormProps {
   endpoint: ApiEndpoints;
 }
 
+const TermsContainer = styled.div`
+  font-size: 12px;
+`;
+
 const FieldNoticeParagraph = styled.p`
   ${fieldNoticeParagraph}
 `;
+
+const AgreeToTerms = () => {
+  return (
+    <TermsContainer>
+      I agree to the&nbsp;
+      <TextLink
+        isExternal={true}
+        pathname="https://canutin.com/terms-of-service/"
+        label="Terms of serivce"
+      />
+      &nbsp;&amp;&nbsp;
+      <TextLink
+        isExternal={true}
+        pathname="https://canutin.com/privacy-policy/"
+        label="Privacy policy"
+      />
+    </TermsContainer>
+  );
+};
 
 const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
   const { setIsSyncing } = useContext(LinkContext);
@@ -108,6 +132,14 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
                     <strong>We are currently in beta </strong> but you can click on the button above
                     to create an account and join the waitlist today.
                   </FieldNoticeParagraph>
+                  <FieldNoticeParagraph>
+                    Find out more at{' '}
+                    <TextLink
+                      isExternal={true}
+                      pathname="https://canutin.com"
+                      label="Canutin.com"
+                    />
+                  </FieldNoticeParagraph>
                 </>
               }
             />
@@ -160,7 +192,7 @@ const UserAuthForm = ({ endpoint }: UserAuthFormProps) => {
               <InlineCheckbox
                 name="legal"
                 id="legal"
-                label="I agree to Terms of Service &amp; Privacy Policy"
+                label={<AgreeToTerms />}
                 register={registerAuthForm}
               />
             </Field>
