@@ -1,8 +1,13 @@
 import { getRepository } from 'typeorm';
 
-import { AssetBalanceStatement } from '../entities';
+import { Asset, AssetBalanceStatement } from '../entities';
 import { NewAssetBalanceStatementType } from '@appTypes/assetBalanceStatement.type';
 import { splitInChunks } from '@database/helpers';
+
+interface UpdateAssetBalanceStatementType extends NewAssetBalanceStatementType {
+  id: number;
+  asset: Asset;
+}
 
 export class AssetBalanceStatementRepository {
   static async createBalanceStatement(
@@ -43,6 +48,25 @@ export class AssetBalanceStatementRepository {
         createdAt: 'DESC',
       },
     });
+  }
+
+  static async getBalanceStatement(id: number): Promise<AssetBalanceStatement | undefined> {
+    return await getRepository<AssetBalanceStatement>(AssetBalanceStatement).findOne(id, {
+      relations: ['asset'],
+    });
+  }
+
+  static async updateBalanceStatement(
+    newBalanceStatementValues: UpdateAssetBalanceStatementType
+  ): Promise<void> {
+    const { value, quantity, cost } = newBalanceStatementValues;
+
+    await getRepository<AssetBalanceStatement>(AssetBalanceStatement)
+      .createQueryBuilder()
+      .update(AssetBalanceStatement)
+      .set({ value, quantity, cost })
+      .where('id = :id', { id: newBalanceStatementValues.id })
+      .execute();
   }
 
   static async deleteBalanceStatements(balanceStatementsIds: number[]) {

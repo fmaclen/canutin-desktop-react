@@ -4,6 +4,6 @@ export type NewAssetBalanceStatementType = {
   asset: Asset;
   createdAt: Date;
   value: number;
-  quantity?: number;
+  quantity: number;
   cost?: number;
 };

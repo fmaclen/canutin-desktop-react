@@ -8,7 +8,7 @@ import { endOfDay, format, startOfDay, startOfToday } from 'date-fns';
 // REF: https://github.com/tannerlinsley/react-table/issues/2071
 import 'regenerator-runtime/runtime';
 
-import { dateInUTC } from '@app/utils/date.utils';
+import { dateInUTC, handleDate } from '@app/utils/date.utils';
 import { accountCheckingDetails } from '@database/seed/demoData/accounts';
 import { accountCheckingTransactionSet } from '@database/seed/demoData/transactions';
 import { filters } from '@app/constants/filters';
@@ -47,12 +47,14 @@ describe('Transactions tests', () => {
     const seedTransactionsThisMonth = accountCheckingTransactionSet()
       .filter(transaction => {
         // Mimic the logic in `TransactionRepository.getFilterTransactions()`
+        const date = handleDate(transaction.date);
         const dateFrom = startOfDay(dateInUTC(filters[0].dateFrom));
         const dateTo = endOfDay(dateInUTC(filters[0].dateTo));
-        return transaction.date >= dateFrom && transaction.date <= dateTo;
+        return date >= dateFrom && date <= dateTo;
       })
       .map(transaction => ({
         ...transaction,
+        date: handleDate(transaction.date),
         account: { ...accountCheckingDetails },
         category: { name: mapCategories(transaction.categoryName) },
       }));

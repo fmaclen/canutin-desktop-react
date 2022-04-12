@@ -17,6 +17,9 @@ import EditTransaction from '@app/pages/EditTransaction';
 import AccountOverview from '@app/pages/AccountOverview';
 import AssetOverview from '@app/pages/AssetOverview';
 import EditBudget from '@app/pages/EditBudget';
+import CanutinLink from '@pages/CanutinLink';
+import CanutinLinkCreateAccount from '@pages/CanutinLinkCreateAccount';
+import CanutinLinkInstitution from '@pages/CanutinLinkInstitution';
 
 export const rootRoutesPaths = {
   bigpicture: '/bigpicture',
@@ -29,6 +32,7 @@ export const rootRoutesPaths = {
   settings: '/settings',
   setup: '/setup',
   addOrUpdateData: '/addOrUpdateData',
+  link: '/link',
 };
 
 export const routesPaths = {
@@ -42,6 +46,9 @@ export const routesPaths = {
   editTransaction: '/transactions/:transactionDescription',
   vaultSecurity: '/setup/security',
   editBudget: '/budget/edit',
+  linkCreateAccount: '/link/create-account',
+  linkInstitution: '/link/link-institution',
+  updateInstitution: '/link/link-institution/:institution_id',
 };
 
 export interface RouteConfigProps {
@@ -161,5 +168,29 @@ export const routesConfig: RouteConfigProps[] = [
     path: routesPaths.assetOverview,
     exact: true,
     component: <AssetOverview />,
+  },
+  {
+    path: routesPaths.link,
+    exact: true,
+    component: <CanutinLink />,
+    breadcrumb: 'Canutin Link',
+  },
+  {
+    path: routesPaths.linkCreateAccount,
+    exact: true,
+    component: <CanutinLinkCreateAccount />,
+    breadcrumb: 'Create account',
+  },
+  {
+    path: routesPaths.linkInstitution,
+    exact: true,
+    component: <CanutinLinkInstitution />,
+    breadcrumb: 'Institution',
+  },
+  {
+    path: routesPaths.updateInstitution,
+    exact: true,
+    component: <CanutinLinkInstitution />,
+    breadcrumb: 'Fix',
   },
 ];

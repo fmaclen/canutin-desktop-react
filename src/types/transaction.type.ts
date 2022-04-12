@@ -11,6 +11,7 @@ export type NewTransactionType = {
   amount: number;
   excludeFromTotals: boolean;
   pending: boolean;
+  linkId?: string;
   importedAt?: Date;
   id?: number;
   createdAt?: number;

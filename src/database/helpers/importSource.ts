@@ -28,7 +28,7 @@ export const importFromCanutinFile = async (
         const account = await AccountRepository.getOrCreateAccount(canutinFileAccount);
 
         canutinFileAccount.transactions &&
-          (await handleCanutinFileTransactions(account, canutinFileAccount.transactions));
+          (await createTransactionsFromCanutinFile(account, canutinFileAccount.transactions));
       }
     }
 
@@ -57,12 +57,12 @@ export const updateAccounts = async (updatedAccounts: UpdatedAccount[]) => {
     updatedAccounts.map(async ({ id, transactions }) => {
       const account = await AccountRepository.getAccountById(id);
 
-      account && transactions && handleCanutinFileTransactions(account, transactions);
+      account && transactions && createTransactionsFromCanutinFile(account, transactions);
     })
   );
 };
 
-const handleCanutinFileTransactions = async (
+export const createTransactionsFromCanutinFile = async (
   account: Account,
   canutinFileTransactions: CanutinFileTransactionType[]
 ) => {
@@ -70,10 +70,10 @@ const handleCanutinFileTransactions = async (
   const sessionDate = new Date(); // Applies the same date to all transactions processed in the session
 
   for (const canutinFileTransaction of canutinFileTransactions) {
-    const { description, date, amount, excludeFromTotals, pending, createdAt, importedAt } =
+    const { description, date, amount, excludeFromTotals, pending, createdAt, linkId, importedAt } =
       canutinFileTransaction;
 
-    const category = await CategoryRepository.getSubCategory(canutinFileTransaction.category);
+    const category = await CategoryRepository.getSubCategory(canutinFileTransaction.categoryName);
 
     transactions.push(
       new Transaction(
@@ -85,6 +85,7 @@ const handleCanutinFileTransactions = async (
         account,
         category,
         handleDate(createdAt),
+        linkId,
         importedAt ? handleDate(importedAt) : sessionDate
       )
     );

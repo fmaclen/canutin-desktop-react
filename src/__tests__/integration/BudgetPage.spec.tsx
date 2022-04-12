@@ -33,7 +33,7 @@ import {
   accountCreditCardTransactionSet,
 } from '@database/seed/demoData/transactions';
 import { filters } from '@app/constants/filters';
-import { dateInUTC } from '@app/utils/date.utils';
+import { dateInUTC, handleDate } from '@app/utils/date.utils';
 import mapCategories from '@database/helpers/importResources/mapCategories';
 import BudgetIpc from '@app/data/budget.ipc';
 
@@ -75,13 +75,15 @@ describe('Budget tests', () => {
     let oneMonthOfTransactions: SeedTransaction[] = accountCheckingTransactionSet()
       .filter(transaction => {
         // Mimic the logic in `TransactionRepository.getFilterTransactions()`
+        const date = handleDate(transaction.date);
         const dateFrom = dateInUTC(startOfDay(filters[0].dateFrom));
         const dateTo = dateInUTC(endOfDay(filters[0].dateTo));
-        return transaction.date >= dateFrom && transaction.date <= dateTo;
+        return date >= dateFrom && date <= dateTo;
       })
       .map(transaction => {
         return {
           ...transaction,
+          date: handleDate(transaction.date),
           account: { ...accountCheckingDetails },
           category: { name: mapCategories(transaction.categoryName) },
         };
@@ -89,13 +91,15 @@ describe('Budget tests', () => {
 
     accountSavingsTransactionSet()
       .filter(transaction => {
+        const date = handleDate(transaction.date);
         const dateFrom = dateInUTC(startOfDay(filters[0].dateFrom));
         const dateTo = dateInUTC(endOfDay(filters[0].dateTo));
-        return transaction.date >= dateFrom && transaction.date <= dateTo;
+        return date >= dateFrom && date <= dateTo;
       })
       .forEach(transaction => {
         oneMonthOfTransactions.push({
           ...transaction,
+          date: handleDate(transaction.date),
           account: { ...accountSavingsDetails },
           category: { name: mapCategories(transaction.categoryName) },
         });
@@ -103,13 +107,15 @@ describe('Budget tests', () => {
 
     accountCreditCardTransactionSet()
       .filter(transaction => {
+        const date = handleDate(transaction.date);
         const dateFrom = dateInUTC(startOfDay(filters[0].dateFrom));
         const dateTo = dateInUTC(endOfDay(filters[0].dateTo));
-        return transaction.date >= dateFrom && transaction.date <= dateTo;
+        return date >= dateFrom && date <= dateTo;
       })
       .forEach(transaction => {
         oneMonthOfTransactions.push({
           ...transaction,
+          date: handleDate(transaction.date),
           account: { ...accountCreditCardDetails },
           category: { name: mapCategories(transaction.categoryName) },
         });
@@ -122,6 +128,7 @@ describe('Budget tests', () => {
       date: new Date(),
       categoryName: 'Uncategorized',
       excludeFromTotals: false,
+      pending: false,
       account: { ...accountCreditCardDetails },
       category: { name: mapCategories('Uncategorized') },
     });

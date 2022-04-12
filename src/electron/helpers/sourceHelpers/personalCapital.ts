@@ -33,7 +33,7 @@ export const personalCapitalCsvToJson = (personalCapitalCsv: PersonalCapitalCsvE
         amount: personalCapEntry.Amount,
         excludeFromTotals: false,
         pending: false,
-        category: mapCategories(personalCapEntry.Category),
+        categoryName: mapCategories(personalCapEntry.Category),
       };
       countTransactions++;
 

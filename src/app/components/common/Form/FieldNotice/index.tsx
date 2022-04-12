@@ -19,12 +19,13 @@ interface FieldNoticeProps {
   title: string;
   description: JSX.Element;
   label?: string;
+  error?: boolean;
 }
 
-const FieldNotice = ({ title, description, label }: FieldNoticeProps) => {
+const FieldNotice = ({ title, description, label, error = false }: FieldNoticeProps) => {
   return (
     <Field name={title} label={label}>
-      <Container>
+      <Container error={error}>
         <Title>{title}</Title>
         <Description>{description}</Description>
       </Container>

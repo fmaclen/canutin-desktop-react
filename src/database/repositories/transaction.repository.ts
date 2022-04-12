@@ -24,6 +24,7 @@ export class TransactionRepository {
         account as Account,
         category,
         handleDate(transaction.createdAt),
+        transaction.linkId,
         transaction.importedAt
       )
     );
@@ -48,6 +49,10 @@ export class TransactionRepository {
     );
 
     return newTransaction;
+  }
+
+  static async findTransactionByLinkId(linkId: string) {
+    return await getRepository<Transaction>(Transaction).findOne({ where: { linkId } });
   }
 
   static async deleteTransaction(transactionId: number) {

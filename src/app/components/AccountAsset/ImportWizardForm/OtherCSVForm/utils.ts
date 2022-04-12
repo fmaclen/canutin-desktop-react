@@ -26,7 +26,7 @@ export const getTransactionsForOneAccount = (
     amount: Number(rowData[amountColumn]),
     excludeFromTotals: false,
     pending: false,
-    category:
+    categoryName:
       categoryColumn && categoryValues ? categoryValues[rowData[categoryColumn]] : 'Uncategorized',
   }));
 
@@ -58,7 +58,7 @@ export const getTransactionsForAccountColumn = (
           amount: Number(rowData[amountColumn]),
           excludeFromTotals: false,
           pending: false,
-          category:
+          categoryName:
             categoryColumn && categoryValues
               ? categoryValues[rowData[categoryColumn]]
               : 'Uncategorized',
@@ -120,7 +120,7 @@ export const getUpdatedTransactionsForExistingAccounts = (
         amount: Number(rowData[amountColumn]),
         excludeFromTotals: false,
         pending: false,
-        category:
+        categoryName:
           categoryColumn && categoryValues
             ? categoryValues[rowData[categoryColumn]]
             : 'Uncategorized',

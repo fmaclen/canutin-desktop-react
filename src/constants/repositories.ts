@@ -1,6 +1,9 @@
 export const DB_NEW_ACCOUNT = 'dbNewAccount';
 export const DB_NEW_ACCOUNT_ACK = 'dbNewAccountAck';
 
+export const DB_NEW_LINKED_ACCOUNT = 'dbNewLinkedAccount';
+export const DB_NEW_LINKED_ACCOUNT_ACK = 'dbNewLinkedAccountAck';
+
 export const DB_NEW_ASSET = 'dbNewAsset';
 export const DB_NEW_ASSET_ACK = 'dbNewAssetAck';
 

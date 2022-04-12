@@ -1,11 +1,12 @@
 import { fromUnixTime } from 'date-fns';
 
+import { dateInUTC } from '@app/utils/date.utils';
+import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
 import {
   CanutinFileAccountBalanceStatementType,
   CanutinFileAssetBalanceStatementType,
+  CanutinFileTransactionType,
 } from '@appTypes/canutinFile.type';
-import { BalanceGroupEnum } from '@enums/balanceGroup.enum';
-import { dateInUTC } from '@app/utils/date.utils';
 
 import {
   accountCheckingDetails,
@@ -58,16 +59,19 @@ export interface SeedTransactionCategory {
   name: string;
 }
 
+// FIXME: consider replacing this with CanutinFileTransactionType
 export interface SeedTransaction {
   description: string;
   amount: number;
   date: Date;
   categoryName: string;
   excludeFromTotals: boolean;
+  pending: boolean;
   category?: SeedTransactionCategory;
   account?: SeedAccount;
 }
 
+// FIXME: consider replacing this with CanutinFileAccountType
 export interface SeedAccount {
   name: string;
   balanceGroup: BalanceGroupEnum;
@@ -80,6 +84,7 @@ export interface SeedAccount {
   balanceStatements?: SeedBalanceStatement[];
 }
 
+// FIXME: consider replacing this with CanutinFileAssetType
 export interface SeedAsset {
   name: string;
   balanceGroup: BalanceGroupEnum;
@@ -89,10 +94,10 @@ export interface SeedAsset {
   balanceStatements?: SeedBalanceStatement[];
 }
 
-const handleTransactionsSet = (transactions: SeedTransaction[]) =>
+const handleTransactionsSet = (transactions: CanutinFileTransactionType[]) =>
   transactions.map(transaction => ({
     ...transaction,
-    date: dateInUTC(transaction.date),
+    date: dateInUTC(fromUnixTime(transaction.date)),
   }));
 
 const handleSeedBalanceStatements = (

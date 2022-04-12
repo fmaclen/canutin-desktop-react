@@ -26,6 +26,7 @@ import setupSettingsEvents from './events/setupSettingsEvents';
 import setupAccountEvents from './events/setupAccountEvents';
 import setupAssetEvents from './events/setupAssetEvents';
 import setupTransactionEvents from './events/setupTransactionEvents';
+import setupLinkEvents from './events/setupLinkEvents';
 import setupBudgetEvents from './events/setupBudgetEvents';
 import setupImportEvents from './events/setupImportEvents';
 
@@ -85,6 +86,7 @@ const createWindow = async () => {
   await setupAccountEvents(win);
   await setupAssetEvents(win);
   await setupTransactionEvents(win);
+  await setupLinkEvents(win);
   await setupBudgetEvents(win);
   await setupImportEvents(win);
 

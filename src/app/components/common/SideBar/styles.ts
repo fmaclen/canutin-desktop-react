@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { grey3, grey5, grey10, whitePlain, grey80 } from '@appConstants/colors';
+import { grey3, grey5, grey10, grey50, whitePlain, grey80 } from '@appConstants/colors';
 
 export const container = css`
   grid-area: side-bar;
@@ -7,6 +7,7 @@ export const container = css`
   flex-direction: column;
   background-color: ${whitePlain};
   border-right: 1px solid ${grey10};
+  min-width: 240px;
   height: 100%;
 `;
 
@@ -27,14 +28,32 @@ export const burgerButton = css`
   }
 `;
 
-export const nav = css`
-  height: 100%;
+export const topNav = css`
   display: grid;
   grid-template-rows: max-content max-content;
   grid-gap: 24px;
 `;
 
+export const bottomNav = css`
+  margin-top: auto;
+
+  // Add border-top to the last <NavItem />
+  > *:last-child {
+    max-height: 48px;
+    border-top: 1px solid ${grey10};
+  }
+`;
+
 export const navItems = css`
   display: grid;
   grid-auto-flow: row;
+`;
+
+export const primaryNavItem = css`
+  border-top: 1px solid ${grey10};
+`;
+
+export const lastSync = css`
+  font-size: 11px;
+  color: ${grey50};
 `;

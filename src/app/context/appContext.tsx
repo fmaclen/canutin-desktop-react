@@ -1,4 +1,5 @@
 import { createContext, PropsWithChildren, useState } from 'react';
+
 import { VaultStatusEnum } from '@enums/vault.enum';
 
 interface AppContextValue {

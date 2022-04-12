@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import styled from 'styled-components';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { useHistory } from 'react-router-dom';
 
@@ -20,6 +21,12 @@ import Section from '@components/common/Section';
 import SectionRow from '@components/common/SectionRow';
 import PrimaryCard from '@components/common/PrimaryCard';
 import PrimaryCardRow from '@components/common/PrimaryCardRow';
+
+import { lightningPrimaryCard } from './styles';
+
+const LightningPrimaryCard = styled(Lightning)`
+  ${lightningPrimaryCard};
+`;
 
 const AddOrUpdateData = () => {
   const { push } = useHistory();
@@ -65,7 +72,17 @@ const AddOrUpdateData = () => {
             />
           </Section>
         )}
-        <Section title="Add new">
+        <Section title="Seamless">
+          <PrimaryCardRow>
+            <PrimaryCard
+              icon={<LightningPrimaryCard />}
+              title="Canutin Link"
+              subTitle="Automatically import and sync accounts from your financial institution  "
+              onClick={() => push(routesPaths.link)}
+            />
+          </PrimaryCardRow>
+        </Section>
+        <Section title="Semi-automatic">
           <PrimaryCardRow>
             <PrimaryCard
               icon={<Sheet />}
@@ -74,28 +91,21 @@ const AddOrUpdateData = () => {
               onClick={() => push(routesPaths.addOrUpdateDataByWizard)}
             />
             <PrimaryCard
+              icon={<Bot />}
+              title="Scrapers"
+              subTitle="Coming soon — Attemp to grab accounts and transactions from your financial institution’s website"
+              onClick={() => {}}
+              disabled
+            />
+          </PrimaryCardRow>
+        </Section>
+        <Section title="Manual">
+          <PrimaryCardRow>
+            <PrimaryCard
               icon={<Keyboard />}
               title="By hand"
               subTitle="Create a new account by entering data manually"
               onClick={() => push(routesPaths.addOrUpdateDataByHand)}
-            />
-          </PrimaryCardRow>
-        </Section>
-        <Section title="Coming soon">
-          <PrimaryCardRow>
-            <PrimaryCard
-              icon={<Bot />}
-              title="Unleash a bot"
-              subTitle="Attemp to grab accounts and transactions from your financial institution's website"
-              onClick={() => {}}
-              disabled
-            />
-            <PrimaryCard
-              icon={<Lightning />}
-              title="Canutin Link"
-              subTitle="Automatically import and sync accounts from your financial institution"
-              onClick={() => {}}
-              disabled
             />
           </PrimaryCardRow>
         </Section>

@@ -11,6 +11,7 @@ export type NewAccountType = {
   closed: boolean;
   officialName?: string;
   institution?: string;
+  linkId?: string;
   balanceStatements?: NewAccountBalanceStatementType[] | CanutinFileAccountBalanceStatementType[];
 };
 
